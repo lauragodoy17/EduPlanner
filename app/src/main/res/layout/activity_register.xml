@@ -47,31 +47,14 @@
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/camponombre"
+        app:layout_constraintBottom_toTopOf="@id/campoemail"
         app:layout_constraintTop_toBottomOf="@+id/tvRegistro" />
-
-    <androidx.appcompat.widget.AppCompatEditText
-        android:id="@+id/camponombre"
-        android:layout_width="300dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="84dp"
-        android:background="@drawable/campos_stylos"
-        android:elevation="4dp"
-        android:hint="Nombre Completo"
-        android:inputType="textEmailAddress"
-        android:maxLines="1"
-        android:paddingStart="10dp"
-        android:textColorHint="#949494"
-        android:textColor="#000000"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvCreaCuenta" />
 
     <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/campoemail"
         android:layout_width="300dp"
         android:layout_height="50dp"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="84dp"
         android:background="@drawable/campos_stylos"
         android:elevation="4dp"
         android:hint="E-Mail"
@@ -82,11 +65,10 @@
         android:textColor="#000000"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/campocontraseña"
-        app:layout_constraintTop_toBottomOf="@id/camponombre" />
+        app:layout_constraintTop_toBottomOf="@id/tvCreaCuenta" />
 
     <androidx.appcompat.widget.AppCompatEditText
-        android:id="@+id/campocontraseña"
+        android:id="@+id/campocontrasena"
         android:layout_width="300dp"
         android:layout_height="50dp"
         android:layout_marginTop="15dp"
@@ -97,11 +79,29 @@
         android:maxLines="1"
         android:paddingStart="10dp"
         android:textColorHint="#949494"
+        android:textColor="#000000"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/campoconfirmarcontra"
+        app:layout_constraintTop_toBottomOf="@id/campoemail" />
+
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/campoconfirmarcontra"
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/campos_stylos"
+        android:elevation="4dp"
+        android:hint="Confirmar Contraseña"
+        android:inputType="textEmailAddress"
+        android:maxLines="1"
+        android:paddingStart="10dp"
+        android:textColorHint="#949494"
         app:layout_constraintEnd_toEndOf="parent"
         android:textColor="#000000"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toTopOf="@id/botonregistro"
-        app:layout_constraintTop_toBottomOf="@id/campoemail" />
+        app:layout_constraintTop_toBottomOf="@id/campocontrasena" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/botonregistro"
@@ -113,7 +113,7 @@
         android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/campocontraseña"
+        app:layout_constraintTop_toBottomOf="@id/campoconfirmarcontra"
         app:layout_constraintBottom_toTopOf="@id/tvOlvidaste_contraseña"
          />
 
