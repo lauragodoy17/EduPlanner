@@ -57,11 +57,6 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
     //DaggerHilt
     implementation("com.google.dagger:hilt-android:2.35")
-    // Navigation
-    implementation ("androidx.navigation:navigation-fragment-ktx:2.5.1")
-    implementation ("androidx.navigation:navigation-ui-ktx:2.5.1")
-    // Coroutines
-    implementation ("androidx.lifecycle:lifecycle-runtime-ktx:2.6.0-alpha01")
 
     kapt("com.google.dagger:hilt-android-compiler:2.35")
 
