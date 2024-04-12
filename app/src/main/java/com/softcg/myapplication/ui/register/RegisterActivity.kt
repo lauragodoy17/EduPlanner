@@ -23,6 +23,8 @@ import com.softcg.myapplication.ui.login.MainActivity
 import com.softcg.myapplication.ui.register.model.UserRegister
 
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -75,7 +77,13 @@ class RegisterActivity : AppCompatActivity() {
             Boton1.setOnClickListener{viewmodelregister.onLoginSelected()}
             botonregistro.setOnClickListener {
                 it.dismissKeyboard()
-                //viewmodelregister.onRegisterSelected()
+                viewmodelregister.onRegisterSelected(
+                    UserRegister(
+                        email = binding.campoemail.text.toString(),
+                        password = binding.campocontrasena.text.toString(),
+                        passwordConfirmation = binding.campoconfirmarcontra.text.toString()
+                    )
+                )
             }
         }
     }
@@ -83,9 +91,22 @@ class RegisterActivity : AppCompatActivity() {
     private fun initObservers(){
         viewmodelregister.navigateToLogin.observe(this, Observer{
             it.getContentIfNotHandled()?.let {
-                goToRegister()
+                goToLogin()
             }
         })
+        viewmodelregister.navegateToHome.observe(this){
+            it.getContentIfNotHandled()?.let {
+                goToHome()
+            }
+        }
+        lifecycleScope.launchWhenStarted {
+            viewmodelregister.viewState.collect(){viewState ->
+                updateUI(viewState)
+            }
+        }
+        viewmodelregister.showErrorDialog.observe(this){ showError ->
+            if (showError) showErrorDialog()
+        }
     }
 
     private fun showErrorDialog() {
@@ -98,20 +119,35 @@ class RegisterActivity : AppCompatActivity() {
         ).show(dialogLauncher, this)
     }
 
-    //private fun updateUI(viewState: )
+    private fun updateUI(viewState: RegisterViewState ){
+        with(binding){
+            binding.campoemail.error=
+                if (viewState.isValidEmail) null else getString(R.string.signin_error_mail)
+            binding.campocontrasena.error=
+                if (viewState.isValidPassword)null else getString(R.string.signin_error_password)
+            binding.campoconfirmarcontra.error=
+                if (viewState.isValidPassword)null else getString(R.string.signin_error_password)
+        }
+    }
 
-    private fun goToRegister(){
+    private fun goToLogin(){
         startActivity(MainActivity.create(this))
     }
 
     private fun onFieldChanged(hasFocus: Boolean=false){
         if (!hasFocus){
-            //viewmodelregister.
+            viewmodelregister.onFieldsChanged(
+                UserRegister(
+                    email = binding.campoemail.text.toString(),
+                    password = binding.campoemail.text.toString(),
+                    passwordConfirmation = binding.campoemail.text.toString()
+                )
+            )
         }
     }
 
     private fun goToHome(){
-        //startActivity(HomeActivity.create(this))
+        startActivity(HomeActivity.create(this))
     }
 
 }
