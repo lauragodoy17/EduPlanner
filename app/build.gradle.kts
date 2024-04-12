@@ -60,7 +60,10 @@ dependencies {
     kapt("com.google.dagger:hilt-android-compiler:2.50")
     //API SPLASH SCREEN
     implementation("androidx.core:core-splashscreen:1.0.0")
-
+    //Corrutinas
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1")
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1")
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.1")
 
     //Firebase
     implementation(platform("com.google.firebase:firebase-bom:32.8.0"))
