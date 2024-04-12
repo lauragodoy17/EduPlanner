@@ -1,4 +1,5 @@
 package com.softcg.myapplication.core.dialog
+
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.app.Dialog

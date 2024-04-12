@@ -3,27 +3,42 @@ package com.softcg.myapplication.ui.login
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.inputmethod.EditorInfo
 import androidx.activity.viewModels
 import androidx.lifecycle.Observer
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.lifecycleScope
 import com.softcg.myapplication.R
+import com.softcg.myapplication.core.dialog.DialogFragmentLauncher
+import com.softcg.myapplication.core.dialog.ErrorDialog
+import com.softcg.myapplication.core.ex.dismissKeyboard
+import com.softcg.myapplication.core.ex.loseFocusAfterAction
+import com.softcg.myapplication.core.ex.onTextChanged
+import com.softcg.myapplication.core.ex.show
 import com.softcg.myapplication.databinding.ActivityMainBinding
+import com.softcg.myapplication.ui.home.HomeActivity
+import com.softcg.myapplication.ui.login.model.UserLogin
 import com.softcg.myapplication.ui.register.RegisterActivity
 
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
+import javax.inject.Inject
 
 @AndroidEntryPoint
-
 class MainActivity : AppCompatActivity() {
+
     private lateinit var binding: ActivityMainBinding
     private val miViewModel : MiViewModel by viewModels()
+
     companion object{
         fun create(context: Context): Intent =
             Intent(context, MainActivity::class.java)
     }
+
+    @Inject
+    lateinit var dialogLauncher: DialogFragmentLauncher
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,7 +52,6 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         init()
-
     }
 
     private fun init(){
@@ -46,6 +60,22 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initlisteners(){
+
+        binding.campoemail.loseFocusAfterAction(EditorInfo.IME_ACTION_NEXT)
+        binding.campoemail.onTextChanged { onFieldChanged() }
+
+        binding.campocontraseA.loseFocusAfterAction(EditorInfo.IME_ACTION_NEXT)
+        binding.campocontraseA.setOnFocusChangeListener { _, hasFocus -> onFieldChanged(hasFocus) }
+        binding.campocontraseA.onTextChanged { onFieldChanged() }
+
+        binding.botoningresar.setOnClickListener {
+            it.dismissKeyboard()
+            miViewModel.onLoginSelected(
+                binding.campoemail.text.toString(),
+                binding.campocontraseA.text.toString()
+            )
+        }
+
         with(binding){
             textoregistrar.setOnClickListener{miViewModel.onRegisterSelected()}
 
@@ -59,8 +89,63 @@ class MainActivity : AppCompatActivity() {
                 goToRegister()
             }
         })
+
+        miViewModel.navigateToHome.observe(this){
+            it.getContentIfNotHandled()?.let{
+                goToHome()
+            }
+        }
+
+        miViewModel.showErrorDialog.observe(this){userLogin ->
+            if (userLogin.showErrorDialog) showErrorDialog(userLogin)
+        }
+
+        lifecycleScope.launchWhenStarted {
+            miViewModel.viewState.collect(){ viewState ->
+                updateUI(viewState)
+            }
+        }
     }
 
+    private fun updateUI(viewState: LoginViewState){
+        with(binding){
+            campoemail.error =
+                if (viewState.isValidEmail) null else getString(R.string.login_error_mail)
+            campocontraseA.error=
+                if (viewState.isValidEmail) null else getString(R.string.login_error_password)
+
+        }
+    }
+
+    private fun onFieldChanged(hasFocus:Boolean=false){
+        if (!hasFocus){
+            miViewModel.onFieldsChanged(
+                email = binding.campoemail.text.toString(),
+                password = binding.campocontraseA.text.toString()
+            )
+        }
+    }
+
+    private fun showErrorDialog(userLogin: UserLogin){
+        ErrorDialog.create(
+            title = getString(R.string.login_error_dialog_title),
+            description = getString(R.string.login_error_dialog_body),
+            negativeAction = ErrorDialog.Action(getString(R.string.login_error_dialog_negative_action)) {
+                it.dismiss()
+            },
+            positiveAction = ErrorDialog.Action(getString(R.string.login_error_dialog_positive_action)) {
+                miViewModel.onLoginSelected(
+                    userLogin.email,
+                    userLogin.password
+                )
+                it.dismiss()
+            }
+        ).show(dialogLauncher,this)
+    }
+
+    private fun goToHome(){
+        startActivity(HomeActivity.create(this))
+    }
     private fun goToRegister(){
         startActivity(RegisterActivity.create(this))
     }
