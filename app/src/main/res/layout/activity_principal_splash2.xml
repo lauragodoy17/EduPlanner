@@ -9,12 +9,15 @@
     android:layout_gravity="center"
     android:scaleType="centerCrop"
     android:layout_height="match_parent"
+    android:src="@drawable/logoblancosintexto1"
     tools:context=".PrincipalSplash"
     >
     <ImageView
         android:id="@+id/imageViewSplash"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scaleType="centerCrop" />
+        android:scaleType="centerCrop"
+        android:src="@drawable/logoblancosintexto1"
+        />
 
 </LinearLayout>
