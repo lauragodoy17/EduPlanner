@@ -57,6 +57,8 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
     //DaggerHilt
     implementation("com.google.dagger:hilt-android:2.35")
+    //API SPLASH SCREEN
+    implementation("androidx.core:core-splashscreen:1.0.0")
 
     kapt("com.google.dagger:hilt-android-compiler:2.35")
 
