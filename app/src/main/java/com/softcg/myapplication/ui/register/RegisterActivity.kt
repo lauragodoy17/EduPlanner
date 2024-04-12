@@ -3,24 +3,35 @@ package com.softcg.myapplication.ui.register
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.inputmethod.EditorInfo
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.softcg.myapplication.R
 import androidx.lifecycle.Observer
+import com.softcg.myapplication.core.dialog.DialogFragmentLauncher
+import com.softcg.myapplication.core.ex.loseFocusAfterAction
 import com.softcg.myapplication.databinding.ActivityRegisterBinding
 import com.softcg.myapplication.ui.login.MainActivity
 
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
+
 @AndroidEntryPoint
 class RegisterActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityRegisterBinding
-    private val viewmodelregister : viewmodelregister by viewModels()
+
     companion object{
         fun create(context: Context): Intent =
             Intent(context, RegisterActivity::class.java)
     }
+
+    private lateinit var binding: ActivityRegisterBinding
+    private val viewmodelregister : viewmodelregister by viewModels()
+
+    @Inject
+    lateinit var dialogLauncher: DialogFragmentLauncher
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,6 +52,7 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     private fun initlisteners(){
+        binding.campoemail.loseFocusAfterAction(EditorInfo.IME_ACTION_NEXT)
         with(binding){
             tvIniciaSesion.setOnClickListener{viewmodelregister.onLoginSelected()}
             Boton1.setOnClickListener{viewmodelregister.onLoginSelected()}
