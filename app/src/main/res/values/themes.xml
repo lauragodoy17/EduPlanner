@@ -3,11 +3,13 @@
     <style name="Base.Theme.MyApplication" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="android:statusBarColor" >@android:color/transparent</item>
     </style>
 
     <style name="Theme.MyApplication" parent="Base.Theme.MyApplication" />
 
     <style name="Theme.APISplashScreen" parent="Theme.SplashScreen">
+        <item name="android:statusBarColor" >@android:color/transparent</item>
         <item name="windowSplashScreenBackground">@color/white</item>
         <item name="windowSplashScreenAnimatedIcon">@drawable/logoblancosintexto1</item>
         <item name="windowSplashScreenAnimationDuration">300</item>
