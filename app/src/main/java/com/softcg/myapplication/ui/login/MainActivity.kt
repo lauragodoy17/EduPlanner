@@ -61,18 +61,19 @@ class MainActivity : AppCompatActivity() {
 
     private fun initlisteners(){
 
-        binding.campoemail.loseFocusAfterAction(EditorInfo.IME_ACTION_NEXT)
-        binding.campoemail.onTextChanged { onFieldChanged() }
-
-        binding.campocontraseA.loseFocusAfterAction(EditorInfo.IME_ACTION_NEXT)
+        binding.emailText.loseFocusAfterAction(EditorInfo.IME_ACTION_NEXT)
         binding.campocontraseA.setOnFocusChangeListener { _, hasFocus -> onFieldChanged(hasFocus) }
-        binding.campocontraseA.onTextChanged { onFieldChanged() }
+        binding.emailText.onTextChanged { onFieldChanged() }
+
+        binding.contrasenaText.loseFocusAfterAction(EditorInfo.IME_ACTION_NEXT)
+        binding.contrasenaText.setOnFocusChangeListener { _, hasFocus -> onFieldChanged(hasFocus) }
+        binding.contrasenaText.onTextChanged { onFieldChanged() }
 
         binding.botoningresar.setOnClickListener {
             it.dismissKeyboard()
             miViewModel.onLoginSelected(
-                binding.campoemail.text.toString(),
-                binding.campocontraseA.text.toString()
+                binding.emailText.text.toString(),
+                binding.contrasenaText.text.toString()
             )
         }
 
@@ -112,7 +113,7 @@ class MainActivity : AppCompatActivity() {
             campoemail.error =
                 if (viewState.isValidEmail) null else getString(R.string.login_error_mail)
             campocontraseA.error=
-                if (viewState.isValidEmail) null else getString(R.string.login_error_password)
+                if (viewState.isValidPasswords) null else getString(R.string.login_error_password)
 
         }
     }
@@ -120,8 +121,8 @@ class MainActivity : AppCompatActivity() {
     private fun onFieldChanged(hasFocus:Boolean=false){
         if (!hasFocus){
             miViewModel.onFieldsChanged(
-                email = binding.campoemail.text.toString(),
-                password = binding.campocontraseA.text.toString()
+                email = binding.emailText.text.toString(),
+                password = binding.contrasenaText.text.toString()
             )
         }
     }
