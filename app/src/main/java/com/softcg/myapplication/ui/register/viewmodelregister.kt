@@ -68,14 +68,21 @@ class viewmodelregister @Inject constructor(val createAccountUseCase: CreateAcco
     }
     private fun isValidOrEmptyEmail(email: String) =
         Patterns.EMAIL_ADDRESS.matcher(email).matches() || email.isEmpty()
+    private fun isValidOrEmptyPassword(password: String): Boolean =
+        (password.length >= MIN_PASSWORD_LENGTH )|| password.isEmpty()
+    private fun isValidOrEmptyPasswordConfirmation(password: String,passwordConfirmation: String):Boolean =
+        (password==passwordConfirmation || passwordConfirmation.isEmpty())
 
-    private fun isValidOrEmptyPassword(password: String, passwordConfirmation: String): Boolean =
-        (password.length >= MIN_PASSWORD_LENGTH && password == passwordConfirmation) || password.isEmpty() || passwordConfirmation.isEmpty()
+
 
     private fun UserRegister.toRegisterViewState(): RegisterViewState{
         return RegisterViewState(
             isValidEmail= isValidOrEmptyEmail(email),
-            isValidPassword=isValidOrEmptyPassword(password,passwordConfirmation)
+            isValidPassword = isValidOrEmptyPassword(password),
+            isValidPasswordConfirmation= isValidOrEmptyPasswordConfirmation(password,passwordConfirmation)
         )
+
     }
 }
+
+

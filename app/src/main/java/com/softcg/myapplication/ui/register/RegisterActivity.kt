@@ -2,7 +2,9 @@ package com.softcg.myapplication.ui.register
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
+import android.util.Patterns
 import android.view.inputmethod.EditorInfo
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.viewModels
@@ -53,24 +55,28 @@ class RegisterActivity : AppCompatActivity() {
         setContentView(binding.root)
         init()
     }
-
-    private fun init(){
+    private fun init() {
         initlisteners()
         initObservers()
     }
 
+
+
+
+
+
     private fun initlisteners(){
-        binding.campoemail.loseFocusAfterAction(EditorInfo.IME_ACTION_NEXT)
-        binding.campoemail.setOnFocusChangeListener{_, hasFocus -> onFieldChanged(hasFocus)}
-        binding.campoemail.onTextChanged { onFieldChanged() }
+        binding.emailEditText.loseFocusAfterAction(EditorInfo.IME_ACTION_NEXT)
+        binding.emailEditText.setOnFocusChangeListener{_, hasFocus -> onFieldChanged(hasFocus)}
+        binding.emailEditText.onTextChanged { onFieldChanged() }
 
-        binding.campocontrasena.loseFocusAfterAction(EditorInfo.IME_ACTION_NEXT)
-        binding.campocontrasena.setOnFocusChangeListener{_, hasFocus -> onFieldChanged(hasFocus)}
-        binding.campocontrasena.onTextChanged { onFieldChanged() }
+        binding.contrasenaEditText.loseFocusAfterAction(EditorInfo.IME_ACTION_NEXT)
+        binding.contrasenaEditText.setOnFocusChangeListener{_, hasFocus -> onFieldChanged(hasFocus)}
+        binding.contrasenaEditText.onTextChanged { onFieldChanged() }
 
-        binding.campoconfirmarcontra.loseFocusAfterAction(EditorInfo.IME_ACTION_NEXT)
-        binding.campoconfirmarcontra.setOnFocusChangeListener{_, hasFocus -> onFieldChanged(hasFocus)}
-        binding.campoconfirmarcontra.onTextChanged { onFieldChanged() }
+        binding.confirmarcontraEditText.loseFocusAfterAction(EditorInfo.IME_ACTION_NEXT)
+        binding.confirmarcontraEditText.setOnFocusChangeListener{_, hasFocus -> onFieldChanged(hasFocus)}
+        binding.confirmarcontraEditText.onTextChanged { onFieldChanged() }
 
         with(binding){
             tvIniciaSesion.setOnClickListener{viewmodelregister.onLoginSelected()}
@@ -79,9 +85,9 @@ class RegisterActivity : AppCompatActivity() {
                 it.dismissKeyboard()
                 viewmodelregister.onRegisterSelected(
                     UserRegister(
-                        email = binding.campoemail.text.toString(),
-                        password = binding.campocontrasena.text.toString(),
-                        passwordConfirmation = binding.campoconfirmarcontra.text.toString()
+                        email = binding.emailEditText.text.toString(),
+                        password = binding.contrasenaEditText.text.toString(),
+                        passwordConfirmation = binding.contrasenaEditText.text.toString()
                     )
                 )
             }
@@ -121,12 +127,12 @@ class RegisterActivity : AppCompatActivity() {
 
     private fun updateUI(viewState: RegisterViewState ){
         with(binding){
-            binding.campoemail.error=
+            binding.emailContainer.error=
                 if (viewState.isValidEmail) null else getString(R.string.signin_error_mail)
-            binding.campocontrasena.error=
+            binding.contrasenaContainer.error=
                 if (viewState.isValidPassword)null else getString(R.string.signin_error_password)
-            binding.campoconfirmarcontra.error=
-                if (viewState.isValidPassword)null else getString(R.string.signin_error_password)
+            binding.confirmarcontraContainer.error=
+                if (viewState.isValidPasswordConfirmation)null else getString(R.string.signin_error_passwordconfirmation)
         }
     }
 
@@ -138,9 +144,9 @@ class RegisterActivity : AppCompatActivity() {
         if (!hasFocus){
             viewmodelregister.onFieldsChanged(
                 UserRegister(
-                    email = binding.campoemail.text.toString(),
-                    password = binding.campoemail.text.toString(),
-                    passwordConfirmation = binding.campoemail.text.toString()
+                    email = binding.emailEditText.text.toString(),
+                    password = binding.contrasenaEditText.text.toString(),
+                    passwordConfirmation = binding.confirmarcontraEditText.text.toString()
                 )
             )
         }
@@ -149,5 +155,7 @@ class RegisterActivity : AppCompatActivity() {
     private fun goToHome(){
         startActivity(HomeActivity.create(this))
     }
+
+
 
 }

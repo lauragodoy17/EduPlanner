@@ -64,6 +64,9 @@ dependencies {
     implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1")
     implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1")
     implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.1")
+    //ojito
+    implementation ("com.google.android.material:material:1.5.0")
+
 
     //Firebase
     implementation(platform("com.google.firebase:firebase-bom:32.8.0"))
