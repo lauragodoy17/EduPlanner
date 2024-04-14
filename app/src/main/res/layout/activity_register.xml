@@ -52,14 +52,13 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/emailContainer"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+        style="@style/AppTheme.TextInputLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:hint="@string/Email"
         android:textColor="#000000"
         android:textColorHint="#949494"
         app:helperText=" "
-        app:helperTextTextColor="@android:color/holo_red_dark"
         app:layout_constraintBottom_toBottomOf="@id/contrasenaContainer"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

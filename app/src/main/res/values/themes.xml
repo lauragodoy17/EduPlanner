@@ -18,5 +18,8 @@
     <style name="AppTheme.TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
         >
         <item name="errorIconDrawable">@null</item>
+        <item name="errorTextColor">@color/rojo</item>
+        <item name="hintTextColor">@color/black</item>
+        <item name="colorOutline">@color/black</item>
     </style>
 </resources>
