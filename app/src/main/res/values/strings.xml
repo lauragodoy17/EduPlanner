@@ -42,4 +42,7 @@
     <string name="Email">Email\n</string>
     <string name="Contraseña">Contraseña\n</string>
     <string name="Confirmar_Contraseña">Confirmar Contraseña</string>
+    <string name="open">Open</string>
+    <string name="close">Close</string>
+
 </resources>

@@ -67,11 +67,13 @@ dependencies {
     //ojito
     implementation ("com.google.android.material:material:1.5.0")
 
-
     //Firebase
     implementation(platform("com.google.firebase:firebase-bom:32.8.0"))
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-auth")
+
+    //Menú
+    implementation("de.hdodenhof:circleimageview:3.1.0")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
