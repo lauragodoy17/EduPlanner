@@ -26,9 +26,17 @@
         android:icon="@drawable/baseline_calendar_month_24"
         android:checkable="true"
         android:title="Horario"/>
-    <item
-        android:id="@+id/id_help_fragment"
-        android:icon="@drawable/baseline_question_mark_24"
-        android:checkable="true"
-        android:title="Ayuda y opiniones"/>
+
+    <group
+        android:id="@+id/adasda"
+        >
+
+        <item
+            android:id="@+id/id_help_fragment"
+            android:icon="@drawable/baseline_question_mark_24"
+            android:checkable="true"
+            android:title="Ayuda y opiniones"/>
+
+    </group>
+
 </menu>

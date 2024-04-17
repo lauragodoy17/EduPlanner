@@ -3,9 +3,10 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:id="@+id/myToolbar"
-    android:background="#4E6B56"
+    android:background="@color/back"
     android:elevation="8dp"
     android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+    android:fitsSystemWindows="true"
     >
 
 </androidx.appcompat.widget.Toolbar>

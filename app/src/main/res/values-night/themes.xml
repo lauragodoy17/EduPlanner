@@ -1,15 +1,26 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Base.Theme.MyApplication" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your dark theme here. -->
-        <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+    <style name="Base.Theme.MyApplication" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <!-- Customize your light theme here. -->
+        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="android:statusBarColor" >@color/back</item>
+    </style>
+
+    <style name="Theme.MyApplication" parent="Base.Theme.MyApplication" />
+
+    <style name="Theme.APISplashScreen" parent="Theme.SplashScreen">
         <item name="android:statusBarColor" >@android:color/transparent</item>
+        <item name="windowSplashScreenBackground">@color/white</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/logoblancosintexto1</item>
+        <item name="windowSplashScreenAnimationDuration">300</item>
+        <item name="postSplashScreenTheme">@style/Base.Theme.MyApplication</item>
     </style>
     <style name="AppTheme.TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
         >
         <item name="errorIconDrawable">@null</item>
         <item name="errorTextColor">@color/rojo</item>
         <item name="hintTextColor">@color/black</item>
-        <item name="cursorColor">@color/black</item>
+        <item name="colorOutline">@color/black</item>
+        <item name="cursorErrorColor">@color/back</item>
     </style>
 </resources>

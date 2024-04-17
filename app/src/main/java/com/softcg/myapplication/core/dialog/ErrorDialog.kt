@@ -55,8 +55,6 @@ class ErrorDialog : DialogFragment() {
             binding.btnNegative.text = negativeAction.text
             binding.btnNegative.setOnClickListener { negativeAction.onClickListener(this) }
         }
-        binding.btnPositive.text = positiveAction.text
-        binding.btnPositive.setOnClickListener { positiveAction.onClickListener(this) }
         isCancelable = isDialogCancelable
 
         return AlertDialog.Builder(requireActivity())

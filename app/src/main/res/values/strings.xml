@@ -54,4 +54,7 @@
     <string name="horario">Horario</string>
     <string name="calificaciones">Calificaciones</string>
     <string name="ayuda">Ayuda</string>
+
+    <string name="navigation_drawer_open">open</string>
+    <string name="navigation_drawer_close">close</string>
 </resources>
