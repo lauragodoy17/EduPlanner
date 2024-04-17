@@ -2,25 +2,29 @@ package com.softcg.myapplication.ui.home
 
 import android.content.Context
 import android.content.Intent
+import androidx.appcompat.widget.Toolbar
+
 import android.os.Bundle
-import android.view.MenuItem
-import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.GravityCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.navigation.NavController
+import androidx.navigation.findNavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.navigateUp
+import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.navigation.NavigationView
 import com.softcg.myapplication.R
-import com.softcg.myapplication.ui.agenda.AgendaActivity
-import com.softcg.myapplication.ui.register.RegisterActivity
 
 class HomeActivity : AppCompatActivity() {
 
-    lateinit var toggle: ActionBarDrawerToggle
-    private var currentTitle: String = "Inicio" // Default title
+    private lateinit var toolbar: Toolbar
+    private lateinit var drawerLayout: DrawerLayout
+    private lateinit var navigationView: NavigationView
+    private lateinit var navController: NavController
+    private lateinit var appBarConfiguration: AppBarConfiguration
 
     companion object {
         fun create(context: Context): Intent =
@@ -30,52 +34,28 @@ class HomeActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
-        supportActionBar?.title = "Eduplanner"
-
+        toolbar=findViewById(R.id.myToolbar)
+        setSupportActionBar(toolbar)
+        drawerLayout=findViewById(R.id.drawer)
+        navigationView=findViewById(R.id.nav_view)
+        navController=findNavController(R.id.fragmentContainerView)
+        appBarConfiguration=AppBarConfiguration(setOf(R.id.id_home_fragment,R.id.id_diary_fragment,R.id.id_subjects_fragment,R.id.id_help_fragment,R.id.id_schedule_fragment,R.id.id_ratings_fragment),drawerLayout)
+        setupActionBarWithNavController(navController,drawerLayout)
+        navigationView.setupWithNavController(navController)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        initMenu()
     }
 
-    fun initMenu() {
-        val drawerLayout: DrawerLayout = findViewById(R.id.main)
-        val navView: NavigationView = findViewById(R.id.nav_view)
-        toggle = ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close)
-        drawerLayout.addDrawerListener(toggle)
-        toggle.syncState()
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        navView.setNavigationItemSelectedListener { menuItem ->
-            when (menuItem.itemId) {
-                R.id.nav_home -> {
-                    if (!menuItem.isChecked) {
-                        currentTitle = getString(R.string.home)
-                        startActivity(Intent(this, HomeActivity::class.java))
-                        finish()
-                    }
-                    true
-                }
-                R.id.nav_agenda -> {
-                    currentTitle = getString(R.string.agenda)
-                    startActivity(Intent(this, AgendaActivity::class.java))
-                    true
-                }
 
-                else -> false
-            }
-            supportActionBar?.title = currentTitle
-            drawerLayout.closeDrawer(GravityCompat.START)
-            true
-        }
+    override fun onSupportNavigateUp(): Boolean {
+        val navController=findNavController(R.id.fragmentContainerView)
+        return navController.navigateUp(appBarConfiguration)|| super.onSupportNavigateUp()
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (toggle.onOptionsItemSelected(item)) {
-            return true
-        }
-        return super.onOptionsItemSelected(item)
-    }
+
+
 }

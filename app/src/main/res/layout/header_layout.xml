@@ -11,10 +11,6 @@
         android:layout_gravity="center"
         android:src="@drawable/logoblanco"
         />
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:background="#949494"
-        />
+
 
 </LinearLayout>

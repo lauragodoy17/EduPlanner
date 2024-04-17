@@ -47,4 +47,11 @@
     <string name="close">close\n</string>
     <string name="home">home\n</string>
     <string name="agenda">agenda\n</string>
+    <string name="Inicio">Inicio</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="asignaturas">Asignaturas</string>
+    <string name="horario">Horario</string>
+    <string name="calificaciones">Calificaciones</string>
+    <string name="ayuda">Ayuda</string>
 </resources>
