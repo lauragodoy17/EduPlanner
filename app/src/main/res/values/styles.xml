@@ -2,5 +2,7 @@
 <resources>
 
     <style name="LoginEditText">LoginEditText</style>
-
+    <style name="MenuItemStyle">
+        <item name="android:textColor">#ffffff</item>
+    </style>
 </resources>

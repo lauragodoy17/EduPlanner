@@ -1,10 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:showIn="navigation_view"
+
     >
     <item
         android:id="@+id/nav_home"
-        android:title="Home"
+        android:icon="@drawable/baseline_home_24"
+        android:title="Inicio"
         />
+    <item
+        android:id="@+id/nav_agenda"
+        android:icon="@drawable/baseline_agenda_add_24"
+        android:title="Agenda"
+        />
+    <item
+        android:id="@+id/nav_calendar"
+        android:icon="@drawable/baseline_calendar_month_24"
+        android:title="Calendario"
+        />
+    <item
+        android:id="@+id/nav_calificaciones"
+        android:icon="@drawable/baseline_calificaciones_24"
+        android:title="Calificaciones"
+        />
+    <item
+        android:id="@+id/nav_asignaturas"
+        android:icon="@drawable/baseline_asignatura_24"
+        android:title="Asignatura"
+        />
+
+    <item android:title=" ">
+
+        <menu>
+            <item
+                android:id="@+id/nav_ayuda"
+                android:icon="@drawable/baseline_question_mark_24"
+                android:title="Ayuda y opiniones"
+                />
+        </menu>
+    </item>
+
+
 </menu>

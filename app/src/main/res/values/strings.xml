@@ -41,8 +41,10 @@
     <string name="Requerido">Requerido</string>
     <string name="Email">Email\n</string>
     <string name="Contraseña">Contraseña\n</string>
-    <string name="Confirmar_Contraseña">Confirmar Contraseña</string>
-    <string name="open">Open</string>
-    <string name="close">Close</string>
-
+    <string name="Confirmar_Contraseña">Confirmar_Contraseña</string>
+    <string name="Reporte_Semanal">Reporte_Semanal</string>
+    <string name="open">open\n</string>
+    <string name="close">close\n</string>
+    <string name="home">home\n</string>
+    <string name="agenda">agenda\n</string>
 </resources>
