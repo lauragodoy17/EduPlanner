@@ -8,6 +8,7 @@
     android:fitsSystemWindows="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    tools:openDrawer="start"
     tools:context=".ui.home.HomeActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -54,5 +55,6 @@
         app:menu="@menu/menu"
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
+
         />
 </androidx.drawerlayout.widget.DrawerLayout>

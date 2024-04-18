@@ -5,4 +5,7 @@
     <style name="MenuItemStyle">
         <item name="android:textColor">#ffffff</item>
     </style>
+
+
+
 </resources>

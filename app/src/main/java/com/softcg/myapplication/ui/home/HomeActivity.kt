@@ -11,6 +11,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -24,10 +25,18 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
+import com.google.firebase.auth.FirebaseAuth
+import com.softcg.myapplication.PrincipalSplash
 import com.softcg.myapplication.R
+import com.softcg.myapplication.ui.login.MainActivity
+import com.softcg.myapplication.ui.register.viewmodelregister
+import com.softcg.myapplication.ui.tarea.TareaActivity
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class HomeActivity : AppCompatActivity() {
 
+    private val viewModelHome : ViewModelHome by viewModels()
     private lateinit var toolbar: Toolbar
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var navigationView: NavigationView
@@ -45,6 +54,7 @@ class HomeActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.drawer)) { v, insets ->
@@ -52,8 +62,11 @@ class HomeActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
+
         initNavegate()
         initfloatingBottons()
+        initObserver()
     }
 
 
@@ -86,9 +99,19 @@ class HomeActivity : AppCompatActivity() {
                 R.id.id_help_fragment, R.id.id_schedule_fragment, R.id.id_ratings_fragment),
             drawerLayout
         )
-
         setupActionBarWithNavController(navController, appBarConfiguration)
         navigationView.setupWithNavController(navController)
+
+        val signoutItem:MenuItem = navigationView.menu.findItem(R.id.signout)
+
+        signoutItem.setOnMenuItemClickListener {
+            FirebaseAuth.getInstance().signOut()
+            val intents=Intent(this, MainActivity::class.java)
+            intents.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            startActivity(intents)
+            finish()
+            true
+        }
     }
 
     fun initfloatingBottons(){
@@ -100,14 +123,42 @@ class HomeActivity : AppCompatActivity() {
         initShowOut(addevento)
         initShowOut(addcalificacion)
         val tareab = findViewById<FloatingActionButton>(R.id.tareaB)
-        val evetob = findViewById<FloatingActionButton>(R.id.eventoB)
+        val eventob = findViewById<FloatingActionButton>(R.id.eventoB)
         val calificacionb = findViewById<FloatingActionButton>(R.id.calificacionB)
         val anadirb=findViewById<FloatingActionButton>(R.id.botonAñadir)
 
         anadirb.setOnClickListener{
             toggleFabMode(it)
         }
+        tareab.setOnClickListener {
+            viewModelHome.onTareaSelected()
+        }
+        eventob.setOnClickListener {
+            viewModelHome.onEventoSelected()
+        }
+        calificacionb.setOnClickListener {
+            viewModelHome.onCalificacionSelected()
+        }
 
+    }
+
+    private fun initObserver(){
+
+        viewModelHome.navigateToTarea.observe(this){
+            it.getContentIfNotHandled()?.let {
+                goToTarea()
+            }
+        }
+        viewModelHome.navigateToEvento.observe(this){
+            it.getContentIfNotHandled()?.let {
+                goToEvento()
+            }
+        }
+        viewModelHome.navigateToCalificacion.observe(this){
+            it.getContentIfNotHandled()?.let {
+                goToCalificacion()
+            }
+        }
 
     }
 
@@ -171,6 +222,16 @@ class HomeActivity : AppCompatActivity() {
             .setListener(object :AnimatorListenerAdapter() {})
             .rotation(if (rotate) 180f else 0f)
         return rotate
+    }
+
+    private fun goToTarea(){
+        startActivity(TareaActivity.create(this))
+    }
+    private fun goToEvento(){
+        startActivity(TareaActivity.create(this))
+    }
+    private fun goToCalificacion(){
+        startActivity(TareaActivity.create(this))
     }
 
 }

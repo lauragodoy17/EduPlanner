@@ -2,11 +2,14 @@ package com.softcg.myapplication
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.google.firebase.auth.FirebaseAuth
+import com.softcg.myapplication.ui.home.HomeActivity
 import com.softcg.myapplication.ui.login.MainActivity
 
 class PrincipalSplash : AppCompatActivity() {
@@ -19,9 +22,15 @@ class PrincipalSplash : AppCompatActivity() {
 
         splashScreen.setKeepOnScreenCondition { true }
 
-        val intent = Intent(this, MainActivity::class.java)
-        startActivity(intent)
-        finish()
+        if (FirebaseAuth.getInstance().currentUser == null) {
+
+            startActivity(Intent(this, MainActivity::class.java))
+            finish()
+        }else{
+            val currentUser = FirebaseAuth.getInstance().currentUser
+            startActivity(Intent(this, HomeActivity::class.java))
+            finish()
+        }
 
     }
 }

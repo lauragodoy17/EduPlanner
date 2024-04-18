@@ -153,7 +153,10 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     private fun goToHome(){
-        startActivity(HomeActivity.create(this))
+        val intents=Intent(this, HomeActivity::class.java)
+        intents.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        startActivity(intents)
+        finish()
     }
 
 
