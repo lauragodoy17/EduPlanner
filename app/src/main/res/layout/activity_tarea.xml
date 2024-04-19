@@ -37,7 +37,6 @@
         android:textColor="#000000"
         android:textColorHint="#949494"
         app:helperText=" "
-
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/Agregar_Tarea">
@@ -47,7 +46,7 @@
         android:layout_width="325dp"
         android:layout_height="match_parent"
         android:background="@drawable/campos_stylos"
-        android:inputType="textEmailAddress"
+        android:inputType="text"
         android:textColor="#000000"
         android:textColorHint="#949494"
         />
@@ -97,7 +96,7 @@
             android:layout_width="325dp"
             android:layout_height="match_parent"
             android:background="@drawable/campos_stylos"
-            android:inputType="textEmailAddress"
+            android:inputType="text"
             android:textColor="#000000"
             android:textColorHint="#949494"
             />
@@ -121,7 +120,7 @@
             android:layout_width="325dp"
             android:layout_height="match_parent"
             android:background="@drawable/campos_stylos"
-            android:inputType="textEmailAddress"
+            android:inputType="text"
             android:textColor="#000000"
             android:textColorHint="#949494"
             />
