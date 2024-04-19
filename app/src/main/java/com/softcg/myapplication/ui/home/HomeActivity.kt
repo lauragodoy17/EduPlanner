@@ -9,6 +9,7 @@ import androidx.appcompat.widget.Toolbar
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
+import android.widget.ImageButton
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
@@ -83,6 +84,13 @@ class HomeActivity : AppCompatActivity() {
         navigationView=findViewById(R.id.nav_view)
 
         navController=findNavController(R.id.fragmentContainerView)
+
+        val backButton: ImageButton = findViewById(R.id.backButton)
+        if (navController.currentDestination?.id == R.id.id_home_fragment) {
+            backButton.visibility = View.GONE
+        } else {
+            backButton.visibility = View.VISIBLE
+        }
 
         val actionBarDrawerToggle = ActionBarDrawerToggle(
             this,
