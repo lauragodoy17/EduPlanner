@@ -79,6 +79,10 @@ dependencies {
     implementation("com.getbase:floatingactionbutton:1.10.1")
 
     implementation("com.google.android.material:material:1.11.0")
+    //ROOM
+    implementation("androidx.room:room-ktx:2.6.0")
+    kapt("androidx.room:room-compiler:2.6.0")
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
