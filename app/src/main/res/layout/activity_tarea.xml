@@ -6,5 +6,136 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.tarea.TareaActivity">
+    <include
+        android:id="@+id/myToolbar"
+        layout="@layout/mytoolbar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    <TextView
+        android:id="@+id/Agregar_Tarea"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Agregar Tarea"
+        android:layout_marginTop="15dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textColor="#4E6B56"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/myToolbar"
+        app:layout_constraintBottom_toTopOf="@id/TituloContainer"
+        />
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/TituloContainer"
+        style="@style/AppTheme.TextInputLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:hint="Titulo"
+        android:textColor="#000000"
+        android:textColorHint="#949494"
+        app:helperText=" "
 
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/Agregar_Tarea">
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/TituloEditText"
+        android:layout_width="325dp"
+        android:layout_height="match_parent"
+        android:background="@drawable/campos_stylos"
+        android:inputType="textEmailAddress"
+        android:textColor="#000000"
+        android:textColorHint="#949494"
+        />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/FechaContainer"
+        style="@style/AppTheme.TextInputLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="Fecha"
+        android:textColor="#000000"
+        android:textColorHint="#949494"
+        app:helperText=" "
+        app:layout_constraintBottom_toTopOf="@id/AsignaturaContainer"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/TituloContainer">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/FechaEditText"
+            android:layout_width="325dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/campos_stylos"
+            android:inputType="textEmailAddress"
+            android:textColor="#000000"
+            android:textColorHint="#949494"
+            />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/AsignaturaContainer"
+        style="@style/AppTheme.TextInputLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="Asignatura"
+        android:textColor="#000000"
+        android:textColorHint="#949494"
+        app:helperText=" "
+        app:layout_constraintBottom_toTopOf="@id/DescripcionContainer"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/FechaContainer">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/AsignaturaEditText"
+            android:layout_width="325dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/campos_stylos"
+            android:inputType="textEmailAddress"
+            android:textColor="#000000"
+            android:textColorHint="#949494"
+            />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/DescripcionContainer"
+        style="@style/AppTheme.TextInputLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="Descripcion"
+        android:textColor="#000000"
+        android:textColorHint="#949494"
+        app:helperText=" "
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/AsignaturaContainer">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/DescripcionEditText"
+            android:layout_width="325dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/campos_stylos"
+            android:inputType="textEmailAddress"
+            android:textColor="#000000"
+            android:textColorHint="#949494"
+            />
+    </com.google.android.material.textfield.TextInputLayout>
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/botonAgregarTarea"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/botonestylo"
+        android:text="Agregar Tarea"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/DescripcionContainer"
+        />
 </androidx.constraintlayout.widget.ConstraintLayout>
