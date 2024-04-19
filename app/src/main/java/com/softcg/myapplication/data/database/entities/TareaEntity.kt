@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "tareas_table")
 data class TareaEntity (
     @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name="id")val id: Int? =0,
+    @ColumnInfo(name="id")val id: Int? =null,
     @ColumnInfo(name="titulo")val titulo:String,
     @ColumnInfo(name = "descrip")val descrip:String,
     @ColumnInfo(name = "asignatura")val asignatura:String)

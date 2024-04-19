@@ -24,11 +24,14 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import androidx.room.Room
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.softcg.myapplication.PrincipalSplash
 import com.softcg.myapplication.R
+import com.softcg.myapplication.data.Repositories.TareasRepository
+import com.softcg.myapplication.data.database.TareasDatabase.TareasDatabase
 import com.softcg.myapplication.ui.login.MainActivity
 import com.softcg.myapplication.ui.register.viewmodelregister
 import com.softcg.myapplication.ui.tarea.TareaActivity

@@ -2,7 +2,9 @@ package com.softcg.myapplication.di
 
 import android.content.Context
 import androidx.room.Room
+import com.softcg.myapplication.data.Repositories.TareasRepository
 import com.softcg.myapplication.data.database.TareasDatabase.TareasDatabase
+import com.softcg.myapplication.data.database.dao.TareasDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -22,4 +24,8 @@ object RoomModule {
     @Singleton
     @Provides
     fun provideTareasDao(db:TareasDatabase)=db.getTareasDao()
+
+    @Singleton
+    @Provides
+    fun provideTareasRepository(dao:TareasDao):TareasRepository = TareasRepository(dao)
 }

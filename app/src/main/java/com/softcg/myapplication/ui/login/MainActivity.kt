@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
+import androidx.room.Room
 import com.softcg.myapplication.R
 import com.softcg.myapplication.core.dialog.DialogFragmentLauncher
 import com.softcg.myapplication.core.dialog.ErrorDialog
@@ -17,6 +18,8 @@ import com.softcg.myapplication.core.ex.dismissKeyboard
 import com.softcg.myapplication.core.ex.loseFocusAfterAction
 import com.softcg.myapplication.core.ex.onTextChanged
 import com.softcg.myapplication.core.ex.show
+import com.softcg.myapplication.data.Repositories.TareasRepository
+import com.softcg.myapplication.data.database.TareasDatabase.TareasDatabase
 import com.softcg.myapplication.databinding.ActivityMainBinding
 import com.softcg.myapplication.ui.home.HomeActivity
 import com.softcg.myapplication.ui.login.model.UserLogin
@@ -31,6 +34,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private val miViewModel : MiViewModel by viewModels()
+
 
     companion object{
         fun create(context: Context): Intent =

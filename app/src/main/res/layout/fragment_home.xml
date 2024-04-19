@@ -33,7 +33,7 @@
             android:gravity="center_vertical"
             android:paddingStart="20dp"
             android:paddingTop="20dp"
-            app:layout_constraintBottom_toTopOf="@id/textoclases"
+            app:layout_constraintBottom_toTopOf="@id/separadorA"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/textosemana">
@@ -95,17 +95,19 @@
             android:textSize="20sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/containerReporte" />
+            app:layout_constraintTop_toBottomOf="@id/separadorA" />
 
         <TextView
             android:id="@+id/textonoclases"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="No tienes Clases Pendientes."
+            android:text="No tienes Clases\n Pendientes."
+            android:textAlignment="center"
             android:textColor="#4E6B56"
-            android:textSize="24sp"
+            android:textSize="30sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.501"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/textoclases" />
 
@@ -119,15 +121,16 @@
             android:textSize="20sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textonoclases" />
+            app:layout_constraintTop_toBottomOf="@id/separadorB" />
 
         <TextView
             android:id="@+id/textonoeventos"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="No tienes Eventos Pendientes."
+            android:text="No tienes Eventos\nPendientes."
+            android:textAlignment="center"
             android:textColor="#4E6B56"
-            android:textSize="24sp"
+            android:textSize="30sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.493"
@@ -135,17 +138,19 @@
             app:layout_constraintTop_toBottomOf="@id/textoeventos" />
 
         <View
+            android:id="@+id/separadorA"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/gris"
-            android:layout_marginTop="5dp"
+            android:background="#B8B8B8"
+            android:layout_marginTop="15dp"
             app:layout_constraintBottom_toTopOf="@id/textoclases"
             app:layout_constraintTop_toBottomOf="@id/containerReporte"/>
         <View
+            android:id="@+id/separadorB"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/gris"
-            android:layout_marginTop="5dp"
+            android:background="#B8B8B8"
+            android:layout_marginTop="15dp"
             app:layout_constraintBottom_toTopOf="@id/textoeventos"
             app:layout_constraintTop_toBottomOf="@id/textonoclases"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
