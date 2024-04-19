@@ -18,7 +18,7 @@
             android:layout_marginTop="15dp"
             android:text="Tu semana"
             android:textColor="#4E6B56"
-            android:textSize="24sp"
+            android:textSize="20sp"
             app:layout_constraintBottom_toTopOf="@id/containerReporte"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -40,8 +40,8 @@
 
             <ImageView
                 android:id="@+id/circleImageView"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:layout_gravity="start|top"
                 android:foreground="@drawable/estadistica"
                 android:scaleType="fitXY"
@@ -53,8 +53,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
-                android:layout_marginTop="5dp"
                 android:text="Reporte Semanal"
+                android:textStyle="bold"
                 android:textColor="#949494"
                 android:textSize="20sp"
                 app:layout_constraintStart_toEndOf="@id/circleImageView"
@@ -77,7 +77,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:layout_marginEnd="26dp"
-                android:text="Mostrar más"
+                android:text="Mostrar más."
                 android:textColor="#4E6B56"
                 android:textSize="18sp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -91,8 +91,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:text="Clases"
-            android:textColor="#4E6B56"
-            android:textSize="24sp"
+            android:textColor="#949494"
+            android:textSize="20sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/containerReporte" />
@@ -101,9 +101,8 @@
             android:id="@+id/textonoclases"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
             android:text="No tienes Clases Pendientes."
-            android:textColor="#949494"
+            android:textColor="#4E6B56"
             android:textSize="24sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
@@ -116,8 +115,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:text="Eventos"
-            android:textColor="#4E6B56"
-            android:textSize="24sp"
+            android:textColor="#949494"
+            android:textSize="20sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/textonoclases" />
@@ -126,13 +125,28 @@
             android:id="@+id/textonoeventos"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
             android:text="No tienes Eventos Pendientes."
-            android:textColor="#949494"
+            android:textColor="#4E6B56"
             android:textSize="24sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.493"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/textoeventos" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gris"
+            android:layout_marginTop="5dp"
+            app:layout_constraintBottom_toTopOf="@id/textoclases"
+            app:layout_constraintTop_toBottomOf="@id/containerReporte"/>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gris"
+            android:layout_marginTop="5dp"
+            app:layout_constraintBottom_toTopOf="@id/textoeventos"
+            app:layout_constraintTop_toBottomOf="@id/textonoclases"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>
