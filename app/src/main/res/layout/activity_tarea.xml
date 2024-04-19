@@ -66,13 +66,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/TituloContainer">
 
-        <com.google.android.material.textfield.TextInputEditText
+        <EditText
             android:id="@+id/FechaEditText"
             android:layout_width="325dp"
             android:layout_height="match_parent"
             android:background="@drawable/campos_stylos"
-            android:inputType="textEmailAddress"
+            android:inputType="date"
             android:textColor="#000000"
+            android:onClick="onClickScheduledDate"
+            android:clickable="true"
+            android:focusable="false"
+            android:maxLines="1"
             android:textColorHint="#949494"
             />
     </com.google.android.material.textfield.TextInputLayout>

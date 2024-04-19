@@ -6,6 +6,9 @@
         <item name="android:textColor">#ffffff</item>
     </style>
 
+    <style name="CustomDatePickerDialogTheme" parent="ThemeOverlay.MaterialComponents.MaterialCalendar">
+        <item name="colorAccent">@color/verdes</item>
+    </style>
 
 
 </resources>
