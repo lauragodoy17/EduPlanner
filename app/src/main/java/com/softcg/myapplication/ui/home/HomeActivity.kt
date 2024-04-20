@@ -5,13 +5,10 @@ import android.animation.AnimatorListenerAdapter
 import android.content.Context
 import android.content.Intent
 import androidx.appcompat.widget.Toolbar
-
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import android.widget.ImageButton
-import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
@@ -24,16 +21,11 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import androidx.room.Room
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
-import com.softcg.myapplication.PrincipalSplash
 import com.softcg.myapplication.R
-import com.softcg.myapplication.data.Repositories.TareasRepository
-import com.softcg.myapplication.data.database.TareasDatabase.TareasDatabase
 import com.softcg.myapplication.ui.login.MainActivity
-import com.softcg.myapplication.ui.register.viewmodelregister
 import com.softcg.myapplication.ui.tarea.TareaActivity
 import dagger.hilt.android.AndroidEntryPoint
 

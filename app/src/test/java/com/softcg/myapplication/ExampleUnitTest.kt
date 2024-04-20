@@ -1,7 +1,7 @@
 package com.softcg.myapplication
 
 import org.junit.Test
-
+import com.softcg.myapplication.data.response.LoginResult
 import org.junit.Assert.*
 
 /**
@@ -14,4 +14,5 @@ class ExampleUnitTest {
     fun addition_isCorrect() {
         assertEquals(4, 2 + 2)
     }
+
 }

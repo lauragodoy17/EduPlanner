@@ -57,6 +57,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
     //DaggerHilt
     implementation("com.google.dagger:hilt-android:2.50")
+    implementation("junit:junit:4.12")
     kapt("com.google.dagger:hilt-android-compiler:2.50")
     //API SPLASH SCREEN
     implementation("androidx.core:core-splashscreen:1.0.0")
@@ -82,6 +83,12 @@ dependencies {
     //ROOM
     implementation("androidx.room:room-ktx:2.6.0")
     kapt("androidx.room:room-compiler:2.6.0")
+    //mockito
+    testImplementation ("junit:junit:4.+")
+    testImplementation ("androidx.test:core-ktx:1.5.0")
+    testImplementation ("org.mockito:mockito-core:5.11.0")
+    testImplementation ("org.mockito.kotlin:mockito-kotlin:5.3.1")
+    testImplementation ("io.mockk:mockk:1.13.10")
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
