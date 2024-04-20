@@ -11,6 +11,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.room.Room
+import com.softcg.myapplication.PrincipalSplash
 import com.softcg.myapplication.R
 import com.softcg.myapplication.core.dialog.DialogFragmentLauncher
 import com.softcg.myapplication.core.dialog.ErrorDialog
@@ -153,7 +154,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun goToHome(){
-        val intents=Intent(this, HomeActivity::class.java)
+        val intents=Intent(this,PrincipalSplash::class.java)
         intents.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
         startActivity(intents)
         finish()
