@@ -10,6 +10,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
+import androidx.room.Room
+import com.softcg.myapplication.PrincipalSplash
 import com.softcg.myapplication.R
 import com.softcg.myapplication.core.dialog.DialogFragmentLauncher
 import com.softcg.myapplication.core.dialog.ErrorDialog
@@ -17,11 +19,15 @@ import com.softcg.myapplication.core.ex.dismissKeyboard
 import com.softcg.myapplication.core.ex.loseFocusAfterAction
 import com.softcg.myapplication.core.ex.onTextChanged
 import com.softcg.myapplication.core.ex.show
+import com.softcg.myapplication.data.Repositories.TareasRepository
+import com.softcg.myapplication.data.database.TareasDatabase.TareasDatabase
 import com.softcg.myapplication.databinding.ActivityMainBinding
 import com.softcg.myapplication.ui.home.HomeActivity
 import com.softcg.myapplication.ui.login.model.UserLogin
 import com.softcg.myapplication.ui.register.RegisterActivity
+
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -148,7 +154,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun goToHome(){
-        val intents=Intent(this, HomeActivity::class.java)
+        val intents=Intent(this,PrincipalSplash::class.java)
         intents.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
         startActivity(intents)
         finish()
