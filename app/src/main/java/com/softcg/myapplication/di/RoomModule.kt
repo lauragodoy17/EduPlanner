@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.softcg.myapplication.data.Repositories.TareasRepository
 import com.softcg.myapplication.data.database.TareasDatabase.TareasDatabase
+import com.softcg.myapplication.data.database.dao.EventosDao
 import com.softcg.myapplication.data.database.dao.TareasDao
 import dagger.Module
 import dagger.Provides
@@ -28,4 +29,8 @@ object RoomModule {
     @Singleton
     @Provides
     fun provideTareasRepository(dao:TareasDao):TareasRepository = TareasRepository(dao)
+
+    @Singleton
+    @Provides
+    fun provideEventosDao(db:TareasDatabase)=db.getEventosDao()
 }
