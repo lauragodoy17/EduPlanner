@@ -3,14 +3,30 @@ package com.softcg.myapplication.ui.home
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.softcg.myapplication.core.Event
+import com.softcg.myapplication.data.Repositories.TareasRepository
+import com.softcg.myapplication.data.database.TareasDatabase.TareasDatabase
+import com.softcg.myapplication.data.database.dao.TareasDao
+import com.softcg.myapplication.domain.getTareasUseCase
+import com.softcg.myapplication.ui.tarea.model.Tarea
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
-class ViewModelHome @Inject constructor() : ViewModel(){
+class ViewModelHome @Inject constructor(private val getTareasUseCase: getTareasUseCase) : ViewModel(){
 
-    private val _navigateToTarea= MutableLiveData<Event<Boolean>>()
+    fun obtenerTareas (tareas:MutableLiveData<List<Tarea>>): MutableLiveData<List<Tarea>> {
+        viewModelScope.launch {
+            tareas.value = getTareasUseCase()
+        }
+        return tareas
+    }
+
+    private val _navigateToTarea = MutableLiveData<Event<Boolean>>()
     val navigateToTarea: LiveData<Event<Boolean>>
         get() = _navigateToTarea
 

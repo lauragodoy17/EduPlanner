@@ -6,6 +6,7 @@ plugins {
 }
 buildscript {
     dependencies {
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.10")
         classpath ("com.google.dagger:hilt-android-gradle-plugin:2.50")
     }
 }

@@ -2,9 +2,10 @@ package com.softcg.myapplication.data.database.entities
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.Index
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "tareas_table")
+@Entity(tableName = "tareas_table", indices = [Index(value = ["id"], unique = true)])
 data class TareaEntity (
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name="id")val id: Int? =null,

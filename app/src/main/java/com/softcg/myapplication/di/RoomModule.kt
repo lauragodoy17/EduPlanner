@@ -3,8 +3,10 @@ package com.softcg.myapplication.di
 import android.content.Context
 import androidx.room.Room
 import com.softcg.myapplication.data.Repositories.TareasRepository
+import com.softcg.myapplication.data.Repositories.pruebaRepository
 import com.softcg.myapplication.data.database.TareasDatabase.TareasDatabase
 import com.softcg.myapplication.data.database.dao.EventosDao
+import com.softcg.myapplication.data.database.dao.PruebaDao
 import com.softcg.myapplication.data.database.dao.TareasDao
 import dagger.Module
 import dagger.Provides
@@ -20,7 +22,7 @@ object RoomModule {
     @Singleton
     @Provides
     fun provideRoom(@ApplicationContext context: Context)=
-        Room.databaseBuilder(context, TareasDatabase::class.java, TAREAS_DATABASE_NAME).build()
+        Room.databaseBuilder(context, TareasDatabase::class.java, TAREAS_DATABASE_NAME).fallbackToDestructiveMigration().allowMainThreadQueries().build()
 
     @Singleton
     @Provides
@@ -29,6 +31,15 @@ object RoomModule {
     @Singleton
     @Provides
     fun provideTareasRepository(dao:TareasDao):TareasRepository = TareasRepository(dao)
+
+
+    @Singleton
+    @Provides
+    fun providePruebaDao(db:TareasDatabase)=db.getPruebaDao()
+
+    @Singleton
+    @Provides
+    fun providePruebaRepository(dao: PruebaDao):pruebaRepository = pruebaRepository(dao)
 
     @Singleton
     @Provides

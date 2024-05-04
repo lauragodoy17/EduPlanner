@@ -25,9 +25,11 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.softcg.myapplication.R
+import com.softcg.myapplication.data.Repositories.TareasRepository
 import com.softcg.myapplication.ui.login.MainActivity
 import com.softcg.myapplication.ui.tarea.TareaActivity
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class HomeActivity : AppCompatActivity() {
@@ -42,6 +44,8 @@ class HomeActivity : AppCompatActivity() {
     private lateinit var addevento:View
     private lateinit var addcalificacion:View
     private var rotate=false
+    @Inject
+    lateinit var tareasRepository: TareasRepository
 
 
     companion object {
@@ -162,7 +166,6 @@ class HomeActivity : AppCompatActivity() {
                 goToCalificacion()
             }
         }
-
     }
 
     private fun initShowOut(v: View){

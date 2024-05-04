@@ -31,9 +31,6 @@ import javax.inject.Inject
 class TareaActivity : AppCompatActivity() {
 
     private val tareaViewModel:TareaViewModel by viewModels()
-
-    @Inject lateinit var database: TareasDatabase
-    @Inject lateinit var dao: TareasDao
     @Inject lateinit var repository: TareasRepository
 
     companion object {

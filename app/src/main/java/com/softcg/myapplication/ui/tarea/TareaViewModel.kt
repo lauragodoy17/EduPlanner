@@ -7,6 +7,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.softcg.myapplication.core.Event
 import com.softcg.myapplication.data.Repositories.TareasRepository
+import com.softcg.myapplication.data.database.TareasDatabase.TareasDatabase
+import com.softcg.myapplication.data.database.dao.TareasDao
 import com.softcg.myapplication.ui.tarea.model.Tarea
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
