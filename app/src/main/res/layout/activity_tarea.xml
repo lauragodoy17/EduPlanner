@@ -61,9 +61,8 @@
         android:hint="Fecha"
         android:textColor="#000000"
         android:textColorHint="#949494"
-
         app:helperText=" "
-        app:layout_constraintBottom_toTopOf="@id/AsignaturaContainer"
+        app:layout_constraintBottom_toTopOf="@id/auto_complete"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/TituloContainer"
@@ -73,7 +72,7 @@
             android:id="@+id/FechaEditText"
             android:layout_width="325dp"
             android:layout_height="match_parent"
-            android:background="@drawable/campos_stylos"
+            android:background="@drawable/border"
             android:inputType="date"
             android:textColor="#000000"
             android:onClick="onClickScheduledDate"
@@ -81,34 +80,37 @@
             android:focusable="false"
             android:maxLines="1"
             android:textColorHint="#949494"
+            android:drawableEnd="@drawable/baseline_calendar_month_24"
 
             />
     </com.google.android.material.textfield.TextInputLayout>
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/AsignaturaContainer"
-        style="@style/AppTheme.TextInputLayout"
+    <LinearLayout
+        android:id="@+id/auto_complete"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:hint="Asignatura"
-        android:textColor="#000000"
-        android:textColorHint="#949494"
-        app:helperText=" "
+        android:orientation="vertical"
         app:layout_constraintBottom_toTopOf="@id/DescripcionContainer"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/FechaContainer">
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/AsignaturaEditText"
+                android:hint="Asignatura"
+                android:layout_width="325dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/campos_stylos"
+                android:inputType="none"
+                />
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/AsignaturaEditText"
-            android:layout_width="325dp"
-            android:layout_height="match_parent"
-            android:background="@drawable/campos_stylos"
-            android:inputType="text"
-            android:textColor="#000000"
-            android:textColorHint="#949494"
-            />
-    </com.google.android.material.textfield.TextInputLayout>
+
+    </LinearLayout>
+
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/DescripcionContainer"
@@ -121,7 +123,7 @@
         app:helperText=" "
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/AsignaturaContainer">
+        app:layout_constraintTop_toBottomOf="@id/auto_complete">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/DescripcionEditText"
