@@ -126,6 +126,7 @@
                 android:layout_height="wrap_content"
                 android:text="No tienes Tareas\n Pendientes."
                 android:textAlignment="center"
+                android:layout_marginBottom="15dp"
                 android:textColor="#4E6B56"
                 android:textSize="30sp"
                 android:textStyle="bold"
@@ -191,7 +192,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="#B8B8B8"
-                android:layout_marginTop="15dp"
                 app:layout_constraintBottom_toTopOf="@id/textoeventos"
                 app:layout_constraintTop_toBottomOf="@id/textonoclases"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
