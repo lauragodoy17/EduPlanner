@@ -34,7 +34,7 @@
                     android:layout_width="23dp"
                     android:layout_height="23dp"
                     android:layout_gravity="start|top"
-                    android:foreground="@drawable/baseline_agenda_add_24"
+                    android:foreground="@drawable/baseline_calendar_month_24"
                     android:foregroundTint="@color/white"
                     android:scaleType="fitXY"
                     app:layout_constraintStart_toStartOf="parent"
