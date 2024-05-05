@@ -21,18 +21,18 @@ class EventoViewModel @Inject constructor( ) : ViewModel() {
     val navigateToHome: LiveData<Event<Boolean>>
         get()=_navigateToHome
 
-    fun onAgregarEventoSelected(titulo:String,descrip:String,asignatura:String){
-        val evento: Evento = Evento(null,titulo, descrip, asignatura)
-       // saveTarea(tarea)
+    fun onAgregarEventoSelected(titulo:String,descrip:String, fecha:String,){
+        val evento: Evento = Evento(null,titulo, descrip,fecha)
+        saveEvento(evento)
     }
 
     fun onBackSelected(){
         _navigateToHome.value= Event(true)
     }
 
-    fun saveTarea(tarea: Tarea){
+    fun saveEvento(evento: Evento){
         viewModelScope.launch {
-         //   tareasRepository.insertTarea(tarea)
+            eventosRepository.insertEvento(evento)
         }
     }
 }

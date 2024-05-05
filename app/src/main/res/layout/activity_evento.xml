@@ -42,7 +42,7 @@
         app:layout_constraintTop_toBottomOf="@id/Agregar_Evento">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/TituloEditText"
+            android:id="@+id/TituloEditTextevent"
             android:layout_width="325dp"
             android:layout_height="match_parent"
             android:background="@drawable/campos_stylos"
@@ -67,7 +67,7 @@
         app:layout_constraintTop_toBottomOf="@id/TituloContainer">
 
         <EditText
-            android:id="@+id/FechaEditText"
+            android:id="@+id/FechaEditTextevent"
             android:layout_width="325dp"
             android:layout_height="match_parent"
             android:background="@drawable/campos_stylos"
@@ -95,7 +95,7 @@
         app:layout_constraintTop_toBottomOf="@id/FechaContainer">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/DescripcionEditText"
+            android:id="@+id/DescripcionEditTextevent"
             android:layout_width="325dp"
             android:layout_height="match_parent"
             android:background="@drawable/campos_stylos"

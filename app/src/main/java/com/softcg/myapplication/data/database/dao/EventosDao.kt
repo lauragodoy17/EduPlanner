@@ -11,7 +11,7 @@ import com.softcg.myapplication.data.database.entities.TareaEntity
 interface EventosDao {
 
     @Query("SELECT * FROM eventos_table")
-    suspend fun getAllEventos():List<EventoEntity>
+    fun getAllEventos():List<EventoEntity>
 
     @Insert(onConflict= OnConflictStrategy.REPLACE)
     suspend fun insertEvento(evento: EventoEntity)

@@ -8,7 +8,7 @@ import com.softcg.myapplication.data.database.dao.TareasDao
 import com.softcg.myapplication.data.database.entities.EventoEntity
 import com.softcg.myapplication.data.database.entities.TareaEntity
 
-@Database(entities = [TareaEntity::class, EventoEntity::class], version = 3, exportSchema = false)
+@Database(entities = [TareaEntity::class, EventoEntity::class], version = 5, exportSchema = false)
 abstract class TareasDatabase :RoomDatabase(){
 
     abstract fun getTareasDao():TareasDao

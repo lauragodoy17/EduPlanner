@@ -17,6 +17,7 @@ class TareasAdapter : RecyclerView.Adapter<TareasAdapter.MyViewHolder>() {
     class MyViewHolder(itemView: View):RecyclerView.ViewHolder(itemView){
         val textTitulo : TextView = itemView.findViewById(R.id.text_titulo)
         val textDesc : TextView = itemView.findViewById(R.id.textodesc)
+        val textasignatura:TextView=itemView.findViewById(R.id.texto_asignatura)
         val textFecha : TextView = itemView.findViewById(R.id.textofecha)
     }
 
@@ -32,7 +33,8 @@ class TareasAdapter : RecyclerView.Adapter<TareasAdapter.MyViewHolder>() {
         val currentItem=tareaslist[position]
         holder.textTitulo.text=currentItem.titulo
         holder.textDesc.text=currentItem.descrip
-        holder.textFecha.text=currentItem.asignatura
+        holder.textasignatura.text=currentItem.asignatura
+        holder.textFecha.text=currentItem.fecha
     }
     fun setData(tarea: List<Tarea>){
         this.tareaslist=tarea

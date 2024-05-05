@@ -11,12 +11,12 @@ class TareasRepository @Inject constructor(private val tareasDao: TareasDao){
     fun getTareas():List<Tarea>{
         val entities=tareasDao.getAllTareas()
         return  entities.map {
-            Tarea(titulo = it.titulo, descrip = it.descrip, asignatura = it.asignatura)
+            Tarea(id = it.id,titulo = it.titulo, descrip = it.descrip, asignatura = it.asignatura, fecha = it.fecha)
         }
     }
 
     suspend fun insertTarea(tarea: Tarea){
-        val entity = TareaEntity(titulo = tarea.titulo, descrip = tarea.descrip, asignatura = tarea.asignatura)
+        val entity = TareaEntity(titulo = tarea.titulo, descrip = tarea.descrip, asignatura = tarea.asignatura, fecha = tarea.fecha)
         tareasDao.insertTarea(entity)
     }
 }

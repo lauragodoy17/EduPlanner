@@ -57,15 +57,18 @@ class TareaActivity : AppCompatActivity() {
         findViewById<EditText>(R.id.TituloEditText).loseFocusAfterAction(EditorInfo.IME_ACTION_NEXT)
         findViewById<EditText>(R.id.AsignaturaEditText).loseFocusAfterAction(EditorInfo.IME_ACTION_NEXT)
         findViewById<EditText>(R.id.DescripcionEditText).loseFocusAfterAction(EditorInfo.IME_ACTION_NEXT)
+        findViewById<EditText>(R.id.FechaEditText).loseFocusAfterAction(EditorInfo.IME_ACTION_NEXT)
 
         findViewById<Button>(R.id.botonAgregarTarea).setOnClickListener {
             it.dismissKeyboard()
             tareaViewModel.onAgregarTareaSelected(
                 findViewById<EditText>(R.id.TituloEditText).text.toString(),
                 findViewById<EditText>(R.id.DescripcionEditText).text.toString(),
-                findViewById<EditText>(R.id.AsignaturaEditText).text.toString()
+                findViewById<EditText>(R.id.AsignaturaEditText).text.toString(),
+                findViewById<EditText>(R.id.FechaEditText).text.toString()
             )
             Toast.makeText(this,"Tarea agregada", Toast.LENGTH_SHORT).show()
+            goToHome()
         }
 
         findViewById<ImageButton>(R.id.backButton).setOnClickListener{

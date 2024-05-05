@@ -26,6 +26,7 @@ import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.softcg.myapplication.R
 import com.softcg.myapplication.data.Repositories.TareasRepository
+import com.softcg.myapplication.ui.evento.EventoActivity
 import com.softcg.myapplication.ui.login.MainActivity
 import com.softcg.myapplication.ui.tarea.TareaActivity
 import dagger.hilt.android.AndroidEntryPoint
@@ -232,7 +233,7 @@ class HomeActivity : AppCompatActivity() {
         startActivity(TareaActivity.create(this))
     }
     private fun goToEvento(){
-        startActivity(TareaActivity.create(this))
+        startActivity(EventoActivity.create(this))
     }
     private fun goToCalificacion(){
         startActivity(TareaActivity.create(this))

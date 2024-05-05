@@ -24,8 +24,8 @@ class TareaViewModel @Inject constructor() :ViewModel() {
     val navigateToHome:LiveData<Event<Boolean>>
         get()=_navigateToHome
 
-    fun onAgregarTareaSelected(titulo:String,descrip:String,asignatura:String){
-        val tarea:Tarea = Tarea(titulo, descrip, asignatura)
+    fun onAgregarTareaSelected(titulo:String,descrip:String,asignatura:String,fecha:String){
+        val tarea:Tarea = Tarea(null,titulo, descrip, asignatura,fecha)
         saveTarea(tarea)
     }
 
