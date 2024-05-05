@@ -50,9 +50,8 @@
                 android:focusable="true"
                 android:src="@drawable/baseline_agenda_add_24"
                 app:backgroundTint="@color/weakverde"
-                app:tint="@color/black"
                 app:elevation="0dp"
-                />
+                app:tint="@color/black" />
 
         </LinearLayout>
 

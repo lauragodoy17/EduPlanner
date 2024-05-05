@@ -1,10 +1,119 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
+    android:id="@+id/mainT"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.evento.EventoActivity">
+    >
+    <include
+        android:id="@+id/myToolbar"
+        layout="@layout/mytoolbar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
+    <TextView
+        android:id="@+id/Agregar_Evento"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Agregar Evento"
+        android:layout_marginTop="15dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textColor="#4E6B56"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/myToolbar"
+        app:layout_constraintBottom_toTopOf="@id/TituloContainer"
+        />
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/TituloContainer"
+        style="@style/AppTheme.TextInputLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:hint="Titulo"
+        android:textColor="#000000"
+        android:textColorHint="#949494"
+        app:helperText=" "
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/Agregar_Evento">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/TituloEditText"
+            android:layout_width="325dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/campos_stylos"
+            android:inputType="text"
+            android:textColor="#000000"
+            android:textColorHint="#949494"
+            />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/FechaContainer"
+        style="@style/AppTheme.TextInputLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="Fecha"
+        android:textColor="#000000"
+        android:textColorHint="#949494"
+        app:helperText=" "
+        app:layout_constraintBottom_toTopOf="@id/DescripcionContainer"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/TituloContainer">
+
+        <EditText
+            android:id="@+id/FechaEditText"
+            android:layout_width="325dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/campos_stylos"
+            android:inputType="date"
+            android:textColor="#000000"
+            android:onClick="onClickScheduledDate"
+            android:clickable="true"
+            android:focusable="false"
+            android:maxLines="1"
+            android:textColorHint="#949494"
+            />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/DescripcionContainer"
+        style="@style/AppTheme.TextInputLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="Descripcion"
+        android:textColor="#000000"
+        android:textColorHint="#949494"
+        app:helperText=" "
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/FechaContainer">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/DescripcionEditText"
+            android:layout_width="325dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/campos_stylos"
+            android:inputType="text"
+            android:textColor="#000000"
+            android:textColorHint="#949494"
+            />
+    </com.google.android.material.textfield.TextInputLayout>
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/botonAgregarEvento"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/botonestylo"
+        android:text="Agregar Evento"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/DescripcionContainer"
+        />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -59,25 +59,67 @@
                 android:id="@+id/textodesc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:layout_marginTop="5dp"
+                android:layout_marginStart="35dp"
                 android:text="Texto"
                 android:textColor="#000000"
                 android:textSize="18sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/text_titulo" />
 
-            <TextView
-                android:id="@+id/textofecha"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/Contenedor_fecha"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="26dp"
-                android:text="texto fecha"
-                android:textColor="#4E6B56"
-                android:textSize="18sp"
+                android:layout_marginStart="20dp"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/textodesc"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent" />
+                app:layout_constraintBottom_toBottomOf="parent">
+
+                <ImageView
+                    android:id="@+id/icono"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="13dp"
+                    android:src="@drawable/baseline_calendar_month_24"
+                    app:tint="#949494"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent" />
+
+                <TextView
+                    android:id="@+id/textofecha"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="texto fecha"
+                    android:textColor="#949494"
+                    android:textSize="18sp"
+                    android:layout_marginStart="3dp"
+                    app:layout_constraintStart_toEndOf="@id/icono"
+                    app:layout_constraintTop_toTopOf="@id/icono"
+                    app:layout_constraintBottom_toBottomOf="@id/icono"
+                    />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+            <TextView
+                android:id="@+id/texto_asignatura"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="texto asignatura"
+                android:layout_marginStart="35dp"
+                android:textColor="#949494"
+                android:textSize="18sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/Contenedor_fecha"
+                app:layout_constraintBottom_toBottomOf="parent"
+                />
+            <ImageView
+                android:id="@+id/Opciones"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/baseline_trespuntos_vert_24"
+                android:padding="8dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
