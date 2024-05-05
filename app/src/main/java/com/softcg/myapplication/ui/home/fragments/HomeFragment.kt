@@ -25,7 +25,9 @@ import com.softcg.myapplication.data.Repositories.TareasRepository
 import com.softcg.myapplication.data.database.TareasDatabase.TareasDatabase
 import com.softcg.myapplication.data.database.dao.TareasDao
 import com.softcg.myapplication.databinding.FragmentHomeBinding
+import com.softcg.myapplication.ui.evento.model.Evento
 import com.softcg.myapplication.ui.home.ViewModelHome
+import com.softcg.myapplication.ui.home.adapters.EventosAdapter
 import com.softcg.myapplication.ui.home.adapters.TareasAdapter
 import com.softcg.myapplication.ui.tarea.model.Tarea
 import dagger.hilt.android.AndroidEntryPoint
@@ -45,24 +47,40 @@ class HomeFragment : Fragment() {
     ):
             View? {
         val view = inflater.inflate(layout.fragment_home, container, false)
+        initRecyclerTareas(view)
+        initRecyclerEventos(view)
+        return view
+    }
 
-        //Recycler
+    fun initRecyclerTareas(view: View){
         viewModelHome.obtenerTareas()
 
         val adapter = TareasAdapter()
         val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerclases)
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        //
+
         viewModelHome.tareas.observe(viewLifecycleOwner, Observer { Tarea ->
             adapter.setData(Tarea)
             if (Tarea.isNotEmpty()) {
                 view.findViewById<TextView>(R.id.textonoclases).visibility = View.GONE
             }
         })
+    }
+    fun initRecyclerEventos(view: View){
+        viewModelHome.obtenerEventos()
 
+        val adapter = EventosAdapter()
+        val recyclerView = view.findViewById<RecyclerView>(R.id.recyclereventos)
+        recyclerView.adapter = adapter
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
-        return view
+        viewModelHome.eventos.observe(viewLifecycleOwner, Observer { Evento ->
+            adapter.setData(Evento)
+            if (Evento.isNotEmpty()) {
+                view.findViewById<TextView>(R.id.textonoeventos).visibility = View.GONE
+            }
+        })
     }
 
 

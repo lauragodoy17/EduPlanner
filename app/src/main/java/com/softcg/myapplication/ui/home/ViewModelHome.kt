@@ -8,7 +8,9 @@ import com.softcg.myapplication.core.Event
 import com.softcg.myapplication.data.Repositories.TareasRepository
 import com.softcg.myapplication.data.database.TareasDatabase.TareasDatabase
 import com.softcg.myapplication.data.database.dao.TareasDao
+import com.softcg.myapplication.domain.getEventosUseCase
 import com.softcg.myapplication.domain.getTareasUseCase
+import com.softcg.myapplication.ui.evento.model.Evento
 import com.softcg.myapplication.ui.tarea.model.Tarea
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -17,11 +19,24 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
-class ViewModelHome @Inject constructor(private val getTareasUseCase: getTareasUseCase) : ViewModel(){
+class ViewModelHome @Inject constructor(
+    private val getTareasUseCase: getTareasUseCase,
+    private val getEventosUseCase: getEventosUseCase
+    ) : ViewModel(){
 
     private val _tareas= MutableLiveData<List<Tarea>>()
     val tareas:LiveData<List<Tarea>>
         get() = _tareas
+
+    private val _eventos= MutableLiveData<List<Evento>>()
+    val eventos:LiveData<List<Evento>>
+        get() = _eventos
+
+    fun obtenerEventos (){
+        viewModelScope.launch {
+            _eventos.value = getEventosUseCase()
+        }
+    }
 
     fun obtenerTareas (){
         viewModelScope.launch {
