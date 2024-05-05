@@ -14,10 +14,10 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/Agregar_Tarea"
+        android:id="@+id/Agregar_Calificacion"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Agregar Tarea"
+        android:text="Agregar Calificación"
         android:layout_marginTop="15dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         android:textColor="#4E6B56"
@@ -29,21 +29,21 @@
         app:layout_constraintBottom_toTopOf="@id/TituloContainer"
         />
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/TituloContainer"
+        android:id="@+id/Tipo_Calificacion"
         style="@style/AppTheme.TextInputLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
-        android:hint="Titulo"
+        android:hint="Tipo de Calificación"
         android:textColor="#000000"
         android:textColorHint="#949494"
         app:helperText=" "
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/Agregar_Tarea">
+        app:layout_constraintTop_toBottomOf="@id/Agregar_Calificacion">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/TituloEditText"
+            android:id="@+id/Tipo_Calificacion_EditText"
             android:layout_width="325dp"
             android:layout_height="match_parent"
             android:background="@drawable/campos_stylos"
@@ -53,35 +53,27 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/FechaContainer"
+        android:id="@+id/Calificacion"
         style="@style/AppTheme.TextInputLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:hint="Fecha"
+        android:layout_marginTop="15dp"
+        android:hint="Calificación"
         android:textColor="#000000"
         android:textColorHint="#949494"
         app:helperText=" "
-        app:layout_constraintBottom_toTopOf="@id/auto_complete"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/TituloContainer"
-        >
+        app:layout_constraintTop_toBottomOf="@id/Tipo_Calificacion">
 
-        <EditText
-            android:id="@+id/FechaEditText"
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/CalificacionEditText"
             android:layout_width="325dp"
             android:layout_height="match_parent"
-            android:background="@drawable/border"
-            android:inputType="date"
+            android:background="@drawable/campos_stylos"
+            android:inputType="text"
             android:textColor="#000000"
-            android:onClick="onClickScheduledDate"
-            android:clickable="true"
-            android:focusable="false"
-            android:maxLines="1"
-            android:textColorHint="#949494"
-            android:drawableEnd="@drawable/baseline_calendar_month_24"
-
-            />
+            android:textColorHint="#949494" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <LinearLayout
@@ -92,7 +84,7 @@
         app:layout_constraintBottom_toTopOf="@id/DescripcionContainer"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/FechaContainer">
+        app:layout_constraintTop_toBottomOf="@id/Calificacion">
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             style="@style/AppTheme.TextInputLayout"
@@ -108,8 +100,6 @@
                 />
         </com.google.android.material.textfield.TextInputLayout>
     </LinearLayout>
-
-
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/DescripcionContainer"
         style="@style/AppTheme.TextInputLayout"
@@ -145,12 +135,12 @@
             android:layout_marginBottom="8dp"/>
     </com.google.android.material.textfield.TextInputLayout>
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/botonAgregarTarea"
+        android:id="@+id/botonAgregarCalificacion"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
         android:background="@drawable/botonestylo"
-        android:text="Agregar Tarea"
+        android:text="Agregar Calificación"
         android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
