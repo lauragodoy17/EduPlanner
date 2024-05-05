@@ -19,11 +19,14 @@ import javax.inject.Inject
 @HiltViewModel
 class ViewModelHome @Inject constructor(private val getTareasUseCase: getTareasUseCase) : ViewModel(){
 
-    fun obtenerTareas (tareas:MutableLiveData<List<Tarea>>): MutableLiveData<List<Tarea>> {
+    private val _tareas= MutableLiveData<List<Tarea>>()
+    val tareas:LiveData<List<Tarea>>
+        get() = _tareas
+
+    fun obtenerTareas (){
         viewModelScope.launch {
-            tareas.value = getTareasUseCase()
+            _tareas.value = getTareasUseCase()
         }
-        return tareas
     }
 
     private val _navigateToTarea = MutableLiveData<Event<Boolean>>()

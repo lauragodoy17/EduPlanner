@@ -2,6 +2,7 @@ package com.softcg.myapplication.di
 
 import android.content.Context
 import androidx.room.Room
+import com.softcg.myapplication.data.Repositories.EventosRepository
 import com.softcg.myapplication.data.Repositories.TareasRepository
 import com.softcg.myapplication.data.Repositories.pruebaRepository
 import com.softcg.myapplication.data.database.TareasDatabase.TareasDatabase
@@ -44,4 +45,8 @@ object RoomModule {
     @Singleton
     @Provides
     fun provideEventosDao(db:TareasDatabase)=db.getEventosDao()
+
+    @Singleton
+    @Provides
+    fun provideEventosRepository(dao: EventosDao):EventosRepository = EventosRepository(dao)
 }

@@ -31,7 +31,6 @@ import javax.inject.Inject
 class TareaActivity : AppCompatActivity() {
 
     private val tareaViewModel:TareaViewModel by viewModels()
-    @Inject lateinit var repository: TareasRepository
 
     companion object {
         fun create(context: Context): Intent =

@@ -44,8 +44,6 @@ class HomeActivity : AppCompatActivity() {
     private lateinit var addevento:View
     private lateinit var addcalificacion:View
     private var rotate=false
-    @Inject
-    lateinit var tareasRepository: TareasRepository
 
 
     companion object {

@@ -16,24 +16,32 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/containerReporte"
             android:layout_width="match_parent"
-            android:layout_height="150dp"
-
+            android:layout_height="wrap_content"
             android:background="@drawable/boton_redondo"
             android:gravity="center_vertical"
             android:paddingStart="20dp"
             android:paddingTop="20dp">
 
-            <ImageView
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/circleImageView"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:layout_gravity="start|top"
-                android:foreground="@drawable/baseline_agenda_add_24"
-                android:foregroundTint="@color/white"
-                android:scaleType="fitXY"
-                android:src="@drawable/circle"
+                android:background="@drawable/circle"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent" >
+                <ImageView
+                    android:id="@+id/circleImage"
+                    android:layout_width="23dp"
+                    android:layout_height="23dp"
+                    android:layout_gravity="start|top"
+                    android:foreground="@drawable/baseline_agenda_add_24"
+                    android:foregroundTint="@color/white"
+                    android:scaleType="fitXY"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"/>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <TextView
                 android:id="@+id/text_titulo"
@@ -56,20 +64,20 @@
                 android:text="Texto"
                 android:textColor="#000000"
                 android:textSize="18sp"
-                app:layout_constraintStart_toStartOf="@id/circleImageView"
-                app:layout_constraintTop_toBottomOf="@id/circleImageView" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/text_titulo" />
 
             <TextView
                 android:id="@+id/textofecha"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:layout_marginEnd="26dp"
+                android:layout_margin="26dp"
                 android:text="texto fecha"
                 android:textColor="#4E6B56"
                 android:textSize="18sp"
+                app:layout_constraintTop_toBottomOf="@id/textodesc"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/textodesc" />
+                app:layout_constraintBottom_toBottomOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

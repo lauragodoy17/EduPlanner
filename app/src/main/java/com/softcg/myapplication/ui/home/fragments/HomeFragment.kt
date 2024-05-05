@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -33,7 +34,6 @@ class HomeFragment : Fragment() {
 
     private val viewModelHome: ViewModelHome by viewModels()
 
-    var tareas = MutableLiveData<List<Tarea>>()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -41,17 +41,19 @@ class HomeFragment : Fragment() {
         val view= inflater.inflate(R.layout.fragment_home, container, false)
 
         //Recycler
-        tareas = viewModelHome.obtenerTareas(tareas)
+        viewModelHome.obtenerTareas()
 
         val adapter=TareasAdapter()
         val recyclerView=view.findViewById<RecyclerView>(R.id.recyclerclases)
         recyclerView.adapter=adapter
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
-
-        val texto =view.findViewById<TextView>(R.id.textonoclases)
-        val list=tareas.value
-        val current = list?.get(0)?.titulo
-        texto.text=current
+        //
+        viewModelHome.tareas.observe(viewLifecycleOwner, Observer {Tarea ->
+            adapter.setData(Tarea)
+            if (Tarea.isNotEmpty()){
+                view.findViewById<TextView>(R.id.textonoclases).visibility=View.GONE
+            }
+        })
 
         return view
     }
