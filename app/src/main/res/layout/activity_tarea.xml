@@ -61,11 +61,13 @@
         android:hint="Fecha"
         android:textColor="#000000"
         android:textColorHint="#949494"
+
         app:helperText=" "
         app:layout_constraintBottom_toTopOf="@id/AsignaturaContainer"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/TituloContainer">
+        app:layout_constraintTop_toBottomOf="@id/TituloContainer"
+        >
 
         <EditText
             android:id="@+id/FechaEditText"
@@ -79,6 +81,7 @@
             android:focusable="false"
             android:maxLines="1"
             android:textColorHint="#949494"
+
             />
     </com.google.android.material.textfield.TextInputLayout>
 

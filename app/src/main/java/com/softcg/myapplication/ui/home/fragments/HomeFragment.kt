@@ -3,8 +3,12 @@ package com.softcg.myapplication.ui.home.fragments
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.PopupMenu
 import android.widget.TextView
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
@@ -16,6 +20,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.softcg.myapplication.R
+import com.softcg.myapplication.R.*
 import com.softcg.myapplication.data.Repositories.TareasRepository
 import com.softcg.myapplication.data.database.TareasDatabase.TareasDatabase
 import com.softcg.myapplication.data.database.dao.TareasDao
@@ -37,25 +42,30 @@ class HomeFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        val view= inflater.inflate(R.layout.fragment_home, container, false)
+    ):
+            View? {
+        val view = inflater.inflate(layout.fragment_home, container, false)
 
         //Recycler
         viewModelHome.obtenerTareas()
 
-        val adapter=TareasAdapter()
-        val recyclerView=view.findViewById<RecyclerView>(R.id.recyclerclases)
-        recyclerView.adapter=adapter
+        val adapter = TareasAdapter()
+        val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerclases)
+        recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         //
-        viewModelHome.tareas.observe(viewLifecycleOwner, Observer {Tarea ->
+        viewModelHome.tareas.observe(viewLifecycleOwner, Observer { Tarea ->
             adapter.setData(Tarea)
-            if (Tarea.isNotEmpty()){
-                view.findViewById<TextView>(R.id.textonoclases).visibility=View.GONE
+            if (Tarea.isNotEmpty()) {
+                view.findViewById<TextView>(R.id.textonoclases).visibility = View.GONE
             }
         })
+
 
         return view
     }
 
+
 }
+
+
