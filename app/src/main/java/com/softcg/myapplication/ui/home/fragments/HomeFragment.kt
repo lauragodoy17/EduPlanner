@@ -54,31 +54,34 @@ class HomeFragment : Fragment() {
 
     fun initRecyclerTareas(view: View){
         viewModelHome.obtenerTareas()
-
-        val adapter = TareasAdapter()
+        val adapter = TareasAdapter(requireContext(),viewModelHome)
         val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerclases)
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
-        viewModelHome.tareas.observe(viewLifecycleOwner, Observer { Tarea ->
+        viewModelHome._tareas.observe(viewLifecycleOwner, Observer {Tarea ->
             adapter.setData(Tarea)
             if (Tarea.isNotEmpty()) {
                 view.findViewById<TextView>(R.id.textonoclases).visibility = View.GONE
+            } else{
+                view.findViewById<TextView>(R.id.textonoclases).visibility = View.VISIBLE
             }
         })
     }
     fun initRecyclerEventos(view: View){
         viewModelHome.obtenerEventos()
 
-        val adapter = EventosAdapter()
+        val adapter = EventosAdapter(requireContext(),viewModelHome)
         val recyclerView = view.findViewById<RecyclerView>(R.id.recyclereventos)
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
-        viewModelHome.eventos.observe(viewLifecycleOwner, Observer { Evento ->
+        viewModelHome._eventos.observe(viewLifecycleOwner, Observer { Evento ->
             adapter.setData(Evento)
             if (Evento.isNotEmpty()) {
                 view.findViewById<TextView>(R.id.textonoeventos).visibility = View.GONE
+            } else {
+                view.findViewById<TextView>(R.id.textonoeventos).visibility = View.VISIBLE
             }
         })
     }

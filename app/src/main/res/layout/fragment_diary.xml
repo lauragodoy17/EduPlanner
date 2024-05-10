@@ -29,7 +29,9 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:layout_marginTop="15dp"
+                android:layout_marginHorizontal="35dp">
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recycleragenda"
@@ -45,7 +47,7 @@
         android:id="@+id/textoAgenda"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="No hay tareas y eventos pendientes. Agrega una para visualizar. "
+        android:text="No hay tareas o eventos pendientes. Agrega una para visualizar. "
         android:textSize="35dp"
         android:gravity="center"
         android:textStyle="bold"

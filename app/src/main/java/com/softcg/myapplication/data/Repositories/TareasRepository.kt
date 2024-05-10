@@ -15,6 +15,11 @@ class TareasRepository @Inject constructor(private val tareasDao: TareasDao){
         }
     }
 
+    suspend fun deleteTarea(tarea: Tarea){
+        val entity = TareaEntity(id = tarea.id, titulo = tarea.titulo, descrip = tarea.descrip, asignatura = tarea.asignatura, fecha = tarea.fecha)
+        tareasDao.deleteTarea(entity)
+    }
+
     suspend fun insertTarea(tarea: Tarea){
         val entity = TareaEntity(titulo = tarea.titulo, descrip = tarea.descrip, asignatura = tarea.asignatura, fecha = tarea.fecha)
         tareasDao.insertTarea(entity)

@@ -1,16 +1,30 @@
 package com.softcg.myapplication.ui.home.adapters
 
+import android.content.Context
 import android.text.Layout
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.widget.PopupMenu
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.RecyclerView
 import com.softcg.myapplication.R
+import com.softcg.myapplication.data.Repositories.TareasRepository
+import com.softcg.myapplication.domain.getTareasUseCase
+import com.softcg.myapplication.ui.home.HomeActivity
+import com.softcg.myapplication.ui.home.ViewModelHome
 import com.softcg.myapplication.ui.tarea.model.Tarea
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.supervisorScope
+import javax.inject.Inject
 
 
-class TareasAdapter : RecyclerView.Adapter<TareasAdapter.MyViewHolder>() {
+class TareasAdapter(private val context: Context, private val viewModelHome: ViewModelHome) : RecyclerView.Adapter<TareasAdapter.MyViewHolder>() {
 
     private var tareaslist= emptyList<Tarea>()
 
@@ -19,6 +33,7 @@ class TareasAdapter : RecyclerView.Adapter<TareasAdapter.MyViewHolder>() {
         val textDesc : TextView = itemView.findViewById(R.id.textodesc)
         val textasignatura:TextView=itemView.findViewById(R.id.texto_asignatura)
         val textFecha : TextView = itemView.findViewById(R.id.textofecha)
+        val boton: ImageButton = itemView.findViewById(R.id.Opciones)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
@@ -35,11 +50,44 @@ class TareasAdapter : RecyclerView.Adapter<TareasAdapter.MyViewHolder>() {
         holder.textDesc.text=currentItem.descrip
         holder.textasignatura.text=currentItem.asignatura
         holder.textFecha.text=currentItem.fecha
+        holder.boton.setOnClickListener {v ->
+            showPopupMenu(v,position)
+
+        }
     }
+
+    private fun showPopupMenu(view: View,position: Int) {
+        val popupMenu = PopupMenu(context, view)
+        popupMenu.inflate(R.menu.menudos)
+
+        popupMenu.setOnMenuItemClickListener { item ->
+            when (item.itemId) {
+                R.id.Borrar -> {
+                    deleteTarea(position)
+                    true
+                }
+                else -> false
+            }
+        }
+
+        popupMenu.show()
+    }
+
     fun setData(tarea: List<Tarea>){
         this.tareaslist=tarea
         notifyDataSetChanged()
     }
 
-
+    fun deleteTarea(position: Int){
+        val builder = AlertDialog.Builder(context)
+        val currentItem= tareaslist[position]
+        builder.setPositiveButton("Si"){ _, _ ->
+            viewModelHome.deleteTarea(currentItem)
+            Toast.makeText(context,"Tarea Borrada ;D",Toast.LENGTH_SHORT).show()
+        }
+        builder.setNegativeButton("No"){ _, _ ->}
+        builder.setTitle("Borrar Tarea?")
+        builder.setMessage("Esta seguro que desea borrar esta tarea?")
+        builder.create().show()
+    }
 }

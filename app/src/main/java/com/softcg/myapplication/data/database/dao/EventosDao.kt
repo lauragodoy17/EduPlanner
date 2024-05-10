@@ -1,6 +1,7 @@
 package com.softcg.myapplication.data.database.dao
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -12,6 +13,9 @@ interface EventosDao {
 
     @Query("SELECT * FROM eventos_table")
     fun getAllEventos():List<EventoEntity>
+
+    @Delete
+    suspend fun deleteEvento(eventoEntity: EventoEntity)
 
     @Insert(onConflict= OnConflictStrategy.REPLACE)
     suspend fun insertEvento(evento: EventoEntity)

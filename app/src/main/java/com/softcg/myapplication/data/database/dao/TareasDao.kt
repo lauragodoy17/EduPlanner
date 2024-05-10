@@ -2,6 +2,7 @@ package com.softcg.myapplication.data.database.dao
 
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -12,6 +13,9 @@ import kotlin.coroutines.Continuation
 interface TareasDao {
     @Query("SELECT * FROM tareas_table ORDER BY id DESC")
     fun getAllTareas():List<TareaEntity>
+
+    @Delete
+    suspend fun deleteTarea(tareaEntity: TareaEntity)
 
     @Insert(onConflict= OnConflictStrategy.REPLACE)
     suspend fun insertAll(tareas:List<TareaEntity>)
