@@ -5,10 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.PopupMenu
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.softcg.myapplication.R
 import com.softcg.myapplication.ui.evento.model.Evento
@@ -24,11 +26,14 @@ class EventosAdapter(private val context: Context, private val viewModelHome: Vi
         val textDesc : TextView = itemeventoView.findViewById(R.id.textodesc)
         val textFecha : TextView = itemeventoView.findViewById(R.id.textofecha)
         val boton : ImageButton = itemeventoView.findViewById(R.id.Opciones)
+        val textasignatura: TextView =itemView.findViewById(R.id.texto_asignatura)
+        val imagen : ImageView = itemView.findViewById(R.id.circleImage)
+
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventosAdapter.MyViewHolder {
         return EventosAdapter.MyViewHolder(
-            LayoutInflater.from(parent.context).inflate(R.layout.item_evento_list, parent, false)
+            LayoutInflater.from(parent.context).inflate(R.layout.item_list, parent, false)
         )
     }
 
@@ -41,6 +46,8 @@ class EventosAdapter(private val context: Context, private val viewModelHome: Vi
         holder.textTitulo.text=currentItem.titulo
         holder.textDesc.text=currentItem.descrip
         holder.textFecha.text=currentItem.fecha
+        holder.imagen.foreground=ContextCompat.getDrawable(context, R.drawable.baseline_calendar_month_24)
+        holder.textasignatura.visibility=View.GONE
         holder.boton.setOnClickListener { v ->
             showPopupMenu(v,position)
         }

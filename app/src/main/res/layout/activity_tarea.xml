@@ -28,30 +28,33 @@
         app:layout_constraintTop_toBottomOf="@id/myToolbar"
         app:layout_constraintBottom_toTopOf="@id/TituloContainer"
         />
-    <com.google.android.material.textfield.TextInputLayout
+    <LinearLayout
         android:id="@+id/TituloContainer"
-        style="@style/AppTheme.TextInputLayout"
-        android:layout_width="wrap_content"
+        android:layout_width="325dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:hint="Titulo"
-        android:textColor="#000000"
-        android:textColorHint="#949494"
-        app:helperText=" "
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/Agregar_Tarea">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/TituloEditText"
-            android:layout_width="325dp"
-            android:layout_height="match_parent"
-            android:background="@drawable/campos_stylos"
-            android:inputType="text"
+        app:layout_constraintTop_toBottomOf="@id/Agregar_Tarea"
+        >
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/AppTheme.TextInputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:hint="Titulo"
             android:textColor="#000000"
-            android:textColorHint="#949494" />
-    </com.google.android.material.textfield.TextInputLayout>
-
+            android:textColorHint="#949494"
+            app:helperText=" ">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/TituloEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/campos_stylos"
+                    android:inputType="text"
+                    android:textColor="#000000"
+                    android:textColorHint="#949494" />
+            </com.google.android.material.textfield.TextInputLayout>
+        </LinearLayout>
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/FechaContainer"
         style="@style/AppTheme.TextInputLayout"
@@ -86,7 +89,7 @@
 
     <LinearLayout
         android:id="@+id/auto_complete"
-        android:layout_width="wrap_content"
+        android:layout_width="325dp"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintBottom_toTopOf="@id/DescripcionContainer"
@@ -97,11 +100,11 @@
             android:layout_width="match_parent"
             style="@style/AppTheme.TextInputLayout"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp">
+            android:layout_marginBottom="16dp">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/AsignaturaEditText"
                 android:hint="Asignatura"
-                android:layout_width="325dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/campos_stylos"
                 android:inputType="none"
@@ -113,7 +116,7 @@
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/DescripcionContainer"
         style="@style/AppTheme.TextInputLayout"
-        android:layout_width="wrap_content"
+        android:layout_width="325dp"
         android:layout_height="wrap_content"
         android:hint="Descripcion"
         android:background="@drawable/campos_stylos"
@@ -126,7 +129,7 @@
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/DescripcionEditText"
-            android:layout_width="325dp"
+            android:layout_width="match_parent"
             android:layout_height="200dp"
             android:background="@drawable/campos_stylos"
             android:inputType="text"

@@ -84,7 +84,7 @@ class EventoActivity  : AppCompatActivity() {
         val etScheduledDate= findViewById<EditText>(R.id.FechaEditTextevent)
         val selectedCalendar= Calendar.getInstance()
         val year=selectedCalendar.get(Calendar.YEAR)
-        val month= selectedCalendar.get(Calendar.MONTH)
+        val month= selectedCalendar.get(Calendar.MONTH)+1
         val dayOfMonth=selectedCalendar.get(Calendar.DAY_OF_MONTH)
         val listener= DatePickerDialog.OnDateSetListener{ datePicker, y, m, d-> etScheduledDate.setText("$y-$m-$d")}
         DatePickerDialog(this, R.style.CustomDatePickerDialogTheme,listener,year, month, dayOfMonth).show()

@@ -36,6 +36,7 @@
                 android:background="@drawable/boton_redondo"
                 android:gravity="center_vertical"
                 android:paddingStart="20dp"
+                android:paddingEnd="20dp"
                 android:paddingTop="20dp"
                 app:layout_constraintBottom_toTopOf="@id/separadorA"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -66,7 +67,7 @@
 
                 <TextView
                     android:id="@+id/eventosrealizados"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
                     android:layout_marginTop="5dp"

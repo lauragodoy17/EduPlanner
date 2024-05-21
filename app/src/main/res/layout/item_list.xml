@@ -16,11 +16,13 @@
         >
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/containerReporte"
+
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/boton_redondo"
             android:gravity="center_vertical"
             android:paddingStart="20dp"
+            android:paddingEnd="20dp"
             android:paddingTop="10dp"
             android:paddingBottom="10dp">
 
@@ -44,12 +46,12 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"/>
             </androidx.constraintlayout.widget.ConstraintLayout>
-
             <TextView
                 android:id="@+id/text_titulo"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
+                android:layout_marginStart="35dp"
+                android:layout_marginEnd="35dp"
                 android:text="Titulo"
                 android:textStyle="bold"
                 android:textColor="#949494"
@@ -59,7 +61,7 @@
 
             <TextView
                 android:id="@+id/textodesc"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="35dp"
                 android:layout_marginVertical="5dp"
@@ -106,7 +108,7 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
             <TextView
                 android:id="@+id/texto_asignatura"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="texto asignatura"
                 android:layout_marginStart="35dp"
