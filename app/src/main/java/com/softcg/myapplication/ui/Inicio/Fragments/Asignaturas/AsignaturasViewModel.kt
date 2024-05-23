@@ -37,8 +37,8 @@ class AsignaturasViewModel @Inject constructor(
         val asignatura: Asignatura = Asignatura(null,nombre,tutor)
         viewModelScope.launch {
             asignaturasRepository.insertAsignatura(asignatura)
+            obtenerAsignaturas()
         }
-        obtenerAsignaturas()
     }
 
 }
