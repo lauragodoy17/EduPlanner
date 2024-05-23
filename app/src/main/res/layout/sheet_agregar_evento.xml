@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:background="@drawable/dialog_a"
+    android:layout_height="match_parent">
+    <TextView
+        android:id="@+id/choosetxt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:text="Agregar Evento"
+        android:textColor="@color/black"
+        android:layout_marginTop="5dp"
+        android:textSize="25dp"
+        android:textStyle="bold"/>
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/AppTheme.TextInputLayout"
+        android:layout_width="325dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:hint="Nombre del evento"
+        android:textColor="#000000"
+        android:textColorHint="#949494"
+        android:layout_gravity="center"
+        app:helperText=" ">
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/NombreEditText"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/campos_stylos"
+            android:inputType="text"
+            android:textColor="#000000"
+            android:textColorHint="#949494" />
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/FechaContainer"
+            style="@style/AppTheme.TextInputLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="Fecha"
+            android:textColor="#000000"
+            android:textColorHint="#949494"
+            app:helperText=" "
+            app:layout_constraintBottom_toTopOf="@id/DescripcionContainer"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/TituloContainer">
+
+            <EditText
+                android:id="@+id/FechaEditTextevent"
+                android:layout_width="325dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/border"
+                android:inputType="date"
+                android:textColor="#000000"
+                android:onClick="onClickScheduledDate"
+                android:clickable="true"
+                android:focusable="false"
+                android:maxLines="1"
+                android:textColorHint="#949494"
+                android:drawableEnd="@drawable/baseline_calendar_month_24"
+
+                />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/DescripcionContainer"
+            style="@style/AppTheme.TextInputLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="Descripcion"
+            android:textColor="#000000"
+            android:background="@drawable/campos_stylos"
+            android:textColorHint="#949494"
+            app:helperText=" "
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/FechaContainer">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/DescripcionEditTextevent"
+                android:layout_width="325dp"
+                android:layout_height="200dp"
+                android:background="@drawable/campos_stylos"
+                android:inputType="text"
+                android:textColor="#000000"
+                android:textColorHint="#949494"
+                android:gravity="top|start"
+                />
+            <TextView
+                android:id="@+id/characterCountTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0/200"
+                android:textColor="#808080"
+                android:textSize="12sp"
+                android:layout_gravity="end"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"/>
+        </com.google.android.material.textfield.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/botonAgregar"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/botonestylo"
+        android:text="Agregar"
+        android:textColor="@color/white"
+        android:layout_gravity="center"
+        />
+
+</LinearLayout>
