@@ -26,7 +26,7 @@ class AsignaturasAdapter (private val context: Context, private val inicioViewMo
     }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         return MyViewHolder(
-            LayoutInflater.from(parent.context).inflate(R.layout.item_list, parent, false)
+            LayoutInflater.from(parent.context).inflate(R.layout.item_asignatura_list, parent, false)
         )
     }
 
