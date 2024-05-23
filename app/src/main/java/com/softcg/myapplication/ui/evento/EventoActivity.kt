@@ -10,7 +10,6 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -18,11 +17,9 @@ import androidx.core.view.WindowInsetsCompat
 import com.softcg.myapplication.R
 import com.softcg.myapplication.core.ex.dismissKeyboard
 import com.softcg.myapplication.core.ex.loseFocusAfterAction
-import com.softcg.myapplication.ui.evento.model.Evento
-import com.softcg.myapplication.ui.home.HomeActivity
+import com.softcg.myapplication.ui.Inicio.InicioActivity
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.Calendar
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class EventoActivity  : AppCompatActivity() {
@@ -91,7 +88,7 @@ class EventoActivity  : AppCompatActivity() {
     }
 
     fun goToHome(){
-        startActivity(HomeActivity.create(this))
+        startActivity(InicioActivity.create(this))
     }
 
 }

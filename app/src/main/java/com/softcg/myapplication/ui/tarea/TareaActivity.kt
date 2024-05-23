@@ -5,27 +5,21 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.view.inputmethod.EditorInfo
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.softcg.myapplication.R
 import com.softcg.myapplication.core.ex.dismissKeyboard
-import com.softcg.myapplication.core.ex.loseFocusAfterAction
-import com.softcg.myapplication.data.Repositories.TareasRepository
-import com.softcg.myapplication.data.database.TareasDatabase.TareasDatabase
-import com.softcg.myapplication.data.database.dao.TareasDao
-import com.softcg.myapplication.databinding.ActivityTareaBinding
-import com.softcg.myapplication.ui.home.HomeActivity
+import com.softcg.myapplication.ui.Inicio.InicioActivity
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.Calendar
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class TareaActivity : AppCompatActivity() {
@@ -51,13 +45,11 @@ class TareaActivity : AppCompatActivity() {
     private fun init(){
         initlisteners()
         initObservers()
+        dropdown()
     }
 
     private fun initlisteners(){
-        findViewById<EditText>(R.id.TituloEditText).loseFocusAfterAction(EditorInfo.IME_ACTION_NEXT)
-        findViewById<EditText>(R.id.AsignaturaEditText).loseFocusAfterAction(EditorInfo.IME_ACTION_NEXT)
-        findViewById<EditText>(R.id.DescripcionEditText).loseFocusAfterAction(EditorInfo.IME_ACTION_NEXT)
-        findViewById<EditText>(R.id.FechaEditText).loseFocusAfterAction(EditorInfo.IME_ACTION_NEXT)
+
 
         findViewById<Button>(R.id.botonAgregarTarea).setOnClickListener {
             it.dismissKeyboard()
@@ -86,16 +78,25 @@ class TareaActivity : AppCompatActivity() {
         }
     }
 
+    private fun dropdown (){
+        tareaViewModel.obtenerAsignaturas()
+        val items :List<String> = tareaViewModel._asignaturas.value!!
+        println(items)
+        val autoComplete:AutoCompleteTextView = findViewById(R.id.AsignaturaEditText)
+        val adapter = ArrayAdapter(this,R.layout.item_menu_asignatura, items)
+        autoComplete.setAdapter(adapter)
+    }
+
     fun onClickScheduledDate(v: View?){
         val etScheduledDate= findViewById<EditText>(R.id.FechaEditText)
         val selectedCalendar= Calendar.getInstance()
         val year=selectedCalendar.get(Calendar.YEAR)
-        val month= selectedCalendar.get(Calendar.MONTH)+1
+        val month= selectedCalendar.get(Calendar.MONTH)
         val dayOfMonth=selectedCalendar.get(Calendar.DAY_OF_MONTH)
-        val listener= DatePickerDialog.OnDateSetListener{datePicker,y,m,d-> etScheduledDate.setText("$y-$m-$d")}
+        val listener= DatePickerDialog.OnDateSetListener{datePicker,y,m,d-> etScheduledDate.setText("$y-${m+1}-$d")}
         DatePickerDialog(this, R.style.CustomDatePickerDialogTheme,listener,year, month, dayOfMonth).show()
     }
     fun goToHome(){
-        startActivity(HomeActivity.create(this))
+        startActivity(InicioActivity.create(this))
     }
 }

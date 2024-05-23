@@ -1,4 +1,4 @@
-package com.softcg.myapplication.ui.home.adapters
+package com.softcg.myapplication.ui.Inicio.Fragments.Home.Adapters
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -13,11 +13,11 @@ import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.softcg.myapplication.R
+import com.softcg.myapplication.ui.Inicio.Fragments.Home.HomeViewModel
 import com.softcg.myapplication.ui.evento.model.Evento
-import com.softcg.myapplication.ui.home.ViewModelHome
-import com.softcg.myapplication.ui.tarea.model.Tarea
+import com.softcg.myapplication.ui.Inicio.InicioViewModel
 
-class EventosAdapter(private val context: Context, private val viewModelHome: ViewModelHome) : RecyclerView.Adapter<EventosAdapter.MyViewHolder>(){
+class EventosAdapter(private val context: Context, private val inicioViewModel: HomeViewModel) : RecyclerView.Adapter<EventosAdapter.MyViewHolder>(){
 
     private var eventoslist = emptyList<Evento>()
 
@@ -31,8 +31,8 @@ class EventosAdapter(private val context: Context, private val viewModelHome: Vi
 
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventosAdapter.MyViewHolder {
-        return EventosAdapter.MyViewHolder(
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
+        return MyViewHolder(
             LayoutInflater.from(parent.context).inflate(R.layout.item_list, parent, false)
         )
     }
@@ -41,7 +41,7 @@ class EventosAdapter(private val context: Context, private val viewModelHome: Vi
         return eventoslist.size
     }
 
-    override fun onBindViewHolder(holder: EventosAdapter.MyViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val currentItem=eventoslist[position]
         holder.textTitulo.text=currentItem.titulo
         holder.textDesc.text=currentItem.descrip
@@ -78,7 +78,7 @@ class EventosAdapter(private val context: Context, private val viewModelHome: Vi
         val builder = AlertDialog.Builder(context)
         val currentItem= eventoslist[position]
         builder.setPositiveButton("Si"){ _, _ ->
-            viewModelHome.deleteEvento(currentItem)
+            inicioViewModel.deleteEvento(currentItem)
             Toast.makeText(context,"Evento Borrado :)", Toast.LENGTH_SHORT).show()
         }
         builder.setNegativeButton("No"){ _, _ ->}

@@ -1,4 +1,4 @@
-package com.softcg.myapplication.ui.home.adapters
+package com.softcg.myapplication.ui.Inicio.Fragments.Agenda.Adapters
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -11,14 +11,13 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.ContextCompat
-import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.softcg.myapplication.R
-import com.softcg.myapplication.ui.home.ViewModelHome
-import com.softcg.myapplication.ui.home.model.AgendaItem
-import com.softcg.myapplication.ui.tarea.model.Tarea
+import com.softcg.myapplication.ui.Inicio.Fragments.Agenda.AgendaViewModel
+import com.softcg.myapplication.ui.Inicio.InicioViewModel
+import com.softcg.myapplication.ui.Inicio.Models.AgendaItem
 
-class AgendaAdapter(private val context: Context, private val viewModelHome: ViewModelHome) : RecyclerView.Adapter<AgendaAdapter.MyViewHolder>() {
+class AgendaAdapter(private val context: Context, private val inicioViewModel: AgendaViewModel) : RecyclerView.Adapter<AgendaAdapter.MyViewHolder>() {
 
     private var agendalist= emptyList<AgendaItem>()
 
@@ -31,8 +30,8 @@ class AgendaAdapter(private val context: Context, private val viewModelHome: Vie
         val boton: ImageButton = itemView.findViewById(R.id.Opciones)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AgendaAdapter.MyViewHolder {
-        return AgendaAdapter.MyViewHolder(
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
+        return MyViewHolder(
             LayoutInflater.from(parent.context).inflate(R.layout.item_list, parent, false)
         )
     }
@@ -41,7 +40,7 @@ class AgendaAdapter(private val context: Context, private val viewModelHome: Vie
         return agendalist.size
     }
 
-    override fun onBindViewHolder(holder: AgendaAdapter.MyViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val currentItem=agendalist[position]
         holder.textTitulo.text=currentItem.titulo
         holder.textDesc.text=currentItem.descrip
@@ -85,7 +84,7 @@ class AgendaAdapter(private val context: Context, private val viewModelHome: Vie
         val currentItem= agendalist[position]
         if(currentItem.asignatura==null){
             builder.setPositiveButton("Si"){ _, _ ->
-                viewModelHome.deleteEvento(currentItem)
+                inicioViewModel.deleteEvento(currentItem)
                 Toast.makeText(context,"Evento Borrado", Toast.LENGTH_SHORT).show()
             }
             builder.setNegativeButton("No"){ _, _ ->}
@@ -94,7 +93,7 @@ class AgendaAdapter(private val context: Context, private val viewModelHome: Vie
             builder.create().show()
         }else{
             builder.setPositiveButton("Si"){ _, _ ->
-                viewModelHome.deleteTarea(currentItem)
+                inicioViewModel.deleteTarea(currentItem)
                 Toast.makeText(context,"Tarea Borrada ;D", Toast.LENGTH_SHORT).show()
             }
             builder.setNegativeButton("No"){ _, _ ->}

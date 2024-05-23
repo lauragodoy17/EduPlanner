@@ -1,4 +1,4 @@
-package com.softcg.myapplication.ui.home.fragments
+package com.softcg.myapplication.ui.Inicio.Fragments.Horario
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -8,7 +8,9 @@ import android.view.ViewGroup
 import com.softcg.myapplication.R
 
 
-class RatingsFragment : Fragment() {
+class ScheduleFragment : Fragment() {
+
+
 
 
     override fun onCreateView(
@@ -16,7 +18,7 @@ class RatingsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_ratings, container, false)
+        return inflater.inflate(R.layout.fragment_schedule, container, false)
     }
 
 

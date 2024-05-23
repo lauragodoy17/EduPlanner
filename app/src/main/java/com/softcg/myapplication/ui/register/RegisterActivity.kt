@@ -2,15 +2,10 @@ package com.softcg.myapplication.ui.register
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
-import android.util.Patterns
 import android.view.inputmethod.EditorInfo
-import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.motion.utils.ViewState
-import androidx.core.view.isVisible
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.softcg.myapplication.R
@@ -21,13 +16,10 @@ import com.softcg.myapplication.core.dialog.DialogFragmentLauncher
 import com.softcg.myapplication.core.dialog.ErrorDialog
 import com.softcg.myapplication.core.ex.*
 import com.softcg.myapplication.databinding.ActivityRegisterBinding
-import com.softcg.myapplication.ui.home.HomeActivity
 import com.softcg.myapplication.ui.login.MainActivity
 import com.softcg.myapplication.ui.register.model.UserRegister
 
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint

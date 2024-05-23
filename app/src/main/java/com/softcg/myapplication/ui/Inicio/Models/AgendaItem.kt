@@ -1,4 +1,4 @@
-package com.softcg.myapplication.ui.home.model
+package com.softcg.myapplication.ui.Inicio.Models
 
 data class AgendaItem (
     val id:Int?,

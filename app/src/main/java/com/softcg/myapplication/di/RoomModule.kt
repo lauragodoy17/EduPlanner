@@ -2,10 +2,12 @@ package com.softcg.myapplication.di
 
 import android.content.Context
 import androidx.room.Room
+import com.softcg.myapplication.data.Repositories.AsignaturasRepository
 import com.softcg.myapplication.data.Repositories.EventosRepository
 import com.softcg.myapplication.data.Repositories.TareasRepository
 import com.softcg.myapplication.data.Repositories.pruebaRepository
 import com.softcg.myapplication.data.database.TareasDatabase.TareasDatabase
+import com.softcg.myapplication.data.database.dao.AsignaturasDao
 import com.softcg.myapplication.data.database.dao.EventosDao
 import com.softcg.myapplication.data.database.dao.PruebaDao
 import com.softcg.myapplication.data.database.dao.TareasDao
@@ -49,4 +51,12 @@ object RoomModule {
     @Singleton
     @Provides
     fun provideEventosRepository(dao: EventosDao):EventosRepository = EventosRepository(dao)
+
+    @Singleton
+    @Provides
+    fun provideAsignaturassDao(db:TareasDatabase)=db.getAsignaturasDao()
+
+    @Singleton
+    @Provides
+    fun provideAsignaturasRepository(dao: AsignaturasDao):AsignaturasRepository = AsignaturasRepository(dao)
 }

@@ -5,7 +5,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.google.firebase.auth.FirebaseAuth
-import com.softcg.myapplication.ui.home.HomeActivity
+import com.softcg.myapplication.ui.Inicio.InicioActivity
 import com.softcg.myapplication.ui.login.MainActivity
 
 class PrincipalSplash : AppCompatActivity() {
@@ -24,7 +24,7 @@ class PrincipalSplash : AppCompatActivity() {
             finish()
         }else{
             val currentUser = FirebaseAuth.getInstance().currentUser
-            startActivity(Intent(this, HomeActivity::class.java))
+            startActivity(Intent(this, InicioActivity::class.java))
             finish()
         }
 

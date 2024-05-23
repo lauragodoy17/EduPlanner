@@ -1,4 +1,4 @@
-package com.softcg.myapplication.ui.home.fragments
+package com.softcg.myapplication.ui.Inicio.Fragments.Ayuda
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment

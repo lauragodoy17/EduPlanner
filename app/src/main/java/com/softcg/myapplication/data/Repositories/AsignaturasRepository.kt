@@ -2,9 +2,7 @@ package com.softcg.myapplication.data.Repositories
 
 import com.softcg.myapplication.data.database.dao.AsignaturasDao
 import com.softcg.myapplication.data.database.entities.AsignaturaEntity
-import com.softcg.myapplication.data.database.entities.EventoEntity
-import com.softcg.myapplication.ui.evento.model.Evento
-import com.softcg.myapplication.ui.home.model.Asignatura
+import com.softcg.myapplication.ui.Inicio.Models.Asignatura
 import javax.inject.Inject
 
 class AsignaturasRepository @Inject constructor(private val asignaturasDao: AsignaturasDao){

@@ -1,4 +1,4 @@
-package com.softcg.myapplication.ui.home.fragments
+package com.softcg.myapplication.ui.Inicio.Fragments.Agenda
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -11,15 +11,14 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.softcg.myapplication.R
-import com.softcg.myapplication.ui.home.ViewModelHome
-import com.softcg.myapplication.ui.home.adapters.AgendaAdapter
-import com.softcg.myapplication.ui.home.adapters.TareasAdapter
+import com.softcg.myapplication.ui.Inicio.InicioViewModel
+import com.softcg.myapplication.ui.Inicio.Fragments.Agenda.Adapters.AgendaAdapter
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class DiaryFragment : Fragment() {
+class AgendaFragment : Fragment() {
 
-    private val viewModelHome: ViewModelHome by viewModels()
+    private val inicioViewModel: AgendaViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -31,16 +30,16 @@ class DiaryFragment : Fragment() {
     }
 
     fun initRecyclerAgenda(view: View){
-        viewModelHome.obtenerTareas()
-        viewModelHome.obtenerEventos()
-        viewModelHome.obtenerAgendaList()
-        val adapter = AgendaAdapter(requireContext(),viewModelHome)
+        inicioViewModel.obtenerTareas()
+        inicioViewModel.obtenerEventos()
+        inicioViewModel.obtenerAgendaList()
+        val adapter = AgendaAdapter(requireContext(),inicioViewModel)
         val recyclerView = view.findViewById<RecyclerView>(R.id.recycleragenda)
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
 
-        viewModelHome._listAgenda.observe(viewLifecycleOwner, Observer {AgendaItem ->
+        inicioViewModel._listAgenda.observe(viewLifecycleOwner, Observer { AgendaItem ->
             adapter.setData(AgendaItem)
             if (AgendaItem.isNotEmpty()) {
                 view.findViewById<TextView>(R.id.textoAgenda).visibility = View.GONE

@@ -1,4 +1,4 @@
-package com.softcg.myapplication.ui.home
+package com.softcg.myapplication.ui.Inicio
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
@@ -25,17 +25,15 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.softcg.myapplication.R
-import com.softcg.myapplication.data.Repositories.TareasRepository
 import com.softcg.myapplication.ui.evento.EventoActivity
 import com.softcg.myapplication.ui.login.MainActivity
 import com.softcg.myapplication.ui.tarea.TareaActivity
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 
 @AndroidEntryPoint
-class HomeActivity : AppCompatActivity() {
+class InicioActivity : AppCompatActivity() {
 
-    private val viewModelHome : ViewModelHome by viewModels()
+    private val inicioViewModel : InicioViewModel by viewModels()
     private lateinit var toolbar: Toolbar
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var navigationView: NavigationView
@@ -49,7 +47,7 @@ class HomeActivity : AppCompatActivity() {
 
     companion object {
         fun create(context: Context): Intent =
-            Intent(context, HomeActivity::class.java)
+            Intent(context, InicioActivity::class.java)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -137,30 +135,30 @@ class HomeActivity : AppCompatActivity() {
             toggleFabMode(it)
         }
         tareab.setOnClickListener {
-            viewModelHome.onTareaSelected()
+            inicioViewModel.onTareaSelected()
         }
         eventob.setOnClickListener {
-            viewModelHome.onEventoSelected()
+            inicioViewModel.onEventoSelected()
         }
         calificacionb.setOnClickListener {
-            viewModelHome.onCalificacionSelected()
+            inicioViewModel.onCalificacionSelected()
         }
 
     }
 
     private fun initObserver(){
 
-        viewModelHome.navigateToTarea.observe(this){
+        inicioViewModel.navigateToTarea.observe(this){
             it.getContentIfNotHandled()?.let {
                 goToTarea()
             }
         }
-        viewModelHome.navigateToEvento.observe(this){
+        inicioViewModel.navigateToEvento.observe(this){
             it.getContentIfNotHandled()?.let {
                 goToEvento()
             }
         }
-        viewModelHome.navigateToCalificacion.observe(this){
+        inicioViewModel.navigateToCalificacion.observe(this){
             it.getContentIfNotHandled()?.let {
                 goToCalificacion()
             }

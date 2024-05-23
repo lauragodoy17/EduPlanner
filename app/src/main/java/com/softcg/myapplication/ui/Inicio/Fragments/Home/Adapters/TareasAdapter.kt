@@ -1,30 +1,22 @@
-package com.softcg.myapplication.ui.home.adapters
+package com.softcg.myapplication.ui.Inicio.Fragments.Home.Adapters
 
 import android.content.Context
-import android.text.Layout
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
-import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.PopupMenu
-import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.RecyclerView
 import com.softcg.myapplication.R
-import com.softcg.myapplication.data.Repositories.TareasRepository
-import com.softcg.myapplication.domain.getTareasUseCase
-import com.softcg.myapplication.ui.home.HomeActivity
-import com.softcg.myapplication.ui.home.ViewModelHome
+import com.softcg.myapplication.ui.Inicio.Fragments.Home.HomeViewModel
+import com.softcg.myapplication.ui.Inicio.InicioViewModel
 import com.softcg.myapplication.ui.tarea.model.Tarea
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.supervisorScope
-import javax.inject.Inject
 
 
-class TareasAdapter(private val context: Context, private val viewModelHome: ViewModelHome) : RecyclerView.Adapter<TareasAdapter.MyViewHolder>() {
+class TareasAdapter(private val context: Context, private val inicioViewModel: HomeViewModel) : RecyclerView.Adapter<TareasAdapter.MyViewHolder>() {
 
     private var tareaslist= emptyList<Tarea>()
 
@@ -82,7 +74,7 @@ class TareasAdapter(private val context: Context, private val viewModelHome: Vie
         val builder = AlertDialog.Builder(context)
         val currentItem= tareaslist[position]
         builder.setPositiveButton("Si"){ _, _ ->
-            viewModelHome.deleteTarea(currentItem)
+            inicioViewModel.deleteTarea(currentItem)
             Toast.makeText(context,"Tarea Borrada ;D",Toast.LENGTH_SHORT).show()
         }
         builder.setNegativeButton("No"){ _, _ ->}

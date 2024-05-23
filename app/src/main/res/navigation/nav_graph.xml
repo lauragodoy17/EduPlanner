@@ -9,32 +9,32 @@
 
     <fragment
         android:id="@+id/id_home_fragment"
-        android:name="com.softcg.myapplication.ui.home.fragments.HomeFragment"
+        android:name="com.softcg.myapplication.ui.Inicio.Fragments.Home.HomeFragment"
         android:label="Home"
         tools:layout="@layout/fragment_home" />
     <fragment
         android:id="@+id/id_diary_fragment"
-        android:name="com.softcg.myapplication.ui.home.fragments.DiaryFragment"
+        android:name="com.softcg.myapplication.ui.Inicio.Fragments.Agenda.AgendaFragment"
         android:label="Agenda"
         tools:layout="@layout/fragment_diary" />
     <fragment
         android:id="@+id/id_ratings_fragment"
-        android:name="com.softcg.myapplication.ui.home.fragments.RatingsFragment"
+        android:name="com.softcg.myapplication.ui.Inicio.Fragments.Calificaciones.RatingsFragment"
         android:label="Calificaciones"
         tools:layout="@layout/fragment_ratings" />
     <fragment
         android:id="@+id/id_schedule_fragment"
-        android:name="com.softcg.myapplication.ui.home.fragments.ScheduleFragment"
+        android:name="com.softcg.myapplication.ui.Inicio.Fragments.Horario.ScheduleFragment"
         android:label="Horario"
         tools:layout="@layout/fragment_schedule" />
     <fragment
         android:id="@+id/id_subjects_fragment"
-        android:name="com.softcg.myapplication.ui.home.fragments.SubjectsFragment"
+        android:name="com.softcg.myapplication.ui.Inicio.Fragments.Asignaturas.AsignaturasFragment"
         android:label="Asignaturas"
         tools:layout="@layout/fragment_subjects" />
     <fragment
         android:id="@+id/id_help_fragment"
-        android:name="com.softcg.myapplication.ui.home.fragments.HelpFragment"
+        android:name="com.softcg.myapplication.ui.Inicio.Fragments.Ayuda.HelpFragment"
         android:label="Ayuda y opiniones"
         tools:layout="@layout/fragment_help" />
 </navigation>
