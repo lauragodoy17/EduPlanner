@@ -6,13 +6,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.softcg.myapplication.R
 import com.softcg.myapplication.R.*
-import com.softcg.myapplication.ui.Inicio.InicioViewModel
 import com.softcg.myapplication.ui.Inicio.Fragments.Home.Adapters.EventosAdapter
 import com.softcg.myapplication.ui.Inicio.Fragments.Home.Adapters.TareasAdapter
 import dagger.hilt.android.AndroidEntryPoint
@@ -20,7 +20,7 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
 
-    private val inicioViewModel: HomeViewModel by viewModels()
+    private val homeViewModel: HomeViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -34,13 +34,12 @@ class HomeFragment : Fragment() {
     }
 
     fun initRecyclerTareas(view: View){
-        inicioViewModel.obtenerTareas()
-        val adapter = TareasAdapter(requireContext(),inicioViewModel)
+        homeViewModel.obtenerTareas()
+        val adapter = TareasAdapter(requireContext(),homeViewModel)
         val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerclases)
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
-
-        inicioViewModel._tareas.observe(viewLifecycleOwner, Observer { Tarea ->
+        homeViewModel._tareas.observe(viewLifecycleOwner, Observer { Tarea ->
             adapter.setData(Tarea)
             if (Tarea.isNotEmpty()) {
                 view.findViewById<TextView>(R.id.textonoclases).visibility = View.GONE
@@ -49,15 +48,20 @@ class HomeFragment : Fragment() {
             }
         })
     }
-    fun initRecyclerEventos(view: View){
-        inicioViewModel.obtenerEventos()
 
-        val adapter = EventosAdapter(requireContext(),inicioViewModel)
+    fun actualizar(){
+        homeViewModel.obtenerTareas()
+    }
+
+    fun initRecyclerEventos(view: View){
+        homeViewModel.obtenerEventos()
+
+        val adapter = EventosAdapter(requireContext(),homeViewModel)
         val recyclerView = view.findViewById<RecyclerView>(R.id.recyclereventos)
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
-        inicioViewModel._eventos.observe(viewLifecycleOwner, Observer { Evento ->
+        homeViewModel._eventos.observe(viewLifecycleOwner, Observer { Evento ->
             adapter.setData(Evento)
             if (Evento.isNotEmpty()) {
                 view.findViewById<TextView>(R.id.textonoeventos).visibility = View.GONE
@@ -65,6 +69,9 @@ class HomeFragment : Fragment() {
                 view.findViewById<TextView>(R.id.textonoeventos).visibility = View.VISIBLE
             }
         })
+    }
+    fun act(){
+        homeViewModel.obtenerTareas()
     }
 
 
