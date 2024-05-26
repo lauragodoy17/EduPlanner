@@ -1,9 +1,8 @@
 package com.softcg.myapplication.data.Repositories
 
-import androidx.lifecycle.LiveData
 import com.softcg.myapplication.data.database.dao.TareasDao
 import com.softcg.myapplication.data.database.entities.TareaEntity
-import com.softcg.myapplication.ui.tarea.model.Tarea
+import com.softcg.myapplication.ui.Inicio.Models.Tarea
 import javax.inject.Inject
 
 class TareasRepository @Inject constructor(private val tareasDao: TareasDao){

@@ -7,7 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.softcg.myapplication.core.Event
 import com.softcg.myapplication.data.Repositories.TareasRepository
 import com.softcg.myapplication.domain.getAsignaturasUseCase
-import com.softcg.myapplication.ui.tarea.model.Tarea
+import com.softcg.myapplication.ui.Inicio.Models.Tarea
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -26,7 +26,7 @@ class TareaViewModel @Inject constructor(
         get()=_navigateToHome
 
     fun onAgregarTareaSelected(titulo:String,descrip:String,asignatura:String,fecha:String){
-        val tarea:Tarea = Tarea(null,titulo, descrip, asignatura,fecha)
+        val tarea: Tarea = Tarea(null,titulo, descrip, asignatura,fecha)
         saveTarea(tarea)
     }
 
@@ -43,7 +43,7 @@ class TareaViewModel @Inject constructor(
         _navigateToHome.value=Event(true)
     }
 
-    fun saveTarea(tarea:Tarea){
+    fun saveTarea(tarea: Tarea){
         viewModelScope.launch {
             tareasRepository.insertTarea(tarea)
         }

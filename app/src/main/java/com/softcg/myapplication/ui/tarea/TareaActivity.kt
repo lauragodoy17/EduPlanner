@@ -81,7 +81,6 @@ class TareaActivity : AppCompatActivity() {
     private fun dropdown (){
         tareaViewModel.obtenerAsignaturas()
         val items :List<String> = tareaViewModel._asignaturas.value!!
-        println(items)
         val autoComplete:AutoCompleteTextView = findViewById(R.id.AsignaturaEditText)
         val adapter = ArrayAdapter(this,R.layout.item_menu_asignatura, items)
         autoComplete.setAdapter(adapter)

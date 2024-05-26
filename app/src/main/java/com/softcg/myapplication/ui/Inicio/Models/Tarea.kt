@@ -1,4 +1,4 @@
-package com.softcg.myapplication.ui.tarea.model
+package com.softcg.myapplication.ui.Inicio.Models
 
 import androidx.room.ColumnInfo
 

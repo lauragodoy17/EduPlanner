@@ -7,7 +7,6 @@ import androidx.lifecycle.viewModelScope
 import com.softcg.myapplication.core.Event
 import com.softcg.myapplication.data.Repositories.EventosRepository
 import com.softcg.myapplication.ui.evento.model.Evento
-import com.softcg.myapplication.ui.tarea.model.Tarea
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
