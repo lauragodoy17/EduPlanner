@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -66,7 +67,7 @@
                 android:layout_marginBottom="10dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/textodesc"
-                app:layout_constraintBottom_toBottomOf="Contenedor_ubicacion">
+                app:layout_constraintBottom_toTopOf="@id/Contenedor_ubicacion">
 
                 <ImageView
                     android:id="@+id/icono"
@@ -93,16 +94,17 @@
                     />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
+
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/Contenedor_ubicacion"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="161dp"
+                android:layout_height="22dp"
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="5dp"
                 android:layout_marginBottom="10dp"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/Contenedor_hora"
-                app:layout_constraintBottom_toBottomOf="parent">
+                app:layout_constraintTop_toBottomOf="@id/Contenedor_hora">
 
                 <ImageView
                     android:id="@+id/iconoubi"
@@ -110,23 +112,22 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="13dp"
                     android:src="@drawable/baseline_location_pin_24"
-                    app:tint="#949494"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent" />
+                    app:tint="#949494" />
 
                 <TextView
                     android:id="@+id/textoubi"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="3dp"
                     android:text="texto ubicacion"
                     android:textColor="#949494"
                     android:textSize="18sp"
-                    android:layout_marginStart="3dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@id/iconoubi"
-                    app:layout_constraintTop_toTopOf="@id/iconoubi"
-                    app:layout_constraintBottom_toBottomOf="@id/iconoubi"
-                    />
+                    app:layout_constraintTop_toTopOf="@id/iconoubi" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
             <TextView
