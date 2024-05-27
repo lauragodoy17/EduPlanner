@@ -2,12 +2,17 @@ package com.softcg.myapplication.ui.Inicio
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
+import android.app.AlarmManager
 import android.app.DatePickerDialog
 import android.app.Dialog
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.os.Build
 import androidx.appcompat.widget.Toolbar
 import android.os.Bundle
 import android.view.Gravity
@@ -39,6 +44,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.softcg.myapplication.R
 import com.softcg.myapplication.ui.Inicio.Fragments.Home.HomeViewModel
 import com.softcg.myapplication.ui.login.MainActivity
+import com.softcg.myapplication.ui.notifications.AlarmNotification
+import com.softcg.myapplication.ui.notifications.AlarmNotification.Companion.NOTIFICATION_ID
 import com.softcg.myapplication.ui.tarea.TareaActivity
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.Calendar
@@ -62,6 +69,7 @@ class InicioActivity : AppCompatActivity() {
 
 
     companion object {
+        const val MY_CHANNEL_ID = "myChannel"
         fun create(context: Context): Intent =
             Intent(context, InicioActivity::class.java)
     }
@@ -78,6 +86,8 @@ class InicioActivity : AppCompatActivity() {
         initObserver()
         initNavegate()
         initfloatingBottons()
+        createChannel()
+        scheduleNotification()
     }
 
 
@@ -325,5 +335,54 @@ class InicioActivity : AppCompatActivity() {
         val adapter = ArrayAdapter(this,R.layout.item_menu_asignatura, items)
         autoComplete.setAdapter(adapter)
     }
+
+    private fun scheduleNotification() {
+        val intent = Intent(applicationContext, AlarmNotification::class.java)
+        intent.putExtra("Pendientes",homeViewModel._tareas.value?.size.toString())
+        val pendingIntent = PendingIntent.getBroadcast(
+            applicationContext,
+            NOTIFICATION_ID,
+            intent,
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        )
+
+        val calendar = Calendar.getInstance().apply {
+            timeInMillis = System.currentTimeMillis()
+            set(Calendar.HOUR_OF_DAY, 12)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+
+            // Si la hora actual es después de las 12:00 PM, ajusta la alarma para el día siguiente
+            if (before(Calendar.getInstance())) {
+                add(Calendar.DAY_OF_YEAR, 1)
+            }
+        }
+
+
+
+        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        alarmManager.setInexactRepeating(
+            AlarmManager.RTC_WAKEUP,
+            calendar.timeInMillis,
+            AlarmManager.INTERVAL_DAY,
+            pendingIntent)
+    }
+
+    private fun createChannel() {
+        val channel = NotificationChannel(
+            MY_CHANNEL_ID,
+            "MySuperChannel",
+            NotificationManager.IMPORTANCE_DEFAULT
+        ).apply {
+            description = "SUSCRIBETE"
+        }
+
+        val notificationManager: NotificationManager =
+            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+        notificationManager.createNotificationChannel(channel)
+    }
+
 
 }
