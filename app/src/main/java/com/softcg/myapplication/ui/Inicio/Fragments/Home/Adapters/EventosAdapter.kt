@@ -14,8 +14,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.softcg.myapplication.R
 import com.softcg.myapplication.ui.Inicio.Fragments.Home.HomeViewModel
-import com.softcg.myapplication.ui.evento.model.Evento
-import com.softcg.myapplication.ui.Inicio.InicioViewModel
+import com.softcg.myapplication.ui.Inicio.Models.Evento
 
 class EventosAdapter(private val context: Context, private val inicioViewModel: HomeViewModel) : RecyclerView.Adapter<EventosAdapter.MyViewHolder>(){
 

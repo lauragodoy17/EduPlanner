@@ -12,7 +12,6 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import android.os.Build
 import androidx.appcompat.widget.Toolbar
 import android.os.Bundle
 import android.view.Gravity
@@ -46,7 +45,6 @@ import com.softcg.myapplication.ui.Inicio.Fragments.Home.HomeViewModel
 import com.softcg.myapplication.ui.login.MainActivity
 import com.softcg.myapplication.ui.notifications.AlarmNotification
 import com.softcg.myapplication.ui.notifications.AlarmNotification.Companion.NOTIFICATION_ID
-import com.softcg.myapplication.ui.tarea.TareaActivity
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.Calendar
 
@@ -261,7 +259,7 @@ class InicioActivity : AppCompatActivity() {
     }
 
     private fun goToCalificacion(){
-        startActivity(TareaActivity.create(this))
+
     }
 
     private fun showDialogTarea(){

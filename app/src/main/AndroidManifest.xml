@@ -20,12 +20,6 @@
         <receiver android:name=".ui.notifications.AlarmNotification"
             android:enabled="true"/>
         <activity
-            android:name=".ui.evento.EventoActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.tarea.TareaActivity"
-            android:exported="false" />
-        <activity
             android:name=".ui.login.MainActivity"
             android:exported="false"
             android:noHistory="true"

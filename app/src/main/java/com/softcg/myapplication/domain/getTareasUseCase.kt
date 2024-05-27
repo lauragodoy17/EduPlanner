@@ -3,7 +3,7 @@ package com.softcg.myapplication.domain
 import com.softcg.myapplication.data.Repositories.AsignaturasRepository
 import com.softcg.myapplication.data.Repositories.EventosRepository
 import com.softcg.myapplication.data.Repositories.TareasRepository
-import com.softcg.myapplication.ui.evento.model.Evento
+import com.softcg.myapplication.ui.Inicio.Models.Evento
 import com.softcg.myapplication.ui.Inicio.Models.Asignatura
 import com.softcg.myapplication.ui.Inicio.Models.Tarea
 import javax.inject.Inject

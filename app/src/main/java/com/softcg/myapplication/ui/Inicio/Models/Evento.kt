@@ -1,4 +1,4 @@
-package com.softcg.myapplication.ui.evento.model
+package com.softcg.myapplication.ui.Inicio.Models
 
 data class Evento (
     val id:Int?,
