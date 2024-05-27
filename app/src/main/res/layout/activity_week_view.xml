@@ -12,6 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:layout_margin="10dp"
         android:layout_marginBottom="20dp"
         android:layout_marginTop="20dp">
 
@@ -21,8 +22,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/back"
-            android:textColor="@color/blue"
-            android:background="@null"
+            android:textColor="@color/white"
             android:textStyle="bold"
             android:textSize="20sp"/>
 
@@ -42,7 +42,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/forward"
-            android:textColor="@color/blue"
+            android:textColor="@color/white"
             android:background="@null"
             android:textStyle="bold"
             android:textSize="20sp"/>
@@ -117,7 +117,6 @@
             android:textAlignment="center"
             android:textSize="16sp"/>
 
-
     </LinearLayout>
 
 
@@ -125,12 +124,26 @@
         android:id="@+id/calendarRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"/>
-
+        android:layout_weight="1"
+        />
+    <TextView
+        android:id="@+id/textonoclases"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="No tienes clases pendientes."
+        android:textAlignment="center"
+        android:textColor="#4E6B56"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        android:layout_gravity="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/calendarRecyclerView"
+        app:layout_constraintBottom_toTopOf="@id/eventListView"/>
     <ListView
         android:id="@+id/eventListView"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="300dp"
         android:layout_weight="5"/>
 
 

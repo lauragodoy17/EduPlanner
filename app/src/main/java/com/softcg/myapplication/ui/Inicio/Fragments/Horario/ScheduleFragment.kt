@@ -16,7 +16,7 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 
-class ScheduleFragment : Fragment(), CalendarAdapter.OnItemListener {
+class ScheduleFragment : Fragment() {
     private lateinit var monthYearText: TextView
     private lateinit var calendarRecyclerView: RecyclerView
 
@@ -46,7 +46,7 @@ class ScheduleFragment : Fragment(), CalendarAdapter.OnItemListener {
     private fun setWeekView() {
         monthYearText.text = CalendarUtils.selectedDate?.let { CalendarUtils.monthYearFromDate(it) }
         val days = CalendarUtils.selectedDate?.let { CalendarUtils.daysInWeekArray(it) }
-        val calendarAdapter = days?.let { CalendarAdapter(it, this) }
+        val calendarAdapter = days?.let { CalendarAdapter(requireContext(), it) }
         val layoutManager = GridLayoutManager(requireContext(), 7)
         calendarRecyclerView.layoutManager = layoutManager
         calendarRecyclerView.adapter = calendarAdapter
@@ -63,11 +63,6 @@ class ScheduleFragment : Fragment(), CalendarAdapter.OnItemListener {
         setWeekView()
     }
 
-    override fun onItemClick(position: Int, date: LocalDate?) {
-        if (date != null) {
-            CalendarUtils.selectedDate = date
-            setWeekView()
-        }
-    }
+
 
 }

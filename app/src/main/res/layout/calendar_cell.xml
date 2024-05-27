@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/parentView"
+    android:background="@drawable/boton_redondo"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     >
     <TextView
@@ -16,5 +17,5 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintVertical_bias="0.25"/>
+        />
 </androidx.constraintlayout.widget.ConstraintLayout>
