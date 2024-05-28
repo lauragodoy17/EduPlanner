@@ -15,7 +15,7 @@ class MultiSelectSpinnerAdapter(
     context: Context,
     private val items: List<ListItem>,
     private val selectedItems: MutableList<ListItem>
-) : ArrayAdapter<ListItem>(context, 0, items) {
+) : ArrayAdapter<ListItem>(context,  0, items) {
 
     private val checkedItems = BooleanArray(items.size)
     private var onItemSelectedListener: OnItemSelectedListener? = null

@@ -10,5 +10,14 @@
         <item name="colorAccent">@color/verdes</item>
     </style>
 
+<style name="TimePicker" parent="ThemeOverlay.MaterialComponents.MaterialCalendar">
+    <item name="colorAccent">#2F4F3F</item>
+
+
+</style>
+    <style name="TimePickerButton" parent="Theme.Material3.Light.Dialog">
+        <item name="android:textColorPrimary">@color/white</item>
+        <item name="android:textColorSecondary">@color/black</item>
+    </style>
 
 </resources>

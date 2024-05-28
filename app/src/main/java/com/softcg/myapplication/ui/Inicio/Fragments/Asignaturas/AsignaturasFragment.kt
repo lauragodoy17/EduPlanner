@@ -77,6 +77,8 @@ class AsignaturasFragment : Fragment() {
         val tutor=dialog.findViewById<EditText>(R.id.TutorEditText)
         val spinner= dialog.findViewById<Spinner>(R.id.spinner)
         val guardarBoton= dialog.findViewById<Button>(R.id.botonAgregar)
+        val tiempo=dialog.findViewById<EditText>(R.id.etTime)
+
         spinnerListItem?.add(ListItem("Lunes"))
         spinnerListItem?.add(ListItem("Martes"))
         spinnerListItem?.add(ListItem("Miércoles"))
@@ -84,7 +86,6 @@ class AsignaturasFragment : Fragment() {
         spinnerListItem?.add(ListItem("Viernes"))
         spinnerListItem?.add(ListItem("Sábado"))
         spinnerListItem?.add(ListItem("Domingo"))
-
 
         selectedItem?.clear()
         val adapter = MultiSelectSpinnerAdapter(
@@ -111,6 +112,8 @@ class AsignaturasFragment : Fragment() {
             }
         }
         )
+        tiempo.setOnClickListener{showTimePickerDialog(tiempo)}
+
         guardarBoton.setOnClickListener {
             dialog.dismiss()
             inicioViewModel.onAgregarAsignaturaSelected(nombre.text.toString(),tutor.text.toString())
@@ -123,6 +126,12 @@ class AsignaturasFragment : Fragment() {
         dialog.window?.attributes?.windowAnimations = R.style.DialogAnimation
         dialog.window?.setGravity(Gravity.BOTTOM)
     }
-
+    private fun showTimePickerDialog(tiempo: EditText){
+        val timePicker= TimePickerFragment{onTimeSelected(it, tiempo)}
+        timePicker.show(childFragmentManager, "time")
+    }
+    private fun onTimeSelected(time:String, tiempo: EditText){
+        tiempo.setText(" $time")
+    }
 
 }
