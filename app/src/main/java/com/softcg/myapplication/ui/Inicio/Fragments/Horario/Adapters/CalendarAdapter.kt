@@ -1,4 +1,4 @@
-package com.softcg.myapplication.ui.Inicio.Fragments.Horario
+package com.softcg.myapplication.ui.Inicio.Fragments.Horario.Adapters
 
 import android.content.Context
 import android.graphics.Color
@@ -7,10 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
-import androidx.annotation.NonNull
 import androidx.recyclerview.widget.RecyclerView
 import com.softcg.myapplication.R
-import kotlinx.coroutines.selects.select
 import java.time.LocalDate
 import kotlin.collections.ArrayList
 

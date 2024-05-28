@@ -10,10 +10,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.softcg.myapplication.R
 import android.widget.Button
 import androidx.recyclerview.widget.GridLayoutManager
-import com.softcg.myapplication.ui.Inicio.Fragments.Horario.CalendarUtils.daysInMonthArray
-import com.softcg.myapplication.ui.Inicio.Fragments.Horario.CalendarUtils.selectedDate
+import com.softcg.myapplication.ui.Inicio.Fragments.Horario.Adapters.CalendarAdapter
+import com.softcg.myapplication.ui.Inicio.Fragments.Horario.Adapters.CalendarUtils
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 
 
 class ScheduleFragment : Fragment() {
