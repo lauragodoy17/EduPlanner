@@ -61,6 +61,7 @@ dependencies {
     //DaggerHilt
     implementation("com.google.dagger:hilt-android:2.50")
     implementation("junit:junit:4.12")
+
     kapt("com.google.dagger:hilt-android-compiler:2.50")
     //API SPLASH SCREEN
     implementation("androidx.core:core-splashscreen:1.0.0")

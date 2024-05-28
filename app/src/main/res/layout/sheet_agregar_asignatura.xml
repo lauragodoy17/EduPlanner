@@ -38,9 +38,9 @@
 
     <com.google.android.material.textfield.TextInputLayout
         style="@style/AppTheme.TextInputLayout"
+        android:id="@+id/Contenedor_tutor"
         android:layout_width="325dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
         android:hint="Ingresa el nombre del profesor"
         android:textColor="#000000"
         android:textColorHint="#949494"
@@ -55,9 +55,50 @@
             android:textColor="#000000"
             android:textColorHint="#949494" />
     </com.google.android.material.textfield.TextInputLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/contenedor_dias"
+        android:layout_width="325dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+
+        >
+        <Spinner
+            android:id="@+id/spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/campos_stylos"
+            android:paddingVertical="13dp"
+            android:layout_marginBottom="10dp"
+            android:spinnerMode="dropdown"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+             />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/AppTheme.TextInputLayout"
+        android:id="@+id/Contenedor_duracion"
+        android:layout_width="325dp"
+        android:layout_height="wrap_content"
+        android:hint="Ingresa la duración de la clase"
+        android:textColor="#000000"
+        android:textColorHint="#949494"
+        android:layout_gravity="center"
+        app:helperText=" ">
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/DuracionEditText"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/campos_stylos"
+            android:inputType="text"
+            android:textColor="#000000"
+            android:textColorHint="#949494" />
+    </com.google.android.material.textfield.TextInputLayout>
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/botonAgregar"
-        android:layout_width="300dp"
+        android:layout_width="325dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
         android:layout_marginBottom="10dp"
@@ -66,5 +107,6 @@
         android:textColor="@color/white"
         android:layout_gravity="center"
         />
+
 
 </LinearLayout>

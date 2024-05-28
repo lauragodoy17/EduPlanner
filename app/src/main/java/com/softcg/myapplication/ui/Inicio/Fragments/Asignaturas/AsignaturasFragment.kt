@@ -4,14 +4,17 @@ import android.app.Dialog
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
+import android.widget.AutoCompleteTextView
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.viewModels
@@ -25,7 +28,10 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class AsignaturasFragment : Fragment() {
-
+    private var spinner : Spinner?= null
+    private var name : TextView ?= null
+    private var selectedItem: MutableList<ListItem>? = mutableListOf()
+    private var spinnerListItem: ArrayList<ListItem> ?= ArrayList()
     private val inicioViewModel: AsignaturasViewModel by viewModels()
 
     override fun onCreateView(
@@ -69,9 +75,42 @@ class AsignaturasFragment : Fragment() {
         dialog.setContentView(R.layout.sheet_agregar_asignatura)
         val nombre=dialog.findViewById<EditText>(R.id.NombreEditText)
         val tutor=dialog.findViewById<EditText>(R.id.TutorEditText)
-
+        val spinner= dialog.findViewById<Spinner>(R.id.spinner)
         val guardarBoton= dialog.findViewById<Button>(R.id.botonAgregar)
+        spinnerListItem?.add(ListItem("Lunes"))
+        spinnerListItem?.add(ListItem("Martes"))
+        spinnerListItem?.add(ListItem("Miércoles"))
+        spinnerListItem?.add(ListItem("Jueves"))
+        spinnerListItem?.add(ListItem("Viernes"))
+        spinnerListItem?.add(ListItem("Sábado"))
+        spinnerListItem?.add(ListItem("Domingo"))
 
+
+        selectedItem?.clear()
+        val adapter = MultiSelectSpinnerAdapter(
+            requireContext(),
+            spinnerListItem!!,
+            selectedItem!!
+        )
+        spinner?.adapter = adapter
+
+        adapter.setOnItemSelectedListener(object :
+            MultiSelectSpinnerAdapter.OnItemSelectedListener {
+            override fun onItemSelected(
+                selectedItems: List<ListItem>,
+                pos: Int,
+            ) {
+                if (selectedItems.isNullOrEmpty()){
+                    name?.text = "Codewenation"
+                }
+                else{
+                    name?.text = selectedItems.joinToString(", ") { it.name }
+                }
+                Log.e("getSelectedItems", selectedItems.toString())
+                Log.e("getSelectedItems", selectedItems.size.toString())
+            }
+        }
+        )
         guardarBoton.setOnClickListener {
             dialog.dismiss()
             inicioViewModel.onAgregarAsignaturaSelected(nombre.text.toString(),tutor.text.toString())

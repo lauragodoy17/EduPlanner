@@ -10,4 +10,5 @@
     <color name="rojo">#FF0000</color>
     <color name="weakverde">#DBE4DD</color>
     <color name="gris">#949494</color>
+    <color name="checked_color">#FF0000</color>
 </resources>
