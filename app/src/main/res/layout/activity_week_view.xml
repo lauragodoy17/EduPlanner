@@ -58,7 +58,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="SUN"
+            android:text="DOM"
             android:textColor="#969696"
             android:textAlignment="center"
             android:textSize="16sp"/>
@@ -67,7 +67,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="MON"
+            android:text="LUN"
             android:textColor="#969696"
             android:textAlignment="center"
             android:textSize="16sp"/>
@@ -76,7 +76,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="TUE"
+            android:text="MAR"
             android:textColor="#969696"
             android:textAlignment="center"
             android:textSize="16sp"/>
@@ -85,7 +85,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="WED"
+            android:text="MIE"
             android:textColor="#969696"
             android:textAlignment="center"
             android:textSize="16sp"/>
@@ -94,7 +94,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="THUR"
+            android:text="JUE"
             android:textColor="#969696"
             android:textAlignment="center"
             android:textSize="16sp"/>
@@ -103,7 +103,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="FRI"
+            android:text="VIE"
             android:textColor="#969696"
             android:textAlignment="center"
             android:textSize="16sp"/>
@@ -112,7 +112,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="SAT"
+            android:text="SAB"
             android:textColor="#969696"
             android:textAlignment="center"
             android:textSize="16sp"/>
