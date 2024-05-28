@@ -46,6 +46,9 @@ import com.softcg.myapplication.ui.login.MainActivity
 import com.softcg.myapplication.ui.notifications.AlarmNotification
 import com.softcg.myapplication.ui.notifications.AlarmNotification.Companion.NOTIFICATION_ID
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.util.Calendar
 
 @AndroidEntryPoint
@@ -179,8 +182,10 @@ class InicioActivity : AppCompatActivity() {
         }
         inicioViewModel.navigateToTarea.observe(this){
             it.getContentIfNotHandled()?.let {
-                showDialogTarea()
-                homeViewModel.obtenerTareas()
+                CoroutineScope(Dispatchers.Main).launch {
+                    showDialogTarea()
+                    homeViewModel.obtenerTareas()
+                }
             }
         }
         inicioViewModel.navigateToEvento.observe(this){
@@ -351,7 +356,6 @@ class InicioActivity : AppCompatActivity() {
             set(Calendar.SECOND, 0)
             set(Calendar.MILLISECOND, 0)
 
-            // Si la hora actual es después de las 12:00 PM, ajusta la alarma para el día siguiente
             if (before(Calendar.getInstance())) {
                 add(Calendar.DAY_OF_YEAR, 1)
             }
