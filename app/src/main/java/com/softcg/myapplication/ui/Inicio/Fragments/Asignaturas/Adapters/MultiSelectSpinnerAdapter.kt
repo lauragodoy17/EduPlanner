@@ -1,4 +1,4 @@
-package com.softcg.myapplication.ui.Inicio.Fragments.Asignaturas
+package com.softcg.myapplication.ui.Inicio.Fragments.Asignaturas.Adapters
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -9,6 +9,7 @@ import android.widget.CheckBox
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.softcg.myapplication.R
+import com.softcg.myapplication.ui.Inicio.Fragments.Asignaturas.Models.ListItem
 
 
 class MultiSelectSpinnerAdapter(

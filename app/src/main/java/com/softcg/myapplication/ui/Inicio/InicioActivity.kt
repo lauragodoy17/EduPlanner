@@ -42,7 +42,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.softcg.myapplication.R
-import com.softcg.myapplication.ui.Inicio.Fragments.Asignaturas.TimePickerFragment
 import com.softcg.myapplication.ui.Inicio.Fragments.Home.HomeViewModel
 import com.softcg.myapplication.ui.login.MainActivity
 import com.softcg.myapplication.ui.notifications.AlarmNotification

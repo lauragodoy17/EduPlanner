@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.OnClickListener
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
@@ -14,9 +15,11 @@ import kotlin.collections.ArrayList
 
 class CalendarAdapter(
     private val context: Context,
-    private val days: ArrayList<LocalDate>
+    private val listener:OnItemClickListener,
+    private val days: ArrayList<LocalDate>,
+    private var currentDate: LocalDate
 ) : RecyclerView.Adapter<CalendarAdapter.CalendarViewHolder>() {
-    private var currentDate: LocalDate= LocalDate.now()
+
     class CalendarViewHolder( itemView: View) : RecyclerView.ViewHolder(itemView) {
         val parentView: View = itemView.findViewById(R.id.parentView)
         val dayOfMonth: TextView = itemView.findViewById(R.id.cellDayText)
@@ -49,7 +52,8 @@ class CalendarAdapter(
                 Color.TRANSPARENT
             )
             holder.parentView.setOnClickListener{v ->
-                selectDate(date)
+                listener.onItemClick(date)
+                setCurrentDateOnWeek(date)
 
             }
             if(days[position]==currentDate){
@@ -61,12 +65,14 @@ class CalendarAdapter(
 
     override fun getItemCount(): Int = days.size
 
-    private fun selectDate(date: LocalDate){
-        currentDate=date
-        setData()
-        Toast.makeText(context, "Clases del ${date.dayOfMonth} de ${date.month}", Toast.LENGTH_SHORT).show()
-    }
     fun setData(){
         notifyDataSetChanged()
     }
+    private fun setCurrentDateOnWeek(date: LocalDate){
+        currentDate=date
+        setData()
+    }
+}
+interface OnItemClickListener {
+    fun onItemClick(date: LocalDate)
 }

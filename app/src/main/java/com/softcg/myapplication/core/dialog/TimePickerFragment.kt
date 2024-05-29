@@ -1,4 +1,4 @@
-package com.softcg.myapplication.ui.Inicio.Fragments.Asignaturas
+package com.softcg.myapplication.core.dialog
 
 import android.app.Dialog
 import android.app.TimePickerDialog

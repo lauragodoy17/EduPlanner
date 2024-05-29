@@ -12,8 +12,7 @@ import androidx.appcompat.widget.PopupMenu
 import androidx.recyclerview.widget.RecyclerView
 import com.softcg.myapplication.R
 import com.softcg.myapplication.ui.Inicio.Fragments.Asignaturas.AsignaturasViewModel
-import com.softcg.myapplication.ui.Inicio.InicioViewModel
-import com.softcg.myapplication.ui.Inicio.Models.Asignatura
+import com.softcg.myapplication.ui.Inicio.Fragments.Asignaturas.Models.Asignatura
 
 class AsignaturasAdapter (private val context: Context, private val inicioViewModel: AsignaturasViewModel) : RecyclerView.Adapter<AsignaturasAdapter.MyViewHolder>()  {
 

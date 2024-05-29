@@ -4,14 +4,12 @@ import android.app.Dialog
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.util.Log
 import android.view.Gravity
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
-import android.widget.AutoCompleteTextView
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Spinner
@@ -22,8 +20,10 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.softcg.myapplication.R
-import com.softcg.myapplication.ui.Inicio.InicioViewModel
+import com.softcg.myapplication.core.dialog.TimePickerFragment
 import com.softcg.myapplication.ui.Inicio.Fragments.Asignaturas.Adapters.AsignaturasAdapter
+import com.softcg.myapplication.ui.Inicio.Fragments.Asignaturas.Adapters.MultiSelectSpinnerAdapter
+import com.softcg.myapplication.ui.Inicio.Fragments.Asignaturas.Models.ListItem
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -40,6 +40,13 @@ class AsignaturasFragment : Fragment() {
     ): View? {
         val view= inflater.inflate(R.layout.fragment_subjects, container, false)
         // Inflate the layout for this fragment
+        spinnerListItem?.add(ListItem("Lunes"))
+        spinnerListItem?.add(ListItem("Martes"))
+        spinnerListItem?.add(ListItem("Miércoles"))
+        spinnerListItem?.add(ListItem("Jueves"))
+        spinnerListItem?.add(ListItem("Viernes"))
+        spinnerListItem?.add(ListItem("Sábado"))
+        spinnerListItem?.add(ListItem("Domingo"))
         initButtom(view)
         initRecyclerAsignaturas(view)
         return view
@@ -73,19 +80,13 @@ class AsignaturasFragment : Fragment() {
         val dialog = Dialog(requireContext())
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setContentView(R.layout.sheet_agregar_asignatura)
+        var currentName:List<ListItem> = listOf(ListItem(""))
         val nombre=dialog.findViewById<EditText>(R.id.NombreEditText)
         val tutor=dialog.findViewById<EditText>(R.id.TutorEditText)
         val spinner= dialog.findViewById<Spinner>(R.id.spinner)
         val guardarBoton= dialog.findViewById<Button>(R.id.botonAgregar)
         val tiempo=dialog.findViewById<EditText>(R.id.etTime)
-
-        spinnerListItem?.add(ListItem("Lunes"))
-        spinnerListItem?.add(ListItem("Martes"))
-        spinnerListItem?.add(ListItem("Miércoles"))
-        spinnerListItem?.add(ListItem("Jueves"))
-        spinnerListItem?.add(ListItem("Viernes"))
-        spinnerListItem?.add(ListItem("Sábado"))
-        spinnerListItem?.add(ListItem("Domingo"))
+        val duracion=dialog.findViewById<EditText>(R.id.DuracionEditText)
 
         selectedItem?.clear()
         val adapter = MultiSelectSpinnerAdapter(
@@ -101,14 +102,13 @@ class AsignaturasFragment : Fragment() {
                 selectedItems: List<ListItem>,
                 pos: Int,
             ) {
-                if (selectedItems.isNullOrEmpty()){
-                    name?.text = "Codewenation"
+                if (selectedItems.isEmpty()){
+                    name?.text = "mmk"
                 }
                 else{
                     name?.text = selectedItems.joinToString(", ") { it.name }
                 }
-                Log.e("getSelectedItems", selectedItems.toString())
-                Log.e("getSelectedItems", selectedItems.size.toString())
+                currentName=selectedItems
             }
         }
         )
@@ -116,7 +116,7 @@ class AsignaturasFragment : Fragment() {
 
         guardarBoton.setOnClickListener {
             dialog.dismiss()
-            inicioViewModel.onAgregarAsignaturaSelected(nombre.text.toString(),tutor.text.toString())
+            inicioViewModel.onAgregarAsignaturaSelected(nombre.text.toString(),tutor.text.toString(),duracion.text.toString().toInt(),currentName)
             Toast.makeText(context,"Asignatura guardada", Toast.LENGTH_SHORT).show()
         }
 

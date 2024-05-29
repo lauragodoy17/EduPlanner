@@ -14,8 +14,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.softcg.myapplication.R
 import com.softcg.myapplication.ui.Inicio.Fragments.Agenda.AgendaViewModel
-import com.softcg.myapplication.ui.Inicio.InicioViewModel
-import com.softcg.myapplication.ui.Inicio.Models.AgendaItem
+import com.softcg.myapplication.ui.Inicio.Fragments.Agenda.Models.AgendaItem
 
 class AgendaAdapter(private val context: Context, private val inicioViewModel: AgendaViewModel) : RecyclerView.Adapter<AgendaAdapter.MyViewHolder>() {
 

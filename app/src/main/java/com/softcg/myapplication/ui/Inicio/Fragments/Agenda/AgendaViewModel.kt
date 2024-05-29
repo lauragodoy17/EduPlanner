@@ -7,7 +7,7 @@ import com.softcg.myapplication.data.Repositories.EventosRepository
 import com.softcg.myapplication.data.Repositories.TareasRepository
 import com.softcg.myapplication.domain.getEventosUseCase
 import com.softcg.myapplication.domain.getTareasUseCase
-import com.softcg.myapplication.ui.Inicio.Models.AgendaItem
+import com.softcg.myapplication.ui.Inicio.Fragments.Agenda.Models.AgendaItem
 import com.softcg.myapplication.ui.Inicio.Models.Evento
 import com.softcg.myapplication.ui.Inicio.Models.Tarea
 import dagger.hilt.android.lifecycle.HiltViewModel

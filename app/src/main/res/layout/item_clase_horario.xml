@@ -63,6 +63,7 @@
                 android:id="@+id/Contenedor_hora"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
                 android:layout_marginStart="20dp"
                 android:layout_marginBottom="10dp"
                 app:layout_constraintStart_toStartOf="parent"
@@ -84,14 +85,13 @@
                     android:id="@+id/textofecha"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="3dp"
                     android:text="texto duracion"
                     android:textColor="#949494"
                     android:textSize="18sp"
-                    android:layout_marginStart="3dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@id/icono"
-                    app:layout_constraintTop_toTopOf="@id/icono"
-                    app:layout_constraintBottom_toBottomOf="@id/icono"
-                    />
+                    app:layout_constraintTop_toTopOf="@id/icono" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -102,7 +102,7 @@
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="5dp"
                 android:layout_marginBottom="10dp"
-                app:layout_constraintBottom_toBottomOf="parent"
+
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/Contenedor_hora">
 
