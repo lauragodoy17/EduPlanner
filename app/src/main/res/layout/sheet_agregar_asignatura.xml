@@ -24,7 +24,6 @@
         android:textColor="#000000"
         android:textColorHint="#949494"
         android:layout_gravity="center"
-
         app:helperText=" ">
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/NombreEditText"
