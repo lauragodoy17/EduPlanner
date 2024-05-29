@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
+    android:focusableInTouchMode="true"
     android:background="@drawable/dialog_a"
     android:layout_height="match_parent">
     <TextView
@@ -35,20 +36,22 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp">
+
             <AutoCompleteTextView
                 android:id="@+id/CalificacionEditText"
-                android:hint="Tipo de Calificación"
                 android:layout_width="match_parent"
-                android:textColorHint="#949494"
                 android:layout_height="50dp"
                 android:background="@drawable/campos_stylos"
+                android:hint="Tipo de Calificación"
                 android:inputType="none"
-                />
+                android:textColorHint="#949494" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
     </LinearLayout>
     <com.google.android.material.textfield.TextInputLayout
+
+        android:id="@+id/TextoCalificacion"
         style="@style/AppTheme.TextInputLayout"
         android:layout_width="325dp"
         android:layout_height="wrap_content"

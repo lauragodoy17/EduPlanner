@@ -19,6 +19,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Button
@@ -168,7 +169,7 @@ class InicioActivity : AppCompatActivity() {
             inicioViewModel.onEventoSelected()
         }
         calificacionb.setOnClickListener {
-            inicioViewModel.onCalificacionSelected()
+            showDialogCalificacion()
         }
 
     }
@@ -319,7 +320,36 @@ class InicioActivity : AppCompatActivity() {
         dialog.window?.attributes?.windowAnimations = R.style.DialogAnimation
         dialog.window?.setGravity(Gravity.BOTTOM)
     }
+    private fun showDialogCalificacion(){
+        val dialog = Dialog(this)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setContentView(R.layout.sheet_agregar_calificacion)
+        val asignatura=dialog.findViewById<AutoCompleteTextView>(R.id.AsignaturaEditText)
+        val descripcion=dialog.findViewById<EditText>(R.id.DescripcionEditText)
+        val calificacion = dialog.findViewById<EditText>(R.id.NombreEditText)
+        val guardarBoton= dialog.findViewById<Button>(R.id.botonAgregar)
 
+        val items= listOf("Numerico", "Alfabetico")
+        val autoComplete =dialog.findViewById<AutoCompleteTextView>(R.id.CalificacionEditText)
+        val adapter=ArrayAdapter(this, R.layout.item_menu_asignatura,items)
+        autoComplete.setAdapter(adapter)
+        autoComplete.onItemClickListener=AdapterView.OnItemClickListener{
+            adapterView, view, i, l ->
+
+            val itemSelected=adapterView.getItemAtPosition(i)
+            Toast.makeText(this, "Item: $itemSelected", Toast.LENGTH_SHORT).show()
+        }
+
+        guardarBoton.setOnClickListener {
+            dialog.dismiss()
+            Toast.makeText(this,"Calificación guardada", Toast.LENGTH_SHORT).show()
+        }
+        dialog.show()
+        dialog.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog.window?.attributes?.windowAnimations = R.style.DialogAnimation
+        dialog.window?.setGravity(Gravity.BOTTOM)
+    }
 
     private fun onClickScheduledDate(fecha:EditText){
         val etScheduledDate= fecha
