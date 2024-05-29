@@ -32,7 +32,7 @@ class HorarioAdapter () : RecyclerView.Adapter<HorarioAdapter.MyViewHolder>(){
         val currentItem=asignaturaslist[position]
         holder.textNombre.text=currentItem.nombre
         holder.textTutor.text=currentItem.tutor
-        holder.textDuracion.text=currentItem.duracion.toString()
+        holder.textDuracion.text="${currentItem.duracion.toString()} Horas"
         holder.textUbicacion.text="Universidad Libre"
     }
 
