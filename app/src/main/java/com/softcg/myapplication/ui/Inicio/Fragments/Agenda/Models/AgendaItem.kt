@@ -1,4 +1,4 @@
-package com.softcg.myapplication.ui.Inicio.Models
+package com.softcg.myapplication.ui.Inicio.Fragments.Agenda.Models
 
 data class AgendaItem (
     val id:Int?,

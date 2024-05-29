@@ -1,4 +1,4 @@
-package com.softcg.myapplication.ui.Inicio.Fragments.Horario.Adapters;
+package com.softcg.myapplication.core.utils;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;

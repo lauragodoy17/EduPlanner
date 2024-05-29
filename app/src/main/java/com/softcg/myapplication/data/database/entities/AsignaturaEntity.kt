@@ -9,5 +9,13 @@ data class AsignaturaEntity (
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name="id")val id: Int?=null,
     @ColumnInfo(name="nombre")val nombre:String,
-    @ColumnInfo(name = "tutor")val tutor:String
+    @ColumnInfo(name = "tutor")val tutor:String,
+    @ColumnInfo(name = "Duracion")val duracion:Int,
+    @ColumnInfo(name = "lunes")val lunes:Boolean,
+    @ColumnInfo(name = "martes")val martes:Boolean,
+    @ColumnInfo(name = "miercoles")val miercoles:Boolean,
+    @ColumnInfo(name = "jueves")val jueves:Boolean,
+    @ColumnInfo(name = "viernes")val viernes:Boolean,
+    @ColumnInfo(name = "sabado")val sabado:Boolean,
+    @ColumnInfo(name = "domingo")val domingo:Boolean
 )

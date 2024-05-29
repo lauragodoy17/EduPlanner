@@ -4,7 +4,7 @@ import com.softcg.myapplication.data.Repositories.AsignaturasRepository
 import com.softcg.myapplication.data.Repositories.EventosRepository
 import com.softcg.myapplication.data.Repositories.TareasRepository
 import com.softcg.myapplication.ui.Inicio.Models.Evento
-import com.softcg.myapplication.ui.Inicio.Models.Asignatura
+import com.softcg.myapplication.ui.Inicio.Fragments.Asignaturas.Models.Asignatura
 import com.softcg.myapplication.ui.Inicio.Models.Tarea
 import javax.inject.Inject
 

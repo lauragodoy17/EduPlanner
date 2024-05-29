@@ -5,11 +5,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.softcg.myapplication.data.Repositories.AsignaturasRepository
 import com.softcg.myapplication.domain.getAsignaturasUseCase
-import com.softcg.myapplication.domain.getEventosUseCase
-import com.softcg.myapplication.domain.getTareasUseCase
-import com.softcg.myapplication.ui.Inicio.Models.Asignatura
+import com.softcg.myapplication.ui.Inicio.Fragments.Asignaturas.Models.Asignatura
+import com.softcg.myapplication.ui.Inicio.Fragments.Asignaturas.Models.ListItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
@@ -33,12 +33,28 @@ class AsignaturasViewModel @Inject constructor(
         }
     }
 
-    fun onAgregarAsignaturaSelected(nombre:String,tutor:String){
-        val asignatura: Asignatura = Asignatura(null,nombre,tutor)
+    fun onAgregarAsignaturaSelected(nombre:String,tutor:String,duracion:Int, horario:List<ListItem>){
+        val horarios=getHorario(horario)
+        val asignatura = Asignatura(null,nombre,tutor,duracion,horarios)
         viewModelScope.launch {
             asignaturasRepository.insertAsignatura(asignatura)
             obtenerAsignaturas()
         }
     }
+    private fun getHorario(items: List<ListItem>):List<Boolean>{
+        val dias = listOf("lunes", "martes", "miércoles", "jueves", "viernes", "sábado", "domingo")
+
+        val resultado = MutableList(7) { false }
+
+        for (item in items) {
+            val dia = item.name.lowercase(Locale.getDefault())
+            val index = dias.indexOf(dia)
+            if (index != -1) {
+                resultado[index] = true
+            }
+        }
+        return resultado
+    }
+
 
 }
