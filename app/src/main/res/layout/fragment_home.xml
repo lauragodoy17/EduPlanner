@@ -14,71 +14,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <TextView
-                android:id="@+id/textosemana"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:text="Tu semana"
-                android:textColor="#4E6B56"
-                android:textSize="20sp"
-                app:layout_constraintBottom_toTopOf="@id/containerReporte"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/containerReporte"
-                android:layout_width="match_parent"
-                android:layout_marginHorizontal="35dp"
-                android:layout_height="150dp"
-                android:layout_marginTop="15dp"
-                android:background="@drawable/boton_redondo"
-                android:gravity="center_vertical"
-                android:paddingStart="20dp"
-                android:paddingEnd="20dp"
-                android:paddingTop="20dp"
-                app:layout_constraintBottom_toTopOf="@id/separadorA"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/textosemana">
-
-                <ImageView
-                    android:id="@+id/circleImageView"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_gravity="start|top"
-                    android:foreground="@drawable/estadistica"
-                    android:scaleType="fitXY"
-                    android:src="@drawable/circle"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
-                    android:text="Reporte Semanal"
-                    android:textStyle="bold"
-                    android:textColor="#949494"
-                    android:textSize="20sp"
-                    app:layout_constraintStart_toEndOf="@id/circleImageView"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <TextView
-                    android:id="@+id/eventosrealizados"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginTop="5dp"
-                    android:text="La cantidad de eventos que usted realizo durante la semana fueron ____."
-                    android:textColor="#000000"
-                    android:textSize="18sp"
-                    app:layout_constraintStart_toStartOf="@id/circleImageView"
-                    app:layout_constraintTop_toBottomOf="@id/circleImageView" />
-
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <TextView
                 android:id="@+id/textoclases"
@@ -176,7 +112,7 @@
                 android:background="#B8B8B8"
                 android:layout_marginTop="15dp"
                 app:layout_constraintBottom_toTopOf="@id/textoclases"
-                app:layout_constraintTop_toBottomOf="@id/containerReporte"/>
+                app:layout_constraintTop_toTopOf="parent"/>
             <View
                 android:id="@+id/separadorB"
                 android:layout_width="match_parent"

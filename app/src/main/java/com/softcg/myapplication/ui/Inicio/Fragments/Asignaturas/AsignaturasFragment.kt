@@ -87,6 +87,7 @@ class AsignaturasFragment : Fragment() {
         val guardarBoton= dialog.findViewById<Button>(R.id.botonAgregar)
         val tiempo=dialog.findViewById<EditText>(R.id.etTime)
         val duracion=dialog.findViewById<EditText>(R.id.DuracionEditText)
+        var aux=0
 
         selectedItem?.clear()
         val adapter = MultiSelectSpinnerAdapter(
@@ -116,7 +117,10 @@ class AsignaturasFragment : Fragment() {
 
         guardarBoton.setOnClickListener {
             dialog.dismiss()
-            inicioViewModel.onAgregarAsignaturaSelected(nombre.text.toString(),tutor.text.toString(),duracion.text.toString().toInt(),currentName)
+            if (duracion.text.toString()!=""){
+                aux=duracion.text.toString().toInt()
+            }
+            inicioViewModel.onAgregarAsignaturaSelected(nombre.text.toString(),tutor.text.toString(),aux,currentName)
             Toast.makeText(context,"Asignatura guardada", Toast.LENGTH_SHORT).show()
         }
 

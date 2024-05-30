@@ -81,7 +81,7 @@
         android:id="@+id/Contenedor_duracion"
         android:layout_width="325dp"
         android:layout_height="wrap_content"
-        android:hint="Ingresa la duración de la clase"
+        android:hint="Duracion (Horas)"
         android:textColor="#000000"
         android:textColorHint="#949494"
         android:layout_gravity="center"
@@ -91,7 +91,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/campos_stylos"
-            android:inputType="text"
+            android:inputType="number"
             android:textColor="#000000"
             android:textColorHint="#949494" />
     </com.google.android.material.textfield.TextInputLayout>

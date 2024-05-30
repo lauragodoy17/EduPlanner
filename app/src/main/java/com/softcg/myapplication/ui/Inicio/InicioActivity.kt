@@ -95,6 +95,7 @@ class InicioActivity : AppCompatActivity() {
         initfloatingBottons()
         createChannel()
         scheduleNotification()
+        scheduleNotificationTarde()
     }
 
 
@@ -334,6 +335,7 @@ class InicioActivity : AppCompatActivity() {
         val descripcion=dialog.findViewById<EditText>(R.id.DescripcionEditText)
         val calificacion = dialog.findViewById<EditText>(R.id.NombreEditText)
         val guardarBoton= dialog.findViewById<Button>(R.id.botonAgregar)
+        var aux:Float= 0F
 
         val items= listOf("Numerico (1-5)")
         val autoComplete =dialog.findViewById<AutoCompleteTextView>(R.id.CalificacionEditText)
@@ -347,7 +349,11 @@ class InicioActivity : AppCompatActivity() {
 
         guardarBoton.setOnClickListener {
             dialog.dismiss()
-            inicioViewModel.onAgregarCalificacionSelected(autoComplete.text.toString(),calificacion.text.toString().toFloat(),asignatura.text.toString(), descripcion.text.toString())
+
+            if(calificacion.text.toString()!=""){
+                aux=calificacion.text.toString().toFloat()
+            }
+            inicioViewModel.onAgregarCalificacionSelected(autoComplete.text.toString(),aux,asignatura.text.toString(), descripcion.text.toString())
             calificacionesViewModel.obtenerCalificaciones()
             Toast.makeText(this,"Calificación guardada", Toast.LENGTH_SHORT).show()
         }
@@ -389,7 +395,7 @@ class InicioActivity : AppCompatActivity() {
 
         val calendar = Calendar.getInstance().apply {
             timeInMillis = System.currentTimeMillis()
-            set(Calendar.HOUR_OF_DAY, 12)
+            set(Calendar.HOUR_OF_DAY, 9)
             set(Calendar.MINUTE, 0)
             set(Calendar.SECOND, 0)
             set(Calendar.MILLISECOND, 0)
@@ -399,7 +405,35 @@ class InicioActivity : AppCompatActivity() {
             }
         }
 
+        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        alarmManager.setInexactRepeating(
+            AlarmManager.RTC_WAKEUP,
+            calendar.timeInMillis,
+            AlarmManager.INTERVAL_DAY,
+            pendingIntent)
+    }
 
+    private fun scheduleNotificationTarde() {
+        val intent = Intent(applicationContext, AlarmNotification::class.java)
+        intent.putExtra("Pendientes",homeViewModel._tareas.value?.size.toString())
+        val pendingIntent = PendingIntent.getBroadcast(
+            applicationContext,
+            NOTIFICATION_ID,
+            intent,
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        )
+
+        val calendar = Calendar.getInstance().apply {
+            timeInMillis = System.currentTimeMillis()
+            set(Calendar.HOUR_OF_DAY, 11)
+            set(Calendar.MINUTE, 30)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+
+            if (before(Calendar.getInstance())) {
+                add(Calendar.DAY_OF_YEAR, 1)
+            }
+        }
 
         val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
         alarmManager.setInexactRepeating(

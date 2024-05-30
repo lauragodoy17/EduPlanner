@@ -87,15 +87,17 @@
             </com.google.android.material.textfield.TextInputLayout>
 
         </LinearLayout>
+
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/NombreEditText"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginBottom="10dp"
             android:background="@drawable/campos_stylos"
-            android:inputType="text"
+            android:inputType="numberDecimal"
             android:textColor="#000000"
-            android:textColorHint="#949494"
-            android:layout_marginBottom="10dp"/>
+            android:textColorHint="#949494" />
+
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/DescripcionContainer"
             style="@style/AppTheme.TextInputLayout"
