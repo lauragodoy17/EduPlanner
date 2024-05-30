@@ -154,7 +154,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="15dp"
-        android:text="¿Olvidaste tú contraseña?"
+        android:text=""
         android:textColor="#4E6B56"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -169,7 +169,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="15dp"
-        android:text="O continua con"
+        android:text=""
         android:textColor="#000000"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -178,14 +178,12 @@
         app:layout_constraintTop_toBottomOf="@id/tvOlvidaste_contraseña"
         />
 
-    <ImageButton
+    <TextView
         android:id="@+id/Botongoogle"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_marginTop="15dp"
-        android:background="@drawable/boton_redondo"
         android:scaleType="fitCenter"
-        android:src="@drawable/google1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toTopOf="@id/textoInicio_sesion"

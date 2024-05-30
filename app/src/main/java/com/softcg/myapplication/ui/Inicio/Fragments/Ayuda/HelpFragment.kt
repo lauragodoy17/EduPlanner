@@ -47,7 +47,10 @@ class HelpFragment : Fragment() {
                 adapterView, view, i, l ->
         }
         guardarBoton.setOnClickListener {
-            Toast.makeText(requireContext()," Comentario guardado", Toast.LENGTH_SHORT).show()
+            quejas.setText("")
+            quejados.setText("")
+            descripcion.setText("")
+            Toast.makeText(requireContext()," Comentario Enviado", Toast.LENGTH_SHORT).show()
         }
     }
     private fun initQuejados(view: View){
@@ -65,7 +68,10 @@ class HelpFragment : Fragment() {
                 adapterView, view, i, l ->
         }
         guardarBoton.setOnClickListener {
-            Toast.makeText(requireContext()," Comentario guardado", Toast.LENGTH_SHORT).show()
+            quejas.setText("")
+            quejados.setText("")
+            descripcion.setText("")
+            Toast.makeText(requireContext()," Comentario enviado", Toast.LENGTH_SHORT).show()
         }
     }
 }

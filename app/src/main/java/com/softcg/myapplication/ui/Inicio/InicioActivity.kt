@@ -349,7 +349,6 @@ class InicioActivity : AppCompatActivity() {
 
         guardarBoton.setOnClickListener {
             dialog.dismiss()
-
             if(calificacion.text.toString()!=""){
                 aux=calificacion.text.toString().toFloat()
             }
@@ -357,6 +356,7 @@ class InicioActivity : AppCompatActivity() {
             calificacionesViewModel.obtenerCalificaciones()
             Toast.makeText(this,"Calificación guardada", Toast.LENGTH_SHORT).show()
         }
+        dropDown(asignatura)
         dialog.show()
         dialog.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))

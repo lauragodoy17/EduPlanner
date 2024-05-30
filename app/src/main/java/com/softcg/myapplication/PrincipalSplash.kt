@@ -19,7 +19,6 @@ class PrincipalSplash : AppCompatActivity() {
         splashScreen.setKeepOnScreenCondition { true }
 
         if (FirebaseAuth.getInstance().currentUser == null) {
-
             startActivity(Intent(this, MainActivity::class.java))
             finish()
         }else{
