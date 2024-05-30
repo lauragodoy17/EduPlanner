@@ -28,7 +28,8 @@ class AgendaViewModel @Inject constructor(
 
     fun obtenerAgendaList() {
         var list :List<AgendaItem> = emptyList()
-
+        obtenerEventos()
+        obtenerTareas()
         if (_tareas.value?.isNotEmpty() == true){
             list = _tareas.value!!.map {
                 AgendaItem(id = it.id,titulo = it.titulo, descrip = it.descrip, asignatura = it.asignatura, fecha = it.fecha)

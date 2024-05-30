@@ -6,19 +6,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.softcg.myapplication.R
-import com.softcg.myapplication.ui.Inicio.InicioViewModel
 import com.softcg.myapplication.ui.Inicio.Fragments.Agenda.Adapters.AgendaAdapter
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class AgendaFragment : Fragment() {
 
-    private val inicioViewModel: AgendaViewModel by viewModels()
+    private val agendaViewModel: AgendaViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -30,16 +29,16 @@ class AgendaFragment : Fragment() {
     }
 
     fun initRecyclerAgenda(view: View){
-        inicioViewModel.obtenerTareas()
-        inicioViewModel.obtenerEventos()
-        inicioViewModel.obtenerAgendaList()
-        val adapter = AgendaAdapter(requireContext(),inicioViewModel)
+        agendaViewModel.obtenerTareas()
+        agendaViewModel.obtenerEventos()
+        agendaViewModel.obtenerAgendaList()
+        val adapter = AgendaAdapter(requireContext(),agendaViewModel)
         val recyclerView = view.findViewById<RecyclerView>(R.id.recycleragenda)
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
 
-        inicioViewModel._listAgenda.observe(viewLifecycleOwner, Observer { AgendaItem ->
+        agendaViewModel._listAgenda.observe(viewLifecycleOwner, Observer { AgendaItem ->
             adapter.setData(AgendaItem)
             if (AgendaItem.isNotEmpty()) {
                 view.findViewById<TextView>(R.id.textoAgenda).visibility = View.GONE

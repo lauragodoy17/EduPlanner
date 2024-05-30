@@ -3,14 +3,17 @@ package com.softcg.myapplication.di
 import android.content.Context
 import androidx.room.Room
 import com.softcg.myapplication.data.Repositories.AsignaturasRepository
+import com.softcg.myapplication.data.Repositories.CalificacionesRespository
 import com.softcg.myapplication.data.Repositories.EventosRepository
 import com.softcg.myapplication.data.Repositories.TareasRepository
 import com.softcg.myapplication.data.Repositories.pruebaRepository
 import com.softcg.myapplication.data.database.TareasDatabase.TareasDatabase
 import com.softcg.myapplication.data.database.dao.AsignaturasDao
+import com.softcg.myapplication.data.database.dao.CalificacionesDao
 import com.softcg.myapplication.data.database.dao.EventosDao
 import com.softcg.myapplication.data.database.dao.PruebaDao
 import com.softcg.myapplication.data.database.dao.TareasDao
+import com.softcg.myapplication.ui.Inicio.Fragments.Calificaciones.Models.Calificacion
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -59,4 +62,13 @@ object RoomModule {
     @Singleton
     @Provides
     fun provideAsignaturasRepository(dao: AsignaturasDao):AsignaturasRepository = AsignaturasRepository(dao)
+
+    @Singleton
+    @Provides
+    fun provideCalificacionesDao(db:TareasDatabase)=db.getCalificacionesDao()
+
+    @Singleton
+    @Provides
+    fun provideCalificacionesRepository(dao: CalificacionesDao):CalificacionesRespository = CalificacionesRespository(dao)
+
 }

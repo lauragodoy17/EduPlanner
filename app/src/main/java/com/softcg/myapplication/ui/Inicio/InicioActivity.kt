@@ -42,6 +42,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.softcg.myapplication.R
+import com.softcg.myapplication.ui.Inicio.Fragments.Agenda.AgendaViewModel
+import com.softcg.myapplication.ui.Inicio.Fragments.Calificaciones.CalificacionesViewModel
 import com.softcg.myapplication.ui.Inicio.Fragments.Home.HomeViewModel
 import com.softcg.myapplication.ui.login.MainActivity
 import com.softcg.myapplication.ui.notifications.AlarmNotification
@@ -49,6 +51,7 @@ import com.softcg.myapplication.ui.notifications.AlarmNotification.Companion.NOT
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import java.util.Calendar
 
@@ -57,6 +60,8 @@ class InicioActivity : AppCompatActivity() {
 
     private val inicioViewModel : InicioViewModel by viewModels()
     private val homeViewModel: HomeViewModel by viewModels()
+    private val agendaViewModel:AgendaViewModel by viewModels()
+    private val calificacionesViewModel :CalificacionesViewModel by viewModels()
 
 
     private lateinit var toolbar: Toolbar
@@ -176,30 +181,35 @@ class InicioActivity : AppCompatActivity() {
 
     private fun initObserver(){
         inicioViewModel._tareas.observe(this){
-            homeViewModel.obtenerTareas()
+            CoroutineScope(Dispatchers.Main).launch {
+                homeViewModel.obtenerTareas()
+                agendaViewModel.obtenerAgendaList()
+            }
         }
         inicioViewModel._eventos.observe(this){
-            homeViewModel.obtenerEventos()
+            CoroutineScope(Dispatchers.Main).launch {
+                homeViewModel.obtenerEventos()
+                agendaViewModel.obtenerAgendaList()
+            }
+        }
+        inicioViewModel._calificaciones.observe(this){
+            CoroutineScope(Dispatchers.Main).launch {
+                calificacionesViewModel.obtenerCalificaciones()
+            }
         }
         inicioViewModel.navigateToTarea.observe(this){
             it.getContentIfNotHandled()?.let {
                 CoroutineScope(Dispatchers.Main).launch {
                     showDialogTarea()
-                    homeViewModel.obtenerTareas()
                 }
             }
         }
         inicioViewModel.navigateToEvento.observe(this){
             it.getContentIfNotHandled()?.let {
                 showDialogEvento()
-                homeViewModel.obtenerTareas()
             }
         }
-        inicioViewModel.navigateToCalificacion.observe(this){
-            it.getContentIfNotHandled()?.let {
-                goToCalificacion()
-            }
-        }
+
     }
 
     private fun initShowOut(v: View){
@@ -264,9 +274,6 @@ class InicioActivity : AppCompatActivity() {
         return rotate
     }
 
-    private fun goToCalificacion(){
-
-    }
 
     private fun showDialogTarea(){
         val dialog = Dialog(this)
@@ -328,19 +335,20 @@ class InicioActivity : AppCompatActivity() {
         val calificacion = dialog.findViewById<EditText>(R.id.NombreEditText)
         val guardarBoton= dialog.findViewById<Button>(R.id.botonAgregar)
 
-        val items= listOf("Numerico", "Alfabetico")
+        val items= listOf("Numerico (1-5)")
         val autoComplete =dialog.findViewById<AutoCompleteTextView>(R.id.CalificacionEditText)
         val adapter=ArrayAdapter(this, R.layout.item_menu_asignatura,items)
         autoComplete.setAdapter(adapter)
         autoComplete.onItemClickListener=AdapterView.OnItemClickListener{
             adapterView, view, i, l ->
-
             val itemSelected=adapterView.getItemAtPosition(i)
             Toast.makeText(this, "Item: $itemSelected", Toast.LENGTH_SHORT).show()
         }
 
         guardarBoton.setOnClickListener {
             dialog.dismiss()
+            inicioViewModel.onAgregarCalificacionSelected(autoComplete.text.toString(),calificacion.text.toString().toFloat(),asignatura.text.toString(), descripcion.text.toString())
+            calificacionesViewModel.obtenerCalificaciones()
             Toast.makeText(this,"Calificación guardada", Toast.LENGTH_SHORT).show()
         }
         dialog.show()
