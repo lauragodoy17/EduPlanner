@@ -1,7 +1,7 @@
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
-    id("kotlin-kapt")
+    id("com.google.devtools.ksp")
     id("dagger.hilt.android.plugin")
     id("com.google.gms.google-services")
 }
@@ -44,6 +44,7 @@ android {
     hilt{
         enableAggregatingTask=false
     }
+    
 }
 
 dependencies {
@@ -62,7 +63,7 @@ dependencies {
     implementation("com.google.dagger:hilt-android:2.50")
     implementation("junit:junit:4.12")
 
-    kapt("com.google.dagger:hilt-android-compiler:2.50")
+    ksp("com.google.dagger:hilt-android-compiler:2.50")
     //API SPLASH SCREEN
     implementation("androidx.core:core-splashscreen:1.0.0")
     //Corrutinas
@@ -87,7 +88,7 @@ dependencies {
     //ROOM
     implementation("androidx.room:room-runtime:2.6.1")
     implementation("androidx.room:room-ktx:2.6.1")
-    kapt("androidx.room:room-compiler:2.6.1")
+    ksp("androidx.room:room-compiler:2.6.1")
     //mockito
     testImplementation ("junit:junit:4.+")
     testImplementation ("androidx.test:core-ktx:1.5.0")
