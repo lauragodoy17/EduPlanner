@@ -20,4 +20,13 @@
     <color name="input_border">#E0E0E0</color>
     <color name="input_background">#FAFAFA</color>
     <color name="google_border">#DADCE0</color>
+    
+    <!-- Colores de fondo de las tarjetas -->
+    <color name="card_background_1">#EBC3C3</color>
+    <color name="card_background_2">#FFF0C1</color>
+    <color name="card_background_3">#E6E0F8</color>
+    
+    <!-- Colores adicionales -->
+    <color name="highlight_yellow">#FFD700</color>
+    <color name="highlight_purple">#B19CD9</color>
 </resources>

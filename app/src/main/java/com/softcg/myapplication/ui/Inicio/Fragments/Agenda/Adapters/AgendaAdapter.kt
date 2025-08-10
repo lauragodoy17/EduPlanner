@@ -23,7 +23,6 @@ class AgendaAdapter(private val context: Context, private val inicioViewModel: A
     class MyViewHolder(itemView: View):RecyclerView.ViewHolder(itemView){
         val textTitulo : TextView = itemView.findViewById(R.id.text_titulo)
         val textDesc : TextView = itemView.findViewById(R.id.textodesc)
-        val textasignatura: TextView =itemView.findViewById(R.id.texto_asignatura)
         val textFecha : TextView = itemView.findViewById(R.id.textofecha)
         val imagen : ImageView = itemView.findViewById(R.id.circleImage)
         val boton: ImageButton = itemView.findViewById(R.id.Opciones)
@@ -44,11 +43,9 @@ class AgendaAdapter(private val context: Context, private val inicioViewModel: A
         holder.textTitulo.text=currentItem.titulo
         holder.textDesc.text=currentItem.descrip
         if (currentItem.asignatura==null){
-            holder.textasignatura.visibility=View.GONE
             holder.imagen.foreground=ContextCompat.getDrawable(context,R.drawable.baseline_calendar_month_24)
 
         } else{
-            holder.textasignatura.text=currentItem.asignatura
             holder.imagen.foreground= ContextCompat.getDrawable(context,R.drawable.baseline_agenda_add_24)
         }
         holder.textFecha.text=currentItem.fecha

@@ -25,7 +25,6 @@ class EventosAdapter(private val context: Context, private val inicioViewModel: 
         val textDesc : TextView = itemeventoView.findViewById(R.id.textodesc)
         val textFecha : TextView = itemeventoView.findViewById(R.id.textofecha)
         val boton : ImageButton = itemeventoView.findViewById(R.id.Opciones)
-        val textasignatura: TextView =itemView.findViewById(R.id.texto_asignatura)
         val imagen : ImageView = itemView.findViewById(R.id.circleImage)
 
     }
@@ -46,7 +45,6 @@ class EventosAdapter(private val context: Context, private val inicioViewModel: 
         holder.textDesc.text=currentItem.descrip
         holder.textFecha.text=currentItem.fecha
         holder.imagen.foreground=ContextCompat.getDrawable(context, R.drawable.baseline_calendar_month_24)
-        holder.textasignatura.visibility=View.GONE
         holder.boton.setOnClickListener { v ->
             showPopupMenu(v,position)
         }

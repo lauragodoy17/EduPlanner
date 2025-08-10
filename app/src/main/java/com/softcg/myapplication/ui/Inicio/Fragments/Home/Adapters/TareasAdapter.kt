@@ -22,7 +22,6 @@ class TareasAdapter(private val context: Context, private val inicioViewModel: H
     class MyViewHolder(itemView: View):RecyclerView.ViewHolder(itemView){
         val textTitulo : TextView = itemView.findViewById(R.id.text_titulo)
         val textDesc : TextView = itemView.findViewById(R.id.textodesc)
-        val textasignatura:TextView=itemView.findViewById(R.id.texto_asignatura)
         val textFecha : TextView = itemView.findViewById(R.id.textofecha)
         val boton: ImageButton = itemView.findViewById(R.id.Opciones)
     }
@@ -39,7 +38,6 @@ class TareasAdapter(private val context: Context, private val inicioViewModel: H
         val currentItem=tareaslist[position]
         holder.textTitulo.text=currentItem.titulo
         holder.textDesc.text=currentItem.descrip
-        holder.textasignatura.text=currentItem.asignatura
         holder.textFecha.text=currentItem.fecha
         holder.boton.setOnClickListener {v ->
             showPopupMenu(v,position)
