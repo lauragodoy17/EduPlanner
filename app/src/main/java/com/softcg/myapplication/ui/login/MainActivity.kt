@@ -66,7 +66,7 @@ class MainActivity : AppCompatActivity() {
     private fun initlisteners(){
 
         binding.emailText.loseFocusAfterAction(EditorInfo.IME_ACTION_NEXT)
-        binding.campocontraseA.setOnFocusChangeListener { _, hasFocus -> onFieldChanged(hasFocus) }
+        binding.campocontrasea.setOnFocusChangeListener { _, hasFocus -> onFieldChanged(hasFocus) }
         binding.emailText.onTextChanged { onFieldChanged() }
 
         binding.contrasenaText.loseFocusAfterAction(EditorInfo.IME_ACTION_NEXT)
@@ -116,7 +116,7 @@ class MainActivity : AppCompatActivity() {
         with(binding){
             campoemail.error =
                 if (viewState.isValidEmail) null else getString(R.string.login_error_mail)
-            campocontraseA.error=
+            campocontrasea.error=
                 if (viewState.isValidPasswords) null else getString(R.string.login_error_password)
 
         }
