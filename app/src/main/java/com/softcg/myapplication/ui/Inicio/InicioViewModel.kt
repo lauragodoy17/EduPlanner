@@ -58,8 +58,8 @@ class InicioViewModel @Inject constructor(
         _navigateToEvento.value= Event(true)
     }
 
-    fun onAgregarTareaSelected(titulo:String,descrip:String,asignatura:String,fecha:String){
-        val tarea: Tarea = Tarea(null,titulo, descrip, asignatura,fecha)
+    fun onAgregarTareaSelected(titulo:String,descrip:String,asignatura:String,fecha:String,prioridad:Int){
+        val tarea: Tarea = Tarea(null,titulo, descrip, asignatura,fecha,prioridad)
         saveTarea(tarea)
         obtenerTareas()
     }
@@ -106,8 +106,8 @@ class InicioViewModel @Inject constructor(
         }
     }
 
-    fun onAgregarEventoSelected(titulo:String,descrip:String, fecha:String,){
-        val evento: Evento = Evento(null,titulo, descrip,fecha)
+    fun onAgregarEventoSelected(titulo:String,descrip:String, fecha:String,prioridad:Int,){
+        val evento: Evento = Evento(null,titulo, descrip,fecha,prioridad)
         saveEvento(evento)
         obtenerEventos()
     }

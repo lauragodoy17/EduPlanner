@@ -7,5 +7,6 @@ data class Tarea (
     val titulo:String,
     val descrip:String,
     val asignatura:String,
-    val fecha:String
+    val fecha:String,
+    val prioridad:Int
 )

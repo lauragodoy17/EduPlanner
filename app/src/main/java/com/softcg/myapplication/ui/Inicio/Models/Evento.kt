@@ -4,5 +4,6 @@ data class Evento (
     val id:Int?,
     val titulo:String,
     val descrip:String,
-    val fecha:String
+    val fecha:String,
+    val prioridad:Int
 )

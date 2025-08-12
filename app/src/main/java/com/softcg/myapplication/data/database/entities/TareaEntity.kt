@@ -12,5 +12,6 @@ data class TareaEntity (
     @ColumnInfo(name="titulo")val titulo:String,
     @ColumnInfo(name = "descrip")val descrip:String,
     @ColumnInfo(name = "asignatura")val asignatura:String,
-    @ColumnInfo(name= "fecha")val fecha:String
+    @ColumnInfo(name= "fecha")val fecha:String,
+    @ColumnInfo(name= "prioridad")val prioridad:Int
 )

@@ -44,7 +44,7 @@ class AgendaViewModel @Inject constructor(
         _listAgenda.value=list
     }
     fun deleteTarea(agendaItem: AgendaItem){
-        val tarea= Tarea(agendaItem.id,agendaItem.titulo,agendaItem.descrip,agendaItem.asignatura!!,agendaItem.fecha)
+        val tarea= Tarea(agendaItem.id,agendaItem.titulo,agendaItem.descrip,agendaItem.asignatura!!,agendaItem.fecha, 1)
         deleteTarea(tarea)
     }
 
@@ -77,7 +77,7 @@ class AgendaViewModel @Inject constructor(
     }
 
     fun deleteEvento(agendaItem: AgendaItem){
-        val evento = Evento(agendaItem.id,agendaItem.titulo,agendaItem.descrip,agendaItem.fecha)
+        val evento = Evento(agendaItem.id,agendaItem.titulo,agendaItem.descrip,agendaItem.fecha, 1)
         deleteEvento(evento)
     }
 

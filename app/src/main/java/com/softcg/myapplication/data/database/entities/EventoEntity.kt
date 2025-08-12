@@ -10,5 +10,6 @@ data class EventoEntity (
     @ColumnInfo(name="id")val id: Int?=null,
     @ColumnInfo(name="titulo")val titulo:String,
     @ColumnInfo(name = "descrip")val descrip:String,
-    @ColumnInfo(name= "fecha")val fecha:String
+    @ColumnInfo(name= "fecha")val fecha:String,
+    @ColumnInfo(name= "prioridad")val prioridad:Int
 )

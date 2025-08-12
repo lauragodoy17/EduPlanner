@@ -292,9 +292,9 @@ class InicioActivity : AppCompatActivity() {
         }
         guardarBoton.setOnClickListener {
             dialog.dismiss()
-            inicioViewModel.onAgregarTareaSelected(titulo.text.toString(),descripcion.text.toString(),asignatura.text.toString(),fecha.text.toString())
+            inicioViewModel.onAgregarTareaSelected(titulo.text.toString(),descripcion.text.toString(),asignatura.text.toString(),fecha.text.toString(),1)
             homeViewModel.obtenerTareas()
-            Toast.makeText(this,"Asignatura guardada", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this,"Tarea guardada", Toast.LENGTH_SHORT).show()
         }
         dropDown(asignatura)
         dialog.show()
@@ -317,9 +317,9 @@ class InicioActivity : AppCompatActivity() {
         }
         guardarBoton.setOnClickListener {
             dialog.dismiss()
-            inicioViewModel.onAgregarEventoSelected(titulo.text.toString(),descripcion.text.toString(),fecha.text.toString())
+            inicioViewModel.onAgregarEventoSelected(titulo.text.toString(),descripcion.text.toString(),fecha.text.toString(),1)
             homeViewModel.obtenerEventos()
-            Toast.makeText(this,"Evento guardada", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this,"Evento guardado", Toast.LENGTH_SHORT).show()
         }
         dialog.show()
         dialog.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
