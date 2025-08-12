@@ -24,9 +24,8 @@ class EventosAdapter(private val context: Context, private val inicioViewModel: 
         val textTitulo : TextView = itemeventoView.findViewById(R.id.text_titulo)
         val textDesc : TextView = itemeventoView.findViewById(R.id.textodesc)
         val textFecha : TextView = itemeventoView.findViewById(R.id.textofecha)
-        val boton : ImageButton = itemeventoView.findViewById(R.id.Opciones)
+        val boton : ImageView = itemeventoView.findViewById(R.id.opciones)
         val imagen : ImageView = itemView.findViewById(R.id.circleImage)
-        val optionsButton: ImageView? = itemeventoView.findViewById(R.id.iv_options)
 
     }
 
@@ -50,11 +49,6 @@ class EventosAdapter(private val context: Context, private val inicioViewModel: 
         // Keep original button functionality for compatibility
         holder.boton.setOnClickListener { v ->
             showPopupMenu(v,position)
-        }
-        
-        // Add new options button functionality
-        holder.optionsButton?.setOnClickListener { v ->
-            showPopupMenu(v, position)
         }
     }
 

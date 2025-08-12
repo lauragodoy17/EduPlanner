@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="12dp"
-    app:cardCornerRadius="16dp"
+    app:cardCornerRadius="20dp"
     app:cardElevation="4dp"
     app:cardBackgroundColor="@color/card_background_1">
 
@@ -86,28 +86,17 @@
             android:gravity="center_vertical"
             android:layout_marginTop="8dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/Contenedor_fecha">
+            app:layout_constraintBottom_toBottomOf="parent">
 
-            <!-- Options menu button -->
-            <ImageView
-                android:id="@+id/iv_options"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/ic_more_vert"
-                android:tint="@color/text_secondary"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:padding="4dp"
-                android:layout_marginEnd="8dp"
-                android:contentDescription="Opciones" />
 
             <!-- Ícono de flecha -->
             <ImageView
-                android:id="@+id/iv_arrow"
+                android:id="@+id/opciones"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
+                android:contentDescription="Ver más"
                 android:src="@drawable/ic_arrow_forward"
-                android:tint="@color/text_secondary"
-                android:contentDescription="Ver más" />
+                app:tint="@color/black" />
 
         </LinearLayout>
 
@@ -139,14 +128,6 @@
         <!-- Elementos ocultos para compatibilidad con adapters -->
         <TextView
             android:id="@+id/tv_time"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:visibility="gone"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-            
-        <ImageButton
-            android:id="@+id/Opciones"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:visibility="gone"
