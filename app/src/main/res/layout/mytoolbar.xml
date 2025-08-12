@@ -2,12 +2,13 @@
 <androidx.appcompat.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="0dp"
     android:id="@+id/myToolbar"
     android:background="@color/back"
-    android:elevation="8dp"
+    android:elevation="0dp"
     android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
     android:fitsSystemWindows="true"
+    android:visibility="gone"
     >
     <ImageButton
         android:id="@+id/backButton"
@@ -20,7 +21,5 @@
         app:tint="@color/white">
 
     </ImageButton>
-
-
 
 </androidx.appcompat.widget.Toolbar>

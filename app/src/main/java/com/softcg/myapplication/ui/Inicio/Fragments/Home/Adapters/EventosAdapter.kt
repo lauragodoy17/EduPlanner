@@ -26,6 +26,7 @@ class EventosAdapter(private val context: Context, private val inicioViewModel: 
         val textFecha : TextView = itemeventoView.findViewById(R.id.textofecha)
         val boton : ImageButton = itemeventoView.findViewById(R.id.Opciones)
         val imagen : ImageView = itemView.findViewById(R.id.circleImage)
+        val optionsButton: ImageView? = itemeventoView.findViewById(R.id.iv_options)
 
     }
 
@@ -45,8 +46,15 @@ class EventosAdapter(private val context: Context, private val inicioViewModel: 
         holder.textDesc.text=currentItem.descrip
         holder.textFecha.text=currentItem.fecha
         holder.imagen.foreground=ContextCompat.getDrawable(context, R.drawable.baseline_calendar_month_24)
+        
+        // Keep original button functionality for compatibility
         holder.boton.setOnClickListener { v ->
             showPopupMenu(v,position)
+        }
+        
+        // Add new options button functionality
+        holder.optionsButton?.setOnClickListener { v ->
+            showPopupMenu(v, position)
         }
     }
 

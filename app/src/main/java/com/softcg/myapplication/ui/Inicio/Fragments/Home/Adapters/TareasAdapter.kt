@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -24,6 +25,7 @@ class TareasAdapter(private val context: Context, private val inicioViewModel: H
         val textDesc : TextView = itemView.findViewById(R.id.textodesc)
         val textFecha : TextView = itemView.findViewById(R.id.textofecha)
         val boton: ImageButton = itemView.findViewById(R.id.Opciones)
+        val optionsButton: ImageView? = itemView.findViewById(R.id.iv_options)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
@@ -39,9 +41,15 @@ class TareasAdapter(private val context: Context, private val inicioViewModel: H
         holder.textTitulo.text=currentItem.titulo
         holder.textDesc.text=currentItem.descrip
         holder.textFecha.text=currentItem.fecha
+        
+        // Keep original button functionality for compatibility
         holder.boton.setOnClickListener {v ->
             showPopupMenu(v,position)
-
+        }
+        
+        // Add new options button functionality
+        holder.optionsButton?.setOnClickListener { v ->
+            showPopupMenu(v, position)
         }
     }
 
