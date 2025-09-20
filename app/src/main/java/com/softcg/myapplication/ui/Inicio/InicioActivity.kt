@@ -284,6 +284,7 @@ class InicioActivity : AppCompatActivity() {
         val descripcion=dialog.findViewById<EditText>(R.id.DescripcionEditText)
         val asignatura =dialog.findViewById<AutoCompleteTextView>(R.id.AsignaturaEditText)
         val fecha = dialog.findViewById<EditText>(R.id.FechaEditText)
+        val prioridad = dialog.findViewById<AutoCompleteTextView>(R.id.PriorityEditText)
 
         val guardarBoton= dialog.findViewById<Button>(R.id.botonAgregar)
 
@@ -296,7 +297,8 @@ class InicioActivity : AppCompatActivity() {
             homeViewModel.obtenerTareas()
             Toast.makeText(this,"Tarea guardada", Toast.LENGTH_SHORT).show()
         }
-        dropDown(asignatura)
+        dropDownpriority(prioridad)
+        dropDownAsignatures(asignatura)
         dialog.show()
         dialog.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
@@ -356,7 +358,7 @@ class InicioActivity : AppCompatActivity() {
             calificacionesViewModel.obtenerCalificaciones()
             Toast.makeText(this,"Calificación guardada", Toast.LENGTH_SHORT).show()
         }
-        dropDown(asignatura)
+        dropDownAsignatures(asignatura)
         dialog.show()
         dialog.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
@@ -375,13 +377,22 @@ class InicioActivity : AppCompatActivity() {
     }
 
 
-    private fun dropDown (asignatura: AutoCompleteTextView){
+    private fun dropDownAsignatures (asignatura: AutoCompleteTextView){
         inicioViewModel.obtenerAsignaturas()
         val items :List<String> = inicioViewModel._asignaturas.value!!
         val autoComplete:AutoCompleteTextView = asignatura
         val adapter = ArrayAdapter(this,R.layout.item_menu_asignatura, items)
         autoComplete.setAdapter(adapter)
     }
+
+    private fun dropDownpriority (priority: AutoCompleteTextView){
+        val items :List<String> = listOf("Alta","Media","Baja")
+        val autocomplete:AutoCompleteTextView = priority
+        val adapter = ArrayAdapter(this,R.layout.item_menu_asignatura, items)
+        autocomplete.setAdapter(adapter)
+
+    }
+    
 
     private fun scheduleNotification() {
         val intent = Intent(applicationContext, AlarmNotification::class.java)
