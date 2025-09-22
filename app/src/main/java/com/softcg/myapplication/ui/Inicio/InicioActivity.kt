@@ -96,7 +96,8 @@ class InicioActivity : AppCompatActivity() {
         
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.drawer)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            // Only apply left and right padding, not top/bottom since we want transparency
+            v.setPadding(systemBars.left, 0, systemBars.right, systemBars.bottom)
             insets
         }
         initObserver()
@@ -522,19 +523,17 @@ class InicioActivity : AppCompatActivity() {
 
     private fun makeSystemBarsTransparent() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // Only make status bar transparent, keep navigation bar visible
+            // Make status bar transparent
             window.statusBarColor = Color.TRANSPARENT
             
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                // For Android 11 (API 30) and above
-                // Only apply to status bar, not navigation bar
+            // Set light status bar icons for better visibility
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 window.decorView.systemUiVisibility = (
                     View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
-                    View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
+                    View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
                 )
             } else {
-                // For Android 5.0 (API 21) to Android 10 (API 29)
-                // Only layout behind status bar, not navigation bar
                 window.decorView.systemUiVisibility = (
                     View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
                     View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN

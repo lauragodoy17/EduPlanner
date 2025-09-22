@@ -3,7 +3,7 @@
     <style name="Base.Theme.MyApplication" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
-        <item name="android:statusBarColor" >@color/back</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
 
     <style name="Theme.MyApplication" parent="Base.Theme.MyApplication" >
