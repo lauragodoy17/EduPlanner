@@ -5,10 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TextView
-import androidx.core.view.GravityCompat
-import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -33,7 +30,6 @@ class HomeFragment : Fragment() {
         val view = inflater.inflate(layout.fragment_home, container, false)
         initRecyclerTareas(view)
         initRecyclerEventos(view)
-        setupHamburgerMenu(view)
         return view
     }
 
@@ -85,23 +81,6 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private fun setupHamburgerMenu(view: View) {
-        val hamburgerMenu = view.findViewById<ImageView>(R.id.menu_hamburger)
-        hamburgerMenu?.setOnClickListener {
-            try {
-                val drawerLayout = requireActivity().findViewById<DrawerLayout>(R.id.drawer)
-                if (drawerLayout != null) {
-                    if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
-                        drawerLayout.closeDrawer(GravityCompat.START)
-                    } else {
-                        drawerLayout.openDrawer(GravityCompat.START)
-                    }
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
-    }
 
 
 }

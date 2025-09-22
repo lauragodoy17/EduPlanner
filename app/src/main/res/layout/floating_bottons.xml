@@ -49,7 +49,7 @@
                 android:clickable="true"
                 android:focusable="true"
                 android:src="@drawable/baseline_agenda_add_24"
-                app:backgroundTint="@color/weakverde"
+                app:backgroundTint="@color/purpl_leighter"
                 app:elevation="0dp"
                 app:tint="@color/black" />
 
@@ -91,7 +91,7 @@
                 android:clickable="true"
                 android:focusable="true"
                 android:src="@drawable/baseline_calendar_month_24"
-                app:backgroundTint="@color/weakverde"
+                app:backgroundTint="@color/purpl_leighter"
                 android:tint="@color/black"
                 app:tint="@color/black"
                 app:elevation="0dp"
@@ -133,7 +133,7 @@
                 android:clickable="true"
                 android:focusable="true"
                 android:src="@drawable/baseline_calificaciones_24"
-                app:backgroundTint="@color/weakverde"
+                app:backgroundTint="@color/purpl_leighter"
                 app:tint="@color/black"
                 app:elevation="0dp"
 
@@ -149,11 +149,12 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_margin="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
         android:clickable="true"
         android:focusable="true"
         android:src="@drawable/baseline_cruz_24"
-        app:backgroundTint="@color/back"
+        app:backgroundTint="@color/purple_primary"
         app:fab_size="normal"
         app:tint="@color/white"
         />

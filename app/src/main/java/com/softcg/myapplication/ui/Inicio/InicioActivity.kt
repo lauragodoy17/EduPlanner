@@ -12,6 +12,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.os.Build
 import androidx.appcompat.widget.Toolbar
 import android.os.Bundle
 import android.view.Gravity
@@ -19,16 +20,20 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
+import android.view.WindowManager
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
+import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.GravityCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.drawerlayout.widget.DrawerLayout
@@ -85,6 +90,10 @@ class InicioActivity : AppCompatActivity() {
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
+        
+        // Make system bars transparent
+        makeSystemBarsTransparent()
+        
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.drawer)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
@@ -93,6 +102,8 @@ class InicioActivity : AppCompatActivity() {
         initObserver()
         initNavegate()
         initfloatingBottons()
+        setupHamburgerMenu()
+        setupBottomNavigation()
         createChannel()
         scheduleNotification()
         scheduleNotificationTarde()
@@ -179,6 +190,39 @@ class InicioActivity : AppCompatActivity() {
 
     }
 
+    private fun setupHamburgerMenu() {
+        val hamburgerMenu = findViewById<ImageView>(R.id.menu_hamburger)
+        hamburgerMenu?.setOnClickListener {
+            try {
+                if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+                    drawerLayout.closeDrawer(GravityCompat.START)
+                } else {
+                    drawerLayout.openDrawer(GravityCompat.START)
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+    private fun setupBottomNavigation() {
+        val navHome = findViewById<LinearLayout>(R.id.nav_home)
+        val navCalendar = findViewById<LinearLayout>(R.id.nav_calendar)
+        val navProfile = findViewById<LinearLayout>(R.id.nav_profile)
+
+        navHome.setOnClickListener {
+            navController.navigate(R.id.id_home_fragment)
+        }
+
+        navCalendar.setOnClickListener {
+            navController.navigate(R.id.id_diary_fragment)
+        }
+
+        navProfile.setOnClickListener {
+            // Navigate to profile or settings fragment if it exists
+            // For now, you can add a profile fragment to the navigation graph
+        }
+    }
 
     private fun initObserver(){
         inicioViewModel._tareas.observe(this){
@@ -287,13 +331,20 @@ class InicioActivity : AppCompatActivity() {
         val prioridad = dialog.findViewById<AutoCompleteTextView>(R.id.PriorityEditText)
 
         val guardarBoton= dialog.findViewById<Button>(R.id.botonAgregar)
-
+        var numPrioridad=0
         fecha.setOnClickListener {
             onClickScheduledDate(fecha)
         }
         guardarBoton.setOnClickListener {
             dialog.dismiss()
-            inicioViewModel.onAgregarTareaSelected(titulo.text.toString(),descripcion.text.toString(),asignatura.text.toString(),fecha.text.toString(),1)
+            if (prioridad.text.toString()=="Alta"){
+                numPrioridad=1
+            } else if (prioridad.text.toString()=="Media"){
+                numPrioridad=2
+            } else if (prioridad.text.toString()=="Baja"){
+                numPrioridad=3
+            }
+            inicioViewModel.onAgregarTareaSelected(titulo.text.toString(),descripcion.text.toString(),asignatura.text.toString(),fecha.text.toString(),numPrioridad)
             homeViewModel.obtenerTareas()
             Toast.makeText(this,"Tarea guardada", Toast.LENGTH_SHORT).show()
         }
@@ -469,5 +520,27 @@ class InicioActivity : AppCompatActivity() {
         notificationManager.createNotificationChannel(channel)
     }
 
+    private fun makeSystemBarsTransparent() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            // Only make status bar transparent, keep navigation bar visible
+            window.statusBarColor = Color.TRANSPARENT
+            
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                // For Android 11 (API 30) and above
+                // Only apply to status bar, not navigation bar
+                window.decorView.systemUiVisibility = (
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
+                    View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                )
+            } else {
+                // For Android 5.0 (API 21) to Android 10 (API 29)
+                // Only layout behind status bar, not navigation bar
+                window.decorView.systemUiVisibility = (
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
+                    View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                )
+            }
+        }
+    }
 
 }

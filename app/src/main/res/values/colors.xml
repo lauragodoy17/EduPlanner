@@ -13,7 +13,7 @@
     <color name="checked_color">#FF0000</color>
     <color name="purple_primary">#8B5A9F</color>
     <color name="purple_light">#B48BBF</color>
-    <color name="purple_lighter">#D4A5D4</color>
+    <color name="purpl_leighter">#D4A5D4</color>
     <color name="text_primary">#333333</color>
     <color name="text_secondary">#666666</color>
     <color name="text_hint">#999999</color>
