@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.softcg.myapplication.R
 import com.softcg.myapplication.R.*
+import com.softcg.myapplication.ui.Inicio.Fragments.Home.Adapters.DateFilterAdapter
 import com.softcg.myapplication.ui.Inicio.Fragments.Home.Adapters.EventosAdapter
 import com.softcg.myapplication.ui.Inicio.Fragments.Home.Adapters.TareasAdapter
 import dagger.hilt.android.AndroidEntryPoint
@@ -28,9 +29,31 @@ class HomeFragment : Fragment() {
     ):
             View? {
         val view = inflater.inflate(layout.fragment_home, container, false)
+        initDateFilter(view)
         initRecyclerTareas(view)
         initRecyclerEventos(view)
         return view
+    }
+
+    fun initDateFilter(view: View) {
+        val dateFilterAdapter = DateFilterAdapter { dateItem ->
+            homeViewModel.selectDate(dateItem)
+        }
+
+        val recyclerView = view.findViewById<RecyclerView>(R.id.recycler_date_filter)
+        recyclerView.adapter = dateFilterAdapter
+        recyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+
+        homeViewModel.initializeDateFilter()
+
+        homeViewModel._dateFilterItems.observe(viewLifecycleOwner, Observer { dateItems ->
+            dateFilterAdapter.setData(dateItems)
+
+            val todayPosition = dateItems.indexOfFirst { it.isToday }
+            if (todayPosition != -1) {
+                recyclerView.scrollToPosition(todayPosition)
+            }
+        })
     }
 
     fun initRecyclerTareas(view: View){
@@ -39,8 +62,9 @@ class HomeFragment : Fragment() {
         val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerclases)
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        homeViewModel._tareas.observe(viewLifecycleOwner, Observer { Tarea ->
-            adapter.setData(Tarea)
+
+        homeViewModel._filteredTareas.observe(viewLifecycleOwner, Observer { tareas ->
+            adapter.setData(tareas)
             updateVisibility(view)
         })
     }
@@ -57,8 +81,8 @@ class HomeFragment : Fragment() {
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
-        homeViewModel._eventos.observe(viewLifecycleOwner, Observer { Evento ->
-            adapter.setData(Evento)
+        homeViewModel._filteredEventos.observe(viewLifecycleOwner, Observer { eventos ->
+            adapter.setData(eventos)
             updateVisibility(view)
         })
     }
@@ -67,9 +91,9 @@ class HomeFragment : Fragment() {
     }
 
     private fun updateVisibility(view: View) {
-        val hasTareas = homeViewModel._tareas.value?.isNotEmpty() ?: false
-        val hasEventos = homeViewModel._eventos.value?.isNotEmpty() ?: false
-        
+        val hasTareas = homeViewModel._filteredTareas.value?.isNotEmpty() ?: false
+        val hasEventos = homeViewModel._filteredEventos.value?.isNotEmpty() ?: false
+
         if (hasTareas || hasEventos) {
             // Show content version
             view.findViewById<View>(R.id.version_a_layout).visibility = View.VISIBLE
