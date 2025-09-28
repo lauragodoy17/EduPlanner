@@ -233,15 +233,44 @@ class InicioActivity : AppCompatActivity() {
 
         navHome.setOnClickListener {
             navController.navigate(R.id.id_home_fragment)
+            updateBottomNavigationSelection(navHome, navCalendar, navProfile)
         }
 
         navCalendar.setOnClickListener {
             navController.navigate(R.id.id_diary_fragment)
+            updateBottomNavigationSelection(navCalendar, navHome, navProfile)
         }
 
         navProfile.setOnClickListener {
             // Navigate to profile or settings fragment if it exists
             // For now, you can add a profile fragment to the navigation graph
+        }
+
+        // Set initial state - home should be selected by default
+        updateBottomNavigationSelection(navHome, navCalendar, navProfile)
+
+        // Listen for navigation changes to update selection state
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            when (destination.id) {
+                R.id.id_home_fragment -> {
+                    updateBottomNavigationSelection(navHome, navCalendar, navProfile)
+                }
+                R.id.id_diary_fragment -> {
+                    updateBottomNavigationSelection(navCalendar, navHome, navProfile)
+                }
+            }
+        }
+    }
+
+    private fun updateBottomNavigationSelection(selected: LinearLayout, vararg others: LinearLayout) {
+        // Set selected state
+        selected.alpha = 1.0f
+        selected.setBackgroundColor(getColor(R.color.purple_light))
+
+        // Set unselected state
+        others.forEach { nav ->
+            nav.alpha = 0.5f
+            nav.setBackgroundColor(android.graphics.Color.TRANSPARENT)
         }
     }
 

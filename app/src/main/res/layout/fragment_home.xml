@@ -25,6 +25,17 @@
             android:layout_marginBottom="16dp">
 
             <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Calendario"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:textColor="#9C27B0"
+                android:gravity="center"
+                android:layout_marginBottom="12dp"
+                android:paddingVertical="8dp" />
+
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Filtrar por fecha"
@@ -85,13 +96,55 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
+                <!-- Timeline Section -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginBottom="16dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="12dp">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Tareas y Eventos"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            android:textColor="#9C27B0" />
+
+                        <Spinner
+                            android:id="@+id/filter_spinner"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:minHeight="32dp" />
+
+                    </LinearLayout>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recycler_timeline"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:nestedScrollingEnabled="false"
+                        android:layout_marginBottom="16dp" />
+
+                </LinearLayout>
+
                 <!-- Container for RecyclerViews (preserving existing functionality) -->
                 <LinearLayout
                     android:id="@+id/container"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:layout_marginBottom="16dp">
+                    android:layout_marginBottom="16dp"
+                    android:visibility="gone">
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/recyclerclases"

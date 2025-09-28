@@ -32,12 +32,12 @@ class AgendaViewModel @Inject constructor(
         obtenerTareas()
         if (_tareas.value?.isNotEmpty() == true){
             list = _tareas.value!!.map {
-                AgendaItem(id = it.id,titulo = it.titulo, descrip = it.descrip, asignatura = it.asignatura, fecha = it.fecha)
+                AgendaItem(id = it.id,titulo = it.titulo, descrip = it.descrip, asignatura = it.asignatura, fecha = it.fecha, prioridad = it.prioridad)
             }
         }
         if (_eventos.value?.isNotEmpty() == true){
             val dos: List<AgendaItem> = _eventos.value!!.map {
-                AgendaItem(id = it.id,titulo = it.titulo, descrip = it.descrip, asignatura = null, fecha = it.fecha)
+                AgendaItem(id = it.id,titulo = it.titulo, descrip = it.descrip, asignatura = null, fecha = it.fecha, prioridad = it.prioridad)
             }
             list = list.plus(dos)
         }

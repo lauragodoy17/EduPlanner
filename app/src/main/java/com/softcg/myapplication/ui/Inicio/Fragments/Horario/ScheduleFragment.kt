@@ -17,62 +17,68 @@ import com.softcg.myapplication.ui.Inicio.Fragments.Horario.Adapters.CalendarAda
 import com.softcg.myapplication.core.utils.CalendarUtils
 import com.softcg.myapplication.ui.Inicio.Fragments.Horario.Adapters.HorarioAdapter
 import com.softcg.myapplication.ui.Inicio.Fragments.Horario.Adapters.OnItemClickListener
+import com.softcg.myapplication.ui.Inicio.Fragments.Agenda.AgendaCalendarWidget
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.LocalDate
+import java.text.SimpleDateFormat
+import java.util.*
 
 @AndroidEntryPoint
 class ScheduleFragment : Fragment(), OnItemClickListener {
 
     private val horarioViewModel: HorarioViewModel by viewModels()
-
-    private lateinit var monthYearText: TextView
-    private lateinit var calendarRecyclerView: RecyclerView
+    private lateinit var calendarWidget: AgendaCalendarWidget
+    private lateinit var adapter: HorarioAdapter
+    private val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view= inflater.inflate(R.layout.activity_week_view, container, false)
-        CalendarUtils.selectedDate = LocalDate.now()
-        horarioViewModel.obtenerCurrentDate(LocalDate.now())
-        initWidgets(view)
-        setWeekView()
+        val view = inflater.inflate(R.layout.activity_week_view, container, false)
+        initCalendarWidget(view)
         initRecyclerAsignatura(view)
         return view
     }
-    private fun initWidgets(view: View) {
-        calendarRecyclerView = view.findViewById(R.id.calendarRecyclerView)
-        monthYearText = view.findViewById(R.id.monthYearTV)
-        val botonAdelante =view.findViewById<Button>(R.id.BotonAdelante)
-        val botonAtras =view.findViewById<Button>(R.id.BotonAnterior)
-        botonAdelante.setOnClickListener{
-            nextWeekAction()
-        }
-        botonAtras.setOnClickListener{
-            previousWeekAction()
+
+    private fun initCalendarWidget(view: View) {
+        try {
+            calendarWidget = view.findViewById(R.id.schedule_calendar_widget)
+
+            calendarWidget.onDateSelectedListener = { selectedDate ->
+                // Convert string date to LocalDate for horario functionality
+                convertAndFilterByDate(selectedDate)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
-    private fun setWeekView() {
-        monthYearText.text = CalendarUtils.selectedDate?.let { CalendarUtils.monthYearFromDate(it) }
-        val days = CalendarUtils.selectedDate?.let { CalendarUtils.daysInWeekArray(it) }
-        val calendarAdapter = days?.let { horarioViewModel._currentDate.value?.let { it1 ->
-            CalendarAdapter(requireContext(), this,it,
-                it1
+    private fun convertAndFilterByDate(selectedDate: String) {
+        try {
+            val inputFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+            val date = inputFormat.parse(selectedDate)
+            val calendar = Calendar.getInstance()
+            calendar.time = date!!
+
+            val localDate = LocalDate.of(
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH) + 1,
+                calendar.get(Calendar.DAY_OF_MONTH)
             )
-        } }
-        val layoutManager = GridLayoutManager(requireContext(), 7)
-        calendarRecyclerView.layoutManager = layoutManager
-        calendarRecyclerView.adapter = calendarAdapter
-    }
 
+            horarioViewModel.obtenerCurrentDate(localDate)
+            horarioViewModel.obtenerAsignaturas()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
     fun initRecyclerAsignatura(view: View){
         horarioViewModel.obtenerAsignaturas()
-        val adapter = HorarioAdapter()
+        adapter = HorarioAdapter()
         val recyclerView = view.findViewById<RecyclerView>(R.id.horarioRecyclerView)
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
-
 
         horarioViewModel._asignaturas.observe(viewLifecycleOwner, Observer { Asignatura ->
             adapter.setData(Asignatura)
@@ -88,21 +94,9 @@ class ScheduleFragment : Fragment(), OnItemClickListener {
         })
     }
 
-
-    fun previousWeekAction() {
-        CalendarUtils.selectedDate = CalendarUtils.selectedDate?.minusWeeks(1)!!
-        setWeekView()
-    }
-
-    fun nextWeekAction() {
-        CalendarUtils.selectedDate = CalendarUtils.selectedDate?.plusWeeks(1)!!
-        setWeekView()
-    }
-
     override fun onItemClick(date: LocalDate) {
         horarioViewModel.obtenerCurrentDate(date)
         horarioViewModel.obtenerAsignaturas()
-
     }
 
 

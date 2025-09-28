@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.softcg.myapplication.R
 import com.softcg.myapplication.ui.Inicio.Fragments.Agenda.Adapters.AgendaAdapter
+import com.softcg.myapplication.ui.Inicio.Fragments.Agenda.Adapters.UnifiedAgendaAdapter
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -32,11 +33,10 @@ class AgendaFragment : Fragment() {
         agendaViewModel.obtenerTareas()
         agendaViewModel.obtenerEventos()
         agendaViewModel.obtenerAgendaList()
-        val adapter = AgendaAdapter(requireContext(),agendaViewModel)
+        val adapter = UnifiedAgendaAdapter(requireContext(), agendaViewModel)
         val recyclerView = view.findViewById<RecyclerView>(R.id.recycleragenda)
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
-
 
         agendaViewModel._listAgenda.observe(viewLifecycleOwner, Observer { AgendaItem ->
             adapter.setData(AgendaItem)

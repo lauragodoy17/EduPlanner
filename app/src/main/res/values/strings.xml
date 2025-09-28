@@ -60,4 +60,12 @@
     <string name="item_label">Items\n</string>
     <string name="back"><![CDATA[<-]]></string>
     <string name="forward"><![CDATA[->]]></string>
+
+    <!-- Filter options for timeline -->
+    <string-array name="filter_options">
+        <item>Todo</item>
+        <item>Solo Tareas</item>
+        <item>Solo Eventos</item>
+    </string-array>
+
 </resources>
