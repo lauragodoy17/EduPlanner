@@ -59,6 +59,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import java.util.Calendar
+import java.util.Locale
 
 @AndroidEntryPoint
 class InicioActivity : AppCompatActivity() {
@@ -98,6 +99,25 @@ class InicioActivity : AppCompatActivity() {
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             // Only apply left and right padding, not top/bottom since we want transparency
             v.setPadding(systemBars.left, 0, systemBars.right, systemBars.bottom)
+            insets
+        }
+
+        // Apply dynamic padding to header based on status bar height
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.header_card)) { v, insets ->
+            val statusBarInsets = insets.getInsets(WindowInsetsCompat.Type.statusBars())
+            val headerLayout = (v as androidx.cardview.widget.CardView).getChildAt(0) as LinearLayout
+
+            // Maintain existing left, right, bottom padding, but adjust top padding dynamically
+            val existingPaddingLeft = headerLayout.paddingLeft
+            val existingPaddingRight = headerLayout.paddingRight
+            val existingPaddingBottom = headerLayout.paddingBottom
+
+            // Add status bar height to base padding (20dp)
+            val basePaddingDp = 0
+            val basePaddingPx = (basePaddingDp * resources.displayMetrics.density).toInt()
+            val dynamicTopPadding = statusBarInsets.top + basePaddingPx
+
+            headerLayout.setPadding(existingPaddingLeft, dynamicTopPadding, existingPaddingRight, existingPaddingBottom)
             insets
         }
         initObserver()
@@ -418,14 +438,27 @@ class InicioActivity : AppCompatActivity() {
         dialog.window?.setGravity(Gravity.BOTTOM)
     }
 
-    private fun onClickScheduledDate(fecha:EditText){
-        val etScheduledDate= fecha
-        val selectedCalendar= Calendar.getInstance()
-        val year=selectedCalendar.get(Calendar.YEAR)
-        val month= selectedCalendar.get(Calendar.MONTH)
-        val dayOfMonth=selectedCalendar.get(Calendar.DAY_OF_MONTH)
-        val listener= DatePickerDialog.OnDateSetListener{datePicker,y,m,d-> etScheduledDate.setText("$y-${m+1}-$d")}
-        DatePickerDialog(this, R.style.CustomDatePickerDialogTheme,listener,year, month, dayOfMonth).show()
+    private fun onClickScheduledDate(fecha: EditText) {
+        val etScheduledDate = fecha
+        val selectedCalendar = Calendar.getInstance()
+        val year = selectedCalendar.get(Calendar.YEAR)
+        val month = selectedCalendar.get(Calendar.MONTH)
+        val dayOfMonth = selectedCalendar.get(Calendar.DAY_OF_MONTH)
+
+        val listener = DatePickerDialog.OnDateSetListener { _, y, m, d ->
+            // Usamos %02d para que siempre tenga dos dígitos
+            val formattedDate = String.format(Locale.US,"%04d-%02d-%02d", y, m + 1, d)
+            etScheduledDate.setText(formattedDate)
+        }
+
+        DatePickerDialog(
+            this,
+            R.style.CustomDatePickerDialogTheme,
+            listener,
+            year,
+            month,
+            dayOfMonth
+        ).show()
     }
 
 

@@ -1,5 +1,6 @@
 package com.softcg.myapplication.ui.Inicio.Fragments.Home
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -15,6 +16,7 @@ import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
+import kotlin.math.log
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
@@ -100,6 +102,11 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun filterDataByDate() {
+        Log.d("MiTag", "hola")
+        Log.d("MiTag", selectedDate.toString())
+        if(allTareas.getOrNull(0) != null){
+            Log.d("MiTag", allTareas[0].fecha)
+        }
         selectedDate?.let { date ->
             _filteredTareas.value = allTareas.filter { it.fecha == date }
             _filteredEventos.value = allEventos.filter { it.fecha == date }
