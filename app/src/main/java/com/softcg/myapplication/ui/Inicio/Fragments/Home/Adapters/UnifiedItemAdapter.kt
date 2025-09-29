@@ -80,7 +80,7 @@ class UnifiedItemAdapter(
                     typeBadge.setBackgroundColor(android.graphics.Color.parseColor("#9C27B0"))
                 }
                 TimelineItemType.EVENTO -> {
-                    textAsignatura.visibility = View.GONE
+                    textAsignatura.visibility = View.INVISIBLE
                     typeBadge.text = "EVENTO"
                     typeBadge.setBackgroundColor(android.graphics.Color.parseColor("#673AB7"))
                 }
