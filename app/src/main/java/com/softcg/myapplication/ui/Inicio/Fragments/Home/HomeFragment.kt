@@ -17,9 +17,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.softcg.myapplication.R
 import com.softcg.myapplication.R.*
 import com.softcg.myapplication.ui.Inicio.Fragments.Home.Adapters.DateFilterAdapter
-import com.softcg.myapplication.ui.Inicio.Fragments.Home.Adapters.EventosAdapter
-import com.softcg.myapplication.ui.Inicio.Fragments.Home.Adapters.TareasAdapter
-import com.softcg.myapplication.ui.Inicio.Fragments.Home.Adapters.TimelineAdapter
 import com.softcg.myapplication.ui.Inicio.Fragments.Home.Adapters.UnifiedItemAdapter
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -39,7 +36,6 @@ class HomeFragment : Fragment() {
         initDateFilter(view)
         initFilterSpinner(view)
         initTimeline(view)
-        initRecyclerTareas(view)
         return view
     }
 
@@ -111,40 +107,6 @@ class HomeFragment : Fragment() {
         })
     }
 
-    private fun updateTimeline(adapter: UnifiedItemAdapter, view: View) {
-        val tareas = homeViewModel._filteredTareas.value ?: emptyList()
-        val eventos = homeViewModel._filteredEventos.value ?: emptyList()
-
-        adapter.setData(tareas, eventos)
-        updateTimelineVisibility(view, tareas.isNotEmpty() || eventos.isNotEmpty())
-        updateVisibility(view)
-    }
-
-    private fun updateTimelineVisibility(view: View, hasItems: Boolean) {
-        val timelineContainer = view.findViewById<View>(R.id.recycler_timeline).parent as View
-        timelineContainer.visibility = if (hasItems) View.VISIBLE else View.GONE
-    }
-
-    fun initRecyclerTareas(view: View){
-        homeViewModel.obtenerTareas()
-        val adapter = TareasAdapter(requireContext(),homeViewModel)
-        val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerclases)
-        recyclerView.adapter = adapter
-        recyclerView.layoutManager = LinearLayoutManager(requireContext())
-
-        homeViewModel._filteredTareas.observe(viewLifecycleOwner, Observer { tareas ->
-            adapter.setData(tareas)
-            updateVisibility(view)
-        })
-    }
-
-    fun actualizar(){
-        homeViewModel.obtenerTareas()
-    }
-
-    fun act(){
-        homeViewModel.obtenerTareas()
-    }
 
     private fun updateVisibility(view: View) {
         val hasTareas = homeViewModel._filteredTareas.value?.isNotEmpty() ?: false

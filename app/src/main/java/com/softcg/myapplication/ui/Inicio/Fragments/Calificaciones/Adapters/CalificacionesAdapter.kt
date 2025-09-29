@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.softcg.myapplication.R
 import com.softcg.myapplication.ui.Inicio.Fragments.Calificaciones.CalificacionesViewModel
 import com.softcg.myapplication.ui.Inicio.Fragments.Calificaciones.Models.Calificacion
-import com.softcg.myapplication.ui.Inicio.Fragments.Home.Adapters.TareasAdapter
 import com.softcg.myapplication.ui.Inicio.Fragments.Home.HomeViewModel
 import com.softcg.myapplication.ui.Inicio.Models.Tarea
 

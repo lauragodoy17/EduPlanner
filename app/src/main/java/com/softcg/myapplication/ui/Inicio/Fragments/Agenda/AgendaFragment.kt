@@ -11,7 +11,6 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.softcg.myapplication.R
-import com.softcg.myapplication.ui.Inicio.Fragments.Agenda.Adapters.AgendaAdapter
 import com.softcg.myapplication.ui.Inicio.Fragments.Agenda.Adapters.UnifiedAgendaAdapter
 import dagger.hilt.android.AndroidEntryPoint
 
