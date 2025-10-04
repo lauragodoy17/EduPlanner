@@ -5,7 +5,9 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.softcg.myapplication.R
 import android.widget.Button
@@ -37,6 +39,7 @@ class ScheduleFragment : Fragment(), OnItemClickListener {
     ): View? {
         val view = inflater.inflate(R.layout.activity_week_view, container, false)
         initCalendarWidget(view)
+        initTimeline(view)
         initRecyclerAsignatura(view)
         return view
     }
@@ -80,9 +83,9 @@ class ScheduleFragment : Fragment(), OnItemClickListener {
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
-        horarioViewModel._asignaturas.observe(viewLifecycleOwner, Observer { Asignatura ->
-            adapter.setData(Asignatura)
-            if (Asignatura.isNotEmpty()) {
+        horarioViewModel._asignaturas.observe(viewLifecycleOwner, Observer { asignaturas ->
+            adapter.setDataFromAsignaturas(asignaturas)
+            if (asignaturas.isNotEmpty()) {
                 view.findViewById<TextView>(R.id.textoAsignaturas).visibility = View.GONE
             } else{
                 view.findViewById<TextView>(R.id.textoAsignaturas).visibility = View.VISIBLE
@@ -92,6 +95,42 @@ class ScheduleFragment : Fragment(), OnItemClickListener {
         horarioViewModel._currentDate.observe(viewLifecycleOwner, Observer {date ->
             horarioViewModel.obtenerAsignaturas()
         })
+    }
+
+    private fun initTimeline(view: View) {
+        val timeColumn = view.findViewById<LinearLayout>(R.id.time_column)
+
+        // Clear any existing time slots
+        timeColumn.removeAllViews()
+
+        // Generate time slots from 7:00 AM to 9:00 PM
+        val timeSlots = generateTimeSlots()
+
+        timeSlots.forEach { timeSlot ->
+            val timeView = TextView(requireContext())
+            timeView.text = timeSlot
+            timeView.textSize = 12f
+            timeView.setTextColor(ContextCompat.getColor(requireContext(), R.color.text_hint))
+            timeView.gravity = android.view.Gravity.CENTER
+            timeView.setPadding(8, 16, 8, 16)
+
+            val params = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            )
+            params.setMargins(0, 0, 0, 8)
+            timeView.layoutParams = params
+
+            timeColumn.addView(timeView)
+        }
+    }
+
+    private fun generateTimeSlots(): List<String> {
+        val timeSlots = mutableListOf<String>()
+        for (hour in 7..21) {
+            timeSlots.add(String.format("%02d:00", hour))
+        }
+        return timeSlots
     }
 
     override fun onItemClick(date: LocalDate) {

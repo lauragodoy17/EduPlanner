@@ -1,148 +1,197 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    >
+    android:layout_marginBottom="12dp">
 
+    <!-- Card Content -->
     <androidx.cardview.widget.CardView
+        android:id="@+id/main_card"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:elevation="10dp"
-        android:layout_marginBottom="15dp"
-        app:cardCornerRadius="10dp"
-        app:cardBackgroundColor="@color/weakverde"
-        >
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/containerReporte"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="2dp"
+        app:cardBackgroundColor="#FFFFFF">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Header Row with Title and Type Badge -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/boton_redondo"
+            android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:paddingStart="20dp"
-            android:paddingEnd="20dp"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp">
+            android:layout_marginBottom="8dp">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/circleImageView"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:background="@drawable/circle"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" >
-                <ImageView
-                    android:id="@+id/circleImage"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_gravity="start|top"
-                    android:foreground="@drawable/baseline_class_24"
-                    android:foregroundTint="@color/white"
-                    android:scaleType="fitXY"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"/>
-            </androidx.constraintlayout.widget.ConstraintLayout>
+            <!-- Title -->
             <TextView
                 android:id="@+id/text_titulo"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="35dp"
-                android:layout_marginEnd="35dp"
-                android:text="Nombre Clase"
+                android:layout_weight="1"
+                android:text="Nombre de la clase"
+                android:textSize="16sp"
                 android:textStyle="bold"
-                android:textColor="#949494"
-                android:textSize="20sp"
-                app:layout_constraintStart_toEndOf="@id/circleImageView"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:textColor="#333333" />
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/Contenedor_hora"
+            <!-- Type Badge -->
+            <TextView
+                android:id="@+id/item_type_badge"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:layout_marginStart="20dp"
-                android:layout_marginBottom="10dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/textodesc"
-                app:layout_constraintBottom_toTopOf="@id/Contenedor_ubicacion">
+                android:text="HORARIO"
+                android:textSize="10sp"
+                android:textColor="#FFFFFF"
+                android:background="@drawable/type_badge_bg"
+                android:backgroundTint="#FF9800"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="4dp"
+                android:textStyle="bold"
+                android:layout_marginStart="8dp" />
 
-                <ImageView
-                    android:id="@+id/icono"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="13dp"
-                    android:src="@drawable/baseline_watch_later_24"
-                    app:tint="#949494"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent" />
+        </LinearLayout>
 
-                <TextView
-                    android:id="@+id/textofecha"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="3dp"
-                    android:text="texto duracion"
-                    android:textColor="#949494"
-                    android:textSize="18sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/icono"
-                    app:layout_constraintTop_toTopOf="@id/icono" />
+        <!-- Description -->
+        <TextView
+            android:id="@+id/textodesc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Nombre del tutor"
+            android:textSize="14sp"
+            android:textColor="#666666"
+            android:layout_marginBottom="12dp" />
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+        <!-- Details Row -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="8dp">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/Contenedor_ubicacion"
-                android:layout_width="161dp"
-                android:layout_height="22dp"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="10dp"
+            <!-- Class Icon -->
+            <ImageView
+                android:id="@+id/circleImage"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/baseline_class_24"
+                app:tint="#FF9800"
+                android:layout_marginEnd="8dp" />
 
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/Contenedor_hora">
-
-                <ImageView
-                    android:id="@+id/iconoubi"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="13dp"
-                    android:src="@drawable/baseline_location_pin_24"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:tint="#949494" />
-
-                <TextView
-                    android:id="@+id/textoubi"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="3dp"
-                    android:text="texto ubicacion"
-                    android:textColor="#949494"
-                    android:textSize="18sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/iconoubi"
-                    app:layout_constraintTop_toTopOf="@id/iconoubi" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
+            <!-- Class Label -->
             <TextView
-                android:id="@+id/textodesc"
-                android:layout_width="match_parent"
+                android:id="@+id/texto_class_label"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="35dp"
-                android:layout_marginVertical="5dp"
-                android:text="Nombre Tutor"
-                android:textColor="#000000"
-                android:textSize="18sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/text_titulo" />
+                android:layout_weight="1"
+                android:text="Clase"
+                android:textSize="12sp"
+                android:textColor="#FF9800"
+                android:textStyle="bold" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
+
+        <!-- Time Row -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/time_row_bg"
+            android:padding="8dp">
+
+            <!-- Time Icon -->
+            <ImageView
+                android:id="@+id/icono"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/baseline_watch_later_24"
+                app:tint="#666666"
+                android:layout_marginEnd="8dp" />
+
+            <!-- Time Range -->
+            <TextView
+                android:id="@+id/time_range"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="08:00 - 10:00"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:textColor="#333333" />
+
+            <!-- Duration Text -->
+            <TextView
+                android:id="@+id/textofecha"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="2 horas"
+                android:textSize="12sp"
+                android:textColor="#666666"
+                android:layout_marginStart="8dp" />
+
+        </LinearLayout>
+
+        <!-- Location Row -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <!-- Location Icon -->
+            <ImageView
+                android:id="@+id/iconoubi"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/baseline_location_pin_24"
+                app:tint="#666666"
+                android:layout_marginEnd="8dp" />
+
+            <!-- Location Text -->
+            <TextView
+                android:id="@+id/textoubi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Universidad Libre"
+                android:textSize="14sp"
+                android:textColor="#666666" />
+
+        </LinearLayout>
+
+        <!-- Hidden elements for compatibility -->
+        <TextView
+            android:id="@+id/tv_time"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/texto_asignatura"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:visibility="gone" />
+
+        <View
+            android:id="@+id/priority_indicator"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/opciones"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:visibility="gone" />
+
+    </LinearLayout>
 
     </androidx.cardview.widget.CardView>
 

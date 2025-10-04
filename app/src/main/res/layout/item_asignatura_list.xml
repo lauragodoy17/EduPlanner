@@ -1,85 +1,137 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    >
+    android:layout_marginBottom="12dp">
 
+    <!-- Card Content -->
     <androidx.cardview.widget.CardView
+        android:id="@+id/main_card"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:elevation="10dp"
-        android:layout_marginBottom="15dp"
-        app:cardCornerRadius="10dp"
-        app:cardBackgroundColor="@color/weakverde"
-        >
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/containerReporte"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="2dp"
+        app:cardBackgroundColor="#FFFFFF">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Header Row with Title and Type Badge -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/boton_redondo"
+            android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:paddingStart="20dp"
-            android:paddingEnd="20dp"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp">
+            android:layout_marginBottom="8dp">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/circleImageView"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:background="@drawable/circle"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" >
-                <ImageView
-                    android:id="@+id/circleImage"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_gravity="start|top"
-                    android:foreground="@drawable/baseline_asignatura_24"
-                    android:foregroundTint="@color/white"
-                    android:scaleType="fitXY"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"/>
-            </androidx.constraintlayout.widget.ConstraintLayout>
+            <!-- Title -->
             <TextView
                 android:id="@+id/text_titulo"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="35dp"
-                android:layout_marginEnd="35dp"
-                android:text="Titulo"
+                android:layout_weight="1"
+                android:text="Título de la asignatura"
+                android:textSize="16sp"
                 android:textStyle="bold"
-                android:textColor="#949494"
-                android:textSize="20sp"
-                app:layout_constraintStart_toEndOf="@id/circleImageView"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:textColor="#333333" />
 
+            <!-- Type Badge -->
             <TextView
-                android:id="@+id/textodesc"
-                android:layout_width="match_parent"
+                android:id="@+id/item_type_badge"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="35dp"
-                android:layout_marginVertical="5dp"
-                android:text="Nombre Tutor"
-                android:textColor="#000000"
-                android:textSize="18sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/text_titulo" />
+                android:text="ASIGNATURA"
+                android:textSize="10sp"
+                android:textColor="#FFFFFF"
+                android:background="@drawable/type_badge_bg"
+                android:backgroundTint="#4CAF50"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="4dp"
+                android:textStyle="bold"
+                android:layout_marginStart="8dp" />
 
-            <ImageButton
-                android:background="@color/weakverde"
+        </LinearLayout>
+
+        <!-- Description -->
+        <TextView
+            android:id="@+id/textodesc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Nombre del tutor"
+            android:textSize="14sp"
+            android:textColor="#666666"
+            android:layout_marginBottom="12dp" />
+
+        <!-- Details Row -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <!-- Subject Icon -->
+            <ImageView
+                android:id="@+id/circleImage"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/baseline_asignatura_24"
+                app:tint="#4CAF50"
+                android:layout_marginEnd="8dp" />
+
+            <!-- Subject Label -->
+            <TextView
+                android:id="@+id/texto_subject_label"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Materia"
+                android:textSize="12sp"
+                android:textColor="#4CAF50"
+                android:textStyle="bold" />
+
+            <!-- Options Button -->
+            <ImageView
                 android:id="@+id/Opciones"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:contentDescription="Opciones"
                 android:src="@drawable/baseline_trespuntos_vert_24"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
+                app:tint="@color/black"
+                android:layout_marginStart="12dp" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
+
+        <!-- Hidden elements for compatibility -->
+        <TextView
+            android:id="@+id/tv_time"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/texto_asignatura"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/textofecha"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:visibility="gone" />
+
+        <View
+            android:id="@+id/priority_indicator"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:visibility="gone" />
+
+    </LinearLayout>
 
     </androidx.cardview.widget.CardView>
 
