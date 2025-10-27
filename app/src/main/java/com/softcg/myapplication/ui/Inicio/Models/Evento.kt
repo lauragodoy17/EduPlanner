@@ -5,5 +5,8 @@ data class Evento (
     val titulo:String,
     val descrip:String,
     val fecha:String,
-    val prioridad:Int
+    val prioridad:Int,
+    val horaInicio:String = "",
+    val horaFin:String = "",
+    val imagenUri:String? = null
 )

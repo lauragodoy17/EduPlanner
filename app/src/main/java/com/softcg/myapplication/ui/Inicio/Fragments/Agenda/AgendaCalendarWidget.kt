@@ -22,6 +22,7 @@ class AgendaCalendarWidget @JvmOverloads constructor(
     private lateinit var monthYearText: TextView
     private lateinit var previousButton: ImageView
     private lateinit var nextButton: ImageView
+    private lateinit var expandCollapseButton: ImageView
     private lateinit var calendarGrid: LinearLayout
 
     private val calendar = Calendar.getInstance()
@@ -31,6 +32,7 @@ class AgendaCalendarWidget @JvmOverloads constructor(
     private var selectedDate: String? = null
     private var datesWithEvents: Set<String> = emptySet()
     private var dayViews: MutableList<TextView> = mutableListOf()
+    private var isExpanded: Boolean = false // Calendar starts collapsed
 
     var onDateSelectedListener: ((String) -> Unit)? = null
 
@@ -49,6 +51,7 @@ class AgendaCalendarWidget @JvmOverloads constructor(
         monthYearText = findViewById(R.id.tv_month_year)
         previousButton = findViewById(R.id.btn_previous_month)
         nextButton = findViewById(R.id.btn_next_month)
+        expandCollapseButton = findViewById(R.id.btn_expand_collapse)
         calendarGrid = findViewById(R.id.calendar_grid)
     }
 
@@ -60,6 +63,16 @@ class AgendaCalendarWidget @JvmOverloads constructor(
 
         nextButton.setOnClickListener {
             calendar.add(Calendar.MONTH, 1)
+            updateCalendar()
+        }
+
+        expandCollapseButton.setOnClickListener {
+            isExpanded = !isExpanded
+            // Animate rotation: 0 degrees when collapsed (arrow down), 180 degrees when expanded (arrow up)
+            expandCollapseButton.animate()
+                .rotation(if (isExpanded) 180f else 0f)
+                .setDuration(200)
+                .start()
             updateCalendar()
         }
     }
@@ -92,7 +105,7 @@ class AgendaCalendarWidget @JvmOverloads constructor(
         val today = Calendar.getInstance()
         val todayString = dayFormat.format(today.time)
 
-        // Create 6 weeks (42 days)
+        // Create all days for the month (6 weeks = 42 days)
         val allDays = mutableListOf<DayInfo>()
 
         // Add previous month days
@@ -143,8 +156,18 @@ class AgendaCalendarWidget @JvmOverloads constructor(
             )
         }
 
+        // Determine which weeks to show
+        val weeksToShow = if (isExpanded) {
+            // Show all 6 weeks
+            0 until 6
+        } else {
+            // Find the week containing today's date
+            val currentWeek = findWeekContainingDate(allDays, todayString)
+            currentWeek..currentWeek
+        }
+
         // Create week rows
-        for (week in 0 until 6) {
+        for (week in weeksToShow) {
             val weekLayout = LinearLayout(context)
             weekLayout.layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
@@ -162,6 +185,20 @@ class AgendaCalendarWidget @JvmOverloads constructor(
 
             calendarGrid.addView(weekLayout)
         }
+    }
+
+    private fun findWeekContainingDate(allDays: List<DayInfo>, dateString: String): Int {
+        // Find which week (0-5) contains the given date
+        for (week in 0 until 6) {
+            for (day in 0 until 7) {
+                val dayIndex = week * 7 + day
+                if (allDays[dayIndex].dateString == dateString) {
+                    return week
+                }
+            }
+        }
+        // Default to first week if not found
+        return 0
     }
 
     private fun createDayView(dayInfo: DayInfo): TextView {

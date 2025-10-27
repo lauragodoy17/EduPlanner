@@ -24,14 +24,17 @@ class AsignaturasAdapter (private val context: Context, private val inicioViewMo
     class MyViewHolder(itemView: View):RecyclerView.ViewHolder(itemView){
         val textNombre : TextView = itemView.findViewById(R.id.text_titulo)
         val textTutor : TextView = itemView.findViewById(R.id.textodesc)
+        val textHora : TextView = itemView.findViewById(R.id.text_hora)
+        val textDuracion : TextView = itemView.findViewById(R.id.text_duracion)
+        val textDias : TextView = itemView.findViewById(R.id.text_dias)
         val boton: ImageView = itemView.findViewById(R.id.Opciones)
         val typeBadge: TextView = itemView.findViewById(R.id.item_type_badge)
-        val subjectIcon: ImageView = itemView.findViewById(R.id.circleImage)
+        val colorBar: View = itemView.findViewById(R.id.card_color_bar)
         val mainCard: CardView = itemView.findViewById(R.id.main_card)
     }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         return MyViewHolder(
-            LayoutInflater.from(parent.context).inflate(R.layout.item_asignatura_list, parent, false)
+            LayoutInflater.from(parent.context).inflate(R.layout.item_asignatura_modern, parent, false)
         )
     }
 
@@ -43,15 +46,27 @@ class AsignaturasAdapter (private val context: Context, private val inicioViewMo
         val currentItem=asignaturas[position]
         holder.textNombre.text = currentItem.nombre
         holder.textTutor.text = currentItem.tutor
+        holder.textHora.text = currentItem.hora
+        holder.textDuracion.text = "${currentItem.duracion}h"
 
-        // Set type badge with dynamic color
+        // Generate days string from horario array
+        val dias = mutableListOf<String>()
+        val diasNombres = listOf("Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom")
+        currentItem.horario.forEachIndexed { index, isActive ->
+            if (isActive && index < diasNombres.size) {
+                dias.add(diasNombres[index])
+            }
+        }
+        holder.textDias.text = if (dias.isNotEmpty()) dias.joinToString(", ") else "Sin días asignados"
+
+        // Set type badge
         holder.typeBadge.text = "ASIGNATURA"
 
-        // Apply pastel color to card background
+        // Apply pastel color to left bar
         val colorPastel = AsignaturaConHora.getColorPastel(position)
-        holder.mainCard.setCardBackgroundColor(Color.parseColor(colorPastel))
+        holder.colorBar.setBackgroundColor(Color.parseColor(colorPastel))
 
-        // Adjust badge color based on card color
+        // Adjust badge color based on position
         val badgeColor = when (position % 4) {
             0 -> "#66BB6A" // Verde
             1 -> "#42A5F5" // Azul

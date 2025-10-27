@@ -5,5 +5,6 @@ data class Asignatura(
     val nombre:String,
     val tutor:String,
     val duracion:Int,
+    val hora:String,
     val horario:List<Boolean>
 )

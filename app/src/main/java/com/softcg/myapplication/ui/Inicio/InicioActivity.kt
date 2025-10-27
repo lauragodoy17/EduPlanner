@@ -29,6 +29,7 @@ import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.ActionBarDrawerToggle
@@ -78,6 +79,7 @@ class InicioActivity : AppCompatActivity() {
     private lateinit var addtarea:View
     private lateinit var addevento:View
     private lateinit var addcalificacion:View
+    private lateinit var leerqr:View
     private var rotate=false
 
 
@@ -188,12 +190,15 @@ class InicioActivity : AppCompatActivity() {
         addtarea= findViewById(R.id.addTarea)
         addevento= findViewById(R.id.addEvento)
         addcalificacion= findViewById(R.id.addCalificacion)
+        leerqr= findViewById(R.id.leerQR)
         initShowOut(addtarea)
         initShowOut(addevento)
         initShowOut(addcalificacion)
+        initShowOut(leerqr)
         val tareab = findViewById<FloatingActionButton>(R.id.tareaB)
         val eventob = findViewById<FloatingActionButton>(R.id.eventoB)
         val calificacionb = findViewById<FloatingActionButton>(R.id.calificacionB)
+        val qrb = findViewById<FloatingActionButton>(R.id.qrB)
         val anadirb=findViewById<FloatingActionButton>(R.id.botonAñadir)
 
         anadirb.setOnClickListener{
@@ -207,6 +212,10 @@ class InicioActivity : AppCompatActivity() {
         }
         calificacionb.setOnClickListener {
             showDialogCalificacion()
+        }
+        qrb.setOnClickListener {
+            // TODO: Implementar funcionalidad de lector QR
+            Toast.makeText(this, "Lector QR - Próximamente", Toast.LENGTH_SHORT).show()
         }
 
     }
@@ -321,10 +330,12 @@ class InicioActivity : AppCompatActivity() {
             showIn(addtarea)
             showIn(addevento)
             showIn(addcalificacion)
+            showIn(leerqr)
         }else{
             showOut(addtarea)
             showOut(addevento)
             showOut(addcalificacion)
+            showOut(leerqr)
         }
     }
 
@@ -407,28 +418,169 @@ class InicioActivity : AppCompatActivity() {
         dialog.window?.setGravity(Gravity.BOTTOM)
     }
 
+    private var selectedPrioridad = 2 // Default: Media
+    private var selectedImageUri: android.net.Uri? = null
+    private lateinit var currentImagePreview: ImageView
+    private lateinit var currentImagePreviewCard: androidx.cardview.widget.CardView
+    private lateinit var currentImageNameText: TextView
+
     private fun showDialogEvento(){
         val dialog = Dialog(this)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setContentView(R.layout.sheet_agregar_evento)
-        val titulo=dialog.findViewById<EditText>(R.id.NombreEditText)
-        val descripcion=dialog.findViewById<EditText>(R.id.DescripcionEditTextevent)
+
+        // Referencias a los campos
+        val titulo = dialog.findViewById<EditText>(R.id.NombreEditText)
+        val descripcion = dialog.findViewById<EditText>(R.id.DescripcionEditTextevent)
         val fecha = dialog.findViewById<EditText>(R.id.FechaEditTextevent)
-        val guardarBoton= dialog.findViewById<Button>(R.id.botonAgregar)
+        val horaInicio = dialog.findViewById<EditText>(R.id.HoraInicioEditText)
+        val horaFin = dialog.findViewById<EditText>(R.id.HoraFinEditText)
+        val guardarBoton = dialog.findViewById<Button>(R.id.botonAgregar)
+
+        // Tarjetas de prioridad
+        val prioridadAlta = dialog.findViewById<androidx.cardview.widget.CardView>(R.id.prioridadAlta)
+        val prioridadMedia = dialog.findViewById<androidx.cardview.widget.CardView>(R.id.prioridadMedia)
+        val prioridadBaja = dialog.findViewById<androidx.cardview.widget.CardView>(R.id.prioridadBaja)
+
+        // Selector de imagen
+        val imageSelectorCard = dialog.findViewById<androidx.cardview.widget.CardView>(R.id.imageSelectorCard)
+        val imagePreviewCard = dialog.findViewById<androidx.cardview.widget.CardView>(R.id.imagePreviewCard)
+        val imagePreview = dialog.findViewById<ImageView>(R.id.imagePreview)
+        val imageNameText = dialog.findViewById<TextView>(R.id.imageNameText)
+
+        // Guardar referencias para usar en onActivityResult
+        currentImagePreview = imagePreview
+        currentImagePreviewCard = imagePreviewCard
+        currentImageNameText = imageNameText
+
+        // Reset valores por defecto
+        selectedPrioridad = 2
+        selectedImageUri = null
+        imagePreviewCard.visibility = View.GONE
+
+        // Configurar selector de fecha
         fecha.setOnClickListener {
             onClickScheduledDate(fecha)
         }
-        guardarBoton.setOnClickListener {
-            dialog.dismiss()
-            inicioViewModel.onAgregarEventoSelected(titulo.text.toString(),descripcion.text.toString(),fecha.text.toString(),1)
-            homeViewModel.obtenerEventos()
-            Toast.makeText(this,"Evento guardado", Toast.LENGTH_SHORT).show()
+
+        // Configurar time pickers
+        horaInicio.setOnClickListener {
+            showTimePicker(horaInicio)
         }
+
+        horaFin.setOnClickListener {
+            showTimePicker(horaFin)
+        }
+
+        // Configurar selectores de prioridad
+        setupPrioritySelector(prioridadAlta, prioridadMedia, prioridadBaja, 1) // Alta
+        setupPrioritySelector(prioridadMedia, prioridadAlta, prioridadBaja, 2) // Media
+        setupPrioritySelector(prioridadBaja, prioridadAlta, prioridadMedia, 3) // Baja
+
+        // Marcar prioridad media por defecto con color más suave
+        prioridadMedia.setCardBackgroundColor(android.graphics.Color.parseColor("#E1BEE7"))
+
+        // Configurar selector de imagen
+        imageSelectorCard.setOnClickListener {
+            openImagePicker()
+        }
+
+        // Guardar evento
+        guardarBoton.setOnClickListener {
+            if (titulo.text.toString().isNotEmpty() && fecha.text.toString().isNotEmpty()) {
+                dialog.dismiss()
+                inicioViewModel.onAgregarEventoSelected(
+                    titulo.text.toString(),
+                    descripcion.text.toString(),
+                    fecha.text.toString(),
+                    selectedPrioridad,
+                    horaInicio.text.toString(),
+                    horaFin.text.toString(),
+                    selectedImageUri?.toString()
+                )
+                homeViewModel.obtenerEventos()
+                Toast.makeText(this, "Evento guardado", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(this, "Complete los campos obligatorios", Toast.LENGTH_SHORT).show()
+            }
+        }
+
         dialog.show()
         dialog.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialog.window?.attributes?.windowAnimations = R.style.DialogAnimation
         dialog.window?.setGravity(Gravity.BOTTOM)
+    }
+
+    private fun setupPrioritySelector(
+        selectedCard: androidx.cardview.widget.CardView,
+        otherCard1: androidx.cardview.widget.CardView,
+        otherCard2: androidx.cardview.widget.CardView,
+        priority: Int
+    ) {
+        selectedCard.setOnClickListener {
+            selectedPrioridad = priority
+
+            // Aplicar color de selección suave al seleccionado
+            selectedCard.setCardBackgroundColor(android.graphics.Color.parseColor("#E1BEE7"))
+
+            // Restaurar colores originales a las otras tarjetas
+            when (priority) {
+                1 -> { // Alta seleccionada
+                    otherCard1.setCardBackgroundColor(android.graphics.Color.parseColor("#FFFEF5")) // Media
+                    otherCard2.setCardBackgroundColor(android.graphics.Color.parseColor("#F0F8FF")) // Baja
+                }
+                2 -> { // Media seleccionada
+                    otherCard1.setCardBackgroundColor(android.graphics.Color.parseColor("#FFF5F5")) // Alta
+                    otherCard2.setCardBackgroundColor(android.graphics.Color.parseColor("#F0F8FF")) // Baja
+                }
+                3 -> { // Baja seleccionada
+                    otherCard1.setCardBackgroundColor(android.graphics.Color.parseColor("#FFF5F5")) // Alta
+                    otherCard2.setCardBackgroundColor(android.graphics.Color.parseColor("#FFFEF5")) // Media
+                }
+            }
+        }
+    }
+
+    private fun showTimePicker(editText: EditText) {
+        val calendar = Calendar.getInstance()
+        val hour = calendar.get(Calendar.HOUR_OF_DAY)
+        val minute = calendar.get(Calendar.MINUTE)
+
+        val timePickerDialog = android.app.TimePickerDialog(
+            this,
+            { _, selectedHour, selectedMinute ->
+                val time = String.format("%02d:%02d", selectedHour, selectedMinute)
+                editText.setText(time)
+            },
+            hour,
+            minute,
+            true // 24 hour format
+        )
+        timePickerDialog.show()
+    }
+
+    private fun openImagePicker() {
+        val intent = Intent(Intent.ACTION_PICK)
+        intent.type = "image/*"
+        startActivityForResult(intent, 1000)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == 1000 && resultCode == RESULT_OK && data != null) {
+            selectedImageUri = data.data
+
+            if (::currentImagePreview.isInitialized && ::currentImagePreviewCard.isInitialized) {
+                currentImagePreview.setImageURI(selectedImageUri)
+                currentImagePreviewCard.visibility = View.VISIBLE
+            }
+
+            if (::currentImageNameText.isInitialized) {
+                val fileName = selectedImageUri?.lastPathSegment ?: "Imagen seleccionada"
+                currentImageNameText.text = fileName
+            }
+        }
     }
     private fun showDialogCalificacion(){
         val dialog = Dialog(this)

@@ -120,7 +120,7 @@ class AsignaturasFragment : Fragment() {
             if (duracion.text.toString()!=""){
                 aux=duracion.text.toString().toInt()
             }
-            inicioViewModel.onAgregarAsignaturaSelected(nombre.text.toString(),tutor.text.toString(),aux,currentName)
+            inicioViewModel.onAgregarAsignaturaSelected(nombre.text.toString(),tutor.text.toString(),aux,tiempo.text.toString().trim(),currentName)
             Toast.makeText(context,"Asignatura guardada", Toast.LENGTH_SHORT).show()
         }
 
@@ -135,7 +135,7 @@ class AsignaturasFragment : Fragment() {
         timePicker.show(childFragmentManager, "time")
     }
     private fun onTimeSelected(time:String, tiempo: EditText){
-        tiempo.setText(" $time")
+        tiempo.setText(time.trim())
     }
 
 }

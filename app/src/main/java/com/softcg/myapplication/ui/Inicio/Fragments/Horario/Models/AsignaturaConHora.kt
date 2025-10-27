@@ -8,26 +8,34 @@ data class AsignaturaConHora(
     val horaFin: String,    // Formato "HH:mm"
     val colorIndex: Int = 0  // Índice para determinar el color pastel
 ) {
-    // Constructor para crear desde Asignatura básica con hora estimada
+    // Constructor para crear desde Asignatura básica usando la hora de la base de datos
     constructor(asignatura: Asignatura, colorIndex: Int = 0) : this(
         asignatura = asignatura,
-        horaInicio = generateRandomStartTime(),
-        horaFin = generateEndTime(generateRandomStartTime(), asignatura.duracion),
+        horaInicio = asignatura.hora.trim(),
+        horaFin = generateEndTime(asignatura.hora.trim(), asignatura.duracion),
         colorIndex = colorIndex
     )
 
     companion object {
-        private fun generateRandomStartTime(): String {
-            val startHours = listOf("07:00", "08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00")
-            return startHours.random()
-        }
-
         private fun generateEndTime(startTime: String, duracion: Int): String {
-            val (hour, minute) = startTime.split(":").map { it.toInt() }
-            val totalMinutes = hour * 60 + minute + (duracion * 60)
-            val endHour = (totalMinutes / 60) % 24
-            val endMinute = totalMinutes % 60
-            return String.format("%02d:%02d", endHour, endMinute)
+            try {
+                val cleanTime = startTime.trim()
+                val parts = cleanTime.split(":")
+                if (parts.size < 2) {
+                    android.util.Log.e("AsignaturaConHora", "Invalid time format: '$startTime'")
+                    return "00:00"
+                }
+
+                val hour = parts[0].trim().toInt()
+                val minute = parts[1].trim().toInt()
+                val totalMinutes = hour * 60 + minute + (duracion * 60)
+                val endHour = (totalMinutes / 60) % 24
+                val endMinute = totalMinutes % 60
+                return String.format("%02d:%02d", endHour, endMinute)
+            } catch (e: Exception) {
+                android.util.Log.e("AsignaturaConHora", "Error generating end time from '$startTime'", e)
+                return "00:00"
+            }
         }
 
         // Colores pasteles predefinidos para las tarjetas

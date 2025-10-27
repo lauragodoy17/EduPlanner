@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="24dp">
+        android:padding="20dp">
 
         <!-- Header -->
         <TextView
@@ -18,34 +18,27 @@
             android:layout_height="wrap_content"
             android:text="Agregar Evento"
             android:textAlignment="center"
-            android:textColor="#1A1A1A"
-            android:textSize="26sp"
+            android:textColor="#333333"
+            android:textSize="24sp"
             android:textStyle="bold"
-            android:layout_marginBottom="24dp"/>
+            android:layout_marginBottom="20dp"/>
 
         <!-- Nombre del Evento -->
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Nombre del evento"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="12dp"
             app:boxBackgroundMode="outline"
-            app:boxStrokeColor="#9C27B0"
-            app:boxStrokeWidth="2dp"
-            app:boxCornerRadiusTopStart="16dp"
-            app:boxCornerRadiusTopEnd="16dp"
-            app:boxCornerRadiusBottomStart="16dp"
-            app:boxCornerRadiusBottomEnd="16dp"
-            app:hintTextColor="#9C27B0">
+            app:boxStrokeColor="@color/purple_primary"
+            app:hintTextColor="@color/purple_primary">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/NombreEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="text"
-                android:textColor="#2C2C2C"
-                android:textSize="16sp"
-                android:padding="16dp"
+                android:textColor="#000000"
                 android:maxLines="1"/>
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -54,29 +47,22 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Fecha"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="12dp"
             app:boxBackgroundMode="outline"
-            app:boxStrokeColor="#9C27B0"
-            app:boxStrokeWidth="2dp"
-            app:boxCornerRadiusTopStart="16dp"
-            app:boxCornerRadiusTopEnd="16dp"
-            app:boxCornerRadiusBottomStart="16dp"
-            app:boxCornerRadiusBottomEnd="16dp"
-            app:hintTextColor="#9C27B0"
+            app:boxStrokeColor="@color/purple_primary"
+            app:hintTextColor="@color/purple_primary"
             app:endIconMode="custom"
             app:endIconDrawable="@drawable/baseline_calendar_month_24"
-            app:endIconTint="#9C27B0">
+            app:endIconTint="@color/purple_primary">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/FechaEditTextevent"
+                android:id="@+id/FechaEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="none"
                 android:focusable="false"
                 android:clickable="true"
-                android:textColor="#2C2C2C"
-                android:textSize="16sp"
-                android:padding="16dp"/>
+                android:textColor="#000000"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Hora Inicio y Fin -->
@@ -84,7 +70,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginBottom="16dp">
+            android:layout_marginBottom="12dp">
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="0dp"
@@ -93,16 +79,11 @@
                 android:hint="Hora inicio"
                 android:layout_marginEnd="8dp"
                 app:boxBackgroundMode="outline"
-                app:boxStrokeColor="#9C27B0"
-                app:boxStrokeWidth="2dp"
-                app:boxCornerRadiusTopStart="16dp"
-                app:boxCornerRadiusTopEnd="16dp"
-                app:boxCornerRadiusBottomStart="16dp"
-                app:boxCornerRadiusBottomEnd="16dp"
-                app:hintTextColor="#9C27B0"
+                app:boxStrokeColor="@color/purple_primary"
+                app:hintTextColor="@color/purple_primary"
                 app:endIconMode="custom"
                 app:endIconDrawable="@drawable/ic_clock"
-                app:endIconTint="#9C27B0">
+                app:endIconTint="@color/purple_primary">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/HoraInicioEditText"
@@ -111,9 +92,7 @@
                     android:inputType="none"
                     android:focusable="false"
                     android:clickable="true"
-                    android:textColor="#2C2C2C"
-                    android:textSize="16sp"
-                    android:padding="16dp"/>
+                    android:textColor="#000000"/>
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -123,16 +102,11 @@
                 android:hint="Hora fin"
                 android:layout_marginStart="8dp"
                 app:boxBackgroundMode="outline"
-                app:boxStrokeColor="#9C27B0"
-                app:boxStrokeWidth="2dp"
-                app:boxCornerRadiusTopStart="16dp"
-                app:boxCornerRadiusTopEnd="16dp"
-                app:boxCornerRadiusBottomStart="16dp"
-                app:boxCornerRadiusBottomEnd="16dp"
-                app:hintTextColor="#9C27B0"
+                app:boxStrokeColor="@color/purple_primary"
+                app:hintTextColor="@color/purple_primary"
                 app:endIconMode="custom"
                 app:endIconDrawable="@drawable/ic_clock"
-                app:endIconTint="#9C27B0">
+                app:endIconTint="@color/purple_primary">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/HoraFinEditText"
@@ -141,9 +115,7 @@
                     android:inputType="none"
                     android:focusable="false"
                     android:clickable="true"
-                    android:textColor="#2C2C2C"
-                    android:textSize="16sp"
-                    android:padding="16dp"/>
+                    android:textColor="#000000"/>
             </com.google.android.material.textfield.TextInputLayout>
 
         </LinearLayout>
@@ -153,10 +125,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Prioridad"
-            android:textColor="#5A5A5A"
-            android:textSize="15sp"
+            android:textColor="#666666"
+            android:textSize="14sp"
             android:textStyle="bold"
-            android:layout_marginBottom="12dp"/>
+            android:layout_marginBottom="8dp"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -171,34 +143,34 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:layout_marginEnd="6dp"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="0dp"
+                android:layout_marginEnd="8dp"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="2dp"
                 android:clickable="true"
                 android:focusable="true"
-                app:cardBackgroundColor="#FFF5F5">
+                app:cardBackgroundColor="#FFEBEE">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="16dp"
+                    android:padding="12dp"
                     android:gravity="center">
 
                     <View
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
                         android:background="@drawable/circle_shape"
-                        android:backgroundTint="#FF6B6B"
-                        android:layout_marginBottom="8dp"/>
+                        android:backgroundTint="#F44336"
+                        android:layout_marginBottom="4dp"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Alta"
-                        android:textColor="#FF6B6B"
+                        android:textColor="#F44336"
                         android:textStyle="bold"
-                        android:textSize="13sp"/>
+                        android:textSize="12sp"/>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
@@ -208,34 +180,34 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:layout_marginHorizontal="6dp"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="0dp"
+                android:layout_marginHorizontal="4dp"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="2dp"
                 android:clickable="true"
                 android:focusable="true"
-                app:cardBackgroundColor="#FFFEF5">
+                app:cardBackgroundColor="#FFFDE7">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="16dp"
+                    android:padding="12dp"
                     android:gravity="center">
 
                     <View
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
                         android:background="@drawable/circle_shape"
-                        android:backgroundTint="#FFD93D"
-                        android:layout_marginBottom="8dp"/>
+                        android:backgroundTint="#FFEB3B"
+                        android:layout_marginBottom="4dp"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Media"
-                        android:textColor="#FF9800"
+                        android:textColor="#F57C00"
                         android:textStyle="bold"
-                        android:textSize="13sp"/>
+                        android:textSize="12sp"/>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
@@ -245,34 +217,34 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:layout_marginStart="6dp"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="0dp"
+                android:layout_marginStart="8dp"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="2dp"
                 android:clickable="true"
                 android:focusable="true"
-                app:cardBackgroundColor="#F0F8FF">
+                app:cardBackgroundColor="#E3F2FD">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="16dp"
+                    android:padding="12dp"
                     android:gravity="center">
 
                     <View
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
                         android:background="@drawable/circle_shape"
-                        android:backgroundTint="#6BCF7F"
-                        android:layout_marginBottom="8dp"/>
+                        android:backgroundTint="#2196F3"
+                        android:layout_marginBottom="4dp"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Baja"
-                        android:textColor="#4CAF50"
+                        android:textColor="#2196F3"
                         android:textStyle="bold"
-                        android:textSize="13sp"/>
+                        android:textSize="12sp"/>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
@@ -284,25 +256,25 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="0dp"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="2dp"
             android:clickable="true"
             android:focusable="true"
-            app:cardBackgroundColor="#F8F8F8">
+            app:cardBackgroundColor="#F5F5F5">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:padding="18dp"
+                android:padding="16dp"
                 android:gravity="center_vertical">
 
                 <ImageView
-                    android:layout_width="44dp"
-                    android:layout_height="44dp"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
                     android:src="@drawable/ic_image"
                     app:tint="#9C27B0"
-                    android:layout_marginEnd="16dp"/>
+                    android:layout_marginEnd="12dp"/>
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -314,7 +286,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Agregar imagen"
-                        android:textColor="#2C2C2C"
+                        android:textColor="#333333"
                         android:textSize="16sp"
                         android:textStyle="bold"/>
 
@@ -323,63 +295,48 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Ninguna imagen seleccionada"
-                        android:textColor="#9E9E9E"
-                        android:textSize="13sp"
-                        android:layout_marginTop="4dp"/>
+                        android:textColor="#999999"
+                        android:textSize="12sp"/>
                 </LinearLayout>
 
                 <ImageView
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:src="@drawable/ic_chevron_right"
-                    app:tint="#BDBDBD"/>
+                    app:tint="#999999"/>
 
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
         <!-- Preview de Imagen -->
-        <androidx.cardview.widget.CardView
+        <ImageView
+            android:id="@+id/imagePreview"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="200dp"
             android:layout_marginBottom="16dp"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="0dp"
+            android:scaleType="centerCrop"
             android:visibility="gone"
-            android:id="@+id/imagePreviewCard">
-
-            <ImageView
-                android:id="@+id/imagePreview"
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:scaleType="centerCrop"/>
-        </androidx.cardview.widget.CardView>
+            android:background="@drawable/campos_stylos"/>
 
         <!-- Descripción -->
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Descripción (opcional)"
-            android:layout_marginBottom="20dp"
+            android:hint="Descripción"
+            android:layout_marginBottom="16dp"
             app:boxBackgroundMode="outline"
-            app:boxStrokeColor="#9C27B0"
-            app:boxStrokeWidth="2dp"
-            app:boxCornerRadiusTopStart="16dp"
-            app:boxCornerRadiusTopEnd="16dp"
-            app:boxCornerRadiusBottomStart="16dp"
-            app:boxCornerRadiusBottomEnd="16dp"
-            app:hintTextColor="#9C27B0"
+            app:boxStrokeColor="@color/purple_primary"
+            app:hintTextColor="@color/purple_primary"
             app:counterEnabled="true"
             app:counterMaxLength="200">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/DescripcionEditTextevent"
+                android:id="@+id/DescripcionEditText"
                 android:layout_width="match_parent"
-                android:layout_height="140dp"
+                android:layout_height="150dp"
                 android:inputType="textMultiLine"
                 android:gravity="top|start"
-                android:textColor="#2C2C2C"
-                android:textSize="16sp"
-                android:padding="16dp"
+                android:textColor="#000000"
                 android:maxLength="200"/>
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -387,15 +344,13 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/botonAgregar"
             android:layout_width="match_parent"
-            android:layout_height="58dp"
+            android:layout_height="56dp"
             android:text="Agregar Evento"
             android:textColor="@color/white"
-            android:textSize="17sp"
+            android:textSize="16sp"
             android:textStyle="bold"
-            android:letterSpacing="0.02"
-            app:backgroundTint="#9C27B0"
-            app:cornerRadius="16dp"
-            app:elevation="0dp"
+            app:backgroundTint="@color/purple_primary"
+            app:cornerRadius="8dp"
             android:layout_marginBottom="8dp"/>
 
     </LinearLayout>

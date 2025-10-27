@@ -106,8 +106,8 @@ class InicioViewModel @Inject constructor(
         }
     }
 
-    fun onAgregarEventoSelected(titulo:String,descrip:String, fecha:String,prioridad:Int,){
-        val evento: Evento = Evento(null,titulo, descrip,fecha,prioridad)
+    fun onAgregarEventoSelected(titulo:String,descrip:String, fecha:String,prioridad:Int, horaInicio:String = "", horaFin:String = "", imagenUri:String? = null){
+        val evento: Evento = Evento(null,titulo, descrip,fecha,prioridad, horaInicio, horaFin, imagenUri)
         saveEvento(evento)
         obtenerEventos()
     }

@@ -13,20 +13,21 @@
         android:id="@+id/schedule_calendar_widget"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp" />
+        android:layout_marginHorizontal="8dp"
+        android:layout_marginVertical="12dp" />
     <View
         android:id="@+id/separadorA"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="#B8B8B8"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="8dp"
         app:layout_constraintBottom_toTopOf="@id/textoclases"
         app:layout_constraintTop_toBottomOf="@id/containerReporte"/>
     <TextView
         android:id="@+id/textoclases"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="8dp"
         android:text="Clases"
         android:textColor="#949494"
         android:textSize="20sp"
@@ -34,58 +35,86 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/separadorA" />
-<!-- Timeline Container -->
+<!-- Timeline Container with Synchronized Scroll -->
 <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
-    android:layout_marginTop="15dp">
+    android:layout_marginTop="8dp">
 
-    <!-- Time Column -->
-    <LinearLayout
-        android:id="@+id/time_column"
-        android:layout_width="80dp"
+    <!-- Time Column ScrollView -->
+    <ScrollView
+        android:id="@+id/timelineScrollView"
+        android:layout_width="85dp"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:background="#F8F9FA"
-        android:paddingVertical="8dp">
+        android:background="#FAFAFA"
+        android:scrollbars="none"
+        android:fillViewport="true"
+        android:elevation="2dp">
 
-        <!-- Time slots will be added programmatically -->
+        <LinearLayout
+            android:id="@+id/time_column"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingVertical="8dp"
+            android:background="#FAFAFA">
 
-    </LinearLayout>
+            <!-- Time slots will be added programmatically -->
 
-    <!-- Content Column -->
-    <androidx.constraintlayout.widget.ConstraintLayout
+        </LinearLayout>
+
+    </ScrollView>
+
+    <!-- Content Column with ScrollView -->
+    <ScrollView
+        android:id="@+id/contentScrollView"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:layout_marginStart="8dp">
+        android:layout_marginStart="4dp"
+        android:fillViewport="true"
+        android:scrollbars="vertical"
+        android:background="#FFFFFF"
+        android:clickable="true"
+        android:focusable="true">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/horarioRecyclerView"
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="12dp"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            android:clickable="false"
+            android:focusable="false">
 
-        <TextView
-            android:id="@+id/textoAsignaturas"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:text="No tienes clases pendientes."
-            android:textColor="@color/back"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            <!-- Timeline Container for Cards -->
+            <FrameLayout
+                android:id="@+id/horarioContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="8dp"
+                android:clickable="false"
+                android:focusable="false">
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+                <!-- Cards will be added programmatically here -->
+                <!-- Height is set programmatically to match timeline -->
+
+            </FrameLayout>
+
+            <!-- Empty State Message -->
+            <TextView
+                android:id="@+id/textoAsignaturas"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="No tienes clases pendientes."
+                android:textColor="@color/back"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:visibility="gone"
+                android:layout_gravity="center" />
+
+        </FrameLayout>
+
+    </ScrollView>
 
 </LinearLayout>
 

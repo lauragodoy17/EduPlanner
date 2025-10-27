@@ -11,6 +11,7 @@ data class AsignaturaEntity (
     @ColumnInfo(name="nombre")val nombre:String,
     @ColumnInfo(name = "tutor")val tutor:String,
     @ColumnInfo(name = "Duracion")val duracion:Int,
+    @ColumnInfo(name = "hora")val hora:String,
     @ColumnInfo(name = "lunes")val lunes:Boolean,
     @ColumnInfo(name = "martes")val martes:Boolean,
     @ColumnInfo(name = "miercoles")val miercoles:Boolean,

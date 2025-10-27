@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="4dp"
+    android:layout_margin="4dp"
+    app:cardBackgroundColor="#FFFFFF">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="12dp">
+
+        <!-- Left colored bar for visual appeal -->
+        <View
+            android:id="@+id/card_color_bar"
+            android:layout_width="4dp"
+            android:layout_height="match_parent"
+            android:background="#9C27B0"
+            android:layout_marginEnd="12dp" />
+
+        <!-- Content -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <!-- Header Row with Name and Badge -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="6dp">
+
+                <!-- Subject Name -->
+                <TextView
+                    android:id="@+id/text_asignatura_nombre"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Nombre de Asignatura"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    android:textColor="#333333"
+                    android:maxLines="1"
+                    android:ellipsize="end" />
+
+                <!-- Type Badge -->
+                <TextView
+                    android:id="@+id/badge_clase"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="CLASE"
+                    android:textSize="9sp"
+                    android:textColor="#FFFFFF"
+                    android:background="@drawable/type_badge_bg"
+                    android:backgroundTint="#9C27B0"
+                    android:paddingHorizontal="6dp"
+                    android:paddingVertical="3dp"
+                    android:textStyle="bold"
+                    android:layout_marginStart="6dp" />
+
+            </LinearLayout>
+
+            <!-- Teacher Name -->
+            <TextView
+                android:id="@+id/text_tutor"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Profesor"
+                android:textSize="13sp"
+                android:textColor="#666666"
+                android:layout_marginBottom="8dp"
+                android:maxLines="1"
+                android:ellipsize="end" />
+
+            <!-- Time Info Row -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <!-- Clock Icon -->
+                <ImageView
+                    android:layout_width="14dp"
+                    android:layout_height="14dp"
+                    android:src="@drawable/ic_clock"
+                    app:tint="#9C27B0"
+                    android:contentDescription="Hora" />
+
+                <!-- Time Range -->
+                <TextView
+                    android:id="@+id/text_hora_rango"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="08:30 - 10:30"
+                    android:textSize="12sp"
+                    android:textColor="#9C27B0"
+                    android:textStyle="bold"
+                    android:layout_marginStart="4dp" />
+
+                <!-- Duration Badge -->
+                <TextView
+                    android:id="@+id/text_duracion"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="2h"
+                    android:textSize="11sp"
+                    android:textColor="#999999"
+                    android:background="@drawable/duration_badge_bg"
+                    android:paddingHorizontal="8dp"
+                    android:paddingVertical="2dp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>
