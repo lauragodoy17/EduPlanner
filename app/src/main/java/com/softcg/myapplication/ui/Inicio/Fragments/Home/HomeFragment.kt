@@ -90,6 +90,10 @@ class HomeFragment : Fragment() {
             context = requireContext(),
             onDeleteTarea = { tarea -> homeViewModel.deleteTarea(tarea) },
             onDeleteEvento = { evento -> homeViewModel.deleteEvento(evento) },
+            onEditEvento = { evento ->
+                // Llamar a la funcionalidad de editar del InicioActivity
+                (activity as? com.softcg.myapplication.ui.Inicio.InicioActivity)?.showDialogEditarEvento(evento)
+            },
             onItemClick = { item -> /* Handle item click */ }
         )
 

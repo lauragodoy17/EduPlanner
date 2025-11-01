@@ -61,10 +61,11 @@ class AsignaturasFragment : Fragment() {
 
         inicioViewModel._asignaturas.observe(viewLifecycleOwner, Observer { Asignatura ->
             adapter.setData(Asignatura)
+            val emptyState = view.findViewById<View>(R.id.textoAsignaturas)
             if (Asignatura.isNotEmpty()) {
-                view.findViewById<TextView>(R.id.textoAsignaturas).visibility = View.GONE
+                emptyState.visibility = View.GONE
             } else{
-                view.findViewById<TextView>(R.id.textoAsignaturas).visibility = View.VISIBLE
+                emptyState.visibility = View.VISIBLE
             }
         })
     }
@@ -88,6 +89,31 @@ class AsignaturasFragment : Fragment() {
         val tiempo=dialog.findViewById<EditText>(R.id.etTime)
         val duracion=dialog.findViewById<EditText>(R.id.DuracionEditText)
         var aux=0
+
+        // Configuración del Spinner de Tipo de Calificación
+        val spinnerTipoCalificacion = dialog.findViewById<Spinner>(R.id.spinnerTipoCalificacion)
+        val layoutTipoCalificacionOtro = dialog.findViewById<androidx.cardview.widget.CardView>(R.id.layoutTipoCalificacionOtro)
+        val labelTipoCalificacionOtro = dialog.findViewById<TextView>(R.id.labelTipoCalificacionOtro)
+        val tipoCalificacionOtroEditText = dialog.findViewById<EditText>(R.id.TipoCalificacionOtroEditText)
+
+        val tiposCalificacion = arrayOf("Selecciona un tipo", "Numérico (0-10)", "Porcentaje (0-100%)", "Letras (A-F)", "Aprobado/Reprobado", "Otro")
+        val tipoCalificacionAdapter = android.widget.ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, tiposCalificacion)
+        tipoCalificacionAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinnerTipoCalificacion.adapter = tipoCalificacionAdapter
+
+        // Listener para mostrar/ocultar el campo personalizado
+        spinnerTipoCalificacion.onItemSelectedListener = object : android.widget.AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: android.widget.AdapterView<*>?, view: View?, position: Int, id: Long) {
+                if (tiposCalificacion[position] == "Otro") {
+                    labelTipoCalificacionOtro.visibility = View.VISIBLE
+                    layoutTipoCalificacionOtro.visibility = View.VISIBLE
+                } else {
+                    labelTipoCalificacionOtro.visibility = View.GONE
+                    layoutTipoCalificacionOtro.visibility = View.GONE
+                }
+            }
+            override fun onNothingSelected(parent: android.widget.AdapterView<*>?) {}
+        }
 
         selectedItem?.clear()
         val adapter = MultiSelectSpinnerAdapter(
@@ -120,7 +146,18 @@ class AsignaturasFragment : Fragment() {
             if (duracion.text.toString()!=""){
                 aux=duracion.text.toString().toInt()
             }
-            inicioViewModel.onAgregarAsignaturaSelected(nombre.text.toString(),tutor.text.toString(),aux,tiempo.text.toString().trim(),currentName)
+
+            // Obtener el tipo de calificación seleccionado
+            val tipoCalificacionSeleccionado = spinnerTipoCalificacion.selectedItem.toString()
+            val tipoCalificacionFinal = if (tipoCalificacionSeleccionado == "Otro") {
+                tipoCalificacionOtroEditText.text.toString()
+            } else if (tipoCalificacionSeleccionado == "Selecciona un tipo") {
+                ""
+            } else {
+                tipoCalificacionSeleccionado
+            }
+
+            inicioViewModel.onAgregarAsignaturaSelected(nombre.text.toString(),tutor.text.toString(),aux,tiempo.text.toString().trim(),currentName,tipoCalificacionFinal)
             Toast.makeText(context,"Asignatura guardada", Toast.LENGTH_SHORT).show()
         }
 

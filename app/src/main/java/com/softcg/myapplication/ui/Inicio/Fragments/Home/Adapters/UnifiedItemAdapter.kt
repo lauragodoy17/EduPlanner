@@ -1,9 +1,13 @@
 package com.softcg.myapplication.ui.Inicio.Fragments.Home.Adapters
 
 import android.content.Context
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -19,6 +23,7 @@ class UnifiedItemAdapter(
     private val context: Context,
     private val onDeleteTarea: (Tarea) -> Unit = {},
     private val onDeleteEvento: (Evento) -> Unit = {},
+    private val onEditEvento: (Evento) -> Unit = {},
     private val onItemClick: (TimelineItem) -> Unit = {}
 ) : RecyclerView.Adapter<UnifiedItemAdapter.UnifiedViewHolder>() {
 
@@ -142,6 +147,28 @@ class UnifiedItemAdapter(
 
             popupMenu.setOnMenuItemClickListener { menuItem ->
                 when (menuItem.itemId) {
+                    R.id.VerMas -> {
+                        when (item.type) {
+                            TimelineItemType.EVENTO -> {
+                                val evento = Evento(
+                                    item.id,
+                                    item.titulo,
+                                    item.descrip,
+                                    item.fecha,
+                                    item.prioridad,
+                                    item.horaInicio ?: "",
+                                    item.horaFin ?: "",
+                                    item.imagenUri
+                                )
+                                showEventoDetallesDialog(evento)
+                            }
+                            TimelineItemType.TAREA -> {
+                                // Por ahora solo para eventos
+                                showDeleteDialog(item)
+                            }
+                        }
+                        true
+                    }
                     R.id.Borrar -> {
                         showDeleteDialog(item)
                         true
@@ -169,7 +196,7 @@ class UnifiedItemAdapter(
                 }
                 TimelineItemType.EVENTO -> {
                     builder.setPositiveButton("Sí") { _, _ ->
-                        val evento = Evento(item.id, item.titulo, item.descrip, item.fecha, item.prioridad)
+                        val evento = Evento(item.id, item.titulo, item.descrip, item.fecha, item.prioridad, item.horaInicio ?: "", item.horaFin ?: "", item.imagenUri)
                         onDeleteEvento(evento)
                         Toast.makeText(context, "Evento eliminado", Toast.LENGTH_SHORT).show()
                     }
@@ -180,6 +207,121 @@ class UnifiedItemAdapter(
             }
 
             builder.create().show()
+        }
+
+        private fun showEventoDetallesDialog(evento: Evento) {
+            val dialog = android.app.Dialog(context)
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+            dialog.setContentView(R.layout.dialog_evento_detalles)
+
+            // Referencias a los elementos del diálogo
+            val titulo = dialog.findViewById<TextView>(R.id.eventoTitulo)
+            val descripcion = dialog.findViewById<TextView>(R.id.eventoDescripcion)
+            val labelDescripcion = dialog.findViewById<TextView>(R.id.labelDescripcion)
+            val fecha = dialog.findViewById<TextView>(R.id.eventoFecha)
+            val horario = dialog.findViewById<TextView>(R.id.eventoHorario)
+            val labelHorario = dialog.findViewById<TextView>(R.id.labelHorario)
+            val containerHorario = dialog.findViewById<View>(R.id.containerHorario)
+            val prioridadIndicador = dialog.findViewById<View>(R.id.prioridadIndicador)
+            val prioridadTexto = dialog.findViewById<TextView>(R.id.prioridadTexto)
+            val imagenEvento = dialog.findViewById<ImageView>(R.id.eventoImagen)
+            val imageContainer = dialog.findViewById<View>(R.id.imageContainer)
+
+            val btnEditar = dialog.findViewById<com.google.android.material.button.MaterialButton>(R.id.btnEditar)
+            val btnEliminar = dialog.findViewById<com.google.android.material.button.MaterialButton>(R.id.btnEliminar)
+            val btnCerrar = dialog.findViewById<com.google.android.material.button.MaterialButton>(R.id.btnCerrar)
+
+            // Configurar datos
+            titulo.text = evento.titulo
+
+            // Manejar descripción
+            if (evento.descrip.isNotEmpty()) {
+                descripcion.text = evento.descrip
+                descripcion.visibility = View.VISIBLE
+                labelDescripcion.visibility = View.VISIBLE
+            } else {
+                descripcion.visibility = View.GONE
+                labelDescripcion.visibility = View.GONE
+            }
+
+            fecha.text = formatDisplayDate(evento.fecha)
+
+            // Mostrar horario si existe
+            if (evento.horaInicio.isNotEmpty() && evento.horaFin.isNotEmpty()) {
+                horario.text = "${evento.horaInicio} - ${evento.horaFin}"
+                labelHorario.visibility = View.VISIBLE
+                containerHorario.visibility = View.VISIBLE
+            } else if (evento.horaInicio.isNotEmpty()) {
+                horario.text = evento.horaInicio
+                labelHorario.visibility = View.VISIBLE
+                containerHorario.visibility = View.VISIBLE
+            } else {
+                labelHorario.visibility = View.GONE
+                containerHorario.visibility = View.GONE
+            }
+
+            // Configurar prioridad
+            when (evento.prioridad) {
+                1 -> {
+                    prioridadIndicador.setBackgroundColor(android.graphics.Color.parseColor("#F44336"))
+                    prioridadTexto.text = "Alta"
+                    prioridadTexto.setTextColor(android.graphics.Color.parseColor("#F44336"))
+                }
+                2 -> {
+                    prioridadIndicador.setBackgroundColor(android.graphics.Color.parseColor("#FFEB3B"))
+                    prioridadTexto.text = "Media"
+                    prioridadTexto.setTextColor(android.graphics.Color.parseColor("#F57C00"))
+                }
+                3 -> {
+                    prioridadIndicador.setBackgroundColor(android.graphics.Color.parseColor("#2196F3"))
+                    prioridadTexto.text = "Baja"
+                    prioridadTexto.setTextColor(android.graphics.Color.parseColor("#2196F3"))
+                }
+            }
+
+            // Mostrar imagen si existe
+            if (!evento.imagenUri.isNullOrEmpty()) {
+                try {
+                    val uri = android.net.Uri.parse(evento.imagenUri)
+                    imagenEvento.setImageURI(uri)
+                    imageContainer.visibility = View.VISIBLE
+                } catch (e: Exception) {
+                    imageContainer.visibility = View.GONE
+                }
+            } else {
+                imageContainer.visibility = View.GONE
+            }
+
+            // Botón Editar
+            btnEditar.setOnClickListener {
+                dialog.dismiss()
+                onEditEvento(evento)
+            }
+
+            // Botón Eliminar
+            btnEliminar.setOnClickListener {
+                dialog.dismiss()
+                val builder = AlertDialog.Builder(context)
+                builder.setTitle("¿Eliminar Evento?")
+                builder.setMessage("¿Está seguro que desea eliminar este evento?")
+                builder.setPositiveButton("Sí") { _, _ ->
+                    onDeleteEvento(evento)
+                    Toast.makeText(context, "Evento eliminado", Toast.LENGTH_SHORT).show()
+                }
+                builder.setNegativeButton("No") { _, _ -> }
+                builder.create().show()
+            }
+
+            // Botón Cerrar
+            btnCerrar.setOnClickListener {
+                dialog.dismiss()
+            }
+
+            dialog.show()
+            dialog.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+            dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            dialog.window?.attributes?.windowAnimations = R.style.DialogAnimation
+            dialog.window?.setGravity(Gravity.BOTTOM)
         }
     }
 }

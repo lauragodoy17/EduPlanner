@@ -512,6 +512,123 @@ class InicioActivity : AppCompatActivity() {
         dialog.window?.setGravity(Gravity.BOTTOM)
     }
 
+    fun showDialogEditarEvento(evento: com.softcg.myapplication.ui.Inicio.Models.Evento) {
+        val dialog = Dialog(this)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setContentView(R.layout.sheet_agregar_evento)
+
+        // Referencias a los campos
+        val titulo = dialog.findViewById<EditText>(R.id.NombreEditText)
+        val descripcion = dialog.findViewById<EditText>(R.id.DescripcionEditTextevent)
+        val fecha = dialog.findViewById<EditText>(R.id.FechaEditTextevent)
+        val horaInicio = dialog.findViewById<EditText>(R.id.HoraInicioEditText)
+        val horaFin = dialog.findViewById<EditText>(R.id.HoraFinEditText)
+        val guardarBoton = dialog.findViewById<Button>(R.id.botonAgregar)
+
+        // Tarjetas de prioridad
+        val prioridadAlta = dialog.findViewById<androidx.cardview.widget.CardView>(R.id.prioridadAlta)
+        val prioridadMedia = dialog.findViewById<androidx.cardview.widget.CardView>(R.id.prioridadMedia)
+        val prioridadBaja = dialog.findViewById<androidx.cardview.widget.CardView>(R.id.prioridadBaja)
+
+        // Selector de imagen
+        val imageSelectorCard = dialog.findViewById<androidx.cardview.widget.CardView>(R.id.imageSelectorCard)
+        val imagePreview = dialog.findViewById<ImageView>(R.id.imagePreview)
+        val imageNameText = dialog.findViewById<TextView>(R.id.imageNameText)
+
+        // Guardar referencias para usar en onActivityResult
+        currentImagePreview = imagePreview
+        val imagePreviewCard = dialog.findViewById<androidx.cardview.widget.CardView>(R.id.imagePreviewCard)
+        currentImagePreviewCard = imagePreviewCard
+        currentImageNameText = imageNameText
+
+        // Prellenar campos con los datos del evento
+        titulo.setText(evento.titulo)
+        descripcion.setText(evento.descrip)
+        fecha.setText(evento.fecha)
+        horaInicio.setText(evento.horaInicio)
+        horaFin.setText(evento.horaFin)
+        selectedPrioridad = evento.prioridad
+
+        // Configurar la imagen si existe
+        if (!evento.imagenUri.isNullOrEmpty()) {
+            try {
+                val uri = android.net.Uri.parse(evento.imagenUri)
+                selectedImageUri = uri
+                imagePreview.setImageURI(uri)
+                currentImagePreviewCard?.visibility = View.VISIBLE
+                imageNameText.text = "Imagen cargada"
+            } catch (e: Exception) {
+                selectedImageUri = null
+                currentImagePreviewCard?.visibility = View.GONE
+            }
+        } else {
+            selectedImageUri = null
+            currentImagePreviewCard?.visibility = View.GONE
+        }
+
+        // Configurar selector de fecha
+        fecha.setOnClickListener {
+            onClickScheduledDate(fecha)
+        }
+
+        // Configurar time pickers
+        horaInicio.setOnClickListener {
+            showTimePicker(horaInicio)
+        }
+
+        horaFin.setOnClickListener {
+            showTimePicker(horaFin)
+        }
+
+        // Configurar selectores de prioridad
+        setupPrioritySelector(prioridadAlta, prioridadMedia, prioridadBaja, 1) // Alta
+        setupPrioritySelector(prioridadMedia, prioridadAlta, prioridadBaja, 2) // Media
+        setupPrioritySelector(prioridadBaja, prioridadAlta, prioridadMedia, 3) // Baja
+
+        // Marcar prioridad correspondiente
+        when (evento.prioridad) {
+            1 -> prioridadAlta.setCardBackgroundColor(android.graphics.Color.parseColor("#E1BEE7"))
+            2 -> prioridadMedia.setCardBackgroundColor(android.graphics.Color.parseColor("#E1BEE7"))
+            3 -> prioridadBaja.setCardBackgroundColor(android.graphics.Color.parseColor("#E1BEE7"))
+        }
+
+        // Configurar selector de imagen
+        imageSelectorCard.setOnClickListener {
+            openImagePicker()
+        }
+
+        // Cambiar el texto del botón
+        guardarBoton.text = "Actualizar Evento"
+
+        // Actualizar evento
+        guardarBoton.setOnClickListener {
+            if (titulo.text.toString().isNotEmpty() && fecha.text.toString().isNotEmpty()) {
+                dialog.dismiss()
+                // Actualizar el evento existente con el mismo ID
+                inicioViewModel.onActualizarEventoSelected(
+                    evento.id,
+                    titulo.text.toString(),
+                    descripcion.text.toString(),
+                    fecha.text.toString(),
+                    selectedPrioridad,
+                    horaInicio.text.toString(),
+                    horaFin.text.toString(),
+                    selectedImageUri?.toString()
+                )
+                homeViewModel.obtenerEventos()
+                Toast.makeText(this, "Evento actualizado", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(this, "Complete los campos obligatorios", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        dialog.show()
+        dialog.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog.window?.attributes?.windowAnimations = R.style.DialogAnimation
+        dialog.window?.setGravity(Gravity.BOTTOM)
+    }
+
     private fun setupPrioritySelector(
         selectedCard: androidx.cardview.widget.CardView,
         otherCard1: androidx.cardview.widget.CardView,

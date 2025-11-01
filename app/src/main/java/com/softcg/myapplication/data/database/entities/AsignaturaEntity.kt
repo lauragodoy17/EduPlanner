@@ -18,5 +18,6 @@ data class AsignaturaEntity (
     @ColumnInfo(name = "jueves")val jueves:Boolean,
     @ColumnInfo(name = "viernes")val viernes:Boolean,
     @ColumnInfo(name = "sabado")val sabado:Boolean,
-    @ColumnInfo(name = "domingo")val domingo:Boolean
+    @ColumnInfo(name = "domingo")val domingo:Boolean,
+    @ColumnInfo(name = "tipo_calificacion")val tipoCalificacion:String = ""
 )

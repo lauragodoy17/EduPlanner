@@ -33,9 +33,9 @@ class AsignaturasViewModel @Inject constructor(
         }
     }
 
-    fun onAgregarAsignaturaSelected(nombre:String,tutor:String,duracion:Int,hora:String, horario:List<ListItem>){
+    fun onAgregarAsignaturaSelected(nombre:String,tutor:String,duracion:Int,hora:String, horario:List<ListItem>, tipoCalificacion:String = ""){
         val horarios=getHorario(horario)
-        val asignatura = Asignatura(null,nombre,tutor,duracion,hora,horarios)
+        val asignatura = Asignatura(null,nombre,tutor,duracion,hora,horarios,tipoCalificacion)
         viewModelScope.launch {
             asignaturasRepository.insertAsignatura(asignatura)
             obtenerAsignaturas()

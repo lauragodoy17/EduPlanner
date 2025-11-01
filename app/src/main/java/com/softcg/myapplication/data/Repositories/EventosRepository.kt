@@ -23,4 +23,9 @@ class EventosRepository @Inject constructor(private val eventosDao: EventosDao) 
         val entity = EventoEntity(titulo = evento.titulo, descrip = evento.descrip, fecha = evento.fecha, prioridad = evento.prioridad, horaInicio = evento.horaInicio, horaFin = evento.horaFin, imagenUri = evento.imagenUri)
         eventosDao.insertEvento(entity)
     }
+
+    suspend fun updateEvento(evento: Evento){
+        val entity = EventoEntity(id = evento.id, titulo = evento.titulo, descrip = evento.descrip, fecha = evento.fecha, prioridad = evento.prioridad, horaInicio = evento.horaInicio, horaFin = evento.horaFin, imagenUri = evento.imagenUri)
+        eventosDao.updateEvento(entity)
+    }
 }

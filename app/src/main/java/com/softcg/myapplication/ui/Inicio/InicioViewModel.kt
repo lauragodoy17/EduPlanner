@@ -116,4 +116,16 @@ class InicioViewModel @Inject constructor(
             eventosRepository.insertEvento(evento)
         }
     }
+
+    fun updateEvento(evento: Evento){
+        viewModelScope.launch {
+            eventosRepository.updateEvento(evento)
+        }
+    }
+
+    fun onActualizarEventoSelected(id: Int?, titulo:String, descrip:String, fecha:String, prioridad:Int, horaInicio:String = "", horaFin:String = "", imagenUri:String? = null){
+        val evento: Evento = Evento(id, titulo, descrip, fecha, prioridad, horaInicio, horaFin, imagenUri)
+        updateEvento(evento)
+        obtenerEventos()
+    }
 }

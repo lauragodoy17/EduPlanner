@@ -9,7 +9,10 @@ data class TimelineItem(
     val fecha: String,
     val prioridad: Int,
     val type: TimelineItemType,
-    val asignatura: String? = null // Solo para tareas
+    val asignatura: String? = null, // Solo para tareas
+    val horaInicio: String? = null, // Solo para eventos
+    val horaFin: String? = null, // Solo para eventos
+    val imagenUri: String? = null // Solo para eventos
 ) {
     fun getDateForSorting(): Date {
         return try {
@@ -46,6 +49,9 @@ fun Evento.toTimelineItem(): TimelineItem {
         fecha = this.fecha,
         prioridad = this.prioridad,
         type = TimelineItemType.EVENTO,
-        asignatura = null
+        asignatura = null,
+        horaInicio = this.horaInicio,
+        horaFin = this.horaFin,
+        imagenUri = this.imagenUri
     )
 }
