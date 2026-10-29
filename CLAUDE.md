@@ -16,6 +16,8 @@ EduPlanner is an Android application for educational planning and task managemen
 - **Clean build**: `./gradlew clean`
 - **Install debug APK**: `./gradlew installDebug`
 
+Gradle 8.4 + AGP 8.3 need **JDK 17** (Java 8 is too old and Java 25 is too new). From a terminal, point `JAVA_HOME` at a JDK 17 first, e.g. `C:\Users\laura\.jdks\jbr-17.0.14`.
+
 ## Architecture
 
 ### MVVM Pattern
@@ -32,7 +34,7 @@ The app follows MVVM (Model-View-ViewModel) architecture:
 - All ViewModels and repositories use `@Inject` constructor injection
 
 #### Database (Room)
-- Main database: `TareasDatabase.kt` (version 9)
+- Main database: `TareasDatabase.kt` (version 13)
 - Entities: `TareaEntity`, `EventoEntity`, `AsignaturaEntity`, `CalificacionEntity`
 - DAOs: Separate DAO classes for each entity in `data/database/dao/`
 - Repositories: Repository pattern implementation in `data/Repositories/`
@@ -46,6 +48,8 @@ The app uses Navigation Component with 6 main fragments:
 - **AsignaturasFragment** (`id_subjects_fragment`): Subject management
 - **HelpFragment** (`id_help_fragment`): Help and feedback
 
+`InicioActivity` hosts the NavHost, drawer, bottom bar and floating buttons, and only coordinates. The add/edit bottom sheets live in `ui/Inicio/Dialogs/` (`TareaDialog`, `EventoDialog`, `CalificacionDialog`). Event editing is opened from `HomeFragment`. Image picking uses `registerForActivityResult` in whichever Activity/Fragment opens `EventoDialog`, which receives the result through `mostrarImagen()`. Shared helpers: `Dialog.showAsBottomSheet()` in `core/ex/DialogEx.kt`, and `EditText.showDatePicker()`/`showTimePicker()` in `core/ex/EditTextEx.kt`.
+
 #### Firebase Integration
 - Authentication: Firebase Auth for user login/registration
 - Analytics: Firebase Analytics enabled
@@ -57,7 +61,10 @@ The app uses Navigation Component with 6 main fragments:
 - **Subject Management**: Organize academic subjects (asignaturas)
 - **Grade Tracking**: Record and monitor academic grades (calificaciones)
 - **Schedule View**: Visual class schedule display
-- **Notifications**: Alarm-based notifications for tasks and events
+- **Notifications**: Alarm-based daily reminders (9:00 and 11:30) scheduled by `ui/notifications/NotificationScheduler` and shown by `AlarmNotification`
+
+### Design
+The UI uses a purple palette (the green theme was retired). Use the named colors in `values/colors.xml`: `purple_primary` (#8B5A9F), `purple_accent` (#9C27B0), `purple_soft` (#E1BEE7) and `purple_surface` (#F3E5F5). Forms follow `sheet_agregar_evento.xml`: outlined `TextInputLayout`s with 16dp corners and a 58dp `MaterialButton`. List cards follow `item_asignatura_modern.xml`.
 
 ## Development Guidelines
 
@@ -71,13 +78,14 @@ The app uses Navigation Component with 6 main fragments:
 - Unit tests: Located in `src/test/`
 - Integration tests: Located in `src/androidTest/`
 - Test frameworks: JUnit 4, Mockito, MockK, and Espresso for UI testing
+- ViewModel tests use `InstantTaskExecutorRule` plus `core/MainDispatcherRule` (test sources) so `viewModelScope` runs synchronously. `unitTests.isReturnDefaultValues = true` lets `android.util.Log` calls pass in JVM tests
 
 ### Dependencies Management
-- Version catalog: `gradle/libs.versions.toml`
+- Version catalog: `gradle/libs.versions.toml` (all Gradle plugins are declared there: Kotlin 1.9.20, KSP 1.9.20-1.0.14, Hilt 2.50, Google Services). Keep the Kotlin and KSP versions in sync.
 - Key libraries: Room, Hilt, Firebase, Navigation Component, Material Design, Coroutines
 - Minimum SDK: 28, Target SDK: 34
 
 ### Database Migrations
-- Current database version: 9
+- Current database version: 13
 - Database allows main thread queries (configured for development)
 - Uses `fallbackToDestructiveMigration()` for version conflicts

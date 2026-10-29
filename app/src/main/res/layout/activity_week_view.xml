@@ -106,7 +106,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="No tienes clases pendientes."
-                android:textColor="@color/back"
+                android:textColor="@color/purple_primary"
                 android:textSize="24sp"
                 android:textStyle="bold"
                 android:visibility="gone"

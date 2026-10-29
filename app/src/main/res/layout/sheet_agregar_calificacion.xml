@@ -1,150 +1,154 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    android:focusableInTouchMode="true"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:background="@drawable/dialog_a"
-    android:layout_height="match_parent">
-    <TextView
-        android:id="@+id/choosetxt"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAlignment="center"
-        android:text="Agregar Calificación"
-        android:textColor="@color/black"
-        android:layout_marginTop="5dp"
-        android:textSize="25dp"
-        android:textStyle="bold"/>
+    android:fillViewport="true">
 
     <LinearLayout
-        android:id="@+id/calificacion"
-        android:layout_width="325dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:focusableInTouchMode="true"
-        android:layout_gravity="center"
-        android:textColorHint="#949494"
+        android:padding="24dp">
 
-        app:layout_constraintBottom_toTopOf="@id/DescripcionContainer"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/choosetxt">
-
-        <com.google.android.material.textfield.TextInputLayout
+        <!-- Header -->
+        <TextView
+            android:id="@+id/choosetxt"
             android:layout_width="match_parent"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp">
+            android:text="Agregar Calificación"
+            android:textAlignment="center"
+            android:textColor="#1A1A1A"
+            android:textSize="26sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="24dp"/>
+
+        <!-- Tipo de Calificación -->
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Tipo de calificación"
+            android:layout_marginBottom="16dp"
+            app:boxStrokeColor="@color/purple_accent"
+            app:boxStrokeWidth="2dp"
+            app:boxCornerRadiusTopStart="16dp"
+            app:boxCornerRadiusTopEnd="16dp"
+            app:boxCornerRadiusBottomStart="16dp"
+            app:boxCornerRadiusBottomEnd="16dp"
+            app:hintTextColor="@color/purple_accent"
+            app:endIconTint="@color/purple_accent">
 
             <AutoCompleteTextView
                 android:id="@+id/CalificacionEditText"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:background="@drawable/campos_stylos"
-                android:hint="Tipo de Calificación"
+                android:layout_height="wrap_content"
                 android:inputType="none"
-                android:textColorHint="#949494" />
-
+                android:textColor="#2C2C2C"
+                android:textSize="16sp"
+                android:padding="16dp"/>
         </com.google.android.material.textfield.TextInputLayout>
 
-    </LinearLayout>
-    <com.google.android.material.textfield.TextInputLayout
-
-        android:id="@+id/TextoCalificacion"
-        style="@style/AppTheme.TextInputLayout"
-        android:layout_width="325dp"
-        android:layout_height="wrap_content"
-        android:hint="Calificación"
-        android:textColor="#000000"
-        android:textColorHint="#949494"
-        android:layout_gravity="center"
-        >
-
-        <LinearLayout
-            android:id="@+id/auto_complete"
-            android:layout_width="325dp"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:focusableInTouchMode="true"
-            app:layout_constraintBottom_toTopOf="@id/DescripcionContainer"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/FechaContainer">
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="15dp">
-
-                <AutoCompleteTextView
-                    android:id="@+id/AsignaturaEditText"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:background="@drawable/campos_stylos"
-                    android:hint="Asignatura"
-                    android:inputType="none" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-        </LinearLayout>
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/NombreEditText"
+        <!-- Asignatura -->
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="10dp"
-            android:background="@drawable/campos_stylos"
-            android:inputType="numberDecimal"
-            android:textColor="#000000"
-            android:textColorHint="#949494" />
+            android:layout_height="wrap_content"
+            android:hint="Asignatura"
+            android:layout_marginBottom="16dp"
+            app:boxStrokeColor="@color/purple_accent"
+            app:boxStrokeWidth="2dp"
+            app:boxCornerRadiusTopStart="16dp"
+            app:boxCornerRadiusTopEnd="16dp"
+            app:boxCornerRadiusBottomStart="16dp"
+            app:boxCornerRadiusBottomEnd="16dp"
+            app:hintTextColor="@color/purple_accent"
+            app:endIconTint="@color/purple_accent">
 
+            <AutoCompleteTextView
+                android:id="@+id/AsignaturaEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="none"
+                android:textColor="#2C2C2C"
+                android:textSize="16sp"
+                android:padding="16dp"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Calificación -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/TextoCalificacion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Calificación"
+            android:layout_marginBottom="16dp"
+            app:boxBackgroundMode="outline"
+            app:boxStrokeColor="@color/purple_accent"
+            app:boxStrokeWidth="2dp"
+            app:boxCornerRadiusTopStart="16dp"
+            app:boxCornerRadiusTopEnd="16dp"
+            app:boxCornerRadiusBottomStart="16dp"
+            app:boxCornerRadiusBottomEnd="16dp"
+            app:hintTextColor="@color/purple_accent">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/NombreEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="numberDecimal"
+                android:textColor="#2C2C2C"
+                android:textSize="16sp"
+                android:padding="16dp"
+                android:maxLines="1"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Descripción -->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/DescripcionContainer"
-            style="@style/AppTheme.TextInputLayout"
-            android:layout_width="325dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Descripcion"
-            android:background="@drawable/campos_stylos"
-            android:textColor="#000000"
-            android:textColorHint="#949494"
-            app:helperText=" "
-            android:gravity="center"
-            >
+            android:hint="Descripción (opcional)"
+            android:layout_marginBottom="20dp"
+            app:boxBackgroundMode="outline"
+            app:boxStrokeColor="@color/purple_accent"
+            app:boxStrokeWidth="2dp"
+            app:boxCornerRadiusTopStart="16dp"
+            app:boxCornerRadiusTopEnd="16dp"
+            app:boxCornerRadiusBottomStart="16dp"
+            app:boxCornerRadiusBottomEnd="16dp"
+            app:hintTextColor="@color/purple_accent"
+            app:counterEnabled="true"
+            app:counterMaxLength="200">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/DescripcionEditText"
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:background="@drawable/campos_stylos"
-                android:inputType="text"
-                android:textColor="#000000"
-                android:textColorHint="#949494"
-                android:gravity="top|start" />
-            <TextView
-                android:id="@+id/characterCountTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="0/200"
-                android:textColor="#808080"
-                android:textSize="12sp"
-                android:layout_gravity="end"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="8dp"/>
+                android:layout_height="140dp"
+                android:inputType="textMultiLine"
+                android:gravity="top|start"
+                android:textColor="#2C2C2C"
+                android:textSize="16sp"
+                android:padding="16dp"
+                android:maxLength="200"/>
         </com.google.android.material.textfield.TextInputLayout>
 
-    </com.google.android.material.textfield.TextInputLayout>
+        <!-- Botón Agregar -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/botonAgregar"
+            android:layout_width="match_parent"
+            android:layout_height="58dp"
+            android:text="Agregar Calificación"
+            android:textColor="@color/white"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.02"
+            app:backgroundTint="@color/purple_accent"
+            app:cornerRadius="16dp"
+            app:elevation="0dp"
+            android:layout_marginBottom="8dp"/>
 
+    </LinearLayout>
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/botonAgregar"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:layout_marginBottom="10dp"
-        android:background="@drawable/botonestylo"
-        android:text="Agregar"
-        android:textColor="@color/white"
-        android:layout_gravity="center"
-        />
-
-</LinearLayout>
+</ScrollView>

@@ -9,6 +9,8 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
 import android.widget.TextView
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -16,6 +18,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.softcg.myapplication.R
 import com.softcg.myapplication.R.*
+import com.softcg.myapplication.ui.Inicio.Dialogs.EventoDialog
+import com.softcg.myapplication.ui.Inicio.InicioViewModel
+import com.softcg.myapplication.ui.Inicio.Models.Evento
 import com.softcg.myapplication.ui.Inicio.Fragments.Home.Adapters.DateFilterAdapter
 import com.softcg.myapplication.ui.Inicio.Fragments.Home.Adapters.UnifiedItemAdapter
 import dagger.hilt.android.AndroidEntryPoint
@@ -24,8 +29,14 @@ import dagger.hilt.android.AndroidEntryPoint
 class HomeFragment : Fragment() {
 
     private val homeViewModel: HomeViewModel by activityViewModels()
+    private val inicioViewModel: InicioViewModel by activityViewModels()
     private lateinit var unifiedAdapter: UnifiedItemAdapter
     private var currentFilter = 0 // 0: Todo, 1: Solo Tareas, 2: Solo Eventos
+
+    private var eventoDialog: EventoDialog? = null
+    private val seleccionarImagen = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+        uri?.let { eventoDialog?.mostrarImagen(it) }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -90,10 +101,7 @@ class HomeFragment : Fragment() {
             context = requireContext(),
             onDeleteTarea = { tarea -> homeViewModel.deleteTarea(tarea) },
             onDeleteEvento = { evento -> homeViewModel.deleteEvento(evento) },
-            onEditEvento = { evento ->
-                // Llamar a la funcionalidad de editar del InicioActivity
-                (activity as? com.softcg.myapplication.ui.Inicio.InicioActivity)?.showDialogEditarEvento(evento)
-            },
+            onEditEvento = { evento -> showDialogEditarEvento(evento) },
             onItemClick = { item -> /* Handle item click */ }
         )
 
@@ -111,6 +119,28 @@ class HomeFragment : Fragment() {
         })
     }
 
+
+    private fun showDialogEditarEvento(evento: Evento) {
+        eventoDialog = EventoDialog(
+            context = requireContext(),
+            evento = evento,
+            onSeleccionarImagen = { seleccionarImagen.launch("image/*") },
+            onGuardar = { actualizado ->
+                inicioViewModel.onActualizarEventoSelected(
+                    actualizado.id,
+                    actualizado.titulo,
+                    actualizado.descrip,
+                    actualizado.fecha,
+                    actualizado.prioridad,
+                    actualizado.horaInicio,
+                    actualizado.horaFin,
+                    actualizado.imagenUri
+                )
+                homeViewModel.obtenerEventos()
+                Toast.makeText(requireContext(), "Evento actualizado", Toast.LENGTH_SHORT).show()
+            }
+        ).also { it.show() }
+    }
 
     private fun updateVisibility(view: View) {
         val hasTareas = homeViewModel._filteredTareas.value?.isNotEmpty() ?: false

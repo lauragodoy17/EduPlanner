@@ -1,117 +1,162 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/white"
+    android:fillViewport="true"
     tools:context=".ui.Inicio.Fragments.Ayuda.HelpFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:id="@+id/containerManual"
         android:layout_width="match_parent"
-        android:layout_marginHorizontal="35dp"
-        android:layout_height="150dp">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingHorizontal="24dp"
+        android:paddingTop="24dp"
+        android:paddingBottom="80dp">
 
+        <!-- Ícono decorativo -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="96dp"
+            android:layout_height="96dp"
+            android:layout_gravity="center_horizontal"
+            app:cardCornerRadius="48dp"
+            app:cardElevation="0dp"
+            app:cardBackgroundColor="@color/purple_surface"
+            android:layout_marginBottom="20dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="💬"
+                android:textSize="48sp"
+                android:gravity="center"/>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Título -->
         <TextView
             android:id="@+id/Conoce"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="¿Tienes alguna queja y/o problema?"
+            android:textAlignment="center"
+            android:textColor="#1A1A1A"
+            android:textSize="24sp"
             android:textStyle="bold"
-            android:textColor="#4E6B56"
-            android:textSize="30sp"
-            android:layout_marginTop="40dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="match_parent"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp">
-
-        <AutoCompleteTextView
-            android:id="@+id/QuejaEditText"
-            android:layout_width="325dp"
-            android:layout_height="50dp"
-            android:layout_gravity="center"
-            android:background="@drawable/campos_stylos"
-            android:hint="Selecciona el tipo de queja"
-            android:inputType="none"
-            android:textColorHint="#949494" />
-    </com.google.android.material.textfield.TextInputLayout>
-
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="match_parent"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp">
-
-        <AutoCompleteTextView
-            android:id="@+id/QuejadosEditText"
-            android:layout_width="325dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:background="@drawable/campos_stylos"
-            android:hint="Selecciona el problema"
-            android:inputType="textMultiLine"
-            android:singleLine="false"
-            android:focusable="false"
-            android:clickable="true"
-            android:maxLines="2"
-            android:textColorHint="#949494" />
-
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/DescripcionContainer"
-        style="@style/AppTheme.TextInputLayout"
-        android:layout_width="325dp"
-        android:layout_height="wrap_content"
-        android:hint="Descripcion del problema"
-        android:background="@drawable/campos_stylos"
-        android:textColor="#000000"
-        android:layout_gravity="center"
-        android:textColorHint="#949494"
-        app:helperText=" "
-        android:gravity="center">
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/DescripcionEditText"
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:background="@drawable/campos_stylos"
-            android:inputType="text"
-            android:layout_gravity="center"
-            android:textColor="#000000"
-            android:textColorHint="#949494"
-            android:gravity="top|start" />
-        <TextView
-            android:id="@+id/characterCountTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="0/200"
-            android:textColor="#808080"
-            android:textSize="12sp"
-            android:layout_gravity="end"
-            android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"/>
+
+        <!-- Subtítulo -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Cuéntanos qué pasó y te ayudaremos"
+            android:textAlignment="center"
+            android:textColor="#666666"
+            android:textSize="16sp"
+            android:layout_marginBottom="24dp"/>
+
+        <!-- Tipo de Queja -->
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Selecciona el tipo de queja"
+            android:layout_marginBottom="16dp"
+            app:boxStrokeColor="@color/purple_accent"
+            app:boxStrokeWidth="2dp"
+            app:boxCornerRadiusTopStart="16dp"
+            app:boxCornerRadiusTopEnd="16dp"
+            app:boxCornerRadiusBottomStart="16dp"
+            app:boxCornerRadiusBottomEnd="16dp"
+            app:hintTextColor="@color/purple_accent"
+            app:endIconTint="@color/purple_accent">
+
+            <AutoCompleteTextView
+                android:id="@+id/QuejaEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="none"
+                android:textColor="#2C2C2C"
+                android:textSize="16sp"
+                android:padding="16dp"/>
         </com.google.android.material.textfield.TextInputLayout>
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/botonAgregar"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:layout_marginBottom="10dp"
-        android:background="@drawable/botonestylo"
-        android:text="Enviar"
-        android:textColor="@color/white"
-        android:layout_gravity="center"
-        />
+
+        <!-- Problema -->
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Selecciona el problema"
+            android:layout_marginBottom="16dp"
+            app:boxStrokeColor="@color/purple_accent"
+            app:boxStrokeWidth="2dp"
+            app:boxCornerRadiusTopStart="16dp"
+            app:boxCornerRadiusTopEnd="16dp"
+            app:boxCornerRadiusBottomStart="16dp"
+            app:boxCornerRadiusBottomEnd="16dp"
+            app:hintTextColor="@color/purple_accent"
+            app:endIconTint="@color/purple_accent">
+
+            <AutoCompleteTextView
+                android:id="@+id/QuejadosEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textMultiLine"
+                android:singleLine="false"
+                android:focusable="false"
+                android:clickable="true"
+                android:maxLines="2"
+                android:textColor="#2C2C2C"
+                android:textSize="16sp"
+                android:padding="16dp"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Descripción -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/DescripcionContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Descripción del problema"
+            android:layout_marginBottom="20dp"
+            app:boxBackgroundMode="outline"
+            app:boxStrokeColor="@color/purple_accent"
+            app:boxStrokeWidth="2dp"
+            app:boxCornerRadiusTopStart="16dp"
+            app:boxCornerRadiusTopEnd="16dp"
+            app:boxCornerRadiusBottomStart="16dp"
+            app:boxCornerRadiusBottomEnd="16dp"
+            app:hintTextColor="@color/purple_accent"
+            app:counterEnabled="true"
+            app:counterMaxLength="200">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/DescripcionEditText"
+                android:layout_width="match_parent"
+                android:layout_height="160dp"
+                android:inputType="textMultiLine"
+                android:gravity="top|start"
+                android:textColor="#2C2C2C"
+                android:textSize="16sp"
+                android:padding="16dp"
+                android:maxLength="200"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Botón Enviar -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/botonAgregar"
+            android:layout_width="match_parent"
+            android:layout_height="58dp"
+            android:text="Enviar"
+            android:textColor="@color/white"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.02"
+            app:backgroundTint="@color/purple_accent"
+            app:cornerRadius="16dp"
+            app:elevation="0dp"/>
+
     </LinearLayout>
+
+</ScrollView>

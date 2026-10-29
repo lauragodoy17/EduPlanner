@@ -2,35 +2,19 @@ package com.softcg.myapplication.ui.Inicio
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
-import android.app.AlarmManager
-import android.app.DatePickerDialog
-import android.app.Dialog
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import androidx.appcompat.widget.Toolbar
 import android.os.Bundle
-import android.view.Gravity
 import android.view.MenuItem
 import android.view.View
-import android.view.ViewGroup
-import android.view.Window
-import android.view.WindowManager
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.AutoCompleteTextView
-import android.widget.Button
-import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
@@ -50,17 +34,16 @@ import com.google.firebase.auth.FirebaseAuth
 import com.softcg.myapplication.R
 import com.softcg.myapplication.ui.Inicio.Fragments.Agenda.AgendaViewModel
 import com.softcg.myapplication.ui.Inicio.Fragments.Calificaciones.CalificacionesViewModel
+import com.softcg.myapplication.ui.Inicio.Dialogs.CalificacionDialog
+import com.softcg.myapplication.ui.Inicio.Dialogs.EventoDialog
+import com.softcg.myapplication.ui.Inicio.Dialogs.TareaDialog
 import com.softcg.myapplication.ui.Inicio.Fragments.Home.HomeViewModel
 import com.softcg.myapplication.ui.login.MainActivity
-import com.softcg.myapplication.ui.notifications.AlarmNotification
-import com.softcg.myapplication.ui.notifications.AlarmNotification.Companion.NOTIFICATION_ID
+import com.softcg.myapplication.ui.notifications.NotificationScheduler
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
-import java.util.Calendar
-import java.util.Locale
 
 @AndroidEntryPoint
 class InicioActivity : AppCompatActivity() {
@@ -82,9 +65,13 @@ class InicioActivity : AppCompatActivity() {
     private lateinit var leerqr:View
     private var rotate=false
 
+    private var eventoDialog: EventoDialog? = null
+    private val seleccionarImagen = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+        uri?.let { eventoDialog?.mostrarImagen(it) }
+    }
+
 
     companion object {
-        const val MY_CHANNEL_ID = "myChannel"
         fun create(context: Context): Intent =
             Intent(context, InicioActivity::class.java)
     }
@@ -127,9 +114,8 @@ class InicioActivity : AppCompatActivity() {
         initfloatingBottons()
         setupHamburgerMenu()
         setupBottomNavigation()
-        createChannel()
-        scheduleNotification()
-        scheduleNotificationTarde()
+        NotificationScheduler.createChannel(this)
+        NotificationScheduler.scheduleDailyReminders(this, homeViewModel._tareas.value?.size.toString())
     }
 
 
@@ -382,474 +368,44 @@ class InicioActivity : AppCompatActivity() {
 
 
     private fun showDialogTarea(){
-        val dialog = Dialog(this)
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        dialog.setContentView(R.layout.sheet_agregar_tarea)
-        val titulo=dialog.findViewById<EditText>(R.id.NombreEditText)
-        val descripcion=dialog.findViewById<EditText>(R.id.DescripcionEditText)
-        val asignatura =dialog.findViewById<AutoCompleteTextView>(R.id.AsignaturaEditText)
-        val fecha = dialog.findViewById<EditText>(R.id.FechaEditText)
-        val prioridad = dialog.findViewById<AutoCompleteTextView>(R.id.PriorityEditText)
-
-        val guardarBoton= dialog.findViewById<Button>(R.id.botonAgregar)
-        var numPrioridad=0
-        fecha.setOnClickListener {
-            onClickScheduledDate(fecha)
-        }
-        guardarBoton.setOnClickListener {
-            dialog.dismiss()
-            if (prioridad.text.toString()=="Alta"){
-                numPrioridad=1
-            } else if (prioridad.text.toString()=="Media"){
-                numPrioridad=2
-            } else if (prioridad.text.toString()=="Baja"){
-                numPrioridad=3
-            }
-            inicioViewModel.onAgregarTareaSelected(titulo.text.toString(),descripcion.text.toString(),asignatura.text.toString(),fecha.text.toString(),numPrioridad)
+        TareaDialog(this, obtenerNombresAsignaturas()) { titulo, descrip, asignatura, fecha, prioridad ->
+            inicioViewModel.onAgregarTareaSelected(titulo, descrip, asignatura, fecha, prioridad)
             homeViewModel.obtenerTareas()
             Toast.makeText(this,"Tarea guardada", Toast.LENGTH_SHORT).show()
-        }
-        dropDownpriority(prioridad)
-        dropDownAsignatures(asignatura)
-        dialog.show()
-        dialog.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        dialog.window?.attributes?.windowAnimations = R.style.DialogAnimation
-        dialog.window?.setGravity(Gravity.BOTTOM)
+        }.show()
     }
 
-    private var selectedPrioridad = 2 // Default: Media
-    private var selectedImageUri: android.net.Uri? = null
-    private lateinit var currentImagePreview: ImageView
-    private lateinit var currentImagePreviewCard: androidx.cardview.widget.CardView
-    private lateinit var currentImageNameText: TextView
-
     private fun showDialogEvento(){
-        val dialog = Dialog(this)
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        dialog.setContentView(R.layout.sheet_agregar_evento)
-
-        // Referencias a los campos
-        val titulo = dialog.findViewById<EditText>(R.id.NombreEditText)
-        val descripcion = dialog.findViewById<EditText>(R.id.DescripcionEditTextevent)
-        val fecha = dialog.findViewById<EditText>(R.id.FechaEditTextevent)
-        val horaInicio = dialog.findViewById<EditText>(R.id.HoraInicioEditText)
-        val horaFin = dialog.findViewById<EditText>(R.id.HoraFinEditText)
-        val guardarBoton = dialog.findViewById<Button>(R.id.botonAgregar)
-
-        // Tarjetas de prioridad
-        val prioridadAlta = dialog.findViewById<androidx.cardview.widget.CardView>(R.id.prioridadAlta)
-        val prioridadMedia = dialog.findViewById<androidx.cardview.widget.CardView>(R.id.prioridadMedia)
-        val prioridadBaja = dialog.findViewById<androidx.cardview.widget.CardView>(R.id.prioridadBaja)
-
-        // Selector de imagen
-        val imageSelectorCard = dialog.findViewById<androidx.cardview.widget.CardView>(R.id.imageSelectorCard)
-        val imagePreviewCard = dialog.findViewById<androidx.cardview.widget.CardView>(R.id.imagePreviewCard)
-        val imagePreview = dialog.findViewById<ImageView>(R.id.imagePreview)
-        val imageNameText = dialog.findViewById<TextView>(R.id.imageNameText)
-
-        // Guardar referencias para usar en onActivityResult
-        currentImagePreview = imagePreview
-        currentImagePreviewCard = imagePreviewCard
-        currentImageNameText = imageNameText
-
-        // Reset valores por defecto
-        selectedPrioridad = 2
-        selectedImageUri = null
-        imagePreviewCard.visibility = View.GONE
-
-        // Configurar selector de fecha
-        fecha.setOnClickListener {
-            onClickScheduledDate(fecha)
-        }
-
-        // Configurar time pickers
-        horaInicio.setOnClickListener {
-            showTimePicker(horaInicio)
-        }
-
-        horaFin.setOnClickListener {
-            showTimePicker(horaFin)
-        }
-
-        // Configurar selectores de prioridad
-        setupPrioritySelector(prioridadAlta, prioridadMedia, prioridadBaja, 1) // Alta
-        setupPrioritySelector(prioridadMedia, prioridadAlta, prioridadBaja, 2) // Media
-        setupPrioritySelector(prioridadBaja, prioridadAlta, prioridadMedia, 3) // Baja
-
-        // Marcar prioridad media por defecto con color más suave
-        prioridadMedia.setCardBackgroundColor(android.graphics.Color.parseColor("#E1BEE7"))
-
-        // Configurar selector de imagen
-        imageSelectorCard.setOnClickListener {
-            openImagePicker()
-        }
-
-        // Guardar evento
-        guardarBoton.setOnClickListener {
-            if (titulo.text.toString().isNotEmpty() && fecha.text.toString().isNotEmpty()) {
-                dialog.dismiss()
+        eventoDialog = EventoDialog(
+            context = this,
+            onSeleccionarImagen = { seleccionarImagen.launch("image/*") },
+            onGuardar = { evento ->
                 inicioViewModel.onAgregarEventoSelected(
-                    titulo.text.toString(),
-                    descripcion.text.toString(),
-                    fecha.text.toString(),
-                    selectedPrioridad,
-                    horaInicio.text.toString(),
-                    horaFin.text.toString(),
-                    selectedImageUri?.toString()
+                    evento.titulo,
+                    evento.descrip,
+                    evento.fecha,
+                    evento.prioridad,
+                    evento.horaInicio,
+                    evento.horaFin,
+                    evento.imagenUri
                 )
                 homeViewModel.obtenerEventos()
                 Toast.makeText(this, "Evento guardado", Toast.LENGTH_SHORT).show()
-            } else {
-                Toast.makeText(this, "Complete los campos obligatorios", Toast.LENGTH_SHORT).show()
             }
-        }
-
-        dialog.show()
-        dialog.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        dialog.window?.attributes?.windowAnimations = R.style.DialogAnimation
-        dialog.window?.setGravity(Gravity.BOTTOM)
+        ).also { it.show() }
     }
 
-    fun showDialogEditarEvento(evento: com.softcg.myapplication.ui.Inicio.Models.Evento) {
-        val dialog = Dialog(this)
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        dialog.setContentView(R.layout.sheet_agregar_evento)
-
-        // Referencias a los campos
-        val titulo = dialog.findViewById<EditText>(R.id.NombreEditText)
-        val descripcion = dialog.findViewById<EditText>(R.id.DescripcionEditTextevent)
-        val fecha = dialog.findViewById<EditText>(R.id.FechaEditTextevent)
-        val horaInicio = dialog.findViewById<EditText>(R.id.HoraInicioEditText)
-        val horaFin = dialog.findViewById<EditText>(R.id.HoraFinEditText)
-        val guardarBoton = dialog.findViewById<Button>(R.id.botonAgregar)
-
-        // Tarjetas de prioridad
-        val prioridadAlta = dialog.findViewById<androidx.cardview.widget.CardView>(R.id.prioridadAlta)
-        val prioridadMedia = dialog.findViewById<androidx.cardview.widget.CardView>(R.id.prioridadMedia)
-        val prioridadBaja = dialog.findViewById<androidx.cardview.widget.CardView>(R.id.prioridadBaja)
-
-        // Selector de imagen
-        val imageSelectorCard = dialog.findViewById<androidx.cardview.widget.CardView>(R.id.imageSelectorCard)
-        val imagePreview = dialog.findViewById<ImageView>(R.id.imagePreview)
-        val imageNameText = dialog.findViewById<TextView>(R.id.imageNameText)
-
-        // Guardar referencias para usar en onActivityResult
-        currentImagePreview = imagePreview
-        val imagePreviewCard = dialog.findViewById<androidx.cardview.widget.CardView>(R.id.imagePreviewCard)
-        currentImagePreviewCard = imagePreviewCard
-        currentImageNameText = imageNameText
-
-        // Prellenar campos con los datos del evento
-        titulo.setText(evento.titulo)
-        descripcion.setText(evento.descrip)
-        fecha.setText(evento.fecha)
-        horaInicio.setText(evento.horaInicio)
-        horaFin.setText(evento.horaFin)
-        selectedPrioridad = evento.prioridad
-
-        // Configurar la imagen si existe
-        if (!evento.imagenUri.isNullOrEmpty()) {
-            try {
-                val uri = android.net.Uri.parse(evento.imagenUri)
-                selectedImageUri = uri
-                imagePreview.setImageURI(uri)
-                currentImagePreviewCard?.visibility = View.VISIBLE
-                imageNameText.text = "Imagen cargada"
-            } catch (e: Exception) {
-                selectedImageUri = null
-                currentImagePreviewCard?.visibility = View.GONE
-            }
-        } else {
-            selectedImageUri = null
-            currentImagePreviewCard?.visibility = View.GONE
-        }
-
-        // Configurar selector de fecha
-        fecha.setOnClickListener {
-            onClickScheduledDate(fecha)
-        }
-
-        // Configurar time pickers
-        horaInicio.setOnClickListener {
-            showTimePicker(horaInicio)
-        }
-
-        horaFin.setOnClickListener {
-            showTimePicker(horaFin)
-        }
-
-        // Configurar selectores de prioridad
-        setupPrioritySelector(prioridadAlta, prioridadMedia, prioridadBaja, 1) // Alta
-        setupPrioritySelector(prioridadMedia, prioridadAlta, prioridadBaja, 2) // Media
-        setupPrioritySelector(prioridadBaja, prioridadAlta, prioridadMedia, 3) // Baja
-
-        // Marcar prioridad correspondiente
-        when (evento.prioridad) {
-            1 -> prioridadAlta.setCardBackgroundColor(android.graphics.Color.parseColor("#E1BEE7"))
-            2 -> prioridadMedia.setCardBackgroundColor(android.graphics.Color.parseColor("#E1BEE7"))
-            3 -> prioridadBaja.setCardBackgroundColor(android.graphics.Color.parseColor("#E1BEE7"))
-        }
-
-        // Configurar selector de imagen
-        imageSelectorCard.setOnClickListener {
-            openImagePicker()
-        }
-
-        // Cambiar el texto del botón
-        guardarBoton.text = "Actualizar Evento"
-
-        // Actualizar evento
-        guardarBoton.setOnClickListener {
-            if (titulo.text.toString().isNotEmpty() && fecha.text.toString().isNotEmpty()) {
-                dialog.dismiss()
-                // Actualizar el evento existente con el mismo ID
-                inicioViewModel.onActualizarEventoSelected(
-                    evento.id,
-                    titulo.text.toString(),
-                    descripcion.text.toString(),
-                    fecha.text.toString(),
-                    selectedPrioridad,
-                    horaInicio.text.toString(),
-                    horaFin.text.toString(),
-                    selectedImageUri?.toString()
-                )
-                homeViewModel.obtenerEventos()
-                Toast.makeText(this, "Evento actualizado", Toast.LENGTH_SHORT).show()
-            } else {
-                Toast.makeText(this, "Complete los campos obligatorios", Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        dialog.show()
-        dialog.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        dialog.window?.attributes?.windowAnimations = R.style.DialogAnimation
-        dialog.window?.setGravity(Gravity.BOTTOM)
-    }
-
-    private fun setupPrioritySelector(
-        selectedCard: androidx.cardview.widget.CardView,
-        otherCard1: androidx.cardview.widget.CardView,
-        otherCard2: androidx.cardview.widget.CardView,
-        priority: Int
-    ) {
-        selectedCard.setOnClickListener {
-            selectedPrioridad = priority
-
-            // Aplicar color de selección suave al seleccionado
-            selectedCard.setCardBackgroundColor(android.graphics.Color.parseColor("#E1BEE7"))
-
-            // Restaurar colores originales a las otras tarjetas
-            when (priority) {
-                1 -> { // Alta seleccionada
-                    otherCard1.setCardBackgroundColor(android.graphics.Color.parseColor("#FFFEF5")) // Media
-                    otherCard2.setCardBackgroundColor(android.graphics.Color.parseColor("#F0F8FF")) // Baja
-                }
-                2 -> { // Media seleccionada
-                    otherCard1.setCardBackgroundColor(android.graphics.Color.parseColor("#FFF5F5")) // Alta
-                    otherCard2.setCardBackgroundColor(android.graphics.Color.parseColor("#F0F8FF")) // Baja
-                }
-                3 -> { // Baja seleccionada
-                    otherCard1.setCardBackgroundColor(android.graphics.Color.parseColor("#FFF5F5")) // Alta
-                    otherCard2.setCardBackgroundColor(android.graphics.Color.parseColor("#FFFEF5")) // Media
-                }
-            }
-        }
-    }
-
-    private fun showTimePicker(editText: EditText) {
-        val calendar = Calendar.getInstance()
-        val hour = calendar.get(Calendar.HOUR_OF_DAY)
-        val minute = calendar.get(Calendar.MINUTE)
-
-        val timePickerDialog = android.app.TimePickerDialog(
-            this,
-            { _, selectedHour, selectedMinute ->
-                val time = String.format("%02d:%02d", selectedHour, selectedMinute)
-                editText.setText(time)
-            },
-            hour,
-            minute,
-            true // 24 hour format
-        )
-        timePickerDialog.show()
-    }
-
-    private fun openImagePicker() {
-        val intent = Intent(Intent.ACTION_PICK)
-        intent.type = "image/*"
-        startActivityForResult(intent, 1000)
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == 1000 && resultCode == RESULT_OK && data != null) {
-            selectedImageUri = data.data
-
-            if (::currentImagePreview.isInitialized && ::currentImagePreviewCard.isInitialized) {
-                currentImagePreview.setImageURI(selectedImageUri)
-                currentImagePreviewCard.visibility = View.VISIBLE
-            }
-
-            if (::currentImageNameText.isInitialized) {
-                val fileName = selectedImageUri?.lastPathSegment ?: "Imagen seleccionada"
-                currentImageNameText.text = fileName
-            }
-        }
-    }
     private fun showDialogCalificacion(){
-        val dialog = Dialog(this)
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        dialog.setContentView(R.layout.sheet_agregar_calificacion)
-        val asignatura=dialog.findViewById<AutoCompleteTextView>(R.id.AsignaturaEditText)
-        val descripcion=dialog.findViewById<EditText>(R.id.DescripcionEditText)
-        val calificacion = dialog.findViewById<EditText>(R.id.NombreEditText)
-        val guardarBoton= dialog.findViewById<Button>(R.id.botonAgregar)
-        var aux:Float= 0F
-
-        val items= listOf("Numerico (1-5)")
-        val autoComplete =dialog.findViewById<AutoCompleteTextView>(R.id.CalificacionEditText)
-        val adapter=ArrayAdapter(this, R.layout.item_menu_asignatura,items)
-        autoComplete.setAdapter(adapter)
-        autoComplete.onItemClickListener=AdapterView.OnItemClickListener{
-            adapterView, view, i, l ->
-            val itemSelected=adapterView.getItemAtPosition(i)
-            Toast.makeText(this, "Item: $itemSelected", Toast.LENGTH_SHORT).show()
-        }
-
-        guardarBoton.setOnClickListener {
-            dialog.dismiss()
-            if(calificacion.text.toString()!=""){
-                aux=calificacion.text.toString().toFloat()
-            }
-            inicioViewModel.onAgregarCalificacionSelected(autoComplete.text.toString(),aux,asignatura.text.toString(), descripcion.text.toString())
+        CalificacionDialog(this, obtenerNombresAsignaturas()) { tipo, valor, asignatura, descripcion ->
+            inicioViewModel.onAgregarCalificacionSelected(tipo, valor, asignatura, descripcion)
             calificacionesViewModel.obtenerCalificaciones()
             Toast.makeText(this,"Calificación guardada", Toast.LENGTH_SHORT).show()
-        }
-        dropDownAsignatures(asignatura)
-        dialog.show()
-        dialog.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        dialog.window?.attributes?.windowAnimations = R.style.DialogAnimation
-        dialog.window?.setGravity(Gravity.BOTTOM)
+        }.show()
     }
 
-    private fun onClickScheduledDate(fecha: EditText) {
-        val etScheduledDate = fecha
-        val selectedCalendar = Calendar.getInstance()
-        val year = selectedCalendar.get(Calendar.YEAR)
-        val month = selectedCalendar.get(Calendar.MONTH)
-        val dayOfMonth = selectedCalendar.get(Calendar.DAY_OF_MONTH)
-
-        val listener = DatePickerDialog.OnDateSetListener { _, y, m, d ->
-            // Usamos %02d para que siempre tenga dos dígitos
-            val formattedDate = String.format(Locale.US,"%04d-%02d-%02d", y, m + 1, d)
-            etScheduledDate.setText(formattedDate)
-        }
-
-        DatePickerDialog(
-            this,
-            R.style.CustomDatePickerDialogTheme,
-            listener,
-            year,
-            month,
-            dayOfMonth
-        ).show()
-    }
-
-
-    private fun dropDownAsignatures (asignatura: AutoCompleteTextView){
+    private fun obtenerNombresAsignaturas(): List<String> {
         inicioViewModel.obtenerAsignaturas()
-        val items :List<String> = inicioViewModel._asignaturas.value!!
-        val autoComplete:AutoCompleteTextView = asignatura
-        val adapter = ArrayAdapter(this,R.layout.item_menu_asignatura, items)
-        autoComplete.setAdapter(adapter)
-    }
-
-    private fun dropDownpriority (priority: AutoCompleteTextView){
-        val items :List<String> = listOf("Alta","Media","Baja")
-        val autocomplete:AutoCompleteTextView = priority
-        val adapter = ArrayAdapter(this,R.layout.item_menu_asignatura, items)
-        autocomplete.setAdapter(adapter)
-
-    }
-    
-
-    private fun scheduleNotification() {
-        val intent = Intent(applicationContext, AlarmNotification::class.java)
-        intent.putExtra("Pendientes",homeViewModel._tareas.value?.size.toString())
-        val pendingIntent = PendingIntent.getBroadcast(
-            applicationContext,
-            NOTIFICATION_ID,
-            intent,
-            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-        )
-
-        val calendar = Calendar.getInstance().apply {
-            timeInMillis = System.currentTimeMillis()
-            set(Calendar.HOUR_OF_DAY, 9)
-            set(Calendar.MINUTE, 0)
-            set(Calendar.SECOND, 0)
-            set(Calendar.MILLISECOND, 0)
-
-            if (before(Calendar.getInstance())) {
-                add(Calendar.DAY_OF_YEAR, 1)
-            }
-        }
-
-        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        alarmManager.setInexactRepeating(
-            AlarmManager.RTC_WAKEUP,
-            calendar.timeInMillis,
-            AlarmManager.INTERVAL_DAY,
-            pendingIntent)
-    }
-
-    private fun scheduleNotificationTarde() {
-        val intent = Intent(applicationContext, AlarmNotification::class.java)
-        intent.putExtra("Pendientes",homeViewModel._tareas.value?.size.toString())
-        val pendingIntent = PendingIntent.getBroadcast(
-            applicationContext,
-            NOTIFICATION_ID,
-            intent,
-            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-        )
-
-        val calendar = Calendar.getInstance().apply {
-            timeInMillis = System.currentTimeMillis()
-            set(Calendar.HOUR_OF_DAY, 11)
-            set(Calendar.MINUTE, 30)
-            set(Calendar.SECOND, 0)
-            set(Calendar.MILLISECOND, 0)
-
-            if (before(Calendar.getInstance())) {
-                add(Calendar.DAY_OF_YEAR, 1)
-            }
-        }
-
-        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        alarmManager.setInexactRepeating(
-            AlarmManager.RTC_WAKEUP,
-            calendar.timeInMillis,
-            AlarmManager.INTERVAL_DAY,
-            pendingIntent)
-    }
-
-    private fun createChannel() {
-        val channel = NotificationChannel(
-            MY_CHANNEL_ID,
-            "MySuperChannel",
-            NotificationManager.IMPORTANCE_DEFAULT
-        ).apply {
-            description = "SUSCRIBETE"
-        }
-
-        val notificationManager: NotificationManager =
-            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-
-        notificationManager.createNotificationChannel(channel)
+        return inicioViewModel._asignaturas.value.orEmpty()
     }
 
     private fun makeSystemBarsTransparent() {

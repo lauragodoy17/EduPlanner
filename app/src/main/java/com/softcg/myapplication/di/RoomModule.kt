@@ -6,12 +6,10 @@ import com.softcg.myapplication.data.Repositories.AsignaturasRepository
 import com.softcg.myapplication.data.Repositories.CalificacionesRespository
 import com.softcg.myapplication.data.Repositories.EventosRepository
 import com.softcg.myapplication.data.Repositories.TareasRepository
-import com.softcg.myapplication.data.Repositories.pruebaRepository
 import com.softcg.myapplication.data.database.TareasDatabase.TareasDatabase
 import com.softcg.myapplication.data.database.dao.AsignaturasDao
 import com.softcg.myapplication.data.database.dao.CalificacionesDao
 import com.softcg.myapplication.data.database.dao.EventosDao
-import com.softcg.myapplication.data.database.dao.PruebaDao
 import com.softcg.myapplication.data.database.dao.TareasDao
 import com.softcg.myapplication.ui.Inicio.Fragments.Calificaciones.Models.Calificacion
 import dagger.Module
@@ -38,14 +36,6 @@ object RoomModule {
     @Provides
     fun provideTareasRepository(dao:TareasDao):TareasRepository = TareasRepository(dao)
 
-
-    @Singleton
-    @Provides
-    fun providePruebaDao(db:TareasDatabase)=db.getPruebaDao()
-
-    @Singleton
-    @Provides
-    fun providePruebaRepository(dao: PruebaDao):pruebaRepository = pruebaRepository(dao)
 
     @Singleton
     @Provides

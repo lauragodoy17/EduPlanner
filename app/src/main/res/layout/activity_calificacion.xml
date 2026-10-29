@@ -20,7 +20,7 @@
         android:text="Agregar Calificación"
         android:layout_marginTop="15dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        android:textColor="#4E6B56"
+        android:textColor="@color/purple_accent"
         android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"

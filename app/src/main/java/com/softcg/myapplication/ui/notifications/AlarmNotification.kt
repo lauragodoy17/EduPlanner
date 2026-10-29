@@ -30,7 +30,7 @@ class AlarmNotification: BroadcastReceiver() {
         val flag = if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) PendingIntent.FLAG_IMMUTABLE else 0
         val pendingIntent: PendingIntent = PendingIntent.getActivity(context, 0, intent, flag)
 
-        val notification = NotificationCompat.Builder(context, InicioActivity.MY_CHANNEL_ID)
+        val notification = NotificationCompat.Builder(context, NotificationScheduler.MY_CHANNEL_ID)
             .setSmallIcon(R.drawable.logoblanco)
             .setContentTitle("No hay tiempo para descanso")
             .setContentText("Aún te quedan ${pendientes} Tareas por hacer!")
@@ -41,7 +41,7 @@ class AlarmNotification: BroadcastReceiver() {
             .setContentIntent(pendingIntent)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .build()
-        val notificationc = NotificationCompat.Builder(context, InicioActivity.MY_CHANNEL_ID)
+        val notificationc = NotificationCompat.Builder(context, NotificationScheduler.MY_CHANNEL_ID)
             .setSmallIcon(R.drawable.logoblanco)
             .setContentTitle("Bien Hecho")
             .setContentText("No tienes tareas pendientes!")

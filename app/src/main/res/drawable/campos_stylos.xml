@@ -8,7 +8,7 @@
         android:bottomRightRadius="10dp"
         />
     <solid
-        android:color="#DBE4DD"
+        android:color="@color/purple_surface"
         />
 
 

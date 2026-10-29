@@ -8,7 +8,7 @@
         android:bottomRightRadius="15dp"
         />
     <solid
-        android:color="#3E7648"
+        android:color="@color/purple_accent"
         />
 
 </shape>

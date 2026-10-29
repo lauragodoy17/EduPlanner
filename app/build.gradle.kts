@@ -1,9 +1,9 @@
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
-    id("com.google.devtools.ksp")
-    id("dagger.hilt.android.plugin")
-    id("com.google.gms.google-services")
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.hilt)
+    alias(libs.plugins.googleServices)
 }
 
 android {
@@ -44,12 +44,15 @@ android {
     hilt{
         enableAggregatingTask=false
     }
+    testOptions {
+        // Los métodos de android.jar (p. ej. Log.d) devuelven valores por defecto en los tests unitarios
+        unitTests.isReturnDefaultValues = true
+    }
     
 }
 
 dependencies {
 
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.6.10")
     //FRAGMENT
     implementation("androidx.fragment:fragment-ktx:1.6.2")
     //ACTIVITY
@@ -61,7 +64,6 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
     //DaggerHilt
     implementation("com.google.dagger:hilt-android:2.50")
-    implementation("junit:junit:4.12")
 
     ksp("com.google.dagger:hilt-android-compiler:2.50")
     //API SPLASH SCREEN
@@ -70,8 +72,6 @@ dependencies {
     implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
     implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
     implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.6.4")
-    //ojito
-    implementation ("com.google.android.material:material:1.5.0")
 
     //Firebase
     implementation(platform("com.google.firebase:firebase-bom:32.8.0"))
@@ -84,14 +84,14 @@ dependencies {
     //Botón flotante
     implementation("com.getbase:floatingactionbutton:1.10.1")
 
-    implementation("com.google.android.material:material:1.11.0")
     //ROOM
     implementation("androidx.room:room-runtime:2.6.1")
     implementation("androidx.room:room-ktx:2.6.1")
     ksp("androidx.room:room-compiler:2.6.1")
     //mockito
-    testImplementation ("junit:junit:4.+")
     testImplementation ("androidx.test:core-ktx:1.5.0")
+    testImplementation ("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4")
+    testImplementation ("androidx.arch.core:core-testing:2.2.0")
     testImplementation ("org.mockito:mockito-core:5.11.0")
     testImplementation ("org.mockito.kotlin:mockito-kotlin:5.3.1")
     testImplementation ("io.mockk:mockk:1.13.10")

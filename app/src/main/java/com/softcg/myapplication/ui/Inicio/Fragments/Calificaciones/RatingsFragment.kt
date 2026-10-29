@@ -5,7 +5,6 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -37,9 +36,9 @@ class RatingsFragment : Fragment() {
         calificacionesViewModel._calificaciones.observe(viewLifecycleOwner, Observer { Calificacion ->
             adapter.setData(Calificacion)
             if (Calificacion.isNotEmpty()){
-                view.findViewById<TextView>(R.id.textoCalificaciones).visibility=View.GONE
+                view.findViewById<View>(R.id.textoCalificaciones).visibility=View.GONE
             }else{
-                view.findViewById<TextView>(R.id.textoCalificaciones).visibility = View.VISIBLE
+                view.findViewById<View>(R.id.textoCalificaciones).visibility = View.VISIBLE
             }
         })
     }

@@ -8,11 +8,11 @@
         android:bottomRightRadius="5dp"
         />
     <solid
-        android:color="#DBE4DD"
+        android:color="@color/purple_surface"
         />
     <stroke
         android:width="2dp"
-        android:color="#3E7648" />
+        android:color="@color/purple_accent" />
 
 
 </shape>

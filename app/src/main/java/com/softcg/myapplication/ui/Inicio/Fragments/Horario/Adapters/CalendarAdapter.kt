@@ -57,7 +57,7 @@ class CalendarAdapter(
 
             }
             if(days[position]==currentDate){
-                holder.parentView.setBackgroundColor(Color.argb(255, 219, 228, 221))
+                holder.parentView.setBackgroundColor(context.getColor(R.color.purple_soft))
             }
         }
 

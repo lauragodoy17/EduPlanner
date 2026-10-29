@@ -5,7 +5,6 @@ import androidx.room.RoomDatabase
 import com.softcg.myapplication.data.database.dao.AsignaturasDao
 import com.softcg.myapplication.data.database.dao.CalificacionesDao
 import com.softcg.myapplication.data.database.dao.EventosDao
-import com.softcg.myapplication.data.database.dao.PruebaDao
 import com.softcg.myapplication.data.database.dao.TareasDao
 import com.softcg.myapplication.data.database.entities.AsignaturaEntity
 import com.softcg.myapplication.data.database.entities.CalificacionEntity
@@ -16,8 +15,6 @@ import com.softcg.myapplication.data.database.entities.TareaEntity
 abstract class TareasDatabase :RoomDatabase(){
 
     abstract fun getTareasDao():TareasDao
-
-    abstract fun getPruebaDao():PruebaDao
 
     abstract fun getAsignaturasDao():AsignaturasDao
 

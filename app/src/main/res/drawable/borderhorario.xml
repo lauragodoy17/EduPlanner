@@ -2,7 +2,7 @@
     <solid android:color="@android:color/transparent"/>
     <stroke
         android:width="2dp"
-        android:color="#DBE4DD" /> <!-- Color del borde -->
+        android:color="@color/purple_surface" /> <!-- Color del borde -->
     <padding
         android:left="1dp"
         android:top="1dp"
