@@ -8,22 +8,29 @@ import javax.inject.Inject
 class AsignaturasRepository @Inject constructor(private val asignaturasDao: AsignaturasDao){
 
     fun getAllAsignaturas():List<Asignatura>{
-        val entities=asignaturasDao.getAllAsignaturas()
-        return entities.map {
-            // Clean hora field by removing ALL whitespace (including spaces between digits and colon)
-            val cleanHora = it.hora.replace(" ", "").trim()
-            Asignatura(id = it.id, nombre = it.nombre, tutor = it.tutor,duracion=it.duracion, hora = cleanHora, horario = listOf(it.lunes,it.martes,it.miercoles,it.jueves,it.viernes,it.sabado,it.domingo), tipoCalificacion = it.tipoCalificacion)
-        }
+        return asignaturasDao.getAllAsignaturas().map { it.toModel() }
+    }
+
+    suspend fun getAsignatura(id:Int):Asignatura?{
+        return asignaturasDao.getAsignatura(id)?.toModel()
     }
 
     suspend fun deleteAsignatura(asignatura: Asignatura){
-        val entity=
-            AsignaturaEntity(id = asignatura.id, nombre = asignatura.nombre, tutor = asignatura.tutor, duracion = asignatura.duracion, hora = asignatura.hora, lunes = asignatura.horario[0], martes = asignatura.horario[1], miercoles = asignatura.horario[2], jueves = asignatura.horario[3], viernes = asignatura.horario[4], sabado = asignatura.horario[5], domingo = asignatura.horario[6], tipoCalificacion = asignatura.tipoCalificacion)
-        asignaturasDao.deleteAsignatura(entity)
+        asignaturasDao.deleteAsignatura(asignatura.toEntity())
     }
-    suspend fun insertAsignatura(asignatura: Asignatura){
-        val entity=
-            AsignaturaEntity(id = asignatura.id, nombre = asignatura.nombre, tutor = asignatura.tutor, duracion = asignatura.duracion, hora = asignatura.hora, lunes = asignatura.horario[0], martes = asignatura.horario[1], miercoles = asignatura.horario[2], jueves = asignatura.horario[3], viernes = asignatura.horario[4], sabado = asignatura.horario[5], domingo = asignatura.horario[6], tipoCalificacion = asignatura.tipoCalificacion)
-        asignaturasDao.insertAsignatura(entity)
+
+    /** Devuelve el id de la asignatura guardada. Las nuevas se registran con la hora actual. */
+    suspend fun insertAsignatura(asignatura: Asignatura, ahoraMillis: Long = System.currentTimeMillis()): Long{
+        val registro = if (asignatura.fechaRegistro == 0L) ahoraMillis else asignatura.fechaRegistro
+        return asignaturasDao.insertAsignatura(asignatura.copy(fechaRegistro = registro).toEntity())
     }
+
+    private fun AsignaturaEntity.toModel(): Asignatura {
+        // Clean hora field by removing ALL whitespace (including spaces between digits and colon)
+        val cleanHora = hora.replace(" ", "").trim()
+        return Asignatura(id = id, nombre = nombre, tutor = tutor, duracion = duracion, hora = cleanHora, horario = listOf(lunes, martes, miercoles, jueves, viernes, sabado, domingo), tipoCalificacion = tipoCalificacion, fechaRegistro = fechaRegistro)
+    }
+
+    private fun Asignatura.toEntity() =
+        AsignaturaEntity(id = id, nombre = nombre, tutor = tutor, duracion = duracion, hora = hora, lunes = horario[0], martes = horario[1], miercoles = horario[2], jueves = horario[3], viernes = horario[4], sabado = horario[5], domingo = horario[6], tipoCalificacion = tipoCalificacion, fechaRegistro = fechaRegistro)
 }

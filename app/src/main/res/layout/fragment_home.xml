@@ -17,6 +17,102 @@
         android:orientation="vertical"
         android:padding="16dp">
 
+        <!-- Resumen de progreso: lleva al perfil -->
+        <LinearLayout
+            android:id="@+id/homeProgreso"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="@drawable/bg_tarjeta_degradada"
+            android:foreground="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:contentDescription="Ver tu progreso"
+            android:paddingHorizontal="14dp"
+            android:paddingVertical="10dp"
+            android:layout_marginBottom="8dp">
+
+            <TextView
+                android:id="@+id/homeProgresoNivel"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:background="@drawable/circle_shape"
+                android:backgroundTint="@color/xp_dorado"
+                android:gravity="center"
+                android:text="1"
+                android:textColor="@color/purple_deep"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:layout_marginEnd="10dp"/>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/homeProgresoNombre"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Primíparo"
+                    android:textColor="@color/white"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:maxLines="1"
+                    android:ellipsize="end"/>
+
+                <com.google.android.material.progressindicator.LinearProgressIndicator
+                    android:id="@+id/homeProgresoBarra"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:max="100"
+                    app:trackThickness="4dp"
+                    app:trackCornerRadius="2dp"
+                    app:indicatorColor="@color/xp_dorado"
+                    app:trackColor="@color/blanco_25"
+                    android:importantForAccessibility="no"/>
+            </LinearLayout>
+
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:src="@drawable/ic_gami_racha"
+                app:tint="@color/xp_dorado"
+                android:layout_marginStart="12dp"
+                android:layout_marginEnd="3dp"
+                android:importantForAccessibility="no"/>
+
+            <TextView
+                android:id="@+id/homeProgresoRacha"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:layout_marginEnd="10dp"/>
+
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:src="@drawable/ic_gami_objetivo"
+                app:tint="@color/xp_dorado"
+                android:layout_marginEnd="3dp"
+                android:importantForAccessibility="no"/>
+
+            <TextView
+                android:id="@+id/homeProgresoMisiones"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0/3 hoy"
+                android:textColor="@color/white"
+                android:textSize="13sp"
+                android:textStyle="bold"/>
+        </LinearLayout>
+
         <!-- Date Filter Section -->
         <LinearLayout
             android:layout_width="match_parent"

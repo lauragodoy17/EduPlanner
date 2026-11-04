@@ -14,10 +14,17 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.softcg.myapplication.R
 import com.softcg.myapplication.R.*
+import com.softcg.myapplication.core.ex.mostrarMensaje
+import com.softcg.myapplication.core.ex.mostrarRecompensa
+import com.softcg.myapplication.domain.gamificacion.ResultadoCalificarTarea
+import com.softcg.myapplication.domain.gamificacion.ResultadoEntregarTarea
+import com.softcg.myapplication.ui.Inicio.Dialogs.CalificarTareaDialog
 import com.softcg.myapplication.ui.Inicio.Dialogs.EventoDialog
 import com.softcg.myapplication.ui.Inicio.InicioViewModel
 import com.softcg.myapplication.ui.Inicio.Models.Evento
@@ -47,6 +54,7 @@ class HomeFragment : Fragment() {
         initDateFilter(view)
         initFilterSpinner(view)
         initTimeline(view)
+        initResumenProgreso(view)
         return view
     }
 
@@ -69,6 +77,13 @@ class HomeFragment : Fragment() {
                 recyclerView.scrollToPosition(todayPosition)
             }
         })
+
+        // Mantiene marcado el día que muestra la lista (p. ej. al crear un evento para otro día)
+        homeViewModel.fechaSeleccionada.observe(viewLifecycleOwner) { fecha ->
+            val posicion = homeViewModel.posicionDeFecha(fecha)
+            dateFilterAdapter.selectDate(posicion)
+            if (posicion != -1) recyclerView.scrollToPosition(posicion)
+        }
     }
 
     fun initFilterSpinner(view: View) {
@@ -102,6 +117,12 @@ class HomeFragment : Fragment() {
             onDeleteTarea = { tarea -> homeViewModel.deleteTarea(tarea) },
             onDeleteEvento = { evento -> homeViewModel.deleteEvento(evento) },
             onEditEvento = { evento -> showDialogEditarEvento(evento) },
+            onCalificarTarea = { tarea ->
+                CalificarTareaDialog(requireContext(), tarea) { texto ->
+                    inicioViewModel.calificarTarea(tarea, texto)
+                }.show()
+            },
+            onEntregarTarea = { tarea -> inicioViewModel.entregarTarea(tarea) },
             onItemClick = { item -> /* Handle item click */ }
         )
 
@@ -117,6 +138,48 @@ class HomeFragment : Fragment() {
         homeViewModel._filteredEventos.observe(viewLifecycleOwner, Observer {
             updateTimelineWithFilter()
         })
+
+        inicioViewModel.resultadoCalificarTarea.observe(viewLifecycleOwner) { evento ->
+            when (val resultado = evento.getContentIfNotHandled() ?: return@observe) {
+                is ResultadoCalificarTarea.Completada -> {
+                    homeViewModel.obtenerTareas()
+                    if (resultado.monedas > 0) requireActivity().mostrarRecompensa(resultado.monedas, if (resultado.aTiempo) "A tiempo" else null)
+                    else requireActivity().mostrarMensaje("Tarea completada")
+                }
+                ResultadoCalificarTarea.YaCalificada -> requireActivity().mostrarMensaje("Esta tarea ya tiene una calificación")
+                ResultadoCalificarTarea.ValorInvalido -> requireActivity().mostrarMensaje("Ingresa una calificación válida")
+                ResultadoCalificarTarea.Error -> requireActivity().mostrarMensaje("No se pudo guardar la calificación. Inténtalo de nuevo")
+            }
+        }
+
+        inicioViewModel.resultadoEntregarTarea.observe(viewLifecycleOwner) { evento ->
+            when (val resultado = evento.getContentIfNotHandled() ?: return@observe) {
+                is ResultadoEntregarTarea.Entregada -> {
+                    homeViewModel.obtenerTareas()
+                    if (resultado.monedas > 0) requireActivity().mostrarRecompensa(resultado.monedas, if (resultado.aTiempo) "A tiempo" else null)
+                    else requireActivity().mostrarMensaje("Tarea entregada")
+                }
+                ResultadoEntregarTarea.YaEntregada -> requireActivity().mostrarMensaje("Esta tarea ya estaba entregada")
+                ResultadoEntregarTarea.Error -> requireActivity().mostrarMensaje("No se pudo marcar la tarea. Inténtalo de nuevo")
+            }
+        }
+    }
+
+    private fun initResumenProgreso(view: View) {
+        view.findViewById<View>(R.id.homeProgreso).setOnClickListener {
+            findNavController().navigate(R.id.id_profile_fragment)
+        }
+        inicioViewModel.panelProgreso.observe(viewLifecycleOwner) { panel ->
+            val misiones = panel.misiones
+            view.findViewById<TextView>(R.id.homeProgresoNivel).text = panel.nivel.nivel.numero.toString()
+            view.findViewById<TextView>(R.id.homeProgresoNombre).text = panel.nivel.nivel.nombre
+            view.findViewById<LinearProgressIndicator>(R.id.homeProgresoBarra)
+                .setProgressCompat((panel.nivel.fraccion * 100).toInt(), true)
+            view.findViewById<TextView>(R.id.homeProgresoRacha).text = panel.racha.actual.toString()
+            view.findViewById<TextView>(R.id.homeProgresoMisiones).text =
+                if (misiones.porReclamar > 0) "${misiones.porReclamar} por reclamar"
+                else "${misiones.diariasReclamadas}/${misiones.diarias.size} hoy"
+        }
     }
 
 
@@ -136,7 +199,7 @@ class HomeFragment : Fragment() {
                     actualizado.horaFin,
                     actualizado.imagenUri
                 )
-                homeViewModel.obtenerEventos()
+                homeViewModel.mostrarFecha(actualizado.fecha)
                 Toast.makeText(requireContext(), "Evento actualizado", Toast.LENGTH_SHORT).show()
             }
         ).also { it.show() }

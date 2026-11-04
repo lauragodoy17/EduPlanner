@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Accesorio del avatar (lienzo 200x200 compartido por todas las capas) -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="200dp"
+    android:height="200dp"
+    android:viewportWidth="200"
+    android:viewportHeight="200">
+    <!-- Correas de la mochila, delante del cuerpo -->
+    <path android:fillColor="#EF6C00" android:pathData="M66,140 L76,138 L82,200 L72,200 Z"/>
+    <path android:fillColor="#EF6C00" android:pathData="M134,140 L124,138 L118,200 L128,200 Z"/>
+</vector>

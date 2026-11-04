@@ -6,6 +6,8 @@ import com.softcg.myapplication.data.Repositories.AsignaturasRepository
 import com.softcg.myapplication.data.Repositories.CalificacionesRespository
 import com.softcg.myapplication.data.Repositories.EventosRepository
 import com.softcg.myapplication.data.Repositories.TareasRepository
+import com.softcg.myapplication.data.database.TareasDatabase.MIGRATION_13_14
+import com.softcg.myapplication.data.database.TareasDatabase.MIGRATION_14_15
 import com.softcg.myapplication.data.database.TareasDatabase.TareasDatabase
 import com.softcg.myapplication.data.database.dao.AsignaturasDao
 import com.softcg.myapplication.data.database.dao.CalificacionesDao
@@ -26,7 +28,15 @@ object RoomModule {
     @Singleton
     @Provides
     fun provideRoom(@ApplicationContext context: Context)=
-        Room.databaseBuilder(context, TareasDatabase::class.java, TAREAS_DATABASE_NAME).fallbackToDestructiveMigration().allowMainThreadQueries().build()
+        Room.databaseBuilder(context, TareasDatabase::class.java, TAREAS_DATABASE_NAME)
+            .addMigrations(MIGRATION_13_14, MIGRATION_14_15)
+            .fallbackToDestructiveMigration()
+            .allowMainThreadQueries()
+            .build()
+
+    @Singleton
+    @Provides
+    fun provideGamificacionDao(db:TareasDatabase)=db.getGamificacionDao()
 
     @Singleton
     @Provides

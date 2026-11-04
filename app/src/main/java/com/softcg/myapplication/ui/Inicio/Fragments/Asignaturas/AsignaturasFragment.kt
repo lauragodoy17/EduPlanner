@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.softcg.myapplication.R
 import com.softcg.myapplication.core.dialog.TimePickerFragment
+import com.softcg.myapplication.core.ex.mostrarRecompensa
 import com.softcg.myapplication.ui.Inicio.Fragments.Asignaturas.Adapters.AsignaturasAdapter
 import com.softcg.myapplication.ui.Inicio.Fragments.Asignaturas.Adapters.MultiSelectSpinnerAdapter
 import com.softcg.myapplication.ui.Inicio.Fragments.Asignaturas.Models.ListItem
@@ -68,6 +69,10 @@ class AsignaturasFragment : Fragment() {
                 emptyState.visibility = View.VISIBLE
             }
         })
+
+        inicioViewModel.recompensa.observe(viewLifecycleOwner) { evento ->
+            evento.getContentIfNotHandled()?.let { requireActivity().mostrarRecompensa(it) }
+        }
     }
 
     fun initButtom(view: View){

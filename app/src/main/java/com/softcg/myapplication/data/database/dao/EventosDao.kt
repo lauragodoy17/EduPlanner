@@ -19,7 +19,7 @@ interface EventosDao {
     suspend fun deleteEvento(eventoEntity: EventoEntity)
 
     @Insert(onConflict= OnConflictStrategy.REPLACE)
-    suspend fun insertEvento(evento: EventoEntity)
+    suspend fun insertEvento(evento: EventoEntity): Long
 
     @Update
     suspend fun updateEvento(evento: EventoEntity)

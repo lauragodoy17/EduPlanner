@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Capa del avatar (lienzo 200x200 compartido por todas las capas) -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="200dp"
+    android:height="200dp"
+    android:viewportWidth="200"
+    android:viewportHeight="200">
+    <path android:fillColor="#9C27B0" android:pathData="M38,200 L38,170 Q38,140 72,136 L128,136 Q162,140 162,170 L162,200 Z"/>
+    <path android:fillColor="#CE93D8" android:pathData="M84,136 L100,154 L116,136 Z"/>
+</vector>

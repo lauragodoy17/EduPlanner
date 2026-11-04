@@ -4,6 +4,14 @@
         android:id="@+id/VerMas"
         android:title="Ver más"/>
     <item
+        android:id="@+id/Entregar"
+        android:title="Marcar como entregada"
+        android:visible="false"/>
+    <item
+        android:id="@+id/Calificar"
+        android:title="Calificar"
+        android:visible="false"/>
+    <item
         android:id="@+id/Borrar"
         android:title="Borrar"/>
 </menu>

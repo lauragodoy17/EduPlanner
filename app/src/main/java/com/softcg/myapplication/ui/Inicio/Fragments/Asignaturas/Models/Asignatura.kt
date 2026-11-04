@@ -7,5 +7,6 @@ data class Asignatura(
     val duracion:Int,
     val hora:String,
     val horario:List<Boolean>,
-    val tipoCalificacion:String = ""
+    val tipoCalificacion:String = "",
+    val fechaRegistro:Long = 0L
 )

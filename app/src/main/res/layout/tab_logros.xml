@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingHorizontal="16dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="96dp">
+
+        <TextView
+            android:id="@+id/logrosResumen"
+            style="@style/TituloSeccionProgreso"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="0 de 0 conseguidos"
+            android:layout_marginBottom="8dp"/>
+
+        <com.google.android.material.progressindicator.LinearProgressIndicator
+            android:id="@+id/logrosBarra"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:trackThickness="6dp"
+            app:trackCornerRadius="3dp"
+            app:indicatorColor="@color/purple_accent"
+            app:trackColor="@color/pista_clara"
+            android:layout_marginBottom="12dp"
+            android:importantForAccessibility="no"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/logrosLista"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:nestedScrollingEnabled="false"/>
+
+    </LinearLayout>
+
+</androidx.core.widget.NestedScrollView>

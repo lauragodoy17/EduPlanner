@@ -12,9 +12,12 @@ interface CalificacionesDao {
     @Query("Select * From calificaciones_table")
     fun getAllCalificaciones():List<CalificacionEntity>
 
+    @Query("Select COUNT(*) From calificaciones_table Where tarea_id = :tareaId")
+    suspend fun contarDeTarea(tareaId:Int):Int
+
     @Delete
     suspend fun deleteCalificacion(calificacionEntity: CalificacionEntity)
 
     @Insert(onConflict= OnConflictStrategy.REPLACE)
-    suspend fun insertCalificacion(calificacionEntity: CalificacionEntity)
+    suspend fun insertCalificacion(calificacionEntity: CalificacionEntity): Long
 }

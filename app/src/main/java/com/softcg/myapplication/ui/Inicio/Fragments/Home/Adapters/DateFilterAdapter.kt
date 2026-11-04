@@ -23,11 +23,13 @@ class DateFilterAdapter(
         notifyDataSetChanged()
     }
 
+    /** [position] = -1 deja la barra sin día marcado (fecha fuera del rango visible). */
     fun selectDate(position: Int) {
+        if (position == selectedPosition) return
         val oldPosition = selectedPosition
         selectedPosition = position
-        notifyItemChanged(oldPosition)
-        notifyItemChanged(selectedPosition)
+        if (oldPosition != -1) notifyItemChanged(oldPosition)
+        if (selectedPosition != -1) notifyItemChanged(selectedPosition)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DateFilterViewHolder {

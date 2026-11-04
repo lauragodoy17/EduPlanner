@@ -24,6 +24,8 @@ class UnifiedItemAdapter(
     private val onDeleteTarea: (Tarea) -> Unit = {},
     private val onDeleteEvento: (Evento) -> Unit = {},
     private val onEditEvento: (Evento) -> Unit = {},
+    private val onCalificarTarea: (Tarea) -> Unit = {},
+    private val onEntregarTarea: (Tarea) -> Unit = {},
     private val onItemClick: (TimelineItem) -> Unit = {}
 ) : RecyclerView.Adapter<UnifiedItemAdapter.UnifiedViewHolder>() {
 
@@ -79,10 +81,21 @@ class UnifiedItemAdapter(
             // Configure based on item type
             when (item.type) {
                 TimelineItemType.TAREA -> {
-                    textAsignatura.text = item.asignatura
                     textAsignatura.visibility = View.VISIBLE
-                    typeBadge.text = "TAREA"
-                    typeBadge.setBackgroundColor(android.graphics.Color.parseColor("#9C27B0"))
+                    if (item.calificacion != null) {
+                        // Una tarea calificada está completada
+                        textAsignatura.text = "${item.asignatura} · Calificación: ${formatCalificacion(item.calificacion)}"
+                        typeBadge.text = "COMPLETADA"
+                        typeBadge.setBackgroundColor(context.getColor(R.color.purple_primary))
+                    } else if (item.entregadaMillis != null) {
+                        textAsignatura.text = item.asignatura
+                        typeBadge.text = "ENTREGADA"
+                        typeBadge.setBackgroundColor(context.getColor(R.color.purple_primary))
+                    } else {
+                        textAsignatura.text = item.asignatura
+                        typeBadge.text = "TAREA"
+                        typeBadge.setBackgroundColor(android.graphics.Color.parseColor("#9C27B0"))
+                    }
                 }
                 TimelineItemType.EVENTO -> {
                     textAsignatura.visibility = View.INVISIBLE
@@ -141,12 +154,27 @@ class UnifiedItemAdapter(
             }
         }
 
+        private fun formatCalificacion(valor: Float): String =
+            if (valor % 1f == 0f) valor.toInt().toString() else valor.toString()
+
         private fun showPopupMenu(view: View, item: TimelineItem) {
             val popupMenu = PopupMenu(context, view)
             popupMenu.inflate(R.menu.menudos)
+            popupMenu.menu.findItem(R.id.Calificar).isVisible =
+                item.type == TimelineItemType.TAREA && item.calificacion == null
+            popupMenu.menu.findItem(R.id.Entregar).isVisible =
+                item.type == TimelineItemType.TAREA && item.calificacion == null && item.entregadaMillis == null
 
             popupMenu.setOnMenuItemClickListener { menuItem ->
                 when (menuItem.itemId) {
+                    R.id.Calificar -> {
+                        onCalificarTarea(Tarea(item.id, item.titulo, item.descrip, item.asignatura ?: "", item.fecha, item.prioridad, entregadaMillis = item.entregadaMillis))
+                        true
+                    }
+                    R.id.Entregar -> {
+                        onEntregarTarea(Tarea(item.id, item.titulo, item.descrip, item.asignatura ?: "", item.fecha, item.prioridad))
+                        true
+                    }
                     R.id.VerMas -> {
                         when (item.type) {
                             TimelineItemType.EVENTO -> {

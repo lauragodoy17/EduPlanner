@@ -1,6 +1,7 @@
 package com.softcg.myapplication.ui.Inicio.Fragments.Home
 
 import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -53,19 +54,37 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    /** Día que muestra la lista ("yyyy-MM-dd"), para marcarlo en la barra de fechas. */
+    private val _fechaSeleccionada = MutableLiveData<String>()
+    val fechaSeleccionada: LiveData<String>
+        get() = _fechaSeleccionada
+
     fun initializeDateFilter() {
         val dateItems = generateDateFilterItems()
         _dateFilterItems.value = dateItems
 
         val today = dateFormat.format(Date())
         selectedDate = today
+        _fechaSeleccionada.value = today
         filterDataByDate()
     }
 
     fun selectDate(dateItem: DateFilterItem) {
         selectedDate = dateFormat.format(dateItem.date)
+        _fechaSeleccionada.value = selectedDate
         filterDataByDate()
     }
+
+    /** Muestra el día de un registro recién creado, aunque no sea hoy. */
+    fun mostrarFecha(fecha: String) {
+        if (fecha.isBlank()) return
+        selectedDate = fecha
+        _fechaSeleccionada.value = fecha
+        filterDataByDate()
+    }
+
+    fun posicionDeFecha(fecha: String): Int =
+        _dateFilterItems.value.orEmpty().indexOfFirst { dateFormat.format(it.date) == fecha }
 
     private fun generateDateFilterItems(): List<DateFilterItem> {
         val calendar = Calendar.getInstance()

@@ -2,6 +2,7 @@ package com.softcg.myapplication.ui.Inicio
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
+import android.animation.ValueAnimator
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
@@ -13,11 +14,16 @@ import android.view.View
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.activity.viewModels
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.os.bundleOf
 import androidx.core.view.GravityCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -34,15 +40,27 @@ import com.google.firebase.auth.FirebaseAuth
 import com.softcg.myapplication.R
 import com.softcg.myapplication.ui.Inicio.Fragments.Agenda.AgendaViewModel
 import com.softcg.myapplication.ui.Inicio.Fragments.Calificaciones.CalificacionesViewModel
+import com.softcg.myapplication.core.ex.mostrarAvisoLogro
+import com.softcg.myapplication.core.ex.mostrarMensaje
+import com.softcg.myapplication.core.ex.mostrarRecompensa
+import com.softcg.myapplication.domain.gamificacion.Celebracion
+import com.softcg.myapplication.domain.gamificacion.ClaseProgramada
+import com.softcg.myapplication.domain.gamificacion.ResultadoAsistencia
+import com.softcg.myapplication.ui.Inicio.Dialogs.AsistenciaDialog
 import com.softcg.myapplication.ui.Inicio.Dialogs.CalificacionDialog
 import com.softcg.myapplication.ui.Inicio.Dialogs.EventoDialog
+import com.softcg.myapplication.ui.Inicio.Dialogs.SubidaNivelDialog
 import com.softcg.myapplication.ui.Inicio.Dialogs.TareaDialog
 import com.softcg.myapplication.ui.Inicio.Fragments.Home.HomeViewModel
+import com.softcg.myapplication.ui.Inicio.Fragments.Perfil.ProfileFragment
 import com.softcg.myapplication.ui.login.MainActivity
+import com.softcg.myapplication.ui.notifications.EnfoqueNotification
 import com.softcg.myapplication.ui.notifications.NotificationScheduler
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -72,6 +90,8 @@ class InicioActivity : AppCompatActivity() {
 
 
     companion object {
+        private const val MAX_AVISOS_LOGRO = 3
+
         fun create(context: Context): Intent =
             Intent(context, InicioActivity::class.java)
     }
@@ -114,6 +134,8 @@ class InicioActivity : AppCompatActivity() {
         initfloatingBottons()
         setupHamburgerMenu()
         setupBottomNavigation()
+        iniciarComprobacionAsistencia()
+        abrirEnfoqueSiSePidio(intent)
         NotificationScheduler.createChannel(this)
         NotificationScheduler.scheduleDailyReminders(this, homeViewModel._tareas.value?.size.toString())
     }
@@ -153,7 +175,8 @@ class InicioActivity : AppCompatActivity() {
 
         val appBarConfiguration = AppBarConfiguration(
             setOf(R.id.id_home_fragment, R.id.id_diary_fragment, R.id.id_subjects_fragment,
-                R.id.id_help_fragment, R.id.id_schedule_fragment, R.id.id_ratings_fragment),
+                R.id.id_help_fragment, R.id.id_schedule_fragment, R.id.id_ratings_fragment,
+                R.id.id_profile_fragment),
             drawerLayout
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
@@ -237,15 +260,24 @@ class InicioActivity : AppCompatActivity() {
         }
 
         navProfile.setOnClickListener {
-            // Navigate to profile or settings fragment if it exists
-            // For now, you can add a profile fragment to the navigation graph
+            abrirPerfil()
         }
+
+        // El saldo de la cabecera también lleva al perfil
+        findViewById<View>(R.id.coin_counter).setOnClickListener { abrirPerfil() }
+        findViewById<View>(R.id.coin_icon).setOnClickListener { abrirPerfil() }
 
         // Set initial state - home should be selected by default
         updateBottomNavigationSelection(navHome, navCalendar, navProfile)
 
         // Listen for navigation changes to update selection state
         navController.addOnDestinationChangedListener { _, destination, _ ->
+            // En una sesión de enfoque no se ofrece agregar nada: es la distracción que se quiere evitar
+            val anadir = findViewById<View>(R.id.botonAñadir)
+            val enEnfoque = destination.id == R.id.id_focus_fragment
+            if (enEnfoque && rotate) toggleFabMode(anadir)
+            anadir.visibility = if (enEnfoque) View.GONE else View.VISIBLE
+
             when (destination.id) {
                 R.id.id_home_fragment -> {
                     updateBottomNavigationSelection(navHome, navCalendar, navProfile)
@@ -253,7 +285,17 @@ class InicioActivity : AppCompatActivity() {
                 R.id.id_diary_fragment -> {
                     updateBottomNavigationSelection(navCalendar, navHome, navProfile)
                 }
+                R.id.id_profile_fragment, R.id.id_shop_fragment, R.id.id_focus_fragment -> {
+                    updateBottomNavigationSelection(navProfile, navHome, navCalendar)
+                }
             }
+        }
+    }
+
+    private fun abrirPerfil(pestana: Int = 0) {
+        // Con una pestaña concreta se vuelve a abrir aunque ya esté en el perfil
+        if (navController.currentDestination?.id != R.id.id_profile_fragment || pestana != 0) {
+            navController.navigate(R.id.id_profile_fragment, bundleOf(ProfileFragment.ARG_PESTANA to pestana))
         }
     }
 
@@ -299,7 +341,205 @@ class InicioActivity : AppCompatActivity() {
                 showDialogEvento()
             }
         }
+        inicioViewModel.saldo.observe(this){ saldo -> actualizarContadorMonedas(saldo) }
+        inicioViewModel.recompensa.observe(this){
+            it.getContentIfNotHandled()?.let { cantidad -> mostrarRecompensa(cantidad) }
+        }
+        inicioViewModel.resultadoAsistencia.observe(this){
+            it.getContentIfNotHandled()?.let { (clase, resultado) -> onResultadoAsistencia(clase, resultado) }
+        }
+        // Cualquier movimiento, venga de la pantalla que venga, puede completar un logro o subir de nivel
+        inicioViewModel.totalMovimientos.observe(this){ inicioViewModel.evaluarProgreso() }
+        inicioViewModel.celebraciones.observe(this){
+            it.getContentIfNotHandled()?.let { nuevas -> encolarCelebraciones(nuevas) }
+        }
+        // El observador mantiene el resumen del inicio al día aunque esa pantalla no esté visible
+        inicioViewModel.panelProgreso.observe(this){ }
+    }
 
+    private var saldoMostrado: Int? = null
+
+    /** La primera lectura se muestra tal cual; los cambios posteriores se cuentan y el contador pulsa. */
+    private fun actualizarContadorMonedas(saldo: Int) {
+        val contador = findViewById<TextView>(R.id.coin_counter)
+        val anterior = saldoMostrado
+        saldoMostrado = saldo
+        if (anterior == null || anterior == saldo) {
+            contador.text = saldo.toString()
+            return
+        }
+        ValueAnimator.ofInt(anterior, saldo).apply {
+            duration = 600
+            addUpdateListener { contador.text = (it.animatedValue as Int).toString() }
+            start()
+        }
+        val moneda = findViewById<View>(R.id.coin_icon)
+        moneda.animate().scaleX(1.35f).scaleY(1.35f).setDuration(150).withEndAction {
+            moneda.animate().scaleX(1f).scaleY(1f).setDuration(200).start()
+        }.start()
+    }
+
+    // CELEBRACIONES: de una en una, para que un logro no tape a otro ni a la subida de nivel.
+
+    private val colaCelebraciones = ArrayDeque<Celebracion>()
+    private var celebrando = false
+
+    private fun encolarCelebraciones(nuevas: List<Celebracion>) {
+        val logros = nuevas.filterIsInstance<Celebracion.LogroDesbloqueado>()
+        colaCelebraciones += nuevas.filterIsInstance<Celebracion.SubidaNivel>()
+        if (logros.size > MAX_AVISOS_LOGRO) {
+            // Muchos a la vez (p. ej. datos anteriores a los logros): un solo aviso en vez de una larga fila
+            mostrarResumenLogros(logros.size)
+        } else {
+            colaCelebraciones += logros
+        }
+        mostrarSiguienteCelebracion()
+    }
+
+    private fun mostrarResumenLogros(cantidad: Int) {
+        mostrarAvisoLogro(null, "$cantidad logros conseguidos", "Míralos en tu perfil",
+            onClick = { abrirPerfil(ProfileFragment.PESTANA_LOGROS) },
+            onFin = { })
+    }
+
+    private fun mostrarSiguienteCelebracion() {
+        if (celebrando || isFinishing || isDestroyed) return
+        val siguiente = colaCelebraciones.removeFirstOrNull() ?: return
+        celebrando = true
+        val alTerminar = {
+            celebrando = false
+            mostrarSiguienteCelebracion()
+        }
+        when (siguiente) {
+            is Celebracion.SubidaNivel -> SubidaNivelDialog(this, siguiente, alTerminar).show()
+            is Celebracion.LogroDesbloqueado -> {
+                val logro = siguiente.logro
+                val detalle = buildString {
+                    append("Logro · +${logro.rareza.recompensa} EduCoins")
+                    siguiente.accesorio?.let { append(" · ${it.nombre}") }
+                }
+                mostrarAvisoLogro(logro, logro.titulo, detalle,
+                    onClick = { abrirPerfil(ProfileFragment.PESTANA_LOGROS) },
+                    onFin = alTerminar)
+            }
+        }
+    }
+
+    /** Si la app se abrió desde la notificación de fin de enfoque, lleva a esa pantalla para cobrar. */
+    private fun abrirEnfoqueSiSePidio(intent: Intent?) {
+        if (intent?.getBooleanExtra(EnfoqueNotification.EXTRA_ABRIR_ENFOQUE, false) == true) {
+            intent.removeExtra(EnfoqueNotification.EXTRA_ABRIR_ENFOQUE)
+            abrirEnfoque()
+        }
+    }
+
+    /** Sin duplicar la pantalla: una copia debajo cobraría la sesión sin que se viera el resultado. */
+    private fun abrirEnfoque() {
+        if (navController.currentDestination?.id != R.id.id_focus_fragment) {
+            navController.navigate(R.id.id_focus_fragment)
+        }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        abrirEnfoqueSiSePidio(intent)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Pudo cambiar el día mientras la app estaba en segundo plano
+        inicioViewModel.refrescarProgreso()
+        lifecycleScope.launch {
+            if (inicioViewModel.hayEnfoquePorCobrar()) abrirEnfoque()
+        }
+    }
+
+    // ASISTENCIA: único punto de comprobación. Se revisa al volver a la app y cada minuto mientras está
+    // abierta; las clases pendientes se preguntan de una en una, empezando por la que terminó antes.
+
+    private var asistenciaDialog: AsistenciaDialog? = null
+    private var buscandoAsistencia = false
+
+    private fun iniciarComprobacionAsistencia() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                while (isActive) {
+                    comprobarAsistencia()
+                    delay(60_000)
+                }
+            }
+        }
+    }
+
+    private fun comprobarAsistencia() {
+        asistenciaDialog?.let { dialogo ->
+            if (inicioViewModel.plazoVencido(dialogo.clase)) {
+                dialogo.cerrar()
+                mostrarMensaje("Venció el plazo para confirmar la asistencia a ${dialogo.clase.nombre}")
+            }
+            return
+        }
+        if (buscandoAsistencia) return
+        buscandoAsistencia = true
+        lifecycleScope.launch {
+            try {
+                val clase = inicioViewModel.siguienteClasePorConfirmar()
+                if (clase != null && asistenciaDialog == null && lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
+                    mostrarDialogoAsistencia(clase)
+                }
+            } finally {
+                buscandoAsistencia = false
+            }
+        }
+    }
+
+    private fun mostrarDialogoAsistencia(clase: ClaseProgramada) {
+        asistenciaDialog = AsistenciaDialog(
+            context = this,
+            clase = clase,
+            onResponder = { asistio -> inicioViewModel.confirmarAsistencia(clase, asistio) },
+            onMasTarde = { inicioViewModel.posponerAsistencia(clase) },
+            onCerrado = {
+                asistenciaDialog = null
+                comprobarAsistencia()
+            }
+        ).also { it.show() }
+    }
+
+    private fun onResultadoAsistencia(clase: ClaseProgramada, resultado: ResultadoAsistencia) {
+        val dialogo = asistenciaDialog?.takeIf { it.clase == clase }
+        if (resultado is ResultadoAsistencia.Error || resultado is ResultadoAsistencia.SinSesion) {
+            // No se guardó nada: se puede volver a intentar
+            dialogo?.habilitar()
+            mostrarMensaje("No se pudo guardar la asistencia. Inténtalo de nuevo")
+            return
+        }
+        dialogo?.cerrar()
+        when (resultado) {
+            is ResultadoAsistencia.Registrada -> when {
+                resultado.monedas > 0 -> mostrarRecompensa(resultado.monedas)
+                resultado.asistio -> mostrarMensaje("Asistencia registrada")
+                else -> mostrarMensaje("Registramos que no asististe a ${clase.nombre}")
+            }
+            ResultadoAsistencia.YaRespondida -> mostrarMensaje("Ya habías respondido la asistencia de esta clase")
+            ResultadoAsistencia.PlazoVencido -> mostrarMensaje("Venció el plazo para confirmar esta clase")
+            ResultadoAsistencia.AunNoTermina -> mostrarMensaje("La clase aún no termina")
+            ResultadoAsistencia.ClaseNoExiste -> mostrarMensaje("Esta clase ya no está registrada")
+            else -> {}
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        // Al salir de la app, las clases pospuestas se vuelven a preguntar en la siguiente visita
+        if (!isChangingConfigurations) inicioViewModel.reiniciarPospuestas()
+    }
+
+    override fun onDestroy() {
+        val dialogo = asistenciaDialog
+        asistenciaDialog = null
+        dialogo?.cerrar()
+        super.onDestroy()
     }
 
     private fun initShowOut(v: View){
@@ -370,7 +610,8 @@ class InicioActivity : AppCompatActivity() {
     private fun showDialogTarea(){
         TareaDialog(this, obtenerNombresAsignaturas()) { titulo, descrip, asignatura, fecha, prioridad ->
             inicioViewModel.onAgregarTareaSelected(titulo, descrip, asignatura, fecha, prioridad)
-            homeViewModel.obtenerTareas()
+            // La lista se recarga sola al terminar de guardar; aquí solo se muestra el día de la tarea
+            homeViewModel.mostrarFecha(fecha)
             Toast.makeText(this,"Tarea guardada", Toast.LENGTH_SHORT).show()
         }.show()
     }
@@ -389,7 +630,7 @@ class InicioActivity : AppCompatActivity() {
                     evento.horaFin,
                     evento.imagenUri
                 )
-                homeViewModel.obtenerEventos()
+                homeViewModel.mostrarFecha(evento.fecha)
                 Toast.makeText(this, "Evento guardado", Toast.LENGTH_SHORT).show()
             }
         ).also { it.show() }
@@ -398,7 +639,6 @@ class InicioActivity : AppCompatActivity() {
     private fun showDialogCalificacion(){
         CalificacionDialog(this, obtenerNombresAsignaturas()) { tipo, valor, asignatura, descripcion ->
             inicioViewModel.onAgregarCalificacionSelected(tipo, valor, asignatura, descripcion)
-            calificacionesViewModel.obtenerCalificaciones()
             Toast.makeText(this,"Calificación guardada", Toast.LENGTH_SHORT).show()
         }.show()
     }

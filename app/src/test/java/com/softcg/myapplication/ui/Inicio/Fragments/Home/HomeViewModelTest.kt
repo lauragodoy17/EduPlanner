@@ -77,6 +77,22 @@ class HomeViewModelTest {
     }
 
     @Test
+    fun `al crear un registro para otro dia la lista muestra ese dia`() {
+        //GIVEN la lista está en hoy
+        viewModel.initializeDateFilter()
+        viewModel.obtenerTareas()
+        viewModel.obtenerEventos()
+
+        //WHEN
+        viewModel.mostrarFecha("2026-10-29")
+
+        //THEN
+        assertEquals("2026-10-29", viewModel.fechaSeleccionada.value)
+        assertEquals(listOf(eventoManana), viewModel._filteredEventos.value)
+        assertEquals(listOf(tareaManana), viewModel._filteredTareas.value)
+    }
+
+    @Test
     fun `el filtro de fechas genera 31 dias con hoy en el centro`() {
         //WHEN
         viewModel.initializeDateFilter()

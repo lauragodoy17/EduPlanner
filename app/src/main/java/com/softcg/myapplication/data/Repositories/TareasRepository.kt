@@ -8,19 +8,23 @@ import javax.inject.Inject
 class TareasRepository @Inject constructor(private val tareasDao: TareasDao){
 
     fun getTareas():List<Tarea>{
-        val entities=tareasDao.getAllTareas()
-        return  entities.map {
-            Tarea(id = it.id,titulo = it.titulo, descrip = it.descrip, asignatura = it.asignatura, fecha = it.fecha, prioridad = it.prioridad)
+        val entities=tareasDao.getAllTareasConCalificacion()
+        return  entities.map { (t, calificacion) ->
+            Tarea(id = t.id,titulo = t.titulo, descrip = t.descrip, asignatura = t.asignatura, fecha = t.fecha, prioridad = t.prioridad, calificacion = calificacion, entregadaMillis = t.entregadaMillis)
         }
     }
+
+    /** false si la tarea ya estaba entregada. */
+    suspend fun marcarEntregada(id: Int, millis: Long): Boolean = tareasDao.marcarEntregada(id, millis) > 0
 
     suspend fun deleteTarea(tarea: Tarea){
         val entity = TareaEntity(id = tarea.id, titulo = tarea.titulo, descrip = tarea.descrip, asignatura = tarea.asignatura, fecha = tarea.fecha, prioridad = tarea.prioridad)
         tareasDao.deleteTarea(entity)
     }
 
-    suspend fun insertTarea(tarea: Tarea){
+    /** Devuelve el id de la tarea creada. */
+    suspend fun insertTarea(tarea: Tarea): Long{
         val entity = TareaEntity(titulo = tarea.titulo, descrip = tarea.descrip, asignatura = tarea.asignatura, fecha = tarea.fecha, prioridad = tarea.prioridad)
-        tareasDao.insertTarea(entity)
+        return tareasDao.insertTarea(entity)
     }
 }

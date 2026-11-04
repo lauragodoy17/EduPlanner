@@ -26,4 +26,15 @@
     <!-- Colores adicionales -->
     <color name="highlight_yellow">#FFD700</color>
     <color name="highlight_purple">#B19CD9</color>
+
+    <!-- Gamificación -->
+    <color name="purple_deep">#4A1F5C</color>
+    <color name="pista_clara">#EEEAF0</color>
+    <color name="xp_dorado">#FFC93C</color>
+    <color name="logro_bronce">#B4764A</color>
+    <color name="logro_plata">#7F8FA6</color>
+    <color name="logro_oro">#D49B00</color>
+    <color name="logro_bloqueado">#D6D2D9</color>
+    <color name="blanco_70">#B3FFFFFF</color>
+    <color name="blanco_25">#40FFFFFF</color>
 </resources>

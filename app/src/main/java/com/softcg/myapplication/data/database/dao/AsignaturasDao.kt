@@ -14,10 +14,13 @@ interface AsignaturasDao {
     @Query("Select * From asignaturas_table")
     fun getAllAsignaturas():List<AsignaturaEntity>
 
+    @Query("Select * From asignaturas_table Where id = :id")
+    suspend fun getAsignatura(id:Int):AsignaturaEntity?
+
     @Delete
     suspend fun deleteAsignatura(asignaturaEntity: AsignaturaEntity)
 
     @Insert(onConflict= OnConflictStrategy.REPLACE)
-    suspend fun insertAsignatura(asignatura: AsignaturaEntity)
+    suspend fun insertAsignatura(asignatura: AsignaturaEntity): Long
 
 }

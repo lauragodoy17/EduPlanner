@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context=".ui.Inicio.Fragments.Perfil.EnfoqueFragment">
+
+    <!-- Elegir duración -->
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/enfoqueConfigurar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Sesión de enfoque"
+                android:textColor="#1A1A1A"
+                android:textSize="24sp"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Elige cuánto tiempo vas a estudiar sin distracciones. Si la abandonas no pierdes nada, pero tampoco ganas."
+                android:textColor="@color/text_secondary"
+                android:textSize="14sp"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="20dp"/>
+
+            <com.google.android.material.button.MaterialButtonToggleGroup
+                android:id="@+id/enfoqueDuraciones"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:singleSelection="true"
+                app:selectionRequired="true"
+                android:layout_marginBottom="8dp">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/enfoque15"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="0dp"
+                    android:layout_height="58dp"
+                    android:layout_weight="1"
+                    android:text="15 min"
+                    android:textAllCaps="false"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/enfoque25"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="0dp"
+                    android:layout_height="58dp"
+                    android:layout_weight="1"
+                    android:text="25 min"
+                    android:textAllCaps="false"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/enfoque50"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="0dp"
+                    android:layout_height="58dp"
+                    android:layout_weight="1"
+                    android:text="50 min"
+                    android:textAllCaps="false"/>
+            </com.google.android.material.button.MaterialButtonToggleGroup>
+
+            <TextView
+                android:id="@+id/enfoqueRecompensa"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Ganarás 10 EduCoins y 10 XP"
+                android:textColor="@color/purple_accent"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="20dp"/>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/enfoqueAsignaturaCaja"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Asignatura (opcional)"
+                app:boxCornerRadiusTopStart="16dp"
+                app:boxCornerRadiusTopEnd="16dp"
+                app:boxCornerRadiusBottomStart="16dp"
+                app:boxCornerRadiusBottomEnd="16dp"
+                android:layout_marginBottom="24dp">
+
+                <AutoCompleteTextView
+                    android:id="@+id/enfoqueAsignatura"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="none"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/enfoqueIniciar"
+                android:layout_width="match_parent"
+                android:layout_height="58dp"
+                android:text="Empezar sesión"
+                android:textColor="@color/white"
+                android:textSize="17sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.02"
+                app:backgroundTint="@color/purple_accent"
+                app:cornerRadius="16dp"
+                app:elevation="0dp"/>
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <!-- Sesión en curso -->
+    <LinearLayout
+        android:id="@+id/enfoqueEnCurso"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:background="@drawable/bg_fondo_enfoque"
+        android:padding="24dp"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/enfoqueAsignaturaActual"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Modo enfoque"
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_marginTop="24dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Puedes bloquear el teléfono: te avisamos al terminar."
+            android:textAlignment="center"
+            android:textColor="@color/blanco_70"
+            android:textSize="14sp"
+            android:layout_marginBottom="32dp"/>
+
+        <FrameLayout
+            android:layout_width="240dp"
+            android:layout_height="240dp"
+            android:layout_marginBottom="32dp">
+
+            <com.softcg.myapplication.ui.Inicio.Fragments.Perfil.Views.AnilloProgresoView
+                android:id="@+id/enfoqueAnillo"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+            <TextView
+                android:id="@+id/enfoqueTiempo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="25:00"
+                android:textColor="@color/white"
+                android:textSize="52sp"
+                android:textStyle="bold"/>
+        </FrameLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/enfoqueAbandonar"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="match_parent"
+            android:layout_height="58dp"
+            android:text="Abandonar sesión"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            app:strokeColor="@color/blanco_70"
+            app:strokeWidth="2dp"
+            app:cornerRadius="16dp"/>
+    </LinearLayout>
+
+    <!-- Terminada -->
+    <FrameLayout
+        android:id="@+id/enfoqueTerminada"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/bg_fondo_enfoque"
+        android:visibility="gone">
+
+        <com.softcg.myapplication.ui.Inicio.Fragments.Perfil.Views.ConfettiView
+            android:id="@+id/enfoqueConfeti"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:importantForAccessibility="no"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:padding="28dp">
+
+            <ImageView
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:src="@drawable/ic_gami_check"
+                app:tint="@color/xp_dorado"
+                android:layout_marginBottom="12dp"
+                android:importantForAccessibility="no"/>
+
+            <TextView
+                android:id="@+id/enfoqueTerminadaTitulo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="25 minutos de estudio real"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:textSize="24sp"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/enfoqueTerminadaDetalle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="+10 EduCoins y 10 XP"
+                android:textAlignment="center"
+                android:textColor="@color/blanco_70"
+                android:textSize="15sp"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="28dp"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/enfoqueOtra"
+                android:layout_width="match_parent"
+                android:layout_height="58dp"
+                android:text="Hacer otra"
+                android:textColor="@color/purple_deep"
+                android:textSize="17sp"
+                android:textStyle="bold"
+                app:backgroundTint="@color/white"
+                app:cornerRadius="16dp"
+                app:elevation="0dp"
+                android:layout_marginBottom="10dp"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/enfoqueVolver"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="match_parent"
+                android:layout_height="58dp"
+                android:text="Volver a mis misiones"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                app:strokeColor="@color/blanco_70"
+                app:strokeWidth="2dp"
+                app:cornerRadius="16dp"/>
+        </LinearLayout>
+    </FrameLayout>
+</FrameLayout>

@@ -37,4 +37,19 @@
         android:name="com.softcg.myapplication.ui.Inicio.Fragments.Ayuda.HelpFragment"
         android:label="Ayuda y opiniones"
         tools:layout="@layout/fragment_help" />
+    <fragment
+        android:id="@+id/id_profile_fragment"
+        android:name="com.softcg.myapplication.ui.Inicio.Fragments.Perfil.ProfileFragment"
+        android:label="Perfil"
+        tools:layout="@layout/fragment_profile" />
+    <fragment
+        android:id="@+id/id_shop_fragment"
+        android:name="com.softcg.myapplication.ui.Inicio.Fragments.Perfil.TiendaFragment"
+        android:label="Tienda"
+        tools:layout="@layout/fragment_tienda" />
+    <fragment
+        android:id="@+id/id_focus_fragment"
+        android:name="com.softcg.myapplication.ui.Inicio.Fragments.Perfil.EnfoqueFragment"
+        android:label="Sesión de enfoque"
+        tools:layout="@layout/fragment_enfoque" />
 </navigation>

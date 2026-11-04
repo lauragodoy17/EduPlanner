@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingHorizontal="16dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="96dp">
+
+        <!-- Indicadores -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:baselineAligned="false"
+            android:layout_marginBottom="8dp">
+
+            <include layout="@layout/stat_tareas"/>
+            <include layout="@layout/stat_a_tiempo"/>
+            <include layout="@layout/stat_asistencia"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:baselineAligned="false"
+            android:layout_marginBottom="16dp">
+
+            <include layout="@layout/stat_enfoque"/>
+            <include layout="@layout/stat_racha"/>
+            <include layout="@layout/stat_xp"/>
+        </LinearLayout>
+
+        <!-- Últimos 7 días -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="2dp"
+            android:layout_marginBottom="12dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="2dp"
+            app:cardBackgroundColor="@color/white">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    style="@style/TituloSeccionProgreso"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="XP de los últimos 7 días"/>
+
+                <TextView
+                    android:id="@+id/statsSemanaResumen"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="0 XP esta semana"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="13sp"
+                    android:layout_marginBottom="12dp"/>
+
+                <com.softcg.myapplication.ui.Inicio.Fragments.Perfil.Views.BarrasSemanaView
+                    android:id="@+id/statsBarras"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Mapa de actividad -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="2dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="20dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="2dp"
+            app:cardBackgroundColor="@color/white">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    style="@style/TituloSeccionProgreso"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Tu constancia"/>
+
+                <TextView
+                    android:id="@+id/statsActividadDetalle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Toca un día para ver su detalle"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="13sp"
+                    android:layout_marginBottom="12dp"/>
+
+                <com.softcg.myapplication.ui.Inicio.Fragments.Perfil.Views.ActividadHeatmapView
+                    android:id="@+id/statsActividad"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+                <!-- Leyenda de la escala -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginTop="10dp"
+                    android:importantForAccessibility="noHideDescendants">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Menos"
+                        android:textColor="@color/text_hint"
+                        android:textSize="11sp"
+                        android:layout_marginEnd="6dp"/>
+
+                    <View
+                        android:layout_width="12dp"
+                        android:layout_height="12dp"
+                        android:layout_marginEnd="3dp"
+                        android:background="@color/pista_clara"/>
+
+                    <View
+                        android:layout_width="12dp"
+                        android:layout_height="12dp"
+                        android:layout_marginEnd="3dp"
+                        android:background="@color/purple_soft"/>
+
+                    <View
+                        android:layout_width="12dp"
+                        android:layout_height="12dp"
+                        android:layout_marginEnd="3dp"
+                        android:background="@color/purple_light"/>
+
+                    <View
+                        android:layout_width="12dp"
+                        android:layout_height="12dp"
+                        android:layout_marginEnd="3dp"
+                        android:background="@color/purple_accent"/>
+
+                    <View
+                        android:layout_width="12dp"
+                        android:layout_height="12dp"
+                        android:background="@color/purple_deep"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Más"
+                        android:textColor="@color/text_hint"
+                        android:textSize="11sp"
+                        android:layout_marginStart="6dp"/>
+                </LinearLayout>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Historial -->
+        <TextView
+            style="@style/TituloSeccionProgreso"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Historial de EduCoins"
+            android:layout_marginBottom="4dp"/>
+
+        <TextView
+            android:id="@+id/statsHistorialVacio"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Todavía no tienes movimientos. Registra tareas, eventos, clases y calificaciones para ganar EduCoins."
+            android:textColor="@color/text_hint"
+            android:textSize="14sp"
+            android:paddingVertical="16dp"
+            android:visibility="gone"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/statsHistorial"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:nestedScrollingEnabled="false"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/statsHistorialTodo"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="Ver todo"
+            android:textAllCaps="false"
+            android:textColor="@color/purple_accent"
+            android:visibility="gone"/>
+
+    </LinearLayout>
+
+</androidx.core.widget.NestedScrollView>

@@ -13,5 +13,7 @@ data class TareaEntity (
     @ColumnInfo(name = "descrip")val descrip:String,
     @ColumnInfo(name = "asignatura")val asignatura:String,
     @ColumnInfo(name= "fecha")val fecha:String,
-    @ColumnInfo(name= "prioridad")val prioridad:Int
+    @ColumnInfo(name= "prioridad")val prioridad:Int,
+    // Cuándo la marcó el usuario como entregada; null si sigue pendiente
+    @ColumnInfo(name= "entregada_millis")val entregadaMillis:Long? = null
 )

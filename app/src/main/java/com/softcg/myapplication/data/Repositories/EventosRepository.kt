@@ -19,9 +19,10 @@ class EventosRepository @Inject constructor(private val eventosDao: EventosDao) 
         eventosDao.deleteEvento(entity)
     }
 
-    suspend fun insertEvento(evento: Evento){
+    /** Devuelve el id del evento creado. */
+    suspend fun insertEvento(evento: Evento): Long{
         val entity = EventoEntity(titulo = evento.titulo, descrip = evento.descrip, fecha = evento.fecha, prioridad = evento.prioridad, horaInicio = evento.horaInicio, horaFin = evento.horaFin, imagenUri = evento.imagenUri)
-        eventosDao.insertEvento(entity)
+        return eventosDao.insertEvento(entity)
     }
 
     suspend fun updateEvento(evento: Evento){

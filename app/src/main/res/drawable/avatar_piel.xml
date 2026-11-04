@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Capa del avatar (lienzo 200x200 compartido por todas las capas) -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="200dp"
+    android:height="200dp"
+    android:viewportWidth="200"
+    android:viewportHeight="200">
+    <!-- Se colorea con el tono de piel del usuario -->
+    <path android:fillColor="#FFFFFF" android:pathData="M88,112 L112,112 L112,140 L100,152 L88,140 Z"/>
+    <path android:fillColor="#FFFFFF" android:pathData="M51,86 a9,9 0 1,0 18,0 a9,9 0 1,0 -18,0"/>
+    <path android:fillColor="#FFFFFF" android:pathData="M131,86 a9,9 0 1,0 18,0 a9,9 0 1,0 -18,0"/>
+    <path android:fillColor="#FFFFFF" android:pathData="M60,82 a40,40 0 1,0 80,0 a40,40 0 1,0 -80,0"/>
+</vector>

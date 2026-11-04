@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Accesorio del avatar (lienzo 200x200 compartido por todas las capas) -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="200dp"
+    android:height="200dp"
+    android:viewportWidth="200"
+    android:viewportHeight="200">
+    <path android:fillColor="#4A148C" android:pathData="M0,0 L200,0 L200,200 L0,200 Z"/>
+    <path android:fillColor="#7B1FA2" android:pathData="M0,150 Q100,120 200,150 L200,200 L0,200 Z"/>
+    <path android:fillColor="#FFF59D" android:pathData="M27,30 a3,3 0 1,0 6,0 a3,3 0 1,0 -6,0 M157,40 a3,3 0 1,0 6,0 a3,3 0 1,0 -6,0 M17,100 a2.5,2.5 0 1,0 5,0 a2.5,2.5 0 1,0 -5,0 M177,100 a2.5,2.5 0 1,0 5,0 a2.5,2.5 0 1,0 -5,0 M117,18 a2,2 0 1,0 4,0 a2,2 0 1,0 -4,0 M40,62 a2,2 0 1,0 4,0 a2,2 0 1,0 -4,0 M180,64 a2,2 0 1,0 4,0 a2,2 0 1,0 -4,0"/>
+    <path android:fillColor="#FFF9C4" android:pathData="M150,14 a14,14 0 1,0 28,0 a14,14 0 1,0 -28,0"/>
+    <path android:fillColor="#4A148C" android:pathData="M158,8 a12,12 0 1,0 24,0 a12,12 0 1,0 -24,0"/>
+</vector>
