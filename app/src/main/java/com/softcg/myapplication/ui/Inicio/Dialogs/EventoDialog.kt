@@ -2,7 +2,6 @@ package com.softcg.myapplication.ui.Inicio.Dialogs
 
 import android.app.Dialog
 import android.content.Context
-import android.graphics.Color
 import android.net.Uri
 import android.view.View
 import android.view.Window
@@ -10,8 +9,9 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.cardview.widget.CardView
+import com.google.android.material.card.MaterialCardView
+import com.google.android.material.textfield.TextInputLayout
 import com.softcg.myapplication.R
 import com.softcg.myapplication.core.ex.showAsBottomSheet
 import com.softcg.myapplication.core.ex.showDatePicker
@@ -34,13 +34,6 @@ class EventoDialog(
         const val PRIORIDAD_ALTA = 1
         const val PRIORIDAD_MEDIA = 2
         const val PRIORIDAD_BAJA = 3
-
-        private val COLOR_SELECCIONADO = Color.parseColor("#E1BEE7")
-        private val COLORES_PRIORIDAD = mapOf(
-            PRIORIDAD_ALTA to Color.parseColor("#FFF5F5"),
-            PRIORIDAD_MEDIA to Color.parseColor("#FFFEF5"),
-            PRIORIDAD_BAJA to Color.parseColor("#F0F8FF")
-        )
     }
 
     private var selectedPrioridad = evento?.prioridad ?: PRIORIDAD_MEDIA
@@ -63,9 +56,9 @@ class EventoDialog(
         val guardarBoton = dialog.findViewById<Button>(R.id.botonAgregar)
 
         val tarjetasPrioridad = mapOf(
-            PRIORIDAD_ALTA to dialog.findViewById<CardView>(R.id.prioridadAlta),
-            PRIORIDAD_MEDIA to dialog.findViewById<CardView>(R.id.prioridadMedia),
-            PRIORIDAD_BAJA to dialog.findViewById<CardView>(R.id.prioridadBaja)
+            PRIORIDAD_ALTA to dialog.findViewById<MaterialCardView>(R.id.prioridadAlta),
+            PRIORIDAD_MEDIA to dialog.findViewById<MaterialCardView>(R.id.prioridadMedia),
+            PRIORIDAD_BAJA to dialog.findViewById<MaterialCardView>(R.id.prioridadBaja)
         )
 
         imagePreview = dialog.findViewById(R.id.imagePreview)
@@ -107,7 +100,10 @@ class EventoDialog(
                     )
                 )
             } else {
-                Toast.makeText(context, "Complete los campos obligatorios", Toast.LENGTH_SHORT).show()
+                dialog.findViewById<TextInputLayout>(R.id.NombreContainer).error =
+                    if (titulo.text.isNullOrEmpty()) "Escribe un nombre" else null
+                dialog.findViewById<TextInputLayout>(R.id.FechaContainer).error =
+                    if (fecha.text.isNullOrEmpty()) "Elige una fecha" else null
             }
         }
 
@@ -147,11 +143,12 @@ class EventoDialog(
         }
     }
 
-    private fun pintarPrioridad(tarjetas: Map<Int, CardView>) {
+    private fun pintarPrioridad(tarjetas: Map<Int, MaterialCardView>) {
         tarjetas.forEach { (prioridad, tarjeta) ->
-            tarjeta.setCardBackgroundColor(
-                if (prioridad == selectedPrioridad) COLOR_SELECCIONADO else COLORES_PRIORIDAD.getValue(prioridad)
-            )
+            val elegida = prioridad == selectedPrioridad
+            tarjeta.setCardBackgroundColor(context.getColor(if (elegida) R.color.purple_surface else R.color.superficie))
+            tarjeta.strokeColor = context.getColor(if (elegida) R.color.purple_accent else R.color.borde_suave)
+            tarjeta.isSelected = elegida
         }
     }
 }

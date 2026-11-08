@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingHorizontal="16dp"
+        android:paddingHorizontal="@dimen/margen_pantalla"
         android:paddingTop="16dp"
         android:paddingBottom="96dp">
 
@@ -196,14 +196,12 @@
             android:nestedScrollingEnabled="false"/>
 
         <com.google.android.material.button.MaterialButton
+    style="@style/Edu.BotonTexto"
             android:id="@+id/statsHistorialTodo"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:text="Ver todo"
-            android:textAllCaps="false"
-            android:textColor="@color/purple_accent"
             android:visibility="gone"/>
 
     </LinearLayout>

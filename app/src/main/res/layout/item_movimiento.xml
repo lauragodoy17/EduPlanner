@@ -28,7 +28,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Registraste una tarea"
-            android:textColor="#333333"
+            android:textColor="@color/text_primary"
             android:textSize="15sp"/>
 
         <TextView
@@ -36,7 +36,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="28 oct 2026, 16:05"
-            android:textColor="#999999"
+            android:textColor="@color/text_hint"
             android:textSize="12sp"/>
     </LinearLayout>
 

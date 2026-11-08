@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/fondo_app"
     tools:context=".ui.Inicio.Fragments.Perfil.EnfoqueFragment">
 
     <!-- Elegir duración -->
@@ -18,15 +18,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="20dp">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Sesión de enfoque"
-                android:textColor="#1A1A1A"
-                android:textSize="24sp"
-                android:textStyle="bold"/>
+            android:paddingHorizontal="@dimen/margen_pantalla"
+            android:paddingVertical="20dp">
 
             <TextView
                 android:layout_width="match_parent"
@@ -49,7 +42,7 @@
                     android:id="@+id/enfoque15"
                     style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                     android:layout_width="0dp"
-                    android:layout_height="58dp"
+                    android:layout_height="@dimen/alto_boton"
                     android:layout_weight="1"
                     android:text="15 min"
                     android:textAllCaps="false"/>
@@ -58,7 +51,7 @@
                     android:id="@+id/enfoque25"
                     style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                     android:layout_width="0dp"
-                    android:layout_height="58dp"
+                    android:layout_height="@dimen/alto_boton"
                     android:layout_weight="1"
                     android:text="25 min"
                     android:textAllCaps="false"/>
@@ -67,7 +60,7 @@
                     android:id="@+id/enfoque50"
                     style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                     android:layout_width="0dp"
-                    android:layout_height="58dp"
+                    android:layout_height="@dimen/alto_boton"
                     android:layout_weight="1"
                     android:text="50 min"
                     android:textAllCaps="false"/>
@@ -85,14 +78,10 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/enfoqueAsignaturaCaja"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                style="@style/Edu.CampoDesplegable"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Asignatura (opcional)"
-                app:boxCornerRadiusTopStart="16dp"
-                app:boxCornerRadiusTopEnd="16dp"
-                app:boxCornerRadiusBottomStart="16dp"
-                app:boxCornerRadiusBottomEnd="16dp"
                 android:layout_marginBottom="24dp">
 
                 <AutoCompleteTextView
@@ -103,17 +92,11 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.button.MaterialButton
+    style="@style/Edu.Boton"
                 android:id="@+id/enfoqueIniciar"
                 android:layout_width="match_parent"
-                android:layout_height="58dp"
-                android:text="Empezar sesión"
-                android:textColor="@color/white"
-                android:textSize="17sp"
-                android:textStyle="bold"
-                android:letterSpacing="0.02"
-                app:backgroundTint="@color/purple_accent"
-                app:cornerRadius="16dp"
-                app:elevation="0dp"/>
+                android:layout_height="@dimen/alto_boton"
+                android:text="Empezar sesión"/>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
@@ -173,13 +156,13 @@
             android:id="@+id/enfoqueAbandonar"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="match_parent"
-            android:layout_height="58dp"
+            android:layout_height="@dimen/alto_boton"
             android:text="Abandonar sesión"
             android:textAllCaps="false"
             android:textColor="@color/white"
             android:textSize="16sp"
             app:strokeColor="@color/blanco_70"
-            app:strokeWidth="2dp"
+            app:strokeWidth="1.5dp"
             app:cornerRadius="16dp"/>
     </LinearLayout>
 
@@ -237,10 +220,9 @@
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/enfoqueOtra"
                 android:layout_width="match_parent"
-                android:layout_height="58dp"
+                android:layout_height="@dimen/alto_boton"
                 android:text="Hacer otra"
                 android:textColor="@color/purple_deep"
-                android:textSize="17sp"
                 android:textStyle="bold"
                 app:backgroundTint="@color/white"
                 app:cornerRadius="16dp"
@@ -251,13 +233,13 @@
                 android:id="@+id/enfoqueVolver"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="match_parent"
-                android:layout_height="58dp"
+                android:layout_height="@dimen/alto_boton"
                 android:text="Volver a mis misiones"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
                 android:textSize="16sp"
                 app:strokeColor="@color/blanco_70"
-                app:strokeWidth="2dp"
+                app:strokeWidth="1.5dp"
                 app:cornerRadius="16dp"/>
         </LinearLayout>
     </FrameLayout>

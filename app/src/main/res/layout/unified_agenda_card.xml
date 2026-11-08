@@ -1,125 +1,128 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Tarjeta de tarea o evento. Es la misma en Inicio (dentro de la línea de tiempo) y en Agenda. -->
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/Edu.Tarjeta"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="12dp"
-    app:cardCornerRadius="8dp"
-    app:cardElevation="2dp"
-    app:cardBackgroundColor="#FFFFFF">
+    android:foreground="?attr/selectableItemBackground">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:paddingStart="14dp"
+        android:paddingTop="14dp"
+        android:paddingEnd="4dp"
+        android:paddingBottom="12dp">
 
-        <!-- Header Row with Title and Type Badge -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/item_icono"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:padding="9dp"
+                android:background="@drawable/circle_shape"
+                android:backgroundTint="@color/purple_surface"
+                android:src="@drawable/ic_gami_tarea"
+                app:tint="@color/purple_accent"
+                android:layout_marginEnd="12dp"
+                android:importantForAccessibility="no"/>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/text_titulo"
+                    style="@style/Edu.Texto.TituloTarjeta"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:maxLines="2"
+                    android:ellipsize="end"
+                    android:text="Título del elemento" />
+
+                <TextView
+                    android:id="@+id/texto_asignatura"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1dp"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    android:text="Asignatura"
+                    android:textSize="13sp"
+                    android:textColor="@color/purple_accent"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/textodesc"
+                    style="@style/Edu.Texto.Cuerpo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:maxLines="2"
+                    android:ellipsize="end"
+                    android:text="Descripción del elemento" />
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/opciones"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:padding="8dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Opciones"
+                android:src="@drawable/ic_more_vert"
+                app:tint="@color/text_secondary" />
+        </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:layout_marginBottom="8dp">
+            android:layout_marginTop="10dp"
+            android:paddingEnd="10dp">
 
-            <!-- Title -->
-            <TextView
-                android:id="@+id/text_titulo"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Título del elemento"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:textColor="#333333" />
-
-            <!-- Type Badge -->
             <TextView
                 android:id="@+id/item_type_badge"
+                style="@style/Edu.Texto.Etiqueta"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="TAREA"
-                android:textSize="10sp"
-                android:textColor="#FFFFFF"
-                android:background="@drawable/type_badge_bg"
-                android:paddingHorizontal="8dp"
-                android:paddingVertical="4dp"
-                android:textStyle="bold"
-                android:layout_marginStart="8dp" />
+                android:text="TAREA" />
 
-        </LinearLayout>
-
-        <!-- Description -->
-        <TextView
-            android:id="@+id/textodesc"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Descripción del elemento"
-            android:textSize="14sp"
-            android:textColor="#666666"
-            android:layout_marginBottom="12dp" />
-
-        <!-- Details Row -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
-
-            <!-- Subject (only for tasks) -->
-            <TextView
-                android:id="@+id/texto_asignatura"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Asignatura"
-                android:textSize="12sp"
-                android:textColor="#9C27B0"
-                android:textStyle="bold" />
-
-            <!-- Priority Indicator -->
             <View
                 android:id="@+id/priority_indicator"
                 android:layout_width="8dp"
                 android:layout_height="8dp"
                 android:background="@drawable/circle_shape"
-                android:layout_marginStart="8dp" />
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="4dp" />
 
-            <!-- Date -->
             <TextView
-                android:id="@+id/textofecha"
+                android:id="@+id/prioridad_texto"
+                style="@style/Edu.Texto.Pie"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="25/09/2025"
-                android:textSize="12sp"
-                android:textColor="#999999"
-                android:layout_marginStart="8dp" />
+                android:text="Media" />
 
-            <!-- Options Button -->
-            <ImageView
-                android:id="@+id/opciones"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:contentDescription="Opciones"
-                android:src="@drawable/ic_arrow_forward"
-                app:tint="@color/black"
-                android:layout_marginStart="12dp" />
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1"/>
 
+            <TextView
+                android:id="@+id/textofecha"
+                style="@style/Edu.Texto.Pie"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="25/09/2025" />
         </LinearLayout>
-
-        <!-- Hidden elements for compatibility -->
-        <TextView
-            android:id="@+id/tv_time"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:visibility="gone" />
-
-        <ImageView
-            android:id="@+id/circleImage"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:visibility="gone" />
-
     </LinearLayout>
-
 </androidx.cardview.widget.CardView>

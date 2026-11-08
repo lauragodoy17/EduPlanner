@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import android.view.animation.OvershootInterpolator
 import android.widget.ImageView
 import android.widget.TextView
-import com.google.android.material.snackbar.Snackbar
 import com.softcg.myapplication.R
 import com.softcg.myapplication.domain.gamificacion.Logro
 import com.softcg.myapplication.ui.Inicio.Fragments.Perfil.Models.LogroRecursos
@@ -97,5 +96,5 @@ fun Activity.mostrarAvisoLogro(logro: Logro?, titulo: String, detalle: String, o
 private const val DURACION_AVISO_LOGRO_MS = 3200L
 
 fun Activity.mostrarMensaje(mensaje: String) {
-    Snackbar.make(findViewById(android.R.id.content), mensaje, Snackbar.LENGTH_LONG).show()
+    findViewById<View>(android.R.id.content).mostrarAviso(mensaje)
 }

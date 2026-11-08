@@ -1,20 +1,23 @@
 package com.softcg.myapplication.ui.Inicio.Fragments.Home.Adapters
 
 import android.content.Context
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
-import android.view.Gravity
+import android.content.res.ColorStateList
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.PopupMenu
 import androidx.recyclerview.widget.RecyclerView
 import com.softcg.myapplication.R
+import com.softcg.myapplication.core.ex.confirmar
+import com.softcg.myapplication.core.ex.estiloPrioridad
+import com.softcg.myapplication.core.ex.mostrarAviso
+import com.softcg.myapplication.core.ex.pintarEtiqueta
+import com.softcg.myapplication.core.ex.pintarPrioridad
+import com.softcg.myapplication.core.ex.showAsBottomSheet
+import com.softcg.myapplication.core.ex.tintarFondo
 import com.softcg.myapplication.ui.Inicio.Models.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -66,6 +69,8 @@ class UnifiedItemAdapter(
         private val textFecha: TextView = itemView.findViewById(R.id.textofecha)
         private val typeBadge: TextView = itemView.findViewById(R.id.item_type_badge)
         private val priorityIndicator: View = itemView.findViewById(R.id.priority_indicator)
+        private val prioridadTexto: TextView = itemView.findViewById(R.id.prioridad_texto)
+        private val icono: ImageView = itemView.findViewById(R.id.item_icono)
         private val opciones: ImageView = itemView.findViewById(R.id.opciones)
 
         // Timeline elements
@@ -76,42 +81,11 @@ class UnifiedItemAdapter(
         fun bind(item: TimelineItem) {
             textTitulo.text = item.titulo
             textDesc.text = item.descrip
+            textDesc.visibility = if (item.descrip.isBlank()) View.GONE else View.VISIBLE
             textFecha.text = formatDisplayDate(item.fecha)
 
-            // Configure based on item type
-            when (item.type) {
-                TimelineItemType.TAREA -> {
-                    textAsignatura.visibility = View.VISIBLE
-                    if (item.calificacion != null) {
-                        // Una tarea calificada está completada
-                        textAsignatura.text = "${item.asignatura} · Calificación: ${formatCalificacion(item.calificacion)}"
-                        typeBadge.text = "COMPLETADA"
-                        typeBadge.setBackgroundColor(context.getColor(R.color.purple_primary))
-                    } else if (item.entregadaMillis != null) {
-                        textAsignatura.text = item.asignatura
-                        typeBadge.text = "ENTREGADA"
-                        typeBadge.setBackgroundColor(context.getColor(R.color.purple_primary))
-                    } else {
-                        textAsignatura.text = item.asignatura
-                        typeBadge.text = "TAREA"
-                        typeBadge.setBackgroundColor(android.graphics.Color.parseColor("#9C27B0"))
-                    }
-                }
-                TimelineItemType.EVENTO -> {
-                    textAsignatura.visibility = View.INVISIBLE
-                    typeBadge.text = "EVENTO"
-                    typeBadge.setBackgroundColor(android.graphics.Color.parseColor("#673AB7"))
-                }
-            }
-
-            // Set priority indicator color
-            val priorityColor = when (item.prioridad) {
-                3 -> "#4CAF50" // High priority - Green
-                2 -> "#FF9800" // Medium priority - Orange
-                1 -> "#F44336" // Low priority - Red
-                else -> "#9C27B0" // Default purple
-            }
-            priorityIndicator.setBackgroundColor(android.graphics.Color.parseColor(priorityColor))
+            pintarTipo(item)
+            pintarPrioridad(item.prioridad, priorityIndicator, prioridadTexto)
 
             // Configure timeline visibility based on position
             val position = adapterPosition
@@ -128,6 +102,7 @@ class UnifiedItemAdapter(
             // Set click listeners
             itemView.setOnClickListener {
                 onItemClick(item)
+                if (item.type == TimelineItemType.EVENTO) showEventoDetallesDialog(eventoDe(item))
             }
 
             opciones.setOnClickListener { view ->
@@ -142,6 +117,55 @@ class UnifiedItemAdapter(
                 .setStartDelay((adapterPosition * 50).toLong())
                 .start()
         }
+
+        private fun pintarTipo(item: TimelineItem) {
+            val hecha = item.calificacion != null || item.entregadaMillis != null
+            when {
+                item.type == TimelineItemType.EVENTO -> {
+                    textAsignatura.visibility = View.GONE
+                    typeBadge.pintarEtiqueta("EVENTO", R.color.evento, R.color.evento_suave)
+                    pintarIcono(R.drawable.ic_gami_evento, R.color.evento, R.color.evento_suave)
+                }
+                hecha -> {
+                    textAsignatura.visibility = View.VISIBLE
+                    // Una tarea calificada está completada
+                    textAsignatura.text = if (item.calificacion != null) {
+                        "${item.asignatura} · Calificación: ${formatCalificacion(item.calificacion)}"
+                    } else {
+                        item.asignatura
+                    }
+                    typeBadge.pintarEtiqueta(
+                        if (item.calificacion != null) "COMPLETADA" else "ENTREGADA",
+                        R.color.estado_exito,
+                        R.color.estado_exito_suave
+                    )
+                    pintarIcono(R.drawable.ic_gami_check, R.color.estado_exito, R.color.estado_exito_suave)
+                }
+                else -> {
+                    textAsignatura.visibility = View.VISIBLE
+                    textAsignatura.text = item.asignatura
+                    typeBadge.pintarEtiqueta("TAREA", R.color.purple_accent, R.color.purple_surface)
+                    pintarIcono(R.drawable.ic_gami_tarea, R.color.purple_accent, R.color.purple_surface)
+                }
+            }
+        }
+
+        private fun pintarIcono(imagen: Int, color: Int, fondo: Int) {
+            icono.setImageResource(imagen)
+            icono.imageTintList = ColorStateList.valueOf(context.getColor(color))
+            icono.tintarFondo(fondo)
+        }
+
+        private fun eventoDe(item: TimelineItem) = Evento(
+            item.id,
+            item.titulo,
+            item.descrip,
+            item.fecha,
+            item.prioridad,
+            item.horaInicio ?: "",
+            item.horaFin ?: "",
+            item.imagenUri
+        )
 
         private fun formatDisplayDate(dateString: String): String {
             return try {
@@ -160,6 +184,8 @@ class UnifiedItemAdapter(
         private fun showPopupMenu(view: View, item: TimelineItem) {
             val popupMenu = PopupMenu(context, view)
             popupMenu.inflate(R.menu.menudos)
+            // Solo los eventos tienen pantalla de detalle
+            popupMenu.menu.findItem(R.id.VerMas).isVisible = item.type == TimelineItemType.EVENTO
             popupMenu.menu.findItem(R.id.Calificar).isVisible =
                 item.type == TimelineItemType.TAREA && item.calificacion == null
             popupMenu.menu.findItem(R.id.Entregar).isVisible =
@@ -176,25 +202,7 @@ class UnifiedItemAdapter(
                         true
                     }
                     R.id.VerMas -> {
-                        when (item.type) {
-                            TimelineItemType.EVENTO -> {
-                                val evento = Evento(
-                                    item.id,
-                                    item.titulo,
-                                    item.descrip,
-                                    item.fecha,
-                                    item.prioridad,
-                                    item.horaInicio ?: "",
-                                    item.horaFin ?: "",
-                                    item.imagenUri
-                                )
-                                showEventoDetallesDialog(evento)
-                            }
-                            TimelineItemType.TAREA -> {
-                                // Por ahora solo para eventos
-                                showDeleteDialog(item)
-                            }
-                        }
+                        showEventoDetallesDialog(eventoDe(item))
                         true
                     }
                     R.id.Borrar -> {
@@ -209,32 +217,20 @@ class UnifiedItemAdapter(
         }
 
         private fun showDeleteDialog(item: TimelineItem) {
-            val builder = AlertDialog.Builder(context)
-
             when (item.type) {
-                TimelineItemType.TAREA -> {
-                    builder.setPositiveButton("Sí") { _, _ ->
-                        val tarea = Tarea(item.id, item.titulo, item.descrip, item.asignatura ?: "", item.fecha, item.prioridad)
-                        onDeleteTarea(tarea)
-                        Toast.makeText(context, "Tarea eliminada", Toast.LENGTH_SHORT).show()
-                    }
-                    builder.setNegativeButton("No") { _, _ -> }
-                    builder.setTitle("¿Eliminar Tarea?")
-                    builder.setMessage("¿Está seguro que desea eliminar esta tarea?")
+                TimelineItemType.TAREA -> context.confirmar("¿Eliminar tarea?", "Esta acción no se puede deshacer.", "Eliminar") {
+                    onDeleteTarea(Tarea(item.id, item.titulo, item.descrip, item.asignatura ?: "", item.fecha, item.prioridad))
+                    itemView.mostrarAviso("Tarea eliminada")
                 }
-                TimelineItemType.EVENTO -> {
-                    builder.setPositiveButton("Sí") { _, _ ->
-                        val evento = Evento(item.id, item.titulo, item.descrip, item.fecha, item.prioridad, item.horaInicio ?: "", item.horaFin ?: "", item.imagenUri)
-                        onDeleteEvento(evento)
-                        Toast.makeText(context, "Evento eliminado", Toast.LENGTH_SHORT).show()
-                    }
-                    builder.setNegativeButton("No") { _, _ -> }
-                    builder.setTitle("¿Eliminar Evento?")
-                    builder.setMessage("¿Está seguro que desea eliminar este evento?")
-                }
+                TimelineItemType.EVENTO -> confirmarBorrarEvento(eventoDe(item))
             }
+        }
 
-            builder.create().show()
+        private fun confirmarBorrarEvento(evento: Evento) {
+            context.confirmar("¿Eliminar evento?", "Esta acción no se puede deshacer.", "Eliminar") {
+                onDeleteEvento(evento)
+                itemView.mostrarAviso("Evento eliminado")
+            }
         }
 
         private fun showEventoDetallesDialog(evento: Evento) {
@@ -288,24 +284,8 @@ class UnifiedItemAdapter(
                 containerHorario.visibility = View.GONE
             }
 
-            // Configurar prioridad
-            when (evento.prioridad) {
-                1 -> {
-                    prioridadIndicador.setBackgroundColor(android.graphics.Color.parseColor("#F44336"))
-                    prioridadTexto.text = "Alta"
-                    prioridadTexto.setTextColor(android.graphics.Color.parseColor("#F44336"))
-                }
-                2 -> {
-                    prioridadIndicador.setBackgroundColor(android.graphics.Color.parseColor("#FFEB3B"))
-                    prioridadTexto.text = "Media"
-                    prioridadTexto.setTextColor(android.graphics.Color.parseColor("#F57C00"))
-                }
-                3 -> {
-                    prioridadIndicador.setBackgroundColor(android.graphics.Color.parseColor("#2196F3"))
-                    prioridadTexto.text = "Baja"
-                    prioridadTexto.setTextColor(android.graphics.Color.parseColor("#2196F3"))
-                }
-            }
+            pintarPrioridad(evento.prioridad, prioridadIndicador, prioridadTexto)
+            estiloPrioridad(evento.prioridad)?.let { prioridadTexto.setTextColor(context.getColor(it.color)) }
 
             // Mostrar imagen si existe
             if (!evento.imagenUri.isNullOrEmpty()) {
@@ -329,15 +309,7 @@ class UnifiedItemAdapter(
             // Botón Eliminar
             btnEliminar.setOnClickListener {
                 dialog.dismiss()
-                val builder = AlertDialog.Builder(context)
-                builder.setTitle("¿Eliminar Evento?")
-                builder.setMessage("¿Está seguro que desea eliminar este evento?")
-                builder.setPositiveButton("Sí") { _, _ ->
-                    onDeleteEvento(evento)
-                    Toast.makeText(context, "Evento eliminado", Toast.LENGTH_SHORT).show()
-                }
-                builder.setNegativeButton("No") { _, _ -> }
-                builder.create().show()
+                confirmarBorrarEvento(evento)
             }
 
             // Botón Cerrar
@@ -345,11 +317,7 @@ class UnifiedItemAdapter(
                 dialog.dismiss()
             }
 
-            dialog.show()
-            dialog.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-            dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-            dialog.window?.attributes?.windowAnimations = R.style.DialogAnimation
-            dialog.window?.setGravity(Gravity.BOTTOM)
+            dialog.showAsBottomSheet()
         }
     }
 }

@@ -1,133 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    >
+    android:layout_height="match_parent">
 
-    <!-- Calendar Widget -->
-    <com.softcg.myapplication.ui.Inicio.Fragments.Agenda.AgendaCalendarWidget
-        android:id="@+id/schedule_calendar_widget"
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="8dp"
-        android:layout_marginVertical="12dp" />
-    <View
-        android:id="@+id/separadorA"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#B8B8B8"
-        android:layout_marginTop="8dp"
-        app:layout_constraintBottom_toTopOf="@id/textoclases"
-        app:layout_constraintTop_toBottomOf="@id/containerReporte"/>
-    <TextView
-        android:id="@+id/textoclases"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="Clases"
-        android:textColor="#949494"
-        android:textSize="20sp"
-        android:layout_gravity="center"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/separadorA" />
-<!-- Timeline Container with Synchronized Scroll -->
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="horizontal"
-    android:layout_marginTop="8dp">
+        android:background="@android:color/transparent"
+        app:elevation="0dp">
 
-    <!-- Time Column ScrollView -->
-    <ScrollView
-        android:id="@+id/timelineScrollView"
-        android:layout_width="85dp"
+        <!-- Se oculta al bajar por las horas y vuelve al subir -->
+        <com.softcg.myapplication.ui.Inicio.Fragments.Agenda.AgendaCalendarWidget
+            android:id="@+id/schedule_calendar_widget"
+            style="@style/Edu.Tarjeta"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/margen_pantalla"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="8dp"
+            app:layout_scrollFlags="scroll|enterAlways" />
+
+        <TextView
+            android:id="@+id/textoclases"
+            style="@style/Edu.Texto.Seccion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="@dimen/margen_pantalla"
+            android:paddingVertical="6dp"
+            android:text="Clases"
+            android:accessibilityHeading="true" />
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/contentScrollView"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#FAFAFA"
-        android:scrollbars="none"
         android:fillViewport="true"
-        android:elevation="2dp">
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
-            android:id="@+id/time_column"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingVertical="8dp"
-            android:background="#FAFAFA">
+            android:orientation="horizontal"
+            android:paddingStart="@dimen/margen_pantalla"
+            android:paddingEnd="@dimen/margen_pantalla"
+            android:paddingBottom="88dp">
 
-            <!-- Time slots will be added programmatically -->
+            <LinearLayout
+                android:id="@+id/time_column"
+                android:layout_width="48dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
 
-        </LinearLayout>
-
-    </ScrollView>
-
-    <!-- Content Column with ScrollView -->
-    <ScrollView
-        android:id="@+id/contentScrollView"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:layout_marginStart="4dp"
-        android:fillViewport="true"
-        android:scrollbars="vertical"
-        android:background="#FFFFFF"
-        android:clickable="true"
-        android:focusable="true">
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:clickable="false"
-            android:focusable="false">
-
-            <!-- Timeline Container for Cards -->
             <FrameLayout
-                android:id="@+id/horarioContainer"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="8dp"
-                android:clickable="false"
-                android:focusable="false">
+                android:layout_weight="1">
 
-                <!-- Cards will be added programmatically here -->
-                <!-- Height is set programmatically to match timeline -->
+                <!-- Líneas de cada hora, detrás de las tarjetas -->
+                <FrameLayout
+                    android:id="@+id/horarioLineas"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
 
+                <FrameLayout
+                    android:id="@+id/horarioContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
             </FrameLayout>
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
 
-            <!-- Empty State Message -->
-            <TextView
-                android:id="@+id/textoAsignaturas"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="No tienes clases pendientes."
-                android:textColor="@color/purple_primary"
-                android:textSize="24sp"
-                android:textStyle="bold"
-                android:visibility="gone"
-                android:layout_gravity="center" />
-
-        </FrameLayout>
-
-    </ScrollView>
-
-</LinearLayout>
-
-</LinearLayout>
-
-
-
-
-
-
-
-
-
-
-
-
+    <!-- Fuera del desplazamiento: con 24 horas de alto, quedaría fuera de la pantalla -->
+    <TextView
+        android:id="@+id/textoAsignaturas"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@drawable/bg_pastilla_blanca"
+        android:elevation="2dp"
+        android:gravity="center"
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="12dp"
+        android:text="No tienes clases pendientes."
+        android:textColor="@color/text_secondary"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:visibility="gone" />
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

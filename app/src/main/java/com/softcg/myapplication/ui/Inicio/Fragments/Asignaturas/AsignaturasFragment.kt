@@ -1,10 +1,7 @@
 package com.softcg.myapplication.ui.Inicio.Fragments.Asignaturas
 
 import android.app.Dialog
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.view.Gravity
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -14,14 +11,15 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Spinner
 import android.widget.TextView
-import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.softcg.myapplication.R
 import com.softcg.myapplication.core.dialog.TimePickerFragment
+import com.softcg.myapplication.core.ex.mostrarAviso
 import com.softcg.myapplication.core.ex.mostrarRecompensa
+import com.softcg.myapplication.core.ex.showAsBottomSheet
 import com.softcg.myapplication.ui.Inicio.Fragments.Asignaturas.Adapters.AsignaturasAdapter
 import com.softcg.myapplication.ui.Inicio.Fragments.Asignaturas.Adapters.MultiSelectSpinnerAdapter
 import com.softcg.myapplication.ui.Inicio.Fragments.Asignaturas.Models.ListItem
@@ -63,6 +61,11 @@ class AsignaturasFragment : Fragment() {
         inicioViewModel._asignaturas.observe(viewLifecycleOwner, Observer { Asignatura ->
             adapter.setData(Asignatura)
             val emptyState = view.findViewById<View>(R.id.textoAsignaturas)
+            view.findViewById<TextView>(R.id.asignaturasResumen).text = when (Asignatura.size) {
+                0 -> "Tus asignaturas"
+                1 -> "1 asignatura"
+                else -> "${Asignatura.size} asignaturas"
+            }
             if (Asignatura.isNotEmpty()) {
                 emptyState.visibility = View.GONE
             } else{
@@ -97,13 +100,13 @@ class AsignaturasFragment : Fragment() {
 
         // Configuración del Spinner de Tipo de Calificación
         val spinnerTipoCalificacion = dialog.findViewById<Spinner>(R.id.spinnerTipoCalificacion)
-        val layoutTipoCalificacionOtro = dialog.findViewById<androidx.cardview.widget.CardView>(R.id.layoutTipoCalificacionOtro)
+        val layoutTipoCalificacionOtro = dialog.findViewById<View>(R.id.layoutTipoCalificacionOtro)
         val labelTipoCalificacionOtro = dialog.findViewById<TextView>(R.id.labelTipoCalificacionOtro)
         val tipoCalificacionOtroEditText = dialog.findViewById<EditText>(R.id.TipoCalificacionOtroEditText)
 
         val tiposCalificacion = arrayOf("Selecciona un tipo", "Numérico (0-10)", "Porcentaje (0-100%)", "Letras (A-F)", "Aprobado/Reprobado", "Otro")
-        val tipoCalificacionAdapter = android.widget.ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, tiposCalificacion)
-        tipoCalificacionAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        val tipoCalificacionAdapter = android.widget.ArrayAdapter(requireContext(), R.layout.item_menu_asignatura, tiposCalificacion)
+        tipoCalificacionAdapter.setDropDownViewResource(R.layout.item_menu_asignatura)
         spinnerTipoCalificacion.adapter = tipoCalificacionAdapter
 
         // Listener para mostrar/ocultar el campo personalizado
@@ -163,14 +166,10 @@ class AsignaturasFragment : Fragment() {
             }
 
             inicioViewModel.onAgregarAsignaturaSelected(nombre.text.toString(),tutor.text.toString(),aux,tiempo.text.toString().trim(),currentName,tipoCalificacionFinal)
-            Toast.makeText(context,"Asignatura guardada", Toast.LENGTH_SHORT).show()
+            requireView().mostrarAviso("Asignatura guardada")
         }
 
-        dialog.show()
-        dialog.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        dialog.window?.attributes?.windowAnimations = R.style.DialogAnimation
-        dialog.window?.setGravity(Gravity.BOTTOM)
+        dialog.showAsBottomSheet()
     }
     private fun showTimePickerDialog(tiempo: EditText){
         val timePicker= TimePickerFragment{onTimeSelected(it, tiempo)}

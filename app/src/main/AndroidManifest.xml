@@ -25,13 +25,15 @@
             android:name=".ui.login.MainActivity"
             android:exported="false"
             android:noHistory="true"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.MyApplication.Acceso" />
         <activity
             android:name=".ui.Inicio.InicioActivity"
             android:exported="false" />
         <activity
             android:name=".ui.register.RegisterActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.MyApplication.Acceso" />
         <activity
             android:name=".PrincipalSplash"
             android:exported="true"

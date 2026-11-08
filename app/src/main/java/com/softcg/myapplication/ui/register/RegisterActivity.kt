@@ -120,6 +120,7 @@ class RegisterActivity : AppCompatActivity() {
 
     private fun updateUI(viewState: RegisterViewState ){
         with(binding){
+            botonregistro.mostrarCarga(viewState.isLoading, "Crear cuenta", "Creando tu cuenta…")
             binding.emailContainer.error=
                 if (viewState.isValidEmail) null else getString(R.string.signin_error_mail)
             binding.contrasenaContainer.error=

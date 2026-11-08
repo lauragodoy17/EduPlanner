@@ -1,169 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_margin="0dp"
-    app:cardCornerRadius="12dp"
-    app:cardElevation="4dp"
-    android:background="@android:color/white">
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="12dp">
+        android:padding="10dp">
 
-        <!-- Header with month navigation -->
+        <!-- Mes -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:layout_marginBottom="12dp">
+            android:layout_marginBottom="4dp">
 
-            <!-- Previous month button -->
             <ImageView
                 android:id="@+id/btn_previous_month"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:src="@drawable/ic_chevron_left"
+                android:tint="@color/purple_accent"
                 android:background="?android:attr/selectableItemBackgroundBorderless"
                 android:padding="8dp"
                 android:contentDescription="Mes anterior" />
 
-            <!-- Month and year -->
             <TextView
                 android:id="@+id/tv_month_year"
+                style="@style/Edu.Texto.TituloTarjeta"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Enero 2024"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:textColor="#9C27B0"
+                android:textSize="16sp"
                 android:gravity="center" />
 
-            <!-- Next month button -->
             <ImageView
                 android:id="@+id/btn_next_month"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:src="@drawable/ic_chevron_right"
+                android:tint="@color/purple_accent"
                 android:background="?android:attr/selectableItemBackgroundBorderless"
                 android:padding="8dp"
                 android:contentDescription="Mes siguiente" />
 
-            <!-- Expand/Collapse button -->
             <ImageView
                 android:id="@+id/btn_expand_collapse"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:src="@drawable/ic_expand_more"
+                android:tint="@color/purple_accent"
                 android:background="?android:attr/selectableItemBackgroundBorderless"
                 android:padding="8dp"
                 android:rotation="0"
-                android:contentDescription="Expandir/Colapsar" />
-
+                android:contentDescription="Expandir o contraer el mes" />
         </LinearLayout>
 
-        <!-- Days of week header -->
+        <!-- Días de la semana -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginBottom="8dp">
+            android:layout_marginBottom="2dp">
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="L"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                android:textColor="#666666"
-                android:gravity="center"
-                android:padding="8dp" />
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="M"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                android:textColor="#666666"
-                android:gravity="center"
-                android:padding="8dp" />
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="M"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                android:textColor="#666666"
-                android:gravity="center"
-                android:padding="8dp" />
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="J"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                android:textColor="#666666"
-                android:gravity="center"
-                android:padding="8dp" />
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="V"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                android:textColor="#666666"
-                android:gravity="center"
-                android:padding="8dp" />
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="S"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                android:textColor="#666666"
-                android:gravity="center"
-                android:padding="8dp" />
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="D"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                android:textColor="#666666"
-                android:gravity="center"
-                android:padding="8dp" />
-
+            <TextView style="@style/Edu.Texto.Rotulo" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="L" android:gravity="center" />
+            <TextView style="@style/Edu.Texto.Rotulo" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="M" android:gravity="center" />
+            <TextView style="@style/Edu.Texto.Rotulo" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="M" android:gravity="center" />
+            <TextView style="@style/Edu.Texto.Rotulo" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="J" android:gravity="center" />
+            <TextView style="@style/Edu.Texto.Rotulo" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="V" android:gravity="center" />
+            <TextView style="@style/Edu.Texto.Rotulo" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="S" android:gravity="center" />
+            <TextView style="@style/Edu.Texto.Rotulo" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="D" android:gravity="center" />
         </LinearLayout>
 
-        <!-- Calendar grid (6 weeks = 42 days) -->
+        <!-- Semanas: se agregan desde el código -->
         <LinearLayout
             android:id="@+id/calendar_grid"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <!-- Week rows will be added programmatically -->
-
-        </LinearLayout>
-
+            android:orientation="vertical" />
     </LinearLayout>
-
-</androidx.cardview.widget.CardView>
+</merge>

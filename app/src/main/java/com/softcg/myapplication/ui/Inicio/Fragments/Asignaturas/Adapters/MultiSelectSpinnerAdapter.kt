@@ -74,7 +74,7 @@ class MultiSelectSpinnerAdapter(
         } else {
             if (selectedItems.isEmpty()){
                 textView.text = "Selecciona los días"
-                textView.setTextColor(ContextCompat.getColor(context, R.color.gris))
+                textView.setTextColor(ContextCompat.getColor(context, R.color.text_secondary))
                 textView.textSize = 16f
             }
             else{
@@ -83,6 +83,8 @@ class MultiSelectSpinnerAdapter(
                     names.add(getSelectedItems()[i].name)
                 }
                 textView.text = names.toString().replace("[","").replace("]","")
+                textView.setTextColor(ContextCompat.getColor(context, R.color.text_primary))
+                textView.textSize = 16f
 
             }
         }

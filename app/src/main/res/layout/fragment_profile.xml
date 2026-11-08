@@ -4,13 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/fondo_app"
     tools:context=".ui.Inicio.Fragments.Perfil.ProfileFragment">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
+        android:background="@color/fondo_app"
         app:elevation="0dp">
 
         <!-- Nivel, XP y resumen: se oculta al desplazar para dejar sitio al contenido -->
@@ -20,7 +20,8 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:background="@drawable/bg_hero_progreso"
-            android:padding="20dp"
+            android:paddingHorizontal="@dimen/margen_pantalla"
+            android:paddingVertical="20dp"
             android:clickable="true"
             android:focusable="true"
             android:contentDescription="Ver la ruta de niveles"
@@ -239,7 +240,7 @@
             android:id="@+id/perfilTabs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white"
+            android:background="@color/fondo_app"
             app:tabMode="fixed"
             app:tabGravity="fill"
             app:tabPaddingStart="2dp"

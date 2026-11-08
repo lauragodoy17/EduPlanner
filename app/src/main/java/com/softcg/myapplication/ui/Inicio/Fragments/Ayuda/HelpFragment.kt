@@ -15,8 +15,8 @@ import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Button
 import android.widget.EditText
-import android.widget.Toast
 import com.softcg.myapplication.R
+import com.softcg.myapplication.core.ex.mostrarAviso
 
 
 class HelpFragment : Fragment() {
@@ -50,7 +50,7 @@ class HelpFragment : Fragment() {
             quejas.setText("")
             quejados.setText("")
             descripcion.setText("")
-            Toast.makeText(requireContext()," Comentario Enviado", Toast.LENGTH_SHORT).show()
+            requireView().mostrarAviso("Comentario enviado")
         }
     }
     private fun initQuejados(view: View){
@@ -71,7 +71,7 @@ class HelpFragment : Fragment() {
             quejas.setText("")
             quejados.setText("")
             descripcion.setText("")
-            Toast.makeText(requireContext()," Comentario enviado", Toast.LENGTH_SHORT).show()
+            requireView().mostrarAviso("Comentario enviado")
         }
     }
 }

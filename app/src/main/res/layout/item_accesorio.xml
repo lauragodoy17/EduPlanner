@@ -8,9 +8,9 @@
     android:clickable="true"
     android:focusable="true"
     android:foreground="?attr/selectableItemBackground"
-    app:cardCornerRadius="12dp"
-    app:cardElevation="3dp"
-    app:cardBackgroundColor="#FFFFFF">
+    app:cardCornerRadius="@dimen/radio_tarjeta"
+    app:cardElevation="2dp"
+    app:cardBackgroundColor="@color/superficie">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -40,7 +40,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Accesorio"
-            android:textColor="#333333"
+            android:textColor="@color/text_primary"
             android:textSize="13sp"
             android:textStyle="bold"
             android:maxLines="2"
@@ -79,7 +79,7 @@
             android:layout_height="wrap_content"
             android:text="COMPRAR"
             android:textSize="9sp"
-            android:textColor="#FFFFFF"
+            android:textColor="@color/superficie"
             android:background="@drawable/type_badge_bg"
             android:backgroundTint="@color/purple_accent"
             android:paddingHorizontal="6dp"

@@ -1,40 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingHorizontal="32dp"
-    android:layout_marginHorizontal="20dp"
-    android:background="@drawable/rounded_edittext"
-    android:paddingVertical="16dp">
+    android:orientation="vertical"
+    android:background="@drawable/bg_dialogo"
+    android:padding="24dp">
+
+    <ImageView
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_gravity="center_horizontal"
+        android:padding="14dp"
+        android:background="@drawable/circle_shape"
+        android:backgroundTint="@color/estado_error_suave"
+        android:src="@drawable/baseline_question_mark_24"
+        android:tint="@color/estado_error"
+        android:layout_marginBottom="12dp"
+        android:importantForAccessibility="no"/>
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tvTitle"
+        style="@style/Edu.Texto.TituloHoja"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:textAlignment="center"
-        app:layout_constraintTop_toTopOf="parent"
+        android:textSize="20sp"
         tools:text="Título" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tvDescription"
+        style="@style/Edu.VacioDetalle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:textAlignment="center"
-        app:layout_constraintTop_toBottomOf="@id/tvTitle"
+        android:layout_marginTop="6dp"
+        android:layout_marginBottom="20dp"
         tools:text="Body" />
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/btnNegative"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginTop="16dp"
-        tools:text=":Cancelar"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvDescription" />
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnPositive"
+        style="@style/Edu.Boton"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/alto_boton"
+        tools:text="Reintentar" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnNegative"
+        style="@style/Edu.BotonTexto"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginTop="4dp"
+        tools:text="Cancelar" />
+</LinearLayout>

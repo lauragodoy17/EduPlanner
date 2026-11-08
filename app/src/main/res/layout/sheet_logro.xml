@@ -11,7 +11,11 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:gravity="center_horizontal"
-        android:padding="24dp">
+        android:paddingHorizontal="24dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="24dp">
+
+        <View style="@style/Edu.AsaHoja"/>
 
         <FrameLayout
             android:layout_width="96dp"
@@ -52,7 +56,7 @@
             android:layout_height="wrap_content"
             android:text="Logro"
             android:textAlignment="center"
-            android:textColor="#1A1A1A"
+            android:textColor="@color/text_primary"
             android:textSize="24sp"
             android:textStyle="bold"
             android:layout_marginBottom="4dp"/>
@@ -101,16 +105,10 @@
             android:layout_marginBottom="20dp"/>
 
         <com.google.android.material.button.MaterialButton
+    style="@style/Edu.Boton"
             android:id="@+id/detalleCerrar"
             android:layout_width="match_parent"
-            android:layout_height="58dp"
-            android:text="Entendido"
-            android:textColor="@color/white"
-            android:textSize="17sp"
-            android:textStyle="bold"
-            android:letterSpacing="0.02"
-            app:backgroundTint="@color/purple_accent"
-            app:cornerRadius="16dp"
-            app:elevation="0dp"/>
+            android:layout_height="@dimen/alto_boton"
+            android:text="Entendido"/>
     </LinearLayout>
 </ScrollView>

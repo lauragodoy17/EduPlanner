@@ -1,5 +1,6 @@
 package com.softcg.myapplication.ui.Inicio.Fragments.Horario.Models
 
+import com.softcg.myapplication.domain.gamificacion.AsistenciaReglas
 import com.softcg.myapplication.ui.Inicio.Fragments.Asignaturas.Models.Asignatura
 
 data class AsignaturaConHora(
@@ -17,6 +18,10 @@ data class AsignaturaConHora(
     )
 
     companion object {
+        /** Las asignaturas antiguas guardaron la hora como "14: 0"; en pantalla siempre va como 14:00. */
+        fun horaLegible(hora: String): String =
+            AsistenciaReglas.parsearHora(hora)?.let { String.format("%02d:%02d", it.hour, it.minute) } ?: hora.trim()
+
         private fun generateEndTime(startTime: String, duracion: Int): String {
             try {
                 val cleanTime = startTime.trim()
@@ -38,22 +43,22 @@ data class AsignaturaConHora(
             }
         }
 
-        // Colores pasteles predefinidos para las tarjetas
-        val COLORES_PASTELES = listOf(
-            "#FFE4E1", // Rosa pastel
-            "#E1F5FE", // Azul pastel
-            "#F3E5F5", // Púrpura pastel
-            "#E8F5E8", // Verde pastel
-            "#FFF3E0", // Naranja pastel
-            "#F1F8E9", // Verde lima pastel
-            "#FCE4EC", // Rosa magenta pastel
-            "#E3F2FD", // Azul cielo pastel
-            "#FFF8E1", // Amarillo pastel
-            "#F9FBE7"  // Verde claro pastel
+        // Identifican a cada asignatura; bastante saturados para verse como barra sobre fondo blanco
+        val COLORES_ASIGNATURA = listOf(
+            "#9C27B0",
+            "#2F80C2",
+            "#E07B39",
+            "#1E9E8F",
+            "#D9487D",
+            "#5E4BB8",
+            "#4C9F50",
+            "#D49B00",
+            "#7F8FA6",
+            "#B4764A"
         )
 
-        fun getColorPastel(index: Int): String {
-            return COLORES_PASTELES[index % COLORES_PASTELES.size]
+        fun getColorAsignatura(index: Int): String {
+            return COLORES_ASIGNATURA[index % COLORES_ASIGNATURA.size]
         }
     }
 }

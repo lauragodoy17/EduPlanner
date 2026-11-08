@@ -10,114 +10,96 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="24dp">
+        android:paddingHorizontal="24dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="16dp">
 
-        <!-- Header -->
+        <View style="@style/Edu.AsaHoja"/>
+
         <TextView
+            style="@style/Edu.Texto.TituloHoja"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="¿Asististe a esta clase?"
-            android:textAlignment="center"
-            android:textColor="#1A1A1A"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="20dp"/>
+            android:layout_marginBottom="16dp"/>
 
-        <!-- Datos de la clase -->
         <androidx.cardview.widget.CardView
+            style="@style/Edu.Tarjeta.Plana"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="0dp"
-            app:cardBackgroundColor="@color/purple_surface">
+            android:layout_marginTop="0dp"
+            android:layout_marginBottom="14dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:padding="16dp">
+                android:orientation="vertical"
+                android:padding="14dp">
 
-                <View
-                    android:layout_width="4dp"
-                    android:layout_height="match_parent"
-                    android:background="@color/purple_accent"
-                    android:layout_marginEnd="12dp"/>
+                <TextView
+                    android:id="@+id/asistenciaAsignatura"
+                    style="@style/Edu.Texto.TituloTarjeta"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="17sp"
+                    android:text="Asignatura"
+                    android:layout_marginBottom="6dp"/>
 
                 <LinearLayout
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="4dp">
+
+                    <ImageView
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:src="@drawable/baseline_calendar_month_24"
+                        app:tint="@color/purple_accent"
+                        android:layout_marginEnd="6dp"
+                        android:importantForAccessibility="no"/>
 
                     <TextView
-                        android:id="@+id/asistenciaAsignatura"
-                        android:layout_width="match_parent"
+                        android:id="@+id/asistenciaFecha"
+                        style="@style/Edu.Texto.Cuerpo"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Asignatura"
-                        android:textColor="#333333"
-                        android:textSize="18sp"
-                        android:textStyle="bold"
-                        android:layout_marginBottom="6dp"/>
+                        android:text="Fecha"/>
+                </LinearLayout>
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:src="@drawable/ic_clock"
+                        app:tint="@color/purple_accent"
+                        android:layout_marginEnd="6dp"
+                        android:importantForAccessibility="no"/>
+
+                    <TextView
+                        android:id="@+id/asistenciaHorario"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:layout_marginBottom="4dp">
-
-                        <ImageView
-                            android:layout_width="16dp"
-                            android:layout_height="16dp"
-                            android:src="@drawable/baseline_calendar_month_24"
-                            app:tint="@color/purple_accent"
-                            android:layout_marginEnd="6dp"
-                            android:importantForAccessibility="no"/>
-
-                        <TextView
-                            android:id="@+id/asistenciaFecha"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Fecha"
-                            android:textColor="#666666"
-                            android:textSize="14sp"/>
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical">
-
-                        <ImageView
-                            android:layout_width="16dp"
-                            android:layout_height="16dp"
-                            android:src="@drawable/ic_clock"
-                            app:tint="@color/purple_accent"
-                            android:layout_marginEnd="6dp"
-                            android:importantForAccessibility="no"/>
-
-                        <TextView
-                            android:id="@+id/asistenciaHorario"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="14:00 – 16:00"
-                            android:textColor="@color/purple_accent"
-                            android:textSize="14sp"
-                            android:textStyle="bold"/>
-                    </LinearLayout>
+                        android:text="14:00 – 16:00"
+                        android:textColor="@color/purple_accent"
+                        android:textSize="14sp"
+                        android:textStyle="bold"/>
                 </LinearLayout>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-        <!-- Recompensa -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center"
-            android:layout_marginBottom="8dp">
+            android:layout_marginBottom="4dp">
 
             <ImageView
                 android:layout_width="22dp"
@@ -128,62 +110,42 @@
 
             <TextView
                 android:id="@+id/asistenciaRecompensa"
+                style="@style/Edu.Texto.TituloTarjeta"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="+10 EduCoins si asististe"
-                android:textColor="#333333"
-                android:textSize="15sp"
-                android:textStyle="bold"/>
+                android:text="+10 EduCoins si asististe"/>
         </LinearLayout>
 
-        <!-- Plazo -->
         <TextView
             android:id="@+id/asistenciaPlazo"
+            style="@style/Edu.Texto.Pie"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Puedes responder hasta la medianoche (12:00 a. m.)"
             android:textAlignment="center"
-            android:textColor="#666666"
-            android:textSize="13sp"
-            android:layout_marginBottom="20dp"/>
+            android:layout_marginBottom="18dp"/>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/botonAsisti"
+            style="@style/Edu.Boton"
             android:layout_width="match_parent"
-            android:layout_height="58dp"
+            android:layout_height="@dimen/alto_boton"
             android:text="Sí, asistí"
-            android:textColor="@color/white"
-            android:textSize="17sp"
-            android:textStyle="bold"
-            android:letterSpacing="0.02"
-            app:backgroundTint="@color/purple_accent"
-            app:cornerRadius="16dp"
-            app:elevation="0dp"
-            android:layout_marginBottom="10dp"/>
+            android:layout_marginBottom="8dp"/>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/botonNoAsisti"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            style="@style/Edu.BotonContorno"
             android:layout_width="match_parent"
-            android:layout_height="58dp"
+            android:layout_height="@dimen/alto_boton"
             android:text="No asistí"
-            android:textColor="@color/purple_accent"
-            android:textSize="17sp"
-            android:textStyle="bold"
-            app:strokeColor="@color/purple_accent"
-            app:strokeWidth="2dp"
-            app:cornerRadius="16dp"
             android:layout_marginBottom="4dp"/>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/botonMasTarde"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
+            style="@style/Edu.BotonTexto"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Responder más tarde"
-            android:textColor="#666666"
-            android:textAllCaps="false"/>
-
+            android:layout_height="48dp"
+            android:text="Responder más tarde"/>
     </LinearLayout>
-
 </ScrollView>

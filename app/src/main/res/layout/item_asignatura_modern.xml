@@ -2,36 +2,52 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/main_card"
+    style="@style/Edu.Tarjeta"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    app:cardCornerRadius="12dp"
-    app:cardElevation="4dp"
-    android:layout_marginBottom="12dp"
-    android:layout_marginHorizontal="4dp"
-    app:cardBackgroundColor="#FFFFFF">
+    android:layout_height="wrap_content">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="12dp">
+        android:paddingVertical="14dp"
+        android:paddingStart="14dp"
+        android:paddingEnd="4dp">
 
-        <!-- Left colored bar for visual appeal -->
+        <!-- Color que identifica la asignatura -->
         <View
             android:id="@+id/card_color_bar"
             android:layout_width="4dp"
             android:layout_height="match_parent"
-            android:background="#9C27B0"
+            android:background="@drawable/bg_barra_color"
+            android:backgroundTint="@color/purple_accent"
             android:layout_marginEnd="12dp" />
 
-        <!-- Content -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:orientation="vertical">
 
-            <!-- Header Row with Name and Badge -->
+            <TextView
+                android:id="@+id/text_titulo"
+                style="@style/Edu.Texto.TituloTarjeta"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Nombre de Asignatura"
+                android:maxLines="1"
+                android:ellipsize="end" />
+
+            <TextView
+                android:id="@+id/textodesc"
+                style="@style/Edu.Texto.Cuerpo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Profesor"
+                android:layout_marginBottom="10dp"
+                android:maxLines="1"
+                android:ellipsize="end" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -39,164 +55,70 @@
                 android:gravity="center_vertical"
                 android:layout_marginBottom="6dp">
 
-                <!-- Subject Name -->
-                <TextView
-                    android:id="@+id/text_titulo"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Nombre de Asignatura"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:textColor="#333333"
-                    android:maxLines="1"
-                    android:ellipsize="end" />
-
-                <!-- Type Badge -->
-                <TextView
-                    android:id="@+id/item_type_badge"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="ASIGNATURA"
-                    android:textSize="9sp"
-                    android:textColor="#FFFFFF"
-                    android:background="@drawable/type_badge_bg"
-                    android:backgroundTint="#9C27B0"
-                    android:paddingHorizontal="6dp"
-                    android:paddingVertical="3dp"
-                    android:textStyle="bold"
-                    android:layout_marginStart="6dp" />
-
-            </LinearLayout>
-
-            <!-- Teacher Name -->
-            <TextView
-                android:id="@+id/textodesc"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Profesor"
-                android:textSize="13sp"
-                android:textColor="#666666"
-                android:layout_marginBottom="10dp"
-                android:maxLines="1"
-                android:ellipsize="end" />
-
-            <!-- Schedule Info Row -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_marginBottom="8dp">
-
-                <!-- Clock Icon -->
                 <ImageView
-                    android:layout_width="14dp"
-                    android:layout_height="14dp"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
                     android:src="@drawable/ic_clock"
-                    app:tint="#9C27B0"
-                    android:contentDescription="Hora" />
+                    app:tint="@color/purple_accent"
+                    android:importantForAccessibility="no" />
 
-                <!-- Time -->
                 <TextView
                     android:id="@+id/text_hora"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="08:30"
-                    android:textSize="12sp"
-                    android:textColor="#9C27B0"
+                    android:textSize="13sp"
+                    android:textColor="@color/purple_accent"
                     android:textStyle="bold"
-                    android:layout_marginStart="4dp"
-                    android:layout_marginEnd="12dp" />
+                    android:layout_marginStart="6dp"
+                    android:layout_marginEnd="10dp" />
 
-                <!-- Duration Badge -->
                 <TextView
                     android:id="@+id/text_duracion"
+                    style="@style/Edu.Texto.Pie"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="2h"
-                    android:textSize="11sp"
-                    android:textColor="#999999"
                     android:background="@drawable/duration_badge_bg"
                     android:paddingHorizontal="8dp"
                     android:paddingVertical="2dp" />
-
             </LinearLayout>
 
-            <!-- Days Row -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:gravity="center_vertical">
 
-                <!-- Calendar Icon -->
                 <ImageView
                     android:id="@+id/circleImage"
-                    android:layout_width="14dp"
-                    android:layout_height="14dp"
-                    android:src="@drawable/baseline_asignatura_24"
-                    app:tint="#666666"
-                    android:contentDescription="Días"
-                    android:layout_marginEnd="4dp" />
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:src="@drawable/baseline_calendar_month_24"
+                    app:tint="@color/text_secondary"
+                    android:importantForAccessibility="no"
+                    android:layout_marginEnd="6dp" />
 
-                <!-- Days Text -->
                 <TextView
                     android:id="@+id/text_dias"
+                    style="@style/Edu.Texto.Pie"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Lun, Mar, Mié"
-                    android:textSize="11sp"
-                    android:textColor="#666666"
                     android:maxLines="1"
                     android:ellipsize="end" />
-
-                <!-- Options Button -->
-                <ImageView
-                    android:id="@+id/Opciones"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:contentDescription="Opciones"
-                    android:src="@drawable/baseline_trespuntos_vert_24"
-                    app:tint="#666666"
-                    android:layout_marginStart="8dp" />
-
             </LinearLayout>
-
         </LinearLayout>
 
+        <ImageView
+            android:id="@+id/Opciones"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:padding="8dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Opciones"
+            android:src="@drawable/ic_more_vert"
+            app:tint="@color/text_secondary" />
     </LinearLayout>
-
-    <!-- Hidden compatibility elements -->
-    <TextView
-        android:id="@+id/tv_time"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:visibility="gone" />
-
-    <TextView
-        android:id="@+id/texto_asignatura"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:visibility="gone" />
-
-    <TextView
-        android:id="@+id/textofecha"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:visibility="gone" />
-
-    <View
-        android:id="@+id/priority_indicator"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:visibility="gone" />
-
-    <TextView
-        android:id="@+id/texto_subject_label"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:visibility="gone" />
-
 </androidx.cardview.widget.CardView>

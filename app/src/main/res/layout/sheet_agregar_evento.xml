@@ -10,299 +10,251 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="24dp">
+        android:paddingHorizontal="24dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="24dp">
 
-        <!-- Header -->
+        <View style="@style/Edu.AsaHoja"/>
+
         <TextView
+            style="@style/Edu.Texto.TituloHoja"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Agregar Evento"
-            android:textAlignment="center"
-            android:textColor="#1A1A1A"
-            android:textSize="26sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="24dp"/>
+            android:text="Agregar evento"
+            android:layout_marginBottom="20dp"/>
 
-        <!-- Nombre del Evento -->
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/NombreContainer"
+            style="@style/Edu.Campo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Nombre del evento"
-            android:layout_marginBottom="16dp"
-            app:boxBackgroundMode="outline"
-            app:boxStrokeColor="#9C27B0"
-            app:boxStrokeWidth="2dp"
-            app:boxCornerRadiusTopStart="16dp"
-            app:boxCornerRadiusTopEnd="16dp"
-            app:boxCornerRadiusBottomStart="16dp"
-            app:boxCornerRadiusBottomEnd="16dp"
-            app:hintTextColor="#9C27B0">
+            android:hint="Nombre del evento">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/NombreEditText"
+                style="@style/Edu.CampoEntrada"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="text"
-                android:textColor="#2C2C2C"
-                android:textSize="16sp"
-                android:padding="16dp"
                 android:maxLines="1"/>
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Fecha -->
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/FechaContainer"
+            style="@style/Edu.Campo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Fecha"
-            android:layout_marginBottom="16dp"
-            app:boxBackgroundMode="outline"
-            app:boxStrokeColor="#9C27B0"
-            app:boxStrokeWidth="2dp"
-            app:boxCornerRadiusTopStart="16dp"
-            app:boxCornerRadiusTopEnd="16dp"
-            app:boxCornerRadiusBottomStart="16dp"
-            app:boxCornerRadiusBottomEnd="16dp"
-            app:hintTextColor="#9C27B0"
             app:endIconMode="custom"
-            app:endIconDrawable="@drawable/baseline_calendar_month_24"
-            app:endIconTint="#9C27B0">
+            app:endIconDrawable="@drawable/baseline_calendar_month_24">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/FechaEditTextevent"
+                style="@style/Edu.CampoEntrada"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="none"
                 android:focusable="false"
-                android:clickable="true"
-                android:textColor="#2C2C2C"
-                android:textSize="16sp"
-                android:padding="16dp"/>
+                android:clickable="true"/>
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Hora Inicio y Fin -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginBottom="16dp">
+            android:baselineAligned="false">
 
             <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:hint="Hora inicio"
-                android:layout_marginEnd="8dp"
-                app:boxBackgroundMode="outline"
-                app:boxStrokeColor="#9C27B0"
-                app:boxStrokeWidth="2dp"
-                app:boxCornerRadiusTopStart="16dp"
-                app:boxCornerRadiusTopEnd="16dp"
-                app:boxCornerRadiusBottomStart="16dp"
-                app:boxCornerRadiusBottomEnd="16dp"
-                app:hintTextColor="#9C27B0"
-                app:endIconMode="custom"
-                app:endIconDrawable="@drawable/ic_clock"
-                app:endIconTint="#9C27B0">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/HoraInicioEditText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="none"
-                    android:focusable="false"
-                    android:clickable="true"
-                    android:textColor="#2C2C2C"
-                    android:textSize="16sp"
-                    android:padding="16dp"/>
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:hint="Hora fin"
-                android:layout_marginStart="8dp"
-                app:boxBackgroundMode="outline"
-                app:boxStrokeColor="#9C27B0"
-                app:boxStrokeWidth="2dp"
-                app:boxCornerRadiusTopStart="16dp"
-                app:boxCornerRadiusTopEnd="16dp"
-                app:boxCornerRadiusBottomStart="16dp"
-                app:boxCornerRadiusBottomEnd="16dp"
-                app:hintTextColor="#9C27B0"
-                app:endIconMode="custom"
-                app:endIconDrawable="@drawable/ic_clock"
-                app:endIconTint="#9C27B0">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/HoraFinEditText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="none"
-                    android:focusable="false"
-                    android:clickable="true"
-                    android:textColor="#2C2C2C"
-                    android:textSize="16sp"
-                    android:padding="16dp"/>
-            </com.google.android.material.textfield.TextInputLayout>
-
-        </LinearLayout>
-
-        <!-- Prioridad Section -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Prioridad"
-            android:textColor="#5A5A5A"
-            android:textSize="15sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="12dp"/>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center"
-            android:layout_marginBottom="16dp">
-
-            <!-- Prioridad Alta (Rojo) -->
-            <androidx.cardview.widget.CardView
-                android:id="@+id/prioridadAlta"
+                style="@style/Edu.Campo"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_marginEnd="6dp"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="0dp"
-                android:clickable="true"
-                android:focusable="true"
-                app:cardBackgroundColor="#FFF5F5">
+                android:hint="Hora inicio"
+                app:endIconMode="custom"
+                app:endIconDrawable="@drawable/ic_clock">
 
-                <LinearLayout
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/HoraInicioEditText"
+                    style="@style/Edu.CampoEntrada"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="16dp"
-                    android:gravity="center">
+                    android:inputType="none"
+                    android:focusable="false"
+                    android:clickable="true"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Edu.Campo"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="6dp"
+                android:hint="Hora fin"
+                app:endIconMode="custom"
+                app:endIconDrawable="@drawable/ic_clock">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/HoraFinEditText"
+                    style="@style/Edu.CampoEntrada"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="none"
+                    android:focusable="false"
+                    android:clickable="true"/>
+            </com.google.android.material.textfield.TextInputLayout>
+        </LinearLayout>
+
+        <TextView
+            style="@style/Edu.Texto.Rotulo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Prioridad"
+            android:layout_marginBottom="8dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="14dp">
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/prioridadAlta"
+                android:layout_width="0dp"
+                android:layout_height="52dp"
+                android:layout_weight="1"
+                android:layout_marginEnd="4dp"
+                app:cardCornerRadius="@dimen/radio_tarjeta"
+                app:cardElevation="0dp"
+                app:strokeWidth="1dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:contentDescription="Prioridad alta">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
 
                     <View
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
+                        android:layout_width="10dp"
+                        android:layout_height="10dp"
                         android:background="@drawable/circle_shape"
-                        android:backgroundTint="#FF6B6B"
-                        android:layout_marginBottom="8dp"/>
+                        android:backgroundTint="@color/estado_error"
+                        android:layout_marginEnd="6dp"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Alta"
-                        android:textColor="#FF6B6B"
+                        android:textColor="@color/text_primary"
                         android:textStyle="bold"
-                        android:textSize="13sp"/>
+                        android:textSize="14sp"/>
                 </LinearLayout>
-            </androidx.cardview.widget.CardView>
+            </com.google.android.material.card.MaterialCardView>
 
-            <!-- Prioridad Media (Amarillo) -->
-            <androidx.cardview.widget.CardView
+            <com.google.android.material.card.MaterialCardView
                 android:id="@+id/prioridadMedia"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="52dp"
                 android:layout_weight="1"
-                android:layout_marginHorizontal="6dp"
-                app:cardCornerRadius="16dp"
+                android:layout_marginHorizontal="4dp"
+                app:cardCornerRadius="@dimen/radio_tarjeta"
                 app:cardElevation="0dp"
+                app:strokeWidth="1dp"
                 android:clickable="true"
                 android:focusable="true"
-                app:cardBackgroundColor="#FFFEF5">
+                android:contentDescription="Prioridad media">
 
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="16dp"
-                    android:gravity="center">
+                    android:layout_gravity="center"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
 
                     <View
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
+                        android:layout_width="10dp"
+                        android:layout_height="10dp"
                         android:background="@drawable/circle_shape"
-                        android:backgroundTint="#FFD93D"
-                        android:layout_marginBottom="8dp"/>
+                        android:backgroundTint="@color/estado_aviso"
+                        android:layout_marginEnd="6dp"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Media"
-                        android:textColor="#FF9800"
+                        android:textColor="@color/text_primary"
                         android:textStyle="bold"
-                        android:textSize="13sp"/>
+                        android:textSize="14sp"/>
                 </LinearLayout>
-            </androidx.cardview.widget.CardView>
+            </com.google.android.material.card.MaterialCardView>
 
-            <!-- Prioridad Baja (Azul) -->
-            <androidx.cardview.widget.CardView
+            <com.google.android.material.card.MaterialCardView
                 android:id="@+id/prioridadBaja"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="52dp"
                 android:layout_weight="1"
-                android:layout_marginStart="6dp"
-                app:cardCornerRadius="16dp"
+                android:layout_marginStart="4dp"
+                app:cardCornerRadius="@dimen/radio_tarjeta"
                 app:cardElevation="0dp"
+                app:strokeWidth="1dp"
                 android:clickable="true"
                 android:focusable="true"
-                app:cardBackgroundColor="#F0F8FF">
+                android:contentDescription="Prioridad baja">
 
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="16dp"
-                    android:gravity="center">
+                    android:layout_gravity="center"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
 
                     <View
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
+                        android:layout_width="10dp"
+                        android:layout_height="10dp"
                         android:background="@drawable/circle_shape"
-                        android:backgroundTint="#6BCF7F"
-                        android:layout_marginBottom="8dp"/>
+                        android:backgroundTint="@color/estado_exito"
+                        android:layout_marginEnd="6dp"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Baja"
-                        android:textColor="#4CAF50"
+                        android:textColor="@color/text_primary"
                         android:textStyle="bold"
-                        android:textSize="13sp"/>
+                        android:textSize="14sp"/>
                 </LinearLayout>
-            </androidx.cardview.widget.CardView>
-
+            </com.google.android.material.card.MaterialCardView>
         </LinearLayout>
 
-        <!-- Selector de Imagen -->
         <androidx.cardview.widget.CardView
             android:id="@+id/imageSelectorCard"
+            style="@style/Edu.Tarjeta.Plana"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="0dp"
+            android:layout_marginTop="0dp"
+            android:layout_marginBottom="14dp"
             android:clickable="true"
             android:focusable="true"
-            app:cardBackgroundColor="#F8F8F8">
+            android:foreground="?attr/selectableItemBackground">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:padding="18dp"
+                android:padding="14dp"
                 android:gravity="center_vertical">
 
                 <ImageView
-                    android:layout_width="44dp"
-                    android:layout_height="44dp"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
                     android:src="@drawable/ic_image"
-                    app:tint="#9C27B0"
-                    android:layout_marginEnd="16dp"/>
+                    app:tint="@color/purple_accent"
+                    android:layout_marginEnd="12dp"
+                    android:importantForAccessibility="no"/>
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -311,93 +263,70 @@
                     android:orientation="vertical">
 
                     <TextView
+                        style="@style/Edu.Texto.TituloTarjeta"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Agregar imagen"
-                        android:textColor="#2C2C2C"
-                        android:textSize="16sp"
-                        android:textStyle="bold"/>
+                        android:text="Agregar imagen"/>
 
                     <TextView
                         android:id="@+id/imageNameText"
+                        style="@style/Edu.Texto.Pie"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Ninguna imagen seleccionada"
-                        android:textColor="#9E9E9E"
-                        android:textSize="13sp"
-                        android:layout_marginTop="4dp"/>
+                        android:maxLines="1"
+                        android:ellipsize="middle"
+                        android:text="Ninguna imagen seleccionada"/>
                 </LinearLayout>
 
                 <ImageView
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:src="@drawable/ic_chevron_right"
-                    app:tint="#BDBDBD"/>
-
+                    app:tint="@color/purple_accent"
+                    android:importantForAccessibility="no"/>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-        <!-- Preview de Imagen -->
         <androidx.cardview.widget.CardView
+            android:id="@+id/imagePreviewCard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            app:cardCornerRadius="16dp"
+            android:layout_marginBottom="14dp"
+            app:cardCornerRadius="@dimen/radio_tarjeta"
             app:cardElevation="0dp"
-            android:visibility="gone"
-            android:id="@+id/imagePreviewCard">
+            android:visibility="gone">
 
             <ImageView
                 android:id="@+id/imagePreview"
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:scaleType="centerCrop"/>
+                android:layout_height="180dp"
+                android:scaleType="centerCrop"
+                android:contentDescription="Imagen del evento"/>
         </androidx.cardview.widget.CardView>
 
-        <!-- Descripción -->
         <com.google.android.material.textfield.TextInputLayout
+            style="@style/Edu.Campo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Descripción (opcional)"
-            android:layout_marginBottom="20dp"
-            app:boxBackgroundMode="outline"
-            app:boxStrokeColor="#9C27B0"
-            app:boxStrokeWidth="2dp"
-            app:boxCornerRadiusTopStart="16dp"
-            app:boxCornerRadiusTopEnd="16dp"
-            app:boxCornerRadiusBottomStart="16dp"
-            app:boxCornerRadiusBottomEnd="16dp"
-            app:hintTextColor="#9C27B0"
             app:counterEnabled="true"
             app:counterMaxLength="200">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/DescripcionEditTextevent"
+                style="@style/Edu.CampoEntrada"
                 android:layout_width="match_parent"
-                android:layout_height="140dp"
+                android:layout_height="120dp"
                 android:inputType="textMultiLine"
                 android:gravity="top|start"
-                android:textColor="#2C2C2C"
-                android:textSize="16sp"
-                android:padding="16dp"
                 android:maxLength="200"/>
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Botón Agregar -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/botonAgregar"
+            style="@style/Edu.Boton"
             android:layout_width="match_parent"
-            android:layout_height="58dp"
-            android:text="Agregar Evento"
-            android:textColor="@color/white"
-            android:textSize="17sp"
-            android:textStyle="bold"
-            android:letterSpacing="0.02"
-            app:backgroundTint="#9C27B0"
-            app:cornerRadius="16dp"
-            app:elevation="0dp"
-            android:layout_marginBottom="8dp"/>
-
+            android:layout_height="@dimen/alto_boton"
+            android:text="Agregar evento"/>
     </LinearLayout>
-
 </ScrollView>

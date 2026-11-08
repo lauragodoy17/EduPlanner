@@ -10,7 +10,7 @@
     <fragment
         android:id="@+id/id_home_fragment"
         android:name="com.softcg.myapplication.ui.Inicio.Fragments.Home.HomeFragment"
-        android:label="Home"
+        android:label="EduPlanner"
         tools:layout="@layout/fragment_home" />
     <fragment
         android:id="@+id/id_diary_fragment"

@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -180,7 +181,11 @@ class AgendaCalendarWidget @JvmOverloads constructor(
                 val dayInfo = allDays[dayIndex]
                 val dayView = createDayView(dayInfo)
                 dayViews.add(dayView)
-                weekLayout.addView(dayView)
+                // La celda reparte el ancho; el día conserva su tamaño para que el círculo no se deforme
+                val celda = FrameLayout(context)
+                celda.layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
+                celda.addView(dayView)
+                weekLayout.addView(celda)
             }
 
             calendarGrid.addView(weekLayout)
@@ -203,14 +208,15 @@ class AgendaCalendarWidget @JvmOverloads constructor(
 
     private fun createDayView(dayInfo: DayInfo): TextView {
         val dayView = TextView(context)
-        val layoutParams = LinearLayout.LayoutParams(0, 120)
-        layoutParams.weight = 1f
-        layoutParams.setMargins(4, 4, 4, 4)
+        val lado = (40 * resources.displayMetrics.density).toInt()
+        val layoutParams = FrameLayout.LayoutParams(lado, lado, android.view.Gravity.CENTER)
+        layoutParams.topMargin = (2 * resources.displayMetrics.density).toInt()
+        layoutParams.bottomMargin = layoutParams.topMargin
         dayView.layoutParams = layoutParams
 
         dayView.text = dayInfo.dayOfMonth.toString()
         dayView.gravity = android.view.Gravity.CENTER
-        dayView.textSize = 16f
+        dayView.textSize = 15f
         dayView.background = ContextCompat.getDrawable(context, R.drawable.agenda_day_selector)
         dayView.tag = dayInfo // Store day info in tag
 

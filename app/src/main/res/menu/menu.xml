@@ -4,48 +4,47 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view"
     >
-    <item
-        android:id="@+id/id_home_fragment"
-        android:icon="@drawable/baseline_home_24"
-        android:checked="true"
-        android:checkable="true"
-        android:title="Home"
-        />
-    <item
-        android:id="@+id/id_diary_fragment"
-        android:icon="@drawable/baseline_agenda_add_24"
-        android:checkable="true"
-        android:title="Agenda"/>
-    <item
-        android:id="@+id/id_ratings_fragment"
-        android:icon="@drawable/baseline_calificaciones_24"
-        android:checkable="true"
-        android:title="Calificaciones"/>
-    <item
-        android:id="@+id/id_subjects_fragment"
-        android:icon="@drawable/baseline_asignatura_24"
-        android:checkable="true"
-        android:title="Asignaturas"/>
-    <item
-        android:id="@+id/id_schedule_fragment"
-        android:icon="@drawable/baseline_calendar_month_24"
-        android:checkable="true"
-        android:title="Horario"/>
+    <group android:id="@+id/menu_principal" android:checkableBehavior="single">
+        <item
+            android:id="@+id/id_home_fragment"
+            android:icon="@drawable/ic_home_modern"
+            android:title="Inicio"
+            />
+        <item
+            android:id="@+id/id_diary_fragment"
+            android:icon="@drawable/ic_calendar_modern"
+            android:title="Agenda"/>
+        <item
+            android:id="@+id/id_schedule_fragment"
+            android:icon="@drawable/ic_clock"
+            android:title="Horario"/>
+        <item
+            android:id="@+id/id_ratings_fragment"
+            android:icon="@drawable/ic_gami_nota"
+            android:title="Calificaciones"/>
+        <item
+            android:id="@+id/id_subjects_fragment"
+            android:icon="@drawable/baseline_asignatura_24"
+            android:title="Asignaturas"/>
+        <item
+            android:id="@+id/id_profile_fragment"
+            android:icon="@drawable/ic_profile_modern"
+            android:title="Perfil y progreso"/>
+    </group>
 
     <group
-        android:id="@+id/adasda"
+        android:id="@+id/menu_cuenta"
+        android:checkableBehavior="single"
         >
 
         <item
             android:id="@+id/id_help_fragment"
             android:icon="@drawable/baseline_question_mark_24"
-            android:checkable="true"
             android:title="Ayuda y opiniones"/>
 
         <item
             android:id="@+id/signout"
             android:icon="@drawable/baseline_exit_24"
-            android:checkable="true"
             android:title="Cerrar sesión"
             />
 

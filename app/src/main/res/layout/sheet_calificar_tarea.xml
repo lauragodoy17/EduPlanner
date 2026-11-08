@@ -10,101 +10,70 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="24dp">
+        android:paddingHorizontal="24dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="24dp">
 
-        <!-- Header -->
+        <View style="@style/Edu.AsaHoja"/>
+
         <TextView
+            style="@style/Edu.Texto.TituloHoja"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Calificar Tarea"
-            android:textAlignment="center"
-            android:textColor="#1A1A1A"
-            android:textSize="26sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="20dp"/>
+            android:text="Calificar tarea"
+            android:layout_marginBottom="16dp"/>
 
-        <!-- Tarea -->
         <androidx.cardview.widget.CardView
+            style="@style/Edu.Tarjeta.Plana"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="0dp"
-            app:cardBackgroundColor="@color/purple_surface">
+            android:layout_marginTop="0dp"
+            android:layout_marginBottom="16dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:padding="16dp">
+                android:orientation="vertical"
+                android:padding="14dp">
 
-                <View
-                    android:layout_width="4dp"
-                    android:layout_height="match_parent"
-                    android:background="@color/purple_accent"
-                    android:layout_marginEnd="12dp"/>
-
-                <LinearLayout
-                    android:layout_width="0dp"
+                <TextView
+                    android:id="@+id/calificarTitulo"
+                    style="@style/Edu.Texto.TituloTarjeta"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
+                    android:text="Tarea"/>
 
-                    <TextView
-                        android:id="@+id/calificarTitulo"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Tarea"
-                        android:textColor="#333333"
-                        android:textSize="18sp"
-                        android:textStyle="bold"
-                        android:layout_marginBottom="4dp"/>
-
-                    <TextView
-                        android:id="@+id/calificarAsignatura"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Asignatura"
-                        android:textColor="#666666"
-                        android:textSize="14sp"/>
-                </LinearLayout>
+                <TextView
+                    android:id="@+id/calificarAsignatura"
+                    style="@style/Edu.Texto.Cuerpo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Asignatura"/>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-        <!-- Calificación -->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/calificarValorContainer"
+            style="@style/Edu.Campo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Calificación obtenida"
-            android:layout_marginBottom="12dp"
-            app:boxBackgroundMode="outline"
-            app:boxStrokeColor="@color/purple_accent"
-            app:boxStrokeWidth="2dp"
-            app:boxCornerRadiusTopStart="16dp"
-            app:boxCornerRadiusTopEnd="16dp"
-            app:boxCornerRadiusBottomStart="16dp"
-            app:boxCornerRadiusBottomEnd="16dp"
-            app:hintTextColor="@color/purple_accent">
+            android:hint="Calificación obtenida">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/calificarValor"
+                style="@style/Edu.CampoEntrada"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="numberDecimal"
-                android:textColor="#2C2C2C"
-                android:textSize="16sp"
-                android:padding="16dp"
                 android:maxLines="1"/>
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Recompensa -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:layout_marginBottom="20dp">
+            android:layout_marginBottom="18dp">
 
             <ImageView
                 android:layout_width="20dp"
@@ -115,28 +84,19 @@
 
             <TextView
                 android:id="@+id/calificarRecompensa"
+                style="@style/Edu.Texto.Pie"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Al registrar la calificación la tarea queda completada (+5 EduCoins)"
-                android:textColor="#666666"
-                android:textSize="13sp"/>
+                android:textSize="13sp"
+                android:text="Al registrar la calificación la tarea queda completada (+5 EduCoins)"/>
         </LinearLayout>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/botonCalificar"
+            style="@style/Edu.Boton"
             android:layout_width="match_parent"
-            android:layout_height="58dp"
-            android:text="Guardar calificación"
-            android:textColor="@color/white"
-            android:textSize="17sp"
-            android:textStyle="bold"
-            android:letterSpacing="0.02"
-            app:backgroundTint="@color/purple_accent"
-            app:cornerRadius="16dp"
-            app:elevation="0dp"
-            android:layout_marginBottom="8dp"/>
-
+            android:layout_height="@dimen/alto_boton"
+            android:text="Guardar calificación"/>
     </LinearLayout>
-
 </ScrollView>

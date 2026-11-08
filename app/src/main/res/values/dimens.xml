@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="margen_pantalla">16dp</dimen>
+    <dimen name="alto_boton">56dp</dimen>
+    <dimen name="radio_tarjeta">16dp</dimen>
+    <dimen name="ancho_max_hoja">560dp</dimen>
+</resources>

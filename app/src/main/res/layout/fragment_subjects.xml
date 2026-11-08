@@ -1,119 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/white"
     tools:context=".ui.Inicio.Fragments.Asignaturas.AsignaturasFragment">
 
-    <!-- ScrollView para el RecyclerView -->
-    <ScrollView
+    <androidx.core.widget.NestedScrollView
         android:id="@+id/scrollContent"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginBottom="80dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        android:layout_height="match_parent"
+        android:fillViewport="true">
 
         <LinearLayout
             android:id="@+id/container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="20dp"
-            android:layout_marginTop="15dp"
-            android:layout_marginBottom="15dp"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingHorizontal="@dimen/margen_pantalla"
+            android:paddingTop="16dp"
+            android:paddingBottom="88dp">
+
+            <!-- La acción va arriba para que el botón flotante no la tape -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="8dp">
+
+                <TextView
+                    android:id="@+id/asignaturasResumen"
+                    style="@style/Edu.Texto.Seccion"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Tus asignaturas"
+                    android:accessibilityHeading="true"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/botonAgregarAsignatura"
+                    style="@style/Edu.Boton.Tonal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
+                    android:text="Agregar"
+                    android:textSize="14sp"
+                    app:icon="@drawable/baseline_cruz_24"
+                    app:iconSize="18dp"/>
+            </LinearLayout>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerasignaturas"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:clipToPadding="false"
-                android:paddingBottom="16dp"/>
-        </LinearLayout>
-    </ScrollView>
+                android:nestedScrollingEnabled="false"/>
 
-    <!-- Estado Vacío Moderno -->
-    <LinearLayout
-        android:id="@+id/textoAsignaturas"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:orientation="vertical"
-        android:gravity="center"
-        android:padding="32dp"
-        android:visibility="visible"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/botonAgregarAsignatura"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-
-        <!-- Ícono decorativo -->
-        <androidx.cardview.widget.CardView
-            android:layout_width="120dp"
-            android:layout_height="120dp"
-            app:cardCornerRadius="60dp"
-            app:cardElevation="0dp"
-            app:cardBackgroundColor="#F3E5F5"
-            android:layout_marginBottom="24dp">
-
-            <TextView
+            <!-- Sin asignaturas -->
+            <LinearLayout
+                android:id="@+id/textoAsignaturas"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="📚"
-                android:textSize="64sp"
-                android:gravity="center"/>
-        </androidx.cardview.widget.CardView>
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:paddingHorizontal="16dp"
+                android:paddingTop="64dp"
+                android:visibility="visible">
 
-        <!-- Título -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="No hay asignaturas"
-            android:textColor="#333333"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="8dp"/>
+                <ImageView style="@style/Edu.VacioIcono" android:src="@drawable/baseline_asignatura_24"/>
 
-        <!-- Subtítulo -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Agrega tu primera asignatura\npara comenzar"
-            android:textColor="#666666"
-            android:textSize="16sp"
-            android:textAlignment="center"
-            android:gravity="center"
-            android:lineSpacingExtra="4dp"/>
-    </LinearLayout>
+                <TextView
+                    style="@style/Edu.VacioTitulo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Aún no hay asignaturas"/>
 
-    <!-- Botón Moderno Flotante -->
-    <com.google.android.material.card.MaterialCardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        app:cardElevation="8dp"
-        app:cardCornerRadius="16dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/botonAgregarAsignatura"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:text="+ Agregar Asignatura"
-            android:textColor="@color/white"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            app:icon="@android:drawable/ic_input_add"
-            app:iconTint="@color/white"
-            app:iconGravity="textStart"
-            app:backgroundTint="@color/purple_primary"
-            app:cornerRadius="16dp"
-            android:elevation="0dp"/>
-    </com.google.android.material.card.MaterialCardView>
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+                <TextView
+                    style="@style/Edu.VacioDetalle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Agrega la primera para armar tu horario"/>
+            </LinearLayout>
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</FrameLayout>

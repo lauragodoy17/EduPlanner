@@ -9,7 +9,6 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.FrameLayout
 import android.widget.ImageView
-import android.widget.ScrollView
 import android.graphics.Color
 import android.util.Log
 import androidx.core.content.ContextCompat
@@ -36,6 +35,12 @@ import java.util.*
 @AndroidEntryPoint
 class ScheduleFragment : Fragment(), OnItemClickListener {
 
+    private companion object {
+        const val ALTO_HORA_DP = 72
+        const val ALTO_DIVISOR_PX = 4
+        const val ALTO_LINEA_PX = 2
+    }
+
     private val horarioViewModel: HorarioViewModel by viewModels()
     private lateinit var calendarWidget: AgendaCalendarWidget
     private lateinit var adapter: HorarioAdapter
@@ -51,7 +56,6 @@ class ScheduleFragment : Fragment(), OnItemClickListener {
         // Timeline will be initialized when asignaturas are loaded
         initCalendarWidget(view)
         initRecyclerAsignatura(view)
-        synchronizeScrollViews(view)
         return view
     }
 
@@ -124,10 +128,9 @@ class ScheduleFragment : Fragment(), OnItemClickListener {
                     Log.d("ScheduleFragment", "  → ${asig.nombre}: ${asig.hora} (${asig.duracion}h)")
                 }
                 try {
-                    // Initialize timeline based on asignaturas
-                    initDynamicTimeline(view, asignaturas)
-                    // Then display asignaturas
+                    construirLineaDeTiempo(view)
                     displayAsignaturasOnTimeline(view, asignaturas)
+                    llevarALaPrimeraClase(view, asignaturas)
                     emptyMessageTextView?.visibility = View.GONE
                     Log.d("ScheduleFragment", "Empty message hidden - showing ${asignaturas.size} cards")
                 } catch (e: Exception) {
@@ -137,8 +140,9 @@ class ScheduleFragment : Fragment(), OnItemClickListener {
             } else {
                 // No hay asignaturas para este día - show default timeline
                 Log.d("ScheduleFragment", "No asignaturas for selected day - showing empty message")
-                initDefaultTimeline(view)
+                construirLineaDeTiempo(view)
                 displayAsignaturasOnTimeline(view, emptyList())
+                llevarALaPrimeraClase(view, emptyList())
                 emptyMessageTextView?.visibility = View.VISIBLE
 
                 val currentDate = horarioViewModel._currentDate.value
@@ -230,32 +234,32 @@ class ScheduleFragment : Fragment(), OnItemClickListener {
 
             textNombre.text = asignaturaConHora.asignatura.nombre
             textTutor?.text = asignaturaConHora.asignatura.tutor
-            textHoraRango?.text = "${asignaturaConHora.horaInicio} - ${asignaturaConHora.horaFin}"
+            textHoraRango?.text = "${AsignaturaConHora.horaLegible(asignaturaConHora.horaInicio)} - ${asignaturaConHora.horaFin}"
             textDuracion?.text = "${asignaturaConHora.asignatura.duracion}h"
 
-            // Apply color to left bar
-            val colorPastel = AsignaturaConHora.getColorPastel(asignaturaConHora.colorIndex)
-            colorBar?.setBackgroundColor(Color.parseColor(colorPastel))
+            // Color que identifica la asignatura
+            colorBar?.backgroundTintList = android.content.res.ColorStateList.valueOf(
+                Color.parseColor(AsignaturaConHora.getColorAsignatura(asignaturaConHora.colorIndex))
+            )
 
             // Calculate position based on start time
             val topMargin = calculateTopMargin(asignaturaConHora.horaInicio)
 
-            // Fixed card height for all cards (modern, uniform design)
-            val density = resources.displayMetrics.density
-            val fixedCardHeight = (100 * density).toInt() // 100dp fixed height
+            // El alto refleja la duración, para que dos clases seguidas no se monten
+            val fixedCardHeight = calculateCardHeight(asignaturaConHora.asignatura.duracion)
 
             val layoutParams = FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.MATCH_PARENT,
-                fixedCardHeight // All cards have same height
+                fixedCardHeight
             )
             layoutParams.topMargin = topMargin
-            layoutParams.setMargins(0, topMargin, 0, 12) // Spacing between cards
+            layoutParams.setMargins(0, topMargin, 0, 0)
 
             Log.d("ScheduleFragment", "    → Card for ${asignaturaConHora.asignatura.nombre}:")
             Log.d("ScheduleFragment", "       Time: ${asignaturaConHora.horaInicio} - ${asignaturaConHora.horaFin}")
             Log.d("ScheduleFragment", "       Duration: ${asignaturaConHora.asignatura.duracion} hours")
             Log.d("ScheduleFragment", "       Top margin: $topMargin px")
-            Log.d("ScheduleFragment", "       Card height: $fixedCardHeight px (fixed)")
+            Log.d("ScheduleFragment", "       Card height: $fixedCardHeight px")
 
             cardView.layoutParams = layoutParams
             container.addView(cardView)
@@ -277,21 +281,12 @@ class ScheduleFragment : Fragment(), OnItemClickListener {
     }
 
     private fun calculateCardHeight(duracionHoras: Int): Int {
-        // Each hour in timeline is 60dp + 4px divider
-        val density = resources.displayMetrics.density
-        val hourHeightPx = (60 * density).toInt() // 60dp per hour
-
-        // Calculate height: duration × hourHeight + dividers
-        // For example: 2 hours = 2 × 60dp + 2 dividers (4px each)
-        val heightWithoutDividers = (duracionHoras * hourHeightPx)
-        val dividersHeight = duracionHoras * 4 // 4px per hour
-
-        val totalHeight = heightWithoutDividers + dividersHeight - 8 // Subtract small margin for better fit
-
-        Log.d("ScheduleFragment", "    Calculate height: ${duracionHoras}h → ${totalHeight}px (${hourHeightPx}px/hour)")
-
-        return totalHeight
+        val horas = maxOf(duracionHoras, 1)
+        val margen = (4 * resources.displayMetrics.density).toInt()
+        return horas * altoHoraPx() + (horas - 1) * ALTO_DIVISOR_PX - margen
     }
+
+    private fun altoHoraPx(): Int = (ALTO_HORA_DP * resources.displayMetrics.density).toInt()
 
     private fun calculateTopMargin(horaInicio: String): Int {
         try {
@@ -320,14 +315,11 @@ class ScheduleFragment : Fragment(), OnItemClickListener {
                 return 0
             }
 
-            // Each hour in timeline has a consistent height
-            val density = resources.displayMetrics.density
-            val hourHeightPx = (60 * density).toInt() // 60dp per hour
-            val minuteHeightPx = hourHeightPx / 60.0 // Height per minute
+            val minuteHeightPx = altoHoraPx() / 60.0 // Height per minute
 
             // Add 4px for each divider passed (one divider of 4px per hour)
             val hoursPassed = (minutesFromStart / 60)
-            val dividerOffset = hoursPassed * 4 // 4px per divider
+            val dividerOffset = hoursPassed * ALTO_DIVISOR_PX
 
             val topMarginPx = (minutesFromStart * minuteHeightPx).toInt() + dividerOffset
 
@@ -343,206 +335,53 @@ class ScheduleFragment : Fragment(), OnItemClickListener {
         }
     }
 
-    private fun initDynamicTimeline(view: View, asignaturas: List<com.softcg.myapplication.ui.Inicio.Fragments.Asignaturas.Models.Asignatura>) {
+    /** Horas a la izquierda y una línea por hora detrás de las tarjetas. Siempre 00:00 a 23:00. */
+    private fun construirLineaDeTiempo(view: View) {
         val timeColumn = view.findViewById<LinearLayout>(R.id.time_column)
+        val lineas = view.findViewById<FrameLayout>(R.id.horarioLineas)
         val horarioContainer = view.findViewById<FrameLayout>(R.id.horarioContainer)
 
-        // Clear any existing time slots
         timeColumn.removeAllViews()
-
-        Log.d("ScheduleFragment", "═══════════════════════════════════════")
-        Log.d("ScheduleFragment", "24-HOUR TIMELINE INITIALIZATION")
-
-        // Always show 24 hours (00:00 to 23:00)
+        lineas.removeAllViews()
         timelineStartHour = 0
-        val timelineEndHour = 23
 
-        Log.d("ScheduleFragment", "Timeline range: ${timelineStartHour}:00 - ${timelineEndHour}:00 (24 hours)")
+        val altoHora = altoHoraPx()
+        val colorLinea = ContextCompat.getColor(requireContext(), R.color.borde_suave)
+        val colorTexto = ContextCompat.getColor(requireContext(), R.color.text_secondary)
 
-        // Generate time slots
-        val timeSlots = generateTimeSlots(timelineStartHour, timelineEndHour)
-
-        // Calculate the exact height for each hour block
-        val density = resources.displayMetrics.density
-        val hourHeightPx = (60 * density).toInt() // 60dp per hour
-
-        var totalHeight = 0
-
-        timeSlots.forEach { timeSlot ->
-            // Create container for time slot
-            val slotContainer = LinearLayout(requireContext())
-            slotContainer.orientation = LinearLayout.HORIZONTAL
-            slotContainer.gravity = android.view.Gravity.CENTER_VERTICAL
-
-            val containerParams = LinearLayout.LayoutParams(
+        generateTimeSlots(0, 23).forEachIndexed { indice, hora ->
+            val etiqueta = TextView(requireContext())
+            etiqueta.text = hora
+            etiqueta.textSize = 12f
+            etiqueta.setTextColor(colorTexto)
+            etiqueta.layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
-                hourHeightPx
+                altoHora + ALTO_DIVISOR_PX
             )
-            slotContainer.layoutParams = containerParams
+            timeColumn.addView(etiqueta)
 
-            // Time text
-            val timeView = TextView(requireContext())
-            timeView.text = timeSlot
-            timeView.textSize = 12f
-            timeView.setTextColor(Color.parseColor("#555555"))
-            timeView.gravity = android.view.Gravity.CENTER
-            timeView.setPadding(4, 0, 4, 0)
-            timeView.setTypeface(null, android.graphics.Typeface.BOLD)
-
-            val textParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-            )
-            timeView.layoutParams = textParams
-
-            slotContainer.addView(timeView)
-            timeColumn.addView(slotContainer)
-            totalHeight += hourHeightPx
-
-            // Add a modern styled divider line with dot indicator
-            val dividerContainer = LinearLayout(requireContext())
-            dividerContainer.orientation = LinearLayout.HORIZONTAL
-            dividerContainer.gravity = android.view.Gravity.CENTER_VERTICAL
-
-            val dividerContainerParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                4 // Fixed height to accommodate dot indicator
-            )
-            dividerContainer.layoutParams = dividerContainerParams
-            dividerContainer.setPadding(0, 0, 0, 0)
-
-            // Add small circle indicator
-            val dotIndicator = View(requireContext())
-            dotIndicator.setBackgroundColor(Color.parseColor("#9C27B0"))
-            val dotParams = LinearLayout.LayoutParams(4, 4)
-            dotParams.setMargins(8, 0, 4, 0)
-            dotIndicator.layoutParams = dotParams
-
-            // Divider line
-            val divider = View(requireContext())
-            divider.setBackgroundColor(Color.parseColor("#E0E0E0"))
-            val dividerParams = LinearLayout.LayoutParams(
-                0,
-                2
-            )
-            dividerParams.weight = 1f
-            divider.layoutParams = dividerParams
-
-            dividerContainer.addView(dotIndicator)
-            dividerContainer.addView(divider)
-
-            timeColumn.addView(dividerContainer)
-            totalHeight += 4 // 4px per divider to accommodate dot
+            val linea = View(requireContext())
+            linea.setBackgroundColor(colorLinea)
+            val parametros = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, ALTO_LINEA_PX)
+            parametros.topMargin = indice * (altoHora + ALTO_DIVISOR_PX)
+            linea.layoutParams = parametros
+            lineas.addView(linea)
         }
 
-        // Set the exact height for horarioContainer to match timeline
         val containerParams = horarioContainer.layoutParams
-        containerParams.height = totalHeight
+        containerParams.height = 24 * (altoHora + ALTO_DIVISOR_PX)
         horarioContainer.layoutParams = containerParams
-
-        Log.d("ScheduleFragment", "Timeline created with ${timeSlots.size} hours")
-        Log.d("ScheduleFragment", "Total timeline height: $totalHeight px")
-        Log.d("ScheduleFragment", "═══════════════════════════════════════")
     }
 
-    private fun initDefaultTimeline(view: View) {
-        val timeColumn = view.findViewById<LinearLayout>(R.id.time_column)
-        val horarioContainer = view.findViewById<FrameLayout>(R.id.horarioContainer)
-
-        // Clear any existing time slots
-        timeColumn.removeAllViews()
-
-        // Always show 24 hours (00:00 to 23:00)
-        timelineStartHour = 0
-        val timelineEndHour = 23
-
-        Log.d("ScheduleFragment", "═══════════════════════════════════════")
-        Log.d("ScheduleFragment", "DEFAULT 24-HOUR TIMELINE INITIALIZATION")
-        Log.d("ScheduleFragment", "Timeline range: ${timelineStartHour}:00 - ${timelineEndHour}:00 (24 hours)")
-
-        // Generate time slots
-        val timeSlots = generateTimeSlots(timelineStartHour, timelineEndHour)
-
-        // Calculate the exact height for each hour block
-        val density = resources.displayMetrics.density
-        val hourHeightPx = (60 * density).toInt() // 60dp per hour
-
-        var totalHeight = 0
-
-        timeSlots.forEach { timeSlot ->
-            // Create container for time slot
-            val slotContainer = LinearLayout(requireContext())
-            slotContainer.orientation = LinearLayout.HORIZONTAL
-            slotContainer.gravity = android.view.Gravity.CENTER_VERTICAL
-
-            val containerParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                hourHeightPx
-            )
-            slotContainer.layoutParams = containerParams
-
-            // Time text
-            val timeView = TextView(requireContext())
-            timeView.text = timeSlot
-            timeView.textSize = 12f
-            timeView.setTextColor(Color.parseColor("#555555"))
-            timeView.gravity = android.view.Gravity.CENTER
-            timeView.setPadding(4, 0, 4, 0)
-            timeView.setTypeface(null, android.graphics.Typeface.BOLD)
-
-            val textParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-            )
-            timeView.layoutParams = textParams
-
-            slotContainer.addView(timeView)
-            timeColumn.addView(slotContainer)
-            totalHeight += hourHeightPx
-
-            // Add a modern styled divider line with dot indicator
-            val dividerContainer = LinearLayout(requireContext())
-            dividerContainer.orientation = LinearLayout.HORIZONTAL
-            dividerContainer.gravity = android.view.Gravity.CENTER_VERTICAL
-
-            val dividerContainerParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                4 // Fixed height to accommodate dot indicator
-            )
-            dividerContainer.layoutParams = dividerContainerParams
-            dividerContainer.setPadding(0, 0, 0, 0)
-
-            // Add small circle indicator
-            val dotIndicator = View(requireContext())
-            dotIndicator.setBackgroundColor(Color.parseColor("#9C27B0"))
-            val dotParams = LinearLayout.LayoutParams(4, 4)
-            dotParams.setMargins(8, 0, 4, 0)
-            dotIndicator.layoutParams = dotParams
-
-            // Divider line
-            val divider = View(requireContext())
-            divider.setBackgroundColor(Color.parseColor("#E0E0E0"))
-            val dividerParams = LinearLayout.LayoutParams(
-                0,
-                2
-            )
-            dividerParams.weight = 1f
-            divider.layoutParams = dividerParams
-
-            dividerContainer.addView(dotIndicator)
-            dividerContainer.addView(divider)
-
-            timeColumn.addView(dividerContainer)
-            totalHeight += 4 // 4px per divider to accommodate dot
-        }
-
-        // Set the exact height for horarioContainer to match timeline
-        val containerParams = horarioContainer.layoutParams
-        containerParams.height = totalHeight
-        horarioContainer.layoutParams = containerParams
-
-        Log.d("ScheduleFragment", "Default timeline created with ${timeSlots.size} hours")
-        Log.d("ScheduleFragment", "═══════════════════════════════════════")
+    /** Con 24 horas de alto, abrir en las 00:00 dejaría las clases fuera de la vista. */
+    private fun llevarALaPrimeraClase(view: View, asignaturas: List<com.softcg.myapplication.ui.Inicio.Fragments.Asignaturas.Models.Asignatura>) {
+        val scroll = view.findViewById<NestedScrollView>(R.id.contentScrollView)
+        val destino = asignaturas
+            .map { calculateTopMargin(it.hora) }
+            .minOrNull()
+            ?: calculateTopMargin(String.format("%02d:00", Calendar.getInstance().get(Calendar.HOUR_OF_DAY)))
+        val respiro = (12 * resources.displayMetrics.density).toInt()
+        scroll.post { scroll.smoothScrollTo(0, maxOf(destino - respiro, 0)) }
     }
 
     private fun generateTimeSlots(startHour: Int, endHour: Int): List<String> {
@@ -560,30 +399,6 @@ class ScheduleFragment : Fragment(), OnItemClickListener {
     override fun onItemClick(date: LocalDate) {
         horarioViewModel.obtenerCurrentDate(date)
         horarioViewModel.obtenerAsignaturas()
-    }
-
-    private fun synchronizeScrollViews(view: View) {
-        val timelineScrollView = view.findViewById<ScrollView>(R.id.timelineScrollView)
-        val contentScrollView = view.findViewById<ScrollView>(R.id.contentScrollView)
-
-        var isTimelineScrolling = false
-        var isContentScrolling = false
-
-        contentScrollView.viewTreeObserver.addOnScrollChangedListener {
-            if (!isTimelineScrolling) {
-                isContentScrolling = true
-                timelineScrollView.scrollTo(0, contentScrollView.scrollY)
-                isContentScrolling = false
-            }
-        }
-
-        timelineScrollView.viewTreeObserver.addOnScrollChangedListener {
-            if (!isContentScrolling) {
-                isTimelineScrolling = true
-                contentScrollView.scrollTo(0, timelineScrollView.scrollY)
-                isTimelineScrolling = false
-            }
-        }
     }
 
 }

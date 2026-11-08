@@ -5,6 +5,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <!-- Atenúa la pantalla con el menú abierto; tocarlo lo cierra -->
+    <View
+        android:id="@+id/fab_velo"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/velo_oscuro"
+        android:clickable="true"
+        android:focusable="false"
+        android:alpha="0"
+        android:visibility="gone"
+        android:importantForAccessibility="no"/>
+
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -13,46 +25,22 @@
         android:paddingEnd="16dp"
         android:layout_above="@+id/botonAñadir"
         android:orientation="vertical">
+
         <LinearLayout
             android:id="@+id/addTarea"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
-            
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_margin="10dp"
-                app:cardBackgroundColor="@color/white"
-                app:cardCornerRadius="3dp"
-                app:cardElevation="2dp"
-                app:contentPadding="5dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:textStyle="bold"
-                    android:textColor="@color/black"
-                    android:text="Añadir tarea"
-                    android:textSize="15sp"/>
-
-
-
-            </androidx.cardview.widget.CardView>
+            <TextView style="@style/Edu.FabEtiqueta" android:text="Añadir tarea"/>
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/tareaB"
+                style="@style/Edu.FabMini"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginVertical="8dp"
-                android:clickable="true"
-                android:focusable="true"
-                android:src="@drawable/baseline_agenda_add_24"
-                app:backgroundTint="@color/purpl_leighter"
-                app:elevation="0dp"
-                app:tint="@color/black" />
-
+                android:contentDescription="Añadir tarea"
+                android:src="@drawable/ic_gami_tarea" />
         </LinearLayout>
 
         <LinearLayout
@@ -61,42 +49,15 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_margin="10dp"
-                app:cardBackgroundColor="@color/white"
-                app:cardCornerRadius="3dp"
-                app:cardElevation="2dp"
-                app:contentPadding="5dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:textStyle="bold"
-                    android:text="Añadir evento"
-                    android:textColor="@color/black"
-                    android:textSize="15sp"/>
-
-
-
-            </androidx.cardview.widget.CardView>
+            <TextView style="@style/Edu.FabEtiqueta" android:text="Añadir evento"/>
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/eventoB"
+                style="@style/Edu.FabMini"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginVertical="8dp"
-                android:clickable="true"
-                android:focusable="true"
-                android:src="@drawable/baseline_calendar_month_24"
-                app:backgroundTint="@color/purpl_leighter"
-                android:tint="@color/black"
-                app:tint="@color/black"
-                app:elevation="0dp"
-                />
-
+                android:contentDescription="Añadir evento"
+                android:src="@drawable/ic_gami_evento" />
         </LinearLayout>
 
         <LinearLayout
@@ -105,40 +66,15 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_margin="10dp"
-                app:cardBackgroundColor="@color/white"
-                app:cardCornerRadius="3dp"
-                app:cardElevation="2dp"
-                app:contentPadding="5dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:textStyle="bold"
-                    android:text="Añadir calificación"
-                    android:textColor="@color/black"
-                    android:textSize="15sp"/>
-
-            </androidx.cardview.widget.CardView>
+            <TextView style="@style/Edu.FabEtiqueta" android:text="Añadir calificación"/>
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/calificacionB"
+                style="@style/Edu.FabMini"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginVertical="8dp"
-                android:clickable="true"
-                android:focusable="true"
-                android:src="@drawable/baseline_calificaciones_24"
-                app:backgroundTint="@color/purpl_leighter"
-                app:tint="@color/black"
-                app:elevation="0dp"
-
-                />
-
+                android:contentDescription="Añadir calificación"
+                android:src="@drawable/ic_gami_nota" />
         </LinearLayout>
 
         <LinearLayout
@@ -147,41 +83,16 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_margin="10dp"
-                app:cardBackgroundColor="@color/white"
-                app:cardCornerRadius="3dp"
-                app:cardElevation="2dp"
-                app:contentPadding="5dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:textStyle="bold"
-                    android:text="Leer QR"
-                    android:textColor="@color/black"
-                    android:textSize="15sp"/>
-
-            </androidx.cardview.widget.CardView>
+            <TextView style="@style/Edu.FabEtiqueta" android:text="Leer QR"/>
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/qrB"
+                style="@style/Edu.FabMini"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginVertical="8dp"
-                android:clickable="true"
-                android:focusable="true"
-                android:src="@drawable/baseline_qr_code_24"
-                app:backgroundTint="@color/purpl_leighter"
-                app:tint="@color/black"
-                app:elevation="0dp"
-                />
-
+                android:contentDescription="Leer QR"
+                android:src="@drawable/baseline_qr_code_24" />
         </LinearLayout>
-
     </LinearLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -192,11 +103,9 @@
         android:layout_alignParentBottom="true"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
-        android:clickable="true"
-        android:focusable="true"
+        android:contentDescription="Añadir"
         android:src="@drawable/baseline_cruz_24"
-        app:backgroundTint="@color/purple_primary"
-        app:fab_size="normal"
+        app:backgroundTint="@color/purple_accent"
         app:tint="@color/white"
         />
 </RelativeLayout>

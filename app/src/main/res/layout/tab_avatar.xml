@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingHorizontal="16dp"
+        android:paddingHorizontal="@dimen/margen_pantalla"
         android:paddingTop="16dp"
         android:paddingBottom="96dp">
 
@@ -51,17 +51,11 @@
             android:layout_marginBottom="16dp"/>
 
         <com.google.android.material.button.MaterialButton
+    style="@style/Edu.Boton"
             android:id="@+id/botonTienda"
             android:layout_width="match_parent"
-            android:layout_height="58dp"
+            android:layout_height="@dimen/alto_boton"
             android:text="Ir a la tienda"
-            android:textColor="@color/white"
-            android:textSize="17sp"
-            android:textStyle="bold"
-            android:letterSpacing="0.02"
-            app:backgroundTint="@color/purple_accent"
-            app:cornerRadius="16dp"
-            app:elevation="0dp"
             android:layout_marginBottom="20dp"/>
 
         <TextView

@@ -49,6 +49,12 @@ class ErrorDialog : DialogFragment() {
 
         binding.tvTitle.text = title
         binding.tvDescription.text = description
+        if (positiveAction == Action.Empty) {
+            binding.btnPositive.isGone = true
+        } else {
+            binding.btnPositive.text = positiveAction.text
+            binding.btnPositive.setOnClickListener { positiveAction.onClickListener(this) }
+        }
         if (negativeAction == Action.Empty) {
             binding.btnNegative.isGone = true
         } else {

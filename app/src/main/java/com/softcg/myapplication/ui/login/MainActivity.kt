@@ -16,6 +16,7 @@ import com.softcg.myapplication.core.dialog.DialogFragmentLauncher
 import com.softcg.myapplication.core.dialog.ErrorDialog
 import com.softcg.myapplication.core.ex.dismissKeyboard
 import com.softcg.myapplication.core.ex.loseFocusAfterAction
+import com.softcg.myapplication.core.ex.mostrarCarga
 import com.softcg.myapplication.core.ex.onTextChanged
 import com.softcg.myapplication.core.ex.show
 import com.softcg.myapplication.databinding.ActivityMainBinding
@@ -114,6 +115,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun updateUI(viewState: LoginViewState){
         with(binding){
+            botoningresar.mostrarCarga(viewState.isLoading, "Ingresar", "Ingresando…")
             campoemail.error =
                 if (viewState.isValidEmail) null else getString(R.string.login_error_mail)
             campocontrasea.error=

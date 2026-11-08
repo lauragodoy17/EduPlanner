@@ -2,34 +2,25 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/containerReporte"
+    style="@style/Edu.Tarjeta"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    app:cardCornerRadius="12dp"
-    app:cardElevation="4dp"
-    android:layout_marginBottom="12dp"
-    android:layout_marginHorizontal="4dp"
-    app:cardBackgroundColor="#FFFFFF">
+    android:layout_height="wrap_content">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:padding="12dp">
+        android:paddingVertical="12dp"
+        android:paddingStart="14dp"
+        android:paddingEnd="4dp">
 
-        <!-- Left colored bar for visual appeal -->
-        <View
-            android:layout_width="4dp"
-            android:layout_height="match_parent"
-            android:background="@color/purple_accent"
-            android:layout_marginEnd="12dp" />
-
-        <!-- Grade circle -->
         <FrameLayout
             android:id="@+id/circleImageView"
             android:layout_width="52dp"
             android:layout_height="52dp"
-            android:background="@drawable/circle"
+            android:background="@drawable/circle_shape"
+            android:backgroundTint="@color/purple_surface"
             android:layout_marginEnd="12dp">
 
             <TextView
@@ -37,81 +28,46 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:text="0.0"
-                android:textColor="@color/white"
+                android:textColor="@color/purple_accent"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 android:gravity="center"
                 android:maxLines="1" />
         </FrameLayout>
 
-        <!-- Content -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:orientation="vertical">
 
-            <!-- Header Row with Subject and Badge -->
-            <LinearLayout
+            <TextView
+                android:id="@+id/text_titulo"
+                style="@style/Edu.Texto.TituloTarjeta"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_marginBottom="6dp">
+                android:text="Asignatura"
+                android:maxLines="1"
+                android:ellipsize="end" />
 
-                <!-- Subject Name -->
-                <TextView
-                    android:id="@+id/text_titulo"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Asignatura"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:textColor="#333333"
-                    android:maxLines="1"
-                    android:ellipsize="end" />
-
-                <!-- Type Badge -->
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="CALIFICACIÓN"
-                    android:textSize="9sp"
-                    android:textColor="#FFFFFF"
-                    android:background="@drawable/type_badge_bg"
-                    android:backgroundTint="@color/purple_accent"
-                    android:paddingHorizontal="6dp"
-                    android:paddingVertical="3dp"
-                    android:textStyle="bold"
-                    android:layout_marginStart="6dp" />
-
-            </LinearLayout>
-
-            <!-- Description -->
             <TextView
                 android:id="@+id/textodesc"
+                style="@style/Edu.Texto.Cuerpo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Descripción"
-                android:textSize="13sp"
-                android:textColor="#666666"
                 android:maxLines="2"
                 android:ellipsize="end" />
-
         </LinearLayout>
 
-        <!-- Options Button -->
         <ImageButton
             android:id="@+id/Opciones"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_marginStart="8dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:padding="8dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="Opciones"
-            android:src="@drawable/baseline_trespuntos_vert_24"
-            app:tint="#666666" />
-
+            android:src="@drawable/ic_more_vert"
+            app:tint="@color/text_secondary" />
     </LinearLayout>
-
 </androidx.cardview.widget.CardView>

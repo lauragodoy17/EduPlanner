@@ -10,245 +10,163 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="20dp">
+        android:paddingHorizontal="24dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="24dp">
 
-        <!-- Header -->
+        <View style="@style/Edu.AsaHoja"/>
+
         <TextView
+            style="@style/Edu.Texto.TituloHoja"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Agregar Asignatura"
-            android:textAlignment="center"
-            android:textColor="#333333"
-            android:textSize="24sp"
-            android:textStyle="bold"
+            android:text="Agregar asignatura"
             android:layout_marginBottom="20dp"/>
 
-        <!-- Nombre de la Asignatura -->
-        <TextView
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Edu.Campo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Nombre de la asignatura"
-            android:textColor="#666666"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="8dp"/>
+            android:hint="Nombre de la asignatura">
 
-        <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
-            app:cardCornerRadius="8dp"
-            app:cardElevation="2dp"
-            app:cardBackgroundColor="#F5F5F5">
-
-            <EditText
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/NombreEditText"
+                style="@style/Edu.CampoEntrada"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="12dp"
-                android:hint="Ingresa el nombre"
                 android:inputType="text"
-                android:textColor="#000000"
-                android:textColorHint="#949494"
-                android:background="@android:color/transparent"
                 android:maxLines="1"/>
-        </androidx.cardview.widget.CardView>
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Profesor/Tutor -->
-        <TextView
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Edu.Campo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Nombre del profesor"
-            android:textColor="#666666"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="8dp"/>
+            android:hint="Nombre del profesor">
 
-        <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
-            app:cardCornerRadius="8dp"
-            app:cardElevation="2dp"
-            app:cardBackgroundColor="#F5F5F5">
-
-            <EditText
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/TutorEditText"
+                style="@style/Edu.CampoEntrada"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="12dp"
-                android:hint="Ingresa el nombre del profesor"
                 android:inputType="text"
-                android:textColor="#000000"
-                android:textColorHint="#949494"
-                android:background="@android:color/transparent"
                 android:maxLines="1"/>
-        </androidx.cardview.widget.CardView>
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Días de la Semana -->
+        <!-- Spinner: permite marcar varios días -->
         <TextView
+            style="@style/Edu.Texto.Rotulo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Días de la semana"
-            android:textColor="#666666"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="8dp"/>
+            android:layout_marginBottom="6dp"/>
 
-        <androidx.cardview.widget.CardView
+        <Spinner
+            android:id="@+id/spinner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
-            app:cardCornerRadius="8dp"
-            app:cardElevation="2dp"
-            app:cardBackgroundColor="#F5F5F5">
+            android:minHeight="56dp"
+            android:paddingHorizontal="8dp"
+            android:paddingEnd="44dp"
+            android:spinnerMode="dropdown"
+            android:contentDescription="Días de la semana"
+            android:background="@drawable/modern_spinner_background"
+            android:layout_marginBottom="14dp"/>
 
-            <Spinner
-                android:id="@+id/spinner"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="12dp"
-                android:spinnerMode="dropdown"
-                android:background="@android:color/transparent"/>
-        </androidx.cardview.widget.CardView>
-
-        <!-- Tipo de Calificación -->
         <TextView
+            style="@style/Edu.Texto.Rotulo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Tipo de calificación"
-            android:textColor="#666666"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="8dp"/>
+            android:layout_marginBottom="6dp"/>
 
-        <androidx.cardview.widget.CardView
+        <Spinner
+            android:id="@+id/spinnerTipoCalificacion"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
-            app:cardCornerRadius="8dp"
-            app:cardElevation="2dp"
-            app:cardBackgroundColor="#F5F5F5">
+            android:minHeight="56dp"
+            android:paddingHorizontal="8dp"
+            android:paddingEnd="44dp"
+            android:spinnerMode="dropdown"
+            android:contentDescription="Tipo de calificación"
+            android:background="@drawable/modern_spinner_background"
+            android:layout_marginBottom="14dp"/>
 
-            <Spinner
-                android:id="@+id/spinnerTipoCalificacion"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="12dp"
-                android:spinnerMode="dropdown"
-                android:background="@android:color/transparent"/>
-        </androidx.cardview.widget.CardView>
-
-        <!-- Campo Personalizado para "Otro" -->
+        <!-- Solo con "Otro" -->
         <TextView
             android:id="@+id/labelTipoCalificacionOtro"
+            style="@style/Edu.Texto.Rotulo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Especifica el tipo de calificación"
-            android:textColor="#666666"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="8dp"
+            android:layout_marginBottom="6dp"
             android:visibility="gone"/>
 
-        <androidx.cardview.widget.CardView
+        <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/layoutTipoCalificacionOtro"
+            style="@style/Edu.Campo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
-            android:visibility="gone"
-            app:cardCornerRadius="8dp"
-            app:cardElevation="2dp"
-            app:cardBackgroundColor="#F5F5F5">
+            android:hint="Escribe el tipo de calificación"
+            android:visibility="gone">
 
-            <EditText
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/TipoCalificacionOtroEditText"
+                style="@style/Edu.CampoEntrada"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="12dp"
-                android:hint="Escribe el tipo de calificación"
                 android:inputType="text"
-                android:textColor="#000000"
-                android:textColorHint="#949494"
-                android:background="@android:color/transparent"
                 android:maxLines="1"/>
-        </androidx.cardview.widget.CardView>
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Duración -->
-        <TextView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Duración (Horas)"
-            android:textColor="#666666"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="8dp"/>
+            android:orientation="horizontal"
+            android:baselineAligned="false">
 
-        <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
-            app:cardCornerRadius="8dp"
-            app:cardElevation="2dp"
-            app:cardBackgroundColor="#F5F5F5">
-
-            <EditText
-                android:id="@+id/DuracionEditText"
-                android:layout_width="match_parent"
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Edu.Campo"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:padding="12dp"
-                android:hint="Ingresa la duración en horas"
-                android:inputType="number"
-                android:textColor="#000000"
-                android:textColorHint="#949494"
-                android:background="@android:color/transparent"/>
-        </androidx.cardview.widget.CardView>
+                android:layout_weight="1"
+                android:layout_marginEnd="6dp"
+                android:hint="Duración (horas)">
 
-        <!-- Hora de Inicio -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Hora de inicio"
-            android:textColor="#666666"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="8dp"/>
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/DuracionEditText"
+                    style="@style/Edu.CampoEntrada"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="number"/>
+            </com.google.android.material.textfield.TextInputLayout>
 
-        <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
-            app:cardCornerRadius="8dp"
-            app:cardElevation="2dp"
-            app:cardBackgroundColor="#F5F5F5">
-
-            <EditText
-                android:id="@+id/etTime"
-                android:layout_width="match_parent"
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Edu.Campo"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:padding="12dp"
-                android:hint="Selecciona la hora"
-                android:inputType="none"
-                android:focusable="false"
-                android:clickable="true"
-                android:textColor="#000000"
-                android:textColorHint="#949494"
-                android:background="@android:color/transparent"/>
-        </androidx.cardview.widget.CardView>
+                android:layout_weight="1"
+                android:layout_marginStart="6dp"
+                android:hint="Hora de inicio"
+                app:endIconMode="custom"
+                app:endIconDrawable="@drawable/ic_clock">
 
-        <!-- Botón Agregar -->
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etTime"
+                    style="@style/Edu.CampoEntrada"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="none"
+                    android:focusable="false"
+                    android:clickable="true"/>
+            </com.google.android.material.textfield.TextInputLayout>
+        </LinearLayout>
+
         <com.google.android.material.button.MaterialButton
             android:id="@+id/botonAgregar"
+            style="@style/Edu.Boton"
             android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:text="Agregar Asignatura"
-            android:textColor="@color/white"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            app:backgroundTint="@color/purple_primary"
-            app:cornerRadius="8dp"
-            android:layout_marginBottom="8dp"/>
-
+            android:layout_height="@dimen/alto_boton"
+            android:text="Agregar asignatura"/>
     </LinearLayout>
-
 </ScrollView>

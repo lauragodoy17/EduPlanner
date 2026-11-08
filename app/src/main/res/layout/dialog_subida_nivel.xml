@@ -95,11 +95,10 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/subidaContinuar"
             android:layout_width="match_parent"
-            android:layout_height="58dp"
+            android:layout_height="@dimen/alto_boton"
             android:layout_marginTop="8dp"
             android:text="Continuar"
             android:textColor="@color/purple_deep"
-            android:textSize="17sp"
             android:textStyle="bold"
             app:backgroundTint="@color/white"
             app:cornerRadius="16dp"

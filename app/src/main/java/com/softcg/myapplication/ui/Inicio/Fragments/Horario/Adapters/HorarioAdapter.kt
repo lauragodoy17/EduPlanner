@@ -49,7 +49,7 @@ class HorarioAdapter () : RecyclerView.Adapter<HorarioAdapter.MyViewHolder>(){
         holder.typeBadge.text = "HORARIO"
 
         // Apply pastel color to card background
-        val colorPastel = AsignaturaConHora.getColorPastel(currentItem.colorIndex)
+        val colorPastel = AsignaturaConHora.getColorAsignatura(currentItem.colorIndex)
         holder.mainCard.setCardBackgroundColor(Color.parseColor(colorPastel))
 
         // Adjust badge color based on card color

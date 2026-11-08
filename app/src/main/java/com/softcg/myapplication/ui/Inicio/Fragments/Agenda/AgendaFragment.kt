@@ -39,11 +39,9 @@ class AgendaFragment : Fragment() {
 
         agendaViewModel._listAgenda.observe(viewLifecycleOwner, Observer { AgendaItem ->
             adapter.setData(AgendaItem)
-            if (AgendaItem.isNotEmpty()) {
-                view.findViewById<TextView>(R.id.textoAgenda).visibility = View.GONE
-            } else{
-                view.findViewById<TextView>(R.id.textoAgenda).visibility = View.VISIBLE
-            }
+            view.findViewById<TextView>(R.id.agendaResumen).text =
+                if (AgendaItem.size == 1) "1 pendiente" else "${AgendaItem.size} pendientes"
+            view.findViewById<View>(R.id.textoAgenda).visibility = if (AgendaItem.isNotEmpty()) View.GONE else View.VISIBLE
         })
     }
 

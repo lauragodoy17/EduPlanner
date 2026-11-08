@@ -9,7 +9,6 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -20,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.softcg.myapplication.R
 import com.softcg.myapplication.R.*
+import com.softcg.myapplication.core.ex.mostrarAviso
 import com.softcg.myapplication.core.ex.mostrarMensaje
 import com.softcg.myapplication.core.ex.mostrarRecompensa
 import com.softcg.myapplication.domain.gamificacion.ResultadoCalificarTarea
@@ -31,6 +31,9 @@ import com.softcg.myapplication.ui.Inicio.Models.Evento
 import com.softcg.myapplication.ui.Inicio.Fragments.Home.Adapters.DateFilterAdapter
 import com.softcg.myapplication.ui.Inicio.Fragments.Home.Adapters.UnifiedItemAdapter
 import dagger.hilt.android.AndroidEntryPoint
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
@@ -80,10 +83,19 @@ class HomeFragment : Fragment() {
 
         // Mantiene marcado el día que muestra la lista (p. ej. al crear un evento para otro día)
         homeViewModel.fechaSeleccionada.observe(viewLifecycleOwner) { fecha ->
+            view.findViewById<TextView>(R.id.homeFechaTitulo).text = tituloDeFecha(fecha)
             val posicion = homeViewModel.posicionDeFecha(fecha)
             dateFilterAdapter.selectDate(posicion)
             if (posicion != -1) recyclerView.scrollToPosition(posicion)
         }
+    }
+
+    /** "Hoy" o, para otro día, "Martes 4 de noviembre". */
+    private fun tituloDeFecha(fecha: String): String {
+        val entrada = SimpleDateFormat("yyyy-MM-dd", Locale.US)
+        if (fecha == entrada.format(Date())) return "Hoy"
+        val dia = runCatching { entrada.parse(fecha) }.getOrNull() ?: return fecha
+        return SimpleDateFormat("EEEE d 'de' MMMM", Locale("es", "ES")).format(dia).replaceFirstChar { it.uppercase() }
     }
 
     fun initFilterSpinner(view: View) {
@@ -91,9 +103,9 @@ class HomeFragment : Fragment() {
         val adapter = ArrayAdapter.createFromResource(
             requireContext(),
             R.array.filter_options,
-            android.R.layout.simple_spinner_item
+            R.layout.item_spinner_pastilla
         )
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        adapter.setDropDownViewResource(R.layout.item_menu_asignatura)
         spinner.adapter = adapter
 
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -200,7 +212,7 @@ class HomeFragment : Fragment() {
                     actualizado.imagenUri
                 )
                 homeViewModel.mostrarFecha(actualizado.fecha)
-                Toast.makeText(requireContext(), "Evento actualizado", Toast.LENGTH_SHORT).show()
+                requireView().mostrarAviso("Evento actualizado")
             }
         ).also { it.show() }
     }

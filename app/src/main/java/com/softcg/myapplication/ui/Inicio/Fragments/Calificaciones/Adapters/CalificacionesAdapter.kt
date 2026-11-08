@@ -6,11 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.TextView
-import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.PopupMenu
 import androidx.recyclerview.widget.RecyclerView
 import com.softcg.myapplication.R
+import com.softcg.myapplication.core.ex.confirmar
+import com.softcg.myapplication.core.ex.mostrarAviso
 import com.softcg.myapplication.ui.Inicio.Fragments.Calificaciones.CalificacionesViewModel
 import com.softcg.myapplication.ui.Inicio.Fragments.Calificaciones.Models.Calificacion
 import com.softcg.myapplication.ui.Inicio.Fragments.Home.HomeViewModel
@@ -40,6 +40,7 @@ class CalificacionesAdapter (private val context: Context, private val inicioVie
         val currentItem=calificaciones[position]
         holder.textTitulo.text=currentItem.asignatura
         holder.textDesc.text=currentItem.descripcion
+        holder.textDesc.visibility = if (currentItem.descripcion.isBlank()) View.GONE else View.VISIBLE
         holder.textCalificacion.text=currentItem.valor.toString()
         holder.boton.setOnClickListener {v ->
             showPopupMenu(v,position)
@@ -49,11 +50,12 @@ class CalificacionesAdapter (private val context: Context, private val inicioVie
     private fun showPopupMenu(view: View,position: Int) {
         val popupMenu = PopupMenu(context, view)
         popupMenu.inflate(R.menu.menudos)
+        popupMenu.menu.findItem(R.id.VerMas).isVisible = false
 
         popupMenu.setOnMenuItemClickListener { item ->
             when (item.itemId) {
                 R.id.Borrar -> {
-                    deleteCalificacion(position)
+                    deleteCalificacion(position, view)
                     true
                 }
                 else -> false
@@ -68,17 +70,12 @@ class CalificacionesAdapter (private val context: Context, private val inicioVie
         notifyDataSetChanged()
     }
 
-    fun deleteCalificacion(position: Int){
-        val builder = AlertDialog.Builder(context)
+    fun deleteCalificacion(position: Int, ancla: View){
         val currentItem= calificaciones[position]
-        builder.setPositiveButton("Si"){ _, _ ->
+        context.confirmar("¿Eliminar calificación?", "Esta acción no se puede deshacer.", "Eliminar") {
             inicioViewModel.deleteCalificacion(currentItem)
-            Toast.makeText(context,"Calificación Borrada", Toast.LENGTH_SHORT).show()
+            ancla.mostrarAviso("Calificación eliminada")
         }
-        builder.setNegativeButton("No"){ _, _ ->}
-        builder.setTitle("Borrar Calificacion?")
-        builder.setMessage("Esta seguro que desea borrar esta calificación?")
-        builder.create().show()
     }
 
 }

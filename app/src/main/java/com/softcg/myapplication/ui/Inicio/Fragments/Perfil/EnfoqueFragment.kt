@@ -12,7 +12,7 @@ import android.widget.AutoCompleteTextView
 import android.widget.Button
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AlertDialog
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -103,7 +103,7 @@ class EnfoqueFragment : Fragment() {
         anillo.colores(requireContext().getColor(R.color.blanco_25), requireContext().getColor(R.color.xp_dorado))
 
         view.findViewById<Button>(R.id.enfoqueAbandonar).setOnClickListener {
-            AlertDialog.Builder(requireContext())
+            MaterialAlertDialogBuilder(requireContext())
                 .setTitle("¿Abandonar la sesión?")
                 .setMessage("No ganarás EduCoins por esta sesión.")
                 .setPositiveButton("Abandonar") { _, _ ->

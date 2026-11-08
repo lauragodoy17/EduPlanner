@@ -1,18 +1,19 @@
 package com.softcg.myapplication.ui.Inicio.Fragments.Asignaturas.Adapters
 
 import android.content.Context
+import android.content.res.ColorStateList
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.PopupMenu
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.softcg.myapplication.R
+import com.softcg.myapplication.core.ex.confirmar
+import com.softcg.myapplication.core.ex.mostrarAviso
 import com.softcg.myapplication.ui.Inicio.Fragments.Asignaturas.AsignaturasViewModel
 import com.softcg.myapplication.ui.Inicio.Fragments.Asignaturas.Models.Asignatura
 import com.softcg.myapplication.ui.Inicio.Fragments.Horario.Models.AsignaturaConHora
@@ -28,7 +29,6 @@ class AsignaturasAdapter (private val context: Context, private val inicioViewMo
         val textDuracion : TextView = itemView.findViewById(R.id.text_duracion)
         val textDias : TextView = itemView.findViewById(R.id.text_dias)
         val boton: ImageView = itemView.findViewById(R.id.Opciones)
-        val typeBadge: TextView = itemView.findViewById(R.id.item_type_badge)
         val colorBar: View = itemView.findViewById(R.id.card_color_bar)
         val mainCard: CardView = itemView.findViewById(R.id.main_card)
     }
@@ -46,7 +46,7 @@ class AsignaturasAdapter (private val context: Context, private val inicioViewMo
         val currentItem=asignaturas[position]
         holder.textNombre.text = currentItem.nombre
         holder.textTutor.text = currentItem.tutor
-        holder.textHora.text = currentItem.hora
+        holder.textHora.text = AsignaturaConHora.horaLegible(currentItem.hora)
         holder.textDuracion.text = "${currentItem.duracion}h"
 
         // Generate days string from horario array
@@ -59,21 +59,8 @@ class AsignaturasAdapter (private val context: Context, private val inicioViewMo
         }
         holder.textDias.text = if (dias.isNotEmpty()) dias.joinToString(", ") else "Sin días asignados"
 
-        // Set type badge
-        holder.typeBadge.text = "ASIGNATURA"
-
-        // Apply pastel color to left bar
-        val colorPastel = AsignaturaConHora.getColorPastel(position)
-        holder.colorBar.setBackgroundColor(Color.parseColor(colorPastel))
-
-        // Adjust badge color based on position
-        val badgeColor = when (position % 4) {
-            0 -> "#66BB6A" // Verde
-            1 -> "#42A5F5" // Azul
-            2 -> "#AB47BC" // Púrpura
-            else -> "#EF5350" // Rosa
-        }
-        holder.typeBadge.setBackgroundColor(Color.parseColor(badgeColor))
+        // Color que identifica la asignatura
+        holder.colorBar.backgroundTintList = ColorStateList.valueOf(Color.parseColor(AsignaturaConHora.getColorAsignatura(position)))
 
         holder.boton.setOnClickListener {v ->
             showPopupMenu(v,position)
@@ -91,11 +78,12 @@ class AsignaturasAdapter (private val context: Context, private val inicioViewMo
     private fun showPopupMenu(view: View,position: Int) {
         val popupMenu = PopupMenu(context, view)
         popupMenu.inflate(R.menu.menudos)
+        popupMenu.menu.findItem(R.id.VerMas).isVisible = false
 
         popupMenu.setOnMenuItemClickListener { item ->
             when (item.itemId) {
                 R.id.Borrar -> {
-                    deleteItem(position)
+                    deleteItem(position, view)
                     true
                 }
                 else -> false
@@ -109,17 +97,12 @@ class AsignaturasAdapter (private val context: Context, private val inicioViewMo
         notifyDataSetChanged()
     }
 
-    fun deleteItem(position: Int){
-        val builder = AlertDialog.Builder(context)
+    fun deleteItem(position: Int, ancla: View){
         val currentItem= asignaturas[position]
-        builder.setPositiveButton("Si"){ _, _ ->
+        context.confirmar("¿Eliminar asignatura?", "Esta acción no se puede deshacer.", "Eliminar") {
             inicioViewModel.deleteAsignatura(currentItem)
-            Toast.makeText(context,"Asignatura Borrada ;D", Toast.LENGTH_SHORT).show()
+            ancla.mostrarAviso("Asignatura eliminada")
         }
-        builder.setNegativeButton("No"){ _, _ ->}
-        builder.setTitle("Borrar Asignatura?")
-        builder.setMessage("Esta seguro que desea borrar esta Asignatura?")
-        builder.create().show()
-        }
+    }
 
 }

@@ -125,18 +125,12 @@
         </LinearLayout>
 
         <com.google.android.material.button.MaterialButton
+    style="@style/Edu.Boton"
             android:id="@+id/misionReclamar"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:layout_marginTop="8dp"
             android:text="Reclamar"
-            android:textAllCaps="false"
-            android:textColor="@color/white"
-            android:textSize="15sp"
-            android:textStyle="bold"
-            android:visibility="gone"
-            app:backgroundTint="@color/purple_accent"
-            app:cornerRadius="16dp"
-            app:elevation="0dp"/>
+            android:visibility="gone"/>
     </LinearLayout>
 </androidx.cardview.widget.CardView>

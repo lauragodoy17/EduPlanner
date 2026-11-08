@@ -2,39 +2,52 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="rojo">#FF0000</color>
-    <color name="gris">#949494</color>
-    <color name="checked_color">#FF0000</color>
+    <color name="rojo">#C62F3B</color>
+    <color name="gris">#8F8697</color>
+    <color name="checked_color">#9C27B0</color>
+
+    <!-- Marca -->
+    <color name="purple_deep">#4A1F5C</color>
     <color name="purple_primary">#8B5A9F</color>
-    <color name="purple_light">#B48BBF</color>
-    <color name="purpl_leighter">#D4A5D4</color>
     <color name="purple_accent">#9C27B0</color>
+    <color name="purple_light">#B48BBF</color>
     <color name="purple_soft">#E1BEE7</color>
     <color name="purple_surface">#F3E5F5</color>
-    <color name="text_primary">#333333</color>
-    <color name="text_secondary">#666666</color>
-    <color name="text_hint">#999999</color>
-    <color name="input_border">#E0E0E0</color>
-    <color name="input_background">#FAFAFA</color>
-    <color name="google_border">#DADCE0</color>
-    
-    <!-- Colores de fondo de las tarjetas -->
-    <color name="card_background_1">#EBC3C3</color>
-    <color name="card_background_2">#FFF0C1</color>
-    <color name="card_background_3">#E6E0F8</color>
-    
-    <!-- Colores adicionales -->
-    <color name="highlight_yellow">#FFD700</color>
-    <color name="highlight_purple">#B19CD9</color>
-
-    <!-- Gamificación -->
-    <color name="purple_deep">#4A1F5C</color>
-    <color name="pista_clara">#EEEAF0</color>
+    <color name="purpl_leighter">#D4A5D4</color>
     <color name="xp_dorado">#FFC93C</color>
+
+    <!-- Superficies y bordes -->
+    <color name="fondo_app">#F7F4F9</color>
+    <color name="superficie">#FFFFFF</color>
+    <color name="borde_suave">#E8E2EC</color>
+    <color name="pista_clara">#EEEAF0</color>
+    <color name="velo_oscuro">#664A1F5C</color>
+    <color name="input_border">#E8E2EC</color>
+    <color name="input_background">#FFFFFF</color>
+    <color name="google_border">#DADCE0</color>
+
+    <!-- Texto -->
+    <color name="text_primary">#2B1E33</color>
+    <color name="text_secondary">#6A6072</color>
+    <color name="text_hint">#8F8697</color>
+    <color name="blanco_70">#B3FFFFFF</color>
+    <color name="blanco_25">#40FFFFFF</color>
+
+    <!-- Estados: también dan color a la prioridad (alta = error, media = aviso, baja = éxito) -->
+    <color name="estado_exito">#2E7D4F</color>
+    <color name="estado_exito_suave">#E3F4E9</color>
+    <color name="estado_aviso">#A86400</color>
+    <color name="estado_aviso_suave">#FFF3DC</color>
+    <color name="estado_error">#C62F3B</color>
+    <color name="estado_error_suave">#FCE8EA</color>
+
+    <!-- Tipo de elemento -->
+    <color name="evento">#5E4BB8</color>
+    <color name="evento_suave">#ECE9FA</color>
+
+    <!-- Logros -->
     <color name="logro_bronce">#B4764A</color>
     <color name="logro_plata">#7F8FA6</color>
     <color name="logro_oro">#D49B00</color>
     <color name="logro_bloqueado">#D6D2D9</color>
-    <color name="blanco_70">#B3FFFFFF</color>
-    <color name="blanco_25">#40FFFFFF</color>
 </resources>

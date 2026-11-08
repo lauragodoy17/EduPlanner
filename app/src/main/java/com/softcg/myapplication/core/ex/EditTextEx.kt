@@ -35,7 +35,7 @@ fun EditText.showDatePicker() {
     val calendar = Calendar.getInstance()
     DatePickerDialog(
         context,
-        R.style.CustomDatePickerDialogTheme,
+        R.style.Edu_TemaSelector,
         { _, year, month, dayOfMonth ->
             setText(formatFecha(year, month, dayOfMonth))
         },

@@ -1,16 +1,20 @@
 package com.softcg.myapplication.ui.Inicio.Fragments.Agenda.Adapters
 
 import android.content.Context
+import android.content.res.ColorStateList
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.PopupMenu
 import androidx.recyclerview.widget.RecyclerView
 import com.softcg.myapplication.R
+import com.softcg.myapplication.core.ex.confirmar
+import com.softcg.myapplication.core.ex.mostrarAviso
+import com.softcg.myapplication.core.ex.pintarEtiqueta
+import com.softcg.myapplication.core.ex.pintarPrioridad
+import com.softcg.myapplication.core.ex.tintarFondo
 import com.softcg.myapplication.ui.Inicio.Fragments.Agenda.AgendaViewModel
 import com.softcg.myapplication.ui.Inicio.Fragments.Agenda.Models.AgendaItem
 import java.text.SimpleDateFormat
@@ -55,35 +59,28 @@ class UnifiedAgendaAdapter(
         private val textFecha: TextView = itemView.findViewById(R.id.textofecha)
         private val typeBadge: TextView = itemView.findViewById(R.id.item_type_badge)
         private val priorityIndicator: View = itemView.findViewById(R.id.priority_indicator)
+        private val prioridadTexto: TextView = itemView.findViewById(R.id.prioridad_texto)
+        private val icono: ImageView = itemView.findViewById(R.id.item_icono)
         private val opciones: ImageView = itemView.findViewById(R.id.opciones)
 
         fun bind(item: AgendaItem) {
             textTitulo.text = item.titulo
             textDesc.text = item.descrip
+            textDesc.visibility = if (item.descrip.isBlank()) View.GONE else View.VISIBLE
             textFecha.text = formatDisplayDate(item.fecha)
 
-            // Configure based on item type (asignatura null = evento, otherwise = tarea)
-            if (item.asignatura == null) {
-                // Es un evento
-                textAsignatura.visibility = View.GONE
-                typeBadge.text = "EVENTO"
-                typeBadge.setBackgroundColor(android.graphics.Color.parseColor("#673AB7"))
-            } else {
-                // Es una tarea
-                textAsignatura.text = item.asignatura
-                textAsignatura.visibility = View.VISIBLE
-                typeBadge.text = "TAREA"
-                typeBadge.setBackgroundColor(android.graphics.Color.parseColor("#9C27B0"))
-            }
+            // asignatura null = evento, otherwise = tarea
+            val esEvento = item.asignatura == null
+            textAsignatura.text = item.asignatura
+            textAsignatura.visibility = if (esEvento) View.GONE else View.VISIBLE
+            val color = if (esEvento) R.color.evento else R.color.purple_accent
+            val fondo = if (esEvento) R.color.evento_suave else R.color.purple_surface
+            typeBadge.pintarEtiqueta(if (esEvento) "EVENTO" else "TAREA", color, fondo)
+            icono.setImageResource(if (esEvento) R.drawable.ic_gami_evento else R.drawable.ic_gami_tarea)
+            icono.imageTintList = ColorStateList.valueOf(context.getColor(color))
+            icono.tintarFondo(fondo)
 
-            // Set priority indicator color based on priority level
-            val priorityColor = when (item.prioridad) {
-                3 -> "#4CAF50" // High priority - Green
-                2 -> "#FF9800" // Medium priority - Orange
-                1 -> "#F44336" // Low priority - Red
-                else -> "#9C27B0" // Default purple
-            }
-            priorityIndicator.setBackgroundColor(android.graphics.Color.parseColor(priorityColor))
+            pintarPrioridad(item.prioridad, priorityIndicator, prioridadTexto)
 
             // Set click listener for options
             opciones.setOnClickListener { view ->
@@ -113,6 +110,7 @@ class UnifiedAgendaAdapter(
         private fun showPopupMenu(view: View, item: AgendaItem) {
             val popupMenu = PopupMenu(context, view)
             popupMenu.inflate(R.menu.menudos)
+            popupMenu.menu.findItem(R.id.VerMas).isVisible = false
 
             popupMenu.setOnMenuItemClickListener { menuItem ->
                 when (menuItem.itemId) {
@@ -128,29 +126,15 @@ class UnifiedAgendaAdapter(
         }
 
         private fun showDeleteDialog(item: AgendaItem) {
-            val builder = AlertDialog.Builder(context)
-
-            if (item.asignatura == null) {
-                // Es un evento
-                builder.setPositiveButton("Sí") { _, _ ->
-                    agendaViewModel.deleteEvento(item)
-                    Toast.makeText(context, "Evento eliminado", Toast.LENGTH_SHORT).show()
-                }
-                builder.setNegativeButton("No") { _, _ -> }
-                builder.setTitle("¿Eliminar Evento?")
-                builder.setMessage("¿Está seguro que desea eliminar este evento?")
-            } else {
-                // Es una tarea
-                builder.setPositiveButton("Sí") { _, _ ->
-                    agendaViewModel.deleteTarea(item)
-                    Toast.makeText(context, "Tarea eliminada", Toast.LENGTH_SHORT).show()
-                }
-                builder.setNegativeButton("No") { _, _ -> }
-                builder.setTitle("¿Eliminar Tarea?")
-                builder.setMessage("¿Está seguro que desea eliminar esta tarea?")
+            val esEvento = item.asignatura == null
+            context.confirmar(
+                if (esEvento) "¿Eliminar evento?" else "¿Eliminar tarea?",
+                "Esta acción no se puede deshacer.",
+                "Eliminar"
+            ) {
+                if (esEvento) agendaViewModel.deleteEvento(item) else agendaViewModel.deleteTarea(item)
+                itemView.mostrarAviso(if (esEvento) "Evento eliminado" else "Tarea eliminada")
             }
-
-            builder.create().show()
         }
     }
 }

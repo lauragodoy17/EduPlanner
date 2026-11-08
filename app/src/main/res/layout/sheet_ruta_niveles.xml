@@ -5,18 +5,21 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:background="@drawable/dialog_a"
-    android:padding="24dp">
+    android:paddingHorizontal="24dp"
+    android:paddingTop="12dp"
+    android:paddingBottom="24dp">
+
+    <View style="@style/Edu.AsaHoja"/>
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Ruta de niveles"
-        android:textColor="#1A1A1A"
-        android:textSize="24sp"
-        android:textStyle="bold"/>
+        style="@style/Edu.Texto.TituloHoja"/>
 
     <TextView
         android:id="@+id/rutaResumen"
+        android:textAlignment="center"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="0 XP acumulados"
@@ -37,15 +40,9 @@
     </androidx.core.widget.NestedScrollView>
 
     <com.google.android.material.button.MaterialButton
+        style="@style/Edu.Boton"
         android:id="@+id/rutaCerrar"
         android:layout_width="match_parent"
-        android:layout_height="58dp"
-        android:text="Cerrar"
-        android:textColor="@color/white"
-        android:textSize="17sp"
-        android:textStyle="bold"
-        android:letterSpacing="0.02"
-        app:backgroundTint="@color/purple_accent"
-        app:cornerRadius="16dp"
-        app:elevation="0dp"/>
+        android:layout_height="@dimen/alto_boton"
+        android:text="Cerrar"/>
 </LinearLayout>

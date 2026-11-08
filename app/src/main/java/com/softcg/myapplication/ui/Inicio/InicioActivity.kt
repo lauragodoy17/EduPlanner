@@ -6,16 +6,14 @@ import android.animation.ValueAnimator
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
-import android.os.Build
 import androidx.appcompat.widget.Toolbar
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import android.widget.ImageButton
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -30,6 +28,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
+import androidx.navigation.navOptions
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
@@ -83,6 +82,11 @@ class InicioActivity : AppCompatActivity() {
     private lateinit var leerqr:View
     private var rotate=false
 
+    /** Con el menú del botón flotante abierto, Atrás lo cierra en vez de salir de la pantalla. */
+    private val cerrarMenuAlVolver = object : OnBackPressedCallback(false) {
+        override fun handleOnBackPressed() = toggleFabMode(findViewById(R.id.botonAñadir))
+    }
+
     private var eventoDialog: EventoDialog? = null
     private val seleccionarImagen = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
         uri?.let { eventoDialog?.mostrarImagen(it) }
@@ -91,6 +95,7 @@ class InicioActivity : AppCompatActivity() {
 
     companion object {
         private const val MAX_AVISOS_LOGRO = 3
+        private val SUBPANTALLAS = setOf(R.id.id_shop_fragment, R.id.id_focus_fragment)
 
         fun create(context: Context): Intent =
             Intent(context, InicioActivity::class.java)
@@ -111,27 +116,16 @@ class InicioActivity : AppCompatActivity() {
             insets
         }
 
-        // Apply dynamic padding to header based on status bar height
+        // La cabecera crece con la barra de estado para que el degradado llegue hasta arriba
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.header_card)) { v, insets ->
-            val statusBarInsets = insets.getInsets(WindowInsetsCompat.Type.statusBars())
-            val headerLayout = (v as androidx.cardview.widget.CardView).getChildAt(0) as LinearLayout
-
-            // Maintain existing left, right, bottom padding, but adjust top padding dynamically
-            val existingPaddingLeft = headerLayout.paddingLeft
-            val existingPaddingRight = headerLayout.paddingRight
-            val existingPaddingBottom = headerLayout.paddingBottom
-
-            // Add status bar height to base padding (20dp)
-            val basePaddingDp = 0
-            val basePaddingPx = (basePaddingDp * resources.displayMetrics.density).toInt()
-            val dynamicTopPadding = statusBarInsets.top + basePaddingPx
-
-            headerLayout.setPadding(existingPaddingLeft, dynamicTopPadding, existingPaddingRight, existingPaddingBottom)
+            val arriba = insets.getInsets(WindowInsetsCompat.Type.statusBars()).top
+            v.setPadding(v.paddingLeft, arriba + (4 * resources.displayMetrics.density).toInt(), v.paddingRight, v.paddingBottom)
             insets
         }
         initObserver()
         initNavegate()
         initfloatingBottons()
+        onBackPressedDispatcher.addCallback(this, cerrarMenuAlVolver)
         setupHamburgerMenu()
         setupBottomNavigation()
         iniciarComprobacionAsistencia()
@@ -213,18 +207,25 @@ class InicioActivity : AppCompatActivity() {
         anadirb.setOnClickListener{
             toggleFabMode(it)
         }
+        findViewById<View>(R.id.fab_velo).setOnClickListener {
+            toggleFabMode(anadirb)
+        }
         tareab.setOnClickListener {
+            toggleFabMode(anadirb)
             inicioViewModel.onTareaSelected()
         }
         eventob.setOnClickListener {
+            toggleFabMode(anadirb)
             inicioViewModel.onEventoSelected()
         }
         calificacionb.setOnClickListener {
+            toggleFabMode(anadirb)
             showDialogCalificacion()
         }
         qrb.setOnClickListener {
             // TODO: Implementar funcionalidad de lector QR
-            Toast.makeText(this, "Lector QR - Próximamente", Toast.LENGTH_SHORT).show()
+            toggleFabMode(anadirb)
+            mostrarMensaje("Lector QR: próximamente")
         }
 
     }
@@ -232,82 +233,69 @@ class InicioActivity : AppCompatActivity() {
     private fun setupHamburgerMenu() {
         val hamburgerMenu = findViewById<ImageView>(R.id.menu_hamburger)
         hamburgerMenu?.setOnClickListener {
-            try {
-                if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
-                    drawerLayout.closeDrawer(GravityCompat.START)
-                } else {
-                    drawerLayout.openDrawer(GravityCompat.START)
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
+            // En Tienda y Enfoque es la flecha para volver: son subpantallas del perfil
+            if (navController.currentDestination?.id in SUBPANTALLAS) {
+                navController.navigateUp()
+            } else if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+                drawerLayout.closeDrawer(GravityCompat.START)
+            } else {
+                drawerLayout.openDrawer(GravityCompat.START)
             }
         }
     }
 
     private fun setupBottomNavigation() {
-        val navHome = findViewById<LinearLayout>(R.id.nav_home)
-        val navCalendar = findViewById<LinearLayout>(R.id.nav_calendar)
-        val navProfile = findViewById<LinearLayout>(R.id.nav_profile)
-
-        navHome.setOnClickListener {
-            navController.navigate(R.id.id_home_fragment)
-            updateBottomNavigationSelection(navHome, navCalendar, navProfile)
-        }
-
-        navCalendar.setOnClickListener {
-            navController.navigate(R.id.id_diary_fragment)
-            updateBottomNavigationSelection(navCalendar, navHome, navProfile)
-        }
-
-        navProfile.setOnClickListener {
-            abrirPerfil()
+        val pestanas = mapOf(
+            R.id.id_home_fragment to findViewById<View>(R.id.nav_home),
+            R.id.id_diary_fragment to findViewById<View>(R.id.nav_calendar),
+            R.id.id_schedule_fragment to findViewById<View>(R.id.nav_schedule),
+            R.id.id_ratings_fragment to findViewById<View>(R.id.nav_ratings),
+            R.id.id_profile_fragment to findViewById<View>(R.id.nav_profile)
+        )
+        pestanas.forEach { (destino, pestana) ->
+            pestana.setOnClickListener { irAPestana(destino) }
         }
 
         // El saldo de la cabecera también lleva al perfil
-        findViewById<View>(R.id.coin_counter).setOnClickListener { abrirPerfil() }
-        findViewById<View>(R.id.coin_icon).setOnClickListener { abrirPerfil() }
+        findViewById<View>(R.id.header_saldo).setOnClickListener { abrirPerfil() }
 
-        // Set initial state - home should be selected by default
-        updateBottomNavigationSelection(navHome, navCalendar, navProfile)
-
-        // Listen for navigation changes to update selection state
         navController.addOnDestinationChangedListener { _, destination, _ ->
             // En una sesión de enfoque no se ofrece agregar nada: es la distracción que se quiere evitar
             val anadir = findViewById<View>(R.id.botonAñadir)
             val enEnfoque = destination.id == R.id.id_focus_fragment
-            if (enEnfoque && rotate) toggleFabMode(anadir)
+            if (rotate) toggleFabMode(anadir)
             anadir.visibility = if (enEnfoque) View.GONE else View.VISIBLE
 
-            when (destination.id) {
-                R.id.id_home_fragment -> {
-                    updateBottomNavigationSelection(navHome, navCalendar, navProfile)
-                }
-                R.id.id_diary_fragment -> {
-                    updateBottomNavigationSelection(navCalendar, navHome, navProfile)
-                }
-                R.id.id_profile_fragment, R.id.id_shop_fragment, R.id.id_focus_fragment -> {
-                    updateBottomNavigationSelection(navProfile, navHome, navCalendar)
-                }
+            findViewById<TextView>(R.id.header_titulo).text = destination.label
+            val subpantalla = destination.id in SUBPANTALLAS
+            findViewById<ImageView>(R.id.menu_hamburger).apply {
+                setImageResource(if (subpantalla) R.drawable.ic_arrow_back else R.drawable.ic_menu_hamburger)
+                contentDescription = if (subpantalla) "Volver" else "Abrir menú"
             }
+            // Perfil y Enfoque continúan el degradado de la cabecera: sin esquinas no se ve el corte
+            val continua = destination.id == R.id.id_profile_fragment || destination.id == R.id.id_focus_fragment
+            findViewById<View>(R.id.header_card).setBackgroundResource(
+                if (continua) R.drawable.bg_cabecera_recta else R.drawable.bg_cabecera
+            )
+
+            val activa = if (subpantalla) R.id.id_profile_fragment else destination.id
+            pestanas.forEach { (destino, pestana) -> pestana.isSelected = destino == activa }
         }
+    }
+
+    /** Sin apilar copias: volver desde cualquier pestaña lleva al inicio. */
+    private fun irAPestana(destino: Int) {
+        if (navController.currentDestination?.id == destino) return
+        navController.navigate(destino, null, navOptions {
+            launchSingleTop = true
+            popUpTo(R.id.id_home_fragment)
+        })
     }
 
     private fun abrirPerfil(pestana: Int = 0) {
         // Con una pestaña concreta se vuelve a abrir aunque ya esté en el perfil
         if (navController.currentDestination?.id != R.id.id_profile_fragment || pestana != 0) {
             navController.navigate(R.id.id_profile_fragment, bundleOf(ProfileFragment.ARG_PESTANA to pestana))
-        }
-    }
-
-    private fun updateBottomNavigationSelection(selected: LinearLayout, vararg others: LinearLayout) {
-        // Set selected state
-        selected.alpha = 1.0f
-        selected.setBackgroundColor(getColor(R.color.purple_light))
-
-        // Set unselected state
-        others.forEach { nav ->
-            nav.alpha = 0.5f
-            nav.setBackgroundColor(android.graphics.Color.TRANSPARENT)
         }
     }
 
@@ -552,6 +540,8 @@ class InicioActivity : AppCompatActivity() {
 
     private fun toggleFabMode(v:View){
         rotate = rotateFab(v,!rotate)
+        animarVelo(rotate)
+        cerrarMenuAlVolver.isEnabled = rotate
         if (rotate){
             showIn(addtarea)
             showIn(addevento)
@@ -563,6 +553,17 @@ class InicioActivity : AppCompatActivity() {
             showOut(addcalificacion)
             showOut(leerqr)
         }
+    }
+
+    private fun animarVelo(mostrar: Boolean) {
+        val velo = findViewById<View>(R.id.fab_velo)
+        velo.animate().cancel()
+        if (mostrar) velo.visibility = View.VISIBLE
+        velo.animate()
+            .alpha(if (mostrar) 1f else 0f)
+            .setDuration(200)
+            .withEndAction { if (!mostrar) velo.visibility = View.GONE }
+            .start()
     }
 
     private fun showIn(view:View){
@@ -580,9 +581,6 @@ class InicioActivity : AppCompatActivity() {
     }
     private fun showOut(view: View){
         view.apply {
-            visibility=View.VISIBLE
-            alpha=0f
-            translationY=height.toFloat()
             animate()
                 .setDuration(200)
                 .translationY(height.toFloat())
@@ -602,7 +600,7 @@ class InicioActivity : AppCompatActivity() {
         v.animate()
             .setDuration(200)
             .setListener(object :AnimatorListenerAdapter() {})
-            .rotation(if (rotate) 180f else 0f)
+            .rotation(if (rotate) 135f else 0f)
         return rotate
     }
 
@@ -612,7 +610,7 @@ class InicioActivity : AppCompatActivity() {
             inicioViewModel.onAgregarTareaSelected(titulo, descrip, asignatura, fecha, prioridad)
             // La lista se recarga sola al terminar de guardar; aquí solo se muestra el día de la tarea
             homeViewModel.mostrarFecha(fecha)
-            Toast.makeText(this,"Tarea guardada", Toast.LENGTH_SHORT).show()
+            mostrarMensaje("Tarea guardada")
         }.show()
     }
 
@@ -631,7 +629,7 @@ class InicioActivity : AppCompatActivity() {
                     evento.imagenUri
                 )
                 homeViewModel.mostrarFecha(evento.fecha)
-                Toast.makeText(this, "Evento guardado", Toast.LENGTH_SHORT).show()
+                mostrarMensaje("Evento guardado")
             }
         ).also { it.show() }
     }
@@ -639,7 +637,7 @@ class InicioActivity : AppCompatActivity() {
     private fun showDialogCalificacion(){
         CalificacionDialog(this, obtenerNombresAsignaturas()) { tipo, valor, asignatura, descripcion ->
             inicioViewModel.onAgregarCalificacionSelected(tipo, valor, asignatura, descripcion)
-            Toast.makeText(this,"Calificación guardada", Toast.LENGTH_SHORT).show()
+            mostrarMensaje("Calificación guardada")
         }.show()
     }
 
@@ -649,24 +647,12 @@ class InicioActivity : AppCompatActivity() {
     }
 
     private fun makeSystemBarsTransparent() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // Make status bar transparent
-            window.statusBarColor = Color.TRANSPARENT
-            
-            // Set light status bar icons for better visibility
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                window.decorView.systemUiVisibility = (
-                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
-                    View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
-                    View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-                )
-            } else {
-                window.decorView.systemUiVisibility = (
-                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
-                    View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                )
-            }
-        }
+        // Sin LIGHT_STATUS_BAR: los iconos de la barra de estado van en blanco sobre el degradado
+        window.statusBarColor = Color.TRANSPARENT
+        window.decorView.systemUiVisibility = (
+            View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
+            View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+        )
     }
 
 }

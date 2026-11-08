@@ -4,8 +4,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.cardview.widget.CardView
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.softcg.myapplication.R
 import com.softcg.myapplication.ui.Inicio.Models.DateFilterItem
@@ -59,21 +57,9 @@ class DateFilterAdapter(
             tvDayName.text = dateItem.dayName
             tvDayNumber.text = dateItem.dayNumber
 
-            val context = itemView.context
-
-            if (isSelected) {
-                cardContainer.setBackgroundColor(ContextCompat.getColor(context, R.color.purple_primary))
-                tvDayName.setTextColor(ContextCompat.getColor(context, android.R.color.white))
-                tvDayNumber.setTextColor(ContextCompat.getColor(context, android.R.color.white))
-            } else if (dateItem.isToday) {
-                cardContainer.setBackgroundColor(ContextCompat.getColor(context, R.color.purple_light))
-                tvDayName.setTextColor(ContextCompat.getColor(context, R.color.purple_primary))
-                tvDayNumber.setTextColor(ContextCompat.getColor(context, R.color.purple_primary))
-            } else {
-                cardContainer.setBackgroundColor(ContextCompat.getColor(context, R.color.input_background))
-                tvDayName.setTextColor(ContextCompat.getColor(context, R.color.text_secondary))
-                tvDayNumber.setTextColor(ContextCompat.getColor(context, R.color.text_primary))
-            }
+            // Los colores salen de los estados: bg_dia_filtro y texto_dia_filtro
+            cardContainer.isSelected = isSelected
+            cardContainer.isActivated = dateItem.isToday
         }
     }
 }

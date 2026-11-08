@@ -98,10 +98,10 @@ class HomeViewModel @Inject constructor(
         for (i in 0..30) {
             val date = calendar.time
             val dayFormat = SimpleDateFormat("dd", Locale.getDefault())
-            val dayNameFormat = SimpleDateFormat("EEE", Locale.getDefault())
+            val dayNameFormat = SimpleDateFormat("EEE", Locale("es", "ES"))
 
             val dayNumber = dayFormat.format(date)
-            val dayName = dayNameFormat.format(date).uppercase()
+            val dayName = dayNameFormat.format(date).uppercase().removeSuffix(".")
             val dateString = dateFormat.format(date)
             val isToday = dateString == todayString
 

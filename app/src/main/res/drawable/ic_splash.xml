@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- La pantalla de inicio recorta el icono en círculo: el margen evita que se corte el logo y su texto -->
+<inset xmlns:android="http://schemas.android.com/apk/res/android"
+    android:drawable="@drawable/logoblanco"
+    android:inset="18%"/>
