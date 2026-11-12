@@ -95,7 +95,8 @@ class InicioActivity : AppCompatActivity() {
 
     companion object {
         private const val MAX_AVISOS_LOGRO = 3
-        private val SUBPANTALLAS = setOf(R.id.id_shop_fragment, R.id.id_focus_fragment)
+        // Pantallas con flecha para volver en vez del menú lateral
+        private val SUBPANTALLAS = setOf(R.id.id_shop_fragment, R.id.id_focus_fragment, R.id.id_prediction_fragment)
 
         fun create(context: Context): Intent =
             Intent(context, InicioActivity::class.java)
@@ -233,7 +234,7 @@ class InicioActivity : AppCompatActivity() {
     private fun setupHamburgerMenu() {
         val hamburgerMenu = findViewById<ImageView>(R.id.menu_hamburger)
         hamburgerMenu?.setOnClickListener {
-            // En Tienda y Enfoque es la flecha para volver: son subpantallas del perfil
+            // En Tienda, Enfoque y Predicción es la flecha para volver
             if (navController.currentDestination?.id in SUBPANTALLAS) {
                 navController.navigateUp()
             } else if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
@@ -278,7 +279,12 @@ class InicioActivity : AppCompatActivity() {
                 if (continua) R.drawable.bg_cabecera_recta else R.drawable.bg_cabecera
             )
 
-            val activa = if (subpantalla) R.id.id_profile_fragment else destination.id
+            // Tienda y Enfoque cuelgan del perfil; Predicción se abre desde una tarea del inicio
+            val activa = when {
+                destination.id == R.id.id_prediction_fragment -> R.id.id_home_fragment
+                subpantalla -> R.id.id_profile_fragment
+                else -> destination.id
+            }
             pestanas.forEach { (destino, pestana) -> pestana.isSelected = destino == activa }
         }
     }

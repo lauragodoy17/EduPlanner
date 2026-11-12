@@ -28,6 +28,10 @@ import com.softcg.myapplication.ui.Inicio.Dialogs.CalificarTareaDialog
 import com.softcg.myapplication.ui.Inicio.Dialogs.EventoDialog
 import com.softcg.myapplication.ui.Inicio.InicioViewModel
 import com.softcg.myapplication.ui.Inicio.Models.Evento
+import com.softcg.myapplication.ui.Inicio.Models.TimelineItem
+import com.softcg.myapplication.ui.Inicio.Models.TimelineItemType
+import com.softcg.myapplication.ui.Inicio.Fragments.Prediccion.PrediccionFragment
+import androidx.core.os.bundleOf
 import com.softcg.myapplication.ui.Inicio.Fragments.Home.Adapters.DateFilterAdapter
 import com.softcg.myapplication.ui.Inicio.Fragments.Home.Adapters.UnifiedItemAdapter
 import dagger.hilt.android.AndroidEntryPoint
@@ -135,7 +139,8 @@ class HomeFragment : Fragment() {
                 }.show()
             },
             onEntregarTarea = { tarea -> inicioViewModel.entregarTarea(tarea) },
-            onItemClick = { item -> /* Handle item click */ }
+            // Los eventos abren su detalle desde el propio adaptador
+            onItemClick = { item -> if (item.type == TimelineItemType.TAREA) abrirPrediccion(item) }
         )
 
         val recyclerView = view.findViewById<RecyclerView>(R.id.recycler_timeline)
@@ -194,6 +199,16 @@ class HomeFragment : Fragment() {
         }
     }
 
+
+    private fun abrirPrediccion(item: TimelineItem) {
+        findNavController().navigate(
+            R.id.id_prediction_fragment,
+            bundleOf(
+                PrediccionFragment.ARG_TITULO to item.titulo,
+                PrediccionFragment.ARG_ASIGNATURA to item.asignatura
+            )
+        )
+    }
 
     private fun showDialogEditarEvento(evento: Evento) {
         eventoDialog = EventoDialog(

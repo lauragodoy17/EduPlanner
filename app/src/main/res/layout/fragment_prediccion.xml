@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/fondo_app"
+    android:fillViewport="true"
+    tools:context=".ui.Inicio.Fragments.Prediccion.PrediccionFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingHorizontal="@dimen/margen_pantalla"
+        android:paddingTop="20dp"
+        android:paddingBottom="96dp">
+
+        <!-- Tarea desde la que se abrió -->
+        <androidx.cardview.widget.CardView
+            style="@style/Edu.Tarjeta"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    style="@style/Edu.Texto.Etiqueta"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="TAREA" />
+
+                <TextView
+                    android:id="@+id/prediccionTareaTitulo"
+                    style="@style/Edu.Texto.TituloTarjeta"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    tools:text="Taller de matrices" />
+
+                <TextView
+                    android:id="@+id/prediccionTareaAsignatura"
+                    style="@style/Edu.Texto.Cuerpo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    tools:text="Matemáticas" />
+
+                <TextView
+                    style="@style/Edu.Texto.Pie"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="Por ahora se envían datos de prueba, no los de esta tarea." />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Lo que se envió -->
+        <TextView
+            style="@style/Edu.Texto.Seccion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="4dp"
+            android:text="Datos enviados" />
+
+        <androidx.cardview.widget.CardView
+            style="@style/Edu.Tarjeta"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:id="@+id/prediccionEndpoint"
+                    style="@style/Edu.Texto.Rotulo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textIsSelectable="true"
+                    tools:text="POST https://softcgeduplanner.duckdns.org/predict?top_n=3" />
+
+                <TextView
+                    android:id="@+id/prediccionEnviado"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:fontFamily="monospace"
+                    android:textColor="@color/text_primary"
+                    android:textIsSelectable="true"
+                    android:textSize="13sp"
+                    tools:text="{\n  &quot;attendance_avg&quot;: 6.5\n}" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Lo que respondió la API -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="4dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/Edu.Texto.Seccion"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Respuesta de la API" />
+
+            <TextView
+                android:id="@+id/prediccionEstado"
+                style="@style/Edu.Texto.Etiqueta"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="HTTP 200" />
+        </LinearLayout>
+
+        <androidx.cardview.widget.CardView
+            style="@style/Edu.Tarjeta"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <com.google.android.material.progressindicator.LinearProgressIndicator
+                    android:id="@+id/prediccionCarga"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:indeterminate="true"
+                    app:indicatorColor="@color/purple_accent"
+                    app:trackColor="@color/purple_surface"
+                    app:trackCornerRadius="4dp" />
+
+                <TextView
+                    android:id="@+id/prediccionRespuesta"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="monospace"
+                    android:textColor="@color/text_primary"
+                    android:textIsSelectable="true"
+                    android:textSize="13sp"
+                    tools:text="{\n  &quot;prediccion&quot;: {}\n}" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>
