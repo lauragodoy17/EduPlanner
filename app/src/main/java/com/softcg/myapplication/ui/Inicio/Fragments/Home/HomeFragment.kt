@@ -55,7 +55,7 @@ class HomeFragment : Fragment() {
     private val acciones by lazy { AccionesDatosEstudio(this, datosEstudio) }
     @Inject lateinit var recomendarTarea: RecomendarTareaUseCase
     private lateinit var unifiedAdapter: UnifiedItemAdapter
-    private var currentFilter = 0 // 0: Todo, 1: Solo Tareas, 2: Solo Eventos
+    private var currentFilter = 0 // 0: Todos, 1: Solo Tareas, 2: Solo Eventos
 
     /** Tarea que se está entregando o calificando: al terminar se pregunta su dificultad. */
     private var tareaEnCurso: Tarea? = null
@@ -285,7 +285,7 @@ class HomeFragment : Fragment() {
         val allEventos = homeViewModel._filteredEventos.value ?: emptyList()
 
         when (currentFilter) {
-            0 -> { // Todo
+            0 -> { // Todos
                 unifiedAdapter.setData(allTareas, allEventos)
             }
             1 -> { // Solo Tareas

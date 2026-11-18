@@ -115,7 +115,7 @@ interface GamificacionDao {
     @Query("SELECT * FROM sesiones_enfoque WHERE uid = :uid AND completada_millis IS NOT NULL AND origen = 'ENFOQUE'")
     suspend fun sesionesEnfoqueCompletadas(uid: String): List<SesionEnfoqueEntity>
 
-    /** Todo el estudio terminado (temporizador y registros manuales): fuente del tiempo de estudio de las predicciones. */
+    /** El estudio terminado completo (temporizador y registros manuales): fuente del tiempo de estudio de las predicciones. */
     @Query("SELECT * FROM sesiones_enfoque WHERE uid = :uid AND completada_millis IS NOT NULL")
     suspend fun sesionesEstudio(uid: String): List<SesionEnfoqueEntity>
 

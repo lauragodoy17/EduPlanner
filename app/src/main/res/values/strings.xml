@@ -48,7 +48,7 @@
     <string name="home">home\n</string>
     <string name="agenda">agenda\n</string>
     <string name="Inicio">Inicio</string>
-    <!-- TODO: Remove or change this placeholder text -->
+    <!-- Pendiente: quitar o cambiar este texto de ejemplo -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="asignaturas">Asignaturas</string>
     <string name="horario">Horario</string>

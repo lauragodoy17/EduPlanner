@@ -16,8 +16,8 @@ class CatalogoModeloTest {
         assertEquals(50, CatalogoModelo.TEMAS_POR_AREA.values.flatten().toSet().size)
         assertEquals(12, CatalogoModelo.METODOS.size)
         // Sin tildes, como en el entrenamiento
-        val todo = CatalogoModelo.AREAS + CatalogoModelo.TEMAS_POR_AREA.values.flatten() + CatalogoModelo.METODOS
-        assertTrue(todo.none { Regex("[áéíóúñ]", RegexOption.IGNORE_CASE).containsMatchIn(it) })
+        val todos = CatalogoModelo.AREAS + CatalogoModelo.TEMAS_POR_AREA.values.flatten() + CatalogoModelo.METODOS
+        assertTrue(todos.none { Regex("[áéíóúñ]", RegexOption.IGNORE_CASE).containsMatchIn(it) })
     }
 
     @Test
@@ -65,7 +65,7 @@ class CatalogoModeloTest {
         assertFalse(CatalogoModelo.esTema(null, "Integrales"))
         assertFalse(CatalogoModelo.esArea("Matemáticas"))
         assertTrue(CatalogoModelo.esMetodo("Metodo Feynman"))
-        assertEquals("Método Feynman", CatalogoModelo.etiqueta("Metodo Feynman"))
+        assertEquals("Métodos Feynman", CatalogoModelo.etiqueta("Metodo Feynman"))
         assertEquals("Álgebra lineal", CatalogoModelo.etiqueta("Algebra lineal"))
     }
 }

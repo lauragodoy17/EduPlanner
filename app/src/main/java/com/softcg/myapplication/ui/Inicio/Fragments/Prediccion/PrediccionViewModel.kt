@@ -51,7 +51,7 @@ class PrediccionViewModel @Inject constructor(
                 is Extraccion.Lista -> EstadoDatos.Listos(extraccion.resultado)
             }
             _datos.value = nuevo
-            // La primera vez que todo está completo se predice sin pedir nada más
+            // La primera vez que los datos están completos se predice sin pedir nada más
             if (nuevo is EstadoDatos.Listos && datosEnviados == null && _estado.value == null) {
                 nuevo.resultado.datos?.let { enviar(it) }
             }

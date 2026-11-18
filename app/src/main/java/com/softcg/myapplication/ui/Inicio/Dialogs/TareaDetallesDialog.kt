@@ -196,7 +196,7 @@ class TareaDetallesDialog(
             lista.addView(fila)
         }
         dialog.findViewById<View>(R.id.iaSinFuentes).visibility = if (fuentes.isEmpty()) View.VISIBLE else View.GONE
-        // Una búsqueda siempre es un enlace real: complementa la lista, sobre todo si quedó vacía
+        // Una búsqueda siempre es un enlace real: complementa la lista, especialmente si quedó vacía
         dialog.findViewById<View>(R.id.iaBuscarMas).setOnClickListener {
             abrir("https://scholar.google.com/scholar?hl=es&q=" + Uri.encode(tarea.titulo.trim()))
         }

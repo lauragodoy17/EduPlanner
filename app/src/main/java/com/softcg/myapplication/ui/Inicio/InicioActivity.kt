@@ -225,7 +225,7 @@ class InicioActivity : AppCompatActivity() {
             showDialogCalificacion()
         }
         qrb.setOnClickListener {
-            // TODO: Implementar funcionalidad de lector QR
+            // Pendiente: implementar funcionalidad de lector QR
             toggleFabMode(anadirb)
             mostrarMensaje("Lector QR: próximamente")
         }

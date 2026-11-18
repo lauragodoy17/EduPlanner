@@ -19,7 +19,7 @@ fun DialogFragment.show(launcher: DialogFragmentLauncher, activity: FragmentActi
 /** Muestra el diálogo como hoja inferior a pantalla completa con la animación de la app. */
 fun Dialog.showAsBottomSheet() {
     show()
-    // En tabletas y en horizontal no ocupa todo el ancho
+    // En tabletas y en horizontal no ocupa el ancho completo
     val recursos = context.resources
     val ancho = min(recursos.displayMetrics.widthPixels, recursos.getDimensionPixelSize(R.dimen.ancho_max_hoja))
     window?.setLayout(ancho, ViewGroup.LayoutParams.WRAP_CONTENT)

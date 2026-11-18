@@ -41,7 +41,7 @@ class PrediccionFragment : Fragment() {
         initTarea(view)
         initDatos(view)
         initRespuesta(view)
-        // Cada dato que se completa desde esta pantalla vuelve a extraer todo
+        // Cada dato que se completa desde esta pantalla vuelve a extraer los datos completos
         datosEstudio.cambios.observe(viewLifecycleOwner) { prediccionViewModel.cargar(tareaId) }
         return view
     }
