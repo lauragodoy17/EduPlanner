@@ -26,6 +26,13 @@ import com.softcg.myapplication.domain.gamificacion.ResultadoCalificarTarea
 import com.softcg.myapplication.domain.gamificacion.ResultadoEntregarTarea
 import com.softcg.myapplication.ui.Inicio.Dialogs.CalificarTareaDialog
 import com.softcg.myapplication.ui.Inicio.Dialogs.EventoDialog
+import com.softcg.myapplication.ui.Inicio.Dialogs.TareaDetallesDialog
+import com.softcg.myapplication.ui.Inicio.Dialogs.AccionesDatosEstudio
+import com.softcg.myapplication.ui.Inicio.DatosEstudioViewModel
+import com.softcg.myapplication.ui.Inicio.Models.Tarea
+import com.softcg.myapplication.domain.ia.RecomendarTareaUseCase
+import androidx.lifecycle.lifecycleScope
+import javax.inject.Inject
 import com.softcg.myapplication.ui.Inicio.InicioViewModel
 import com.softcg.myapplication.ui.Inicio.Models.Evento
 import com.softcg.myapplication.ui.Inicio.Models.TimelineItem
@@ -44,8 +51,14 @@ class HomeFragment : Fragment() {
 
     private val homeViewModel: HomeViewModel by activityViewModels()
     private val inicioViewModel: InicioViewModel by activityViewModels()
+    private val datosEstudio: DatosEstudioViewModel by activityViewModels()
+    private val acciones by lazy { AccionesDatosEstudio(this, datosEstudio) }
+    @Inject lateinit var recomendarTarea: RecomendarTareaUseCase
     private lateinit var unifiedAdapter: UnifiedItemAdapter
     private var currentFilter = 0 // 0: Todo, 1: Solo Tareas, 2: Solo Eventos
+
+    /** Tarea que se está entregando o calificando: al terminar se pregunta su dificultad. */
+    private var tareaEnCurso: Tarea? = null
 
     private var eventoDialog: EventoDialog? = null
     private val seleccionarImagen = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
@@ -135,12 +148,22 @@ class HomeFragment : Fragment() {
             onEditEvento = { evento -> showDialogEditarEvento(evento) },
             onCalificarTarea = { tarea ->
                 CalificarTareaDialog(requireContext(), tarea) { texto ->
+                    tareaEnCurso = tarea
                     inicioViewModel.calificarTarea(tarea, texto)
                 }.show()
             },
-            onEntregarTarea = { tarea -> inicioViewModel.entregarTarea(tarea) },
+            onEntregarTarea = { tarea ->
+                tareaEnCurso = tarea
+                inicioViewModel.entregarTarea(tarea)
+            },
+            onVerMasTarea = { tarea ->
+                TareaDetallesDialog(
+                    requireContext(), tarea, viewLifecycleOwner.lifecycleScope, recomendarTarea,
+                    onCompletarDatos = { abrirPrediccion(it.id, it.titulo, it.asignatura) }
+                ).show()
+            },
             // Los eventos abren su detalle desde el propio adaptador
-            onItemClick = { item -> if (item.type == TimelineItemType.TAREA) abrirPrediccion(item) }
+            onItemClick = { item -> if (item.type == TimelineItemType.TAREA) abrirPrediccion(item.id, item.titulo, item.asignatura) }
         )
 
         val recyclerView = view.findViewById<RecyclerView>(R.id.recycler_timeline)
@@ -162,6 +185,8 @@ class HomeFragment : Fragment() {
                     homeViewModel.obtenerTareas()
                     if (resultado.monedas > 0) requireActivity().mostrarRecompensa(resultado.monedas, if (resultado.aTiempo) "A tiempo" else null)
                     else requireActivity().mostrarMensaje("Tarea completada")
+                    tareaEnCurso?.let { acciones.preguntarDificultadDeTarea(it) }
+                    tareaEnCurso = null
                 }
                 ResultadoCalificarTarea.YaCalificada -> requireActivity().mostrarMensaje("Esta tarea ya tiene una calificación")
                 ResultadoCalificarTarea.ValorInvalido -> requireActivity().mostrarMensaje("Ingresa una calificación válida")
@@ -169,12 +194,17 @@ class HomeFragment : Fragment() {
             }
         }
 
+        // Un tema elegido desde "Ver más" cambia la tarea: se recarga la lista
+        datosEstudio.cambios.observe(viewLifecycleOwner) { homeViewModel.obtenerTareas() }
+
         inicioViewModel.resultadoEntregarTarea.observe(viewLifecycleOwner) { evento ->
             when (val resultado = evento.getContentIfNotHandled() ?: return@observe) {
                 is ResultadoEntregarTarea.Entregada -> {
                     homeViewModel.obtenerTareas()
                     if (resultado.monedas > 0) requireActivity().mostrarRecompensa(resultado.monedas, if (resultado.aTiempo) "A tiempo" else null)
                     else requireActivity().mostrarMensaje("Tarea entregada")
+                    tareaEnCurso?.let { acciones.preguntarDificultadDeTarea(it) }
+                    tareaEnCurso = null
                 }
                 ResultadoEntregarTarea.YaEntregada -> requireActivity().mostrarMensaje("Esta tarea ya estaba entregada")
                 ResultadoEntregarTarea.Error -> requireActivity().mostrarMensaje("No se pudo marcar la tarea. Inténtalo de nuevo")
@@ -200,12 +230,13 @@ class HomeFragment : Fragment() {
     }
 
 
-    private fun abrirPrediccion(item: TimelineItem) {
+    private fun abrirPrediccion(tareaId: Int?, titulo: String, asignatura: String?) {
         findNavController().navigate(
             R.id.id_prediction_fragment,
             bundleOf(
-                PrediccionFragment.ARG_TITULO to item.titulo,
-                PrediccionFragment.ARG_ASIGNATURA to item.asignatura
+                PrediccionFragment.ARG_TAREA_ID to (tareaId ?: -1),
+                PrediccionFragment.ARG_TITULO to titulo,
+                PrediccionFragment.ARG_ASIGNATURA to asignatura
             )
         )
     }

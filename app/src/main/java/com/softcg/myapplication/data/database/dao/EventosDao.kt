@@ -7,13 +7,12 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.softcg.myapplication.data.database.entities.EventoEntity
-import com.softcg.myapplication.data.database.entities.TareaEntity
 
 @Dao
 interface EventosDao {
 
-    @Query("SELECT * FROM eventos_table")
-    fun getAllEventos():List<EventoEntity>
+    @Query("SELECT * FROM eventos_table WHERE uid = :uid")
+    fun getAllEventos(uid: String):List<EventoEntity>
 
     @Delete
     suspend fun deleteEvento(eventoEntity: EventoEntity)
@@ -24,4 +23,6 @@ interface EventosDao {
     @Update
     suspend fun updateEvento(evento: EventoEntity)
 
+    @Query("UPDATE eventos_table SET uid = :uid WHERE uid = ''")
+    fun adoptarSinDueno(uid: String): Int
 }

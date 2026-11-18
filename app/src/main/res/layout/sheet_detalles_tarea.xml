@@ -1,0 +1,414 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- "Ver más" de una tarea: detalles y recomendaciones de la IA -->
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/dialog_a"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingHorizontal="24dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="20dp">
+
+        <View style="@style/Edu.AsaHoja"/>
+
+        <TextView
+            android:id="@+id/tareaEstado"
+            style="@style/Edu.Texto.Etiqueta"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="6dp"
+            tools:text="TAREA"/>
+
+        <TextView
+            android:id="@+id/tareaTitulo"
+            style="@style/Edu.Texto.TituloHoja"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            tools:text="Ensayo de historia"/>
+
+        <TextView
+            android:id="@+id/labelDescripcion"
+            style="@style/Edu.Texto.Rotulo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="2dp"
+            android:text="Descripción"/>
+
+        <TextView
+            android:id="@+id/tareaDescripcion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="14dp"
+            android:textColor="@color/text_primary"
+            android:textSize="15sp"
+            tools:text="Escribir 3 páginas sobre la independencia"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/time_row_bg"
+            android:orientation="vertical"
+            android:padding="12dp">
+
+            <TextView
+                style="@style/Edu.Texto.Rotulo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="2dp"
+                android:text="Asignatura"/>
+
+            <TextView
+                android:id="@+id/tareaAsignatura"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:textColor="@color/text_primary"
+                android:textSize="15sp"
+                tools:text="Historia"/>
+
+            <TextView
+                style="@style/Edu.Texto.Rotulo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="2dp"
+                android:text="Fecha de entrega"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:layout_marginEnd="8dp"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/baseline_calendar_month_24"
+                    app:tint="@color/purple_accent"/>
+
+                <TextView
+                    android:id="@+id/tareaFecha"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/text_primary"
+                    android:textSize="15sp"
+                    tools:text="20/11/2026 · faltan 8 días"/>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/labelCalificacion"
+                style="@style/Edu.Texto.Rotulo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="2dp"
+                android:text="Calificación"
+                android:visibility="gone"/>
+
+            <TextView
+                android:id="@+id/tareaCalificacion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:textColor="@color/text_primary"
+                android:textSize="15sp"
+                android:visibility="gone"
+                tools:text="9.5"/>
+
+            <TextView
+                android:id="@+id/labelPrioridad"
+                style="@style/Edu.Texto.Rotulo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="2dp"
+                android:text="Prioridad"/>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <View
+                    android:id="@+id/prioridadIndicador"
+                    android:layout_width="10dp"
+                    android:layout_height="10dp"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginEnd="12dp"
+                    android:background="@drawable/circle_shape"/>
+
+                <TextView
+                    android:id="@+id/prioridadTexto"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/text_primary"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    tools:text="Alta"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Recomendaciones de la IA -->
+        <androidx.cardview.widget.CardView
+            style="@style/Edu.Tarjeta.Plana"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="14dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="14dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginEnd="8dp"
+                        android:importantForAccessibility="no"
+                        android:src="@drawable/ic_ia_destello"
+                        app:tint="@color/purple_accent"/>
+
+                    <TextView
+                        style="@style/Edu.Texto.TituloTarjeta"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Recomendaciones de la IA"/>
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/iaIntro"
+                    style="@style/Edu.Texto.Cuerpo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:text="El modelo predictivo elige, con tus datos, el método de estudio que más te conviene. Luego la IA te explica cómo aplicarlo a esta tarea y te da bibliografía para profundizar."/>
+
+                <LinearLayout
+                    android:id="@+id/iaContenido"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:orientation="vertical"
+                    android:visibility="gone"
+                    tools:visibility="visible">
+
+                    <!-- Método recomendado: sale del modelo predictivo, no del texto de Gemini -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="12dp"
+                        android:background="@drawable/time_row_bg"
+                        android:orientation="vertical"
+                        android:padding="12dp">
+
+                        <TextView
+                            style="@style/Edu.Texto.Rotulo"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="2dp"
+                            android:text="Método de estudio recomendado"/>
+
+                        <TextView
+                            android:id="@+id/iaMetodo"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/purple_primary"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            tools:text="Mapas mentales"/>
+
+                        <TextView
+                            android:id="@+id/iaMetodoOrigen"
+                            style="@style/Edu.Texto.Etiqueta"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="6dp"
+                            tools:text="MODELO PREDICTIVO · 34 % DE CONFIANZA"/>
+
+                        <TextView
+                            android:id="@+id/iaFaltantes"
+                            style="@style/Edu.Texto.Pie"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="6dp"
+                            android:visibility="gone"
+                            tools:text="Para usar el modelo predictivo faltan: Asistencia a clase, Tiempo de estudio"
+                            tools:visibility="visible"/>
+
+                        <TextView
+                            android:id="@+id/iaCompletarDatos"
+                            style="@style/Edu.Texto.Enlace"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:background="?attr/selectableItemBackground"
+                            android:paddingVertical="4dp"
+                            android:text="Completar mis datos"
+                            android:visibility="gone"
+                            tools:visibility="visible"/>
+                    </LinearLayout>
+
+                    <TextView
+                        style="@style/Edu.Texto.Rotulo"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="4dp"
+                        android:text="Consejo personalizado de EduPlanner"/>
+
+                    <TextView
+                        android:id="@+id/iaParrafo"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
+                        android:lineSpacingExtra="2dp"
+                        android:textColor="@color/text_primary"
+                        android:textSize="15sp"
+                        tools:text="Según los datos que has registrado, te recomiendo Mapas mentales con un 34 % de confianza."/>
+
+                    <TextView
+                        android:id="@+id/iaConsejo"
+                        style="@style/Edu.Texto.Cuerpo"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="12dp"
+                        android:lineSpacingExtra="2dp"
+                        tools:text="Dibuja en el centro la idea de integral y ramifica las técnicas."/>
+
+                    <TextView
+                        android:id="@+id/labelPasos"
+                        style="@style/Edu.Texto.Rotulo"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="4dp"
+                        android:text="Cómo aplicar el método"/>
+
+                    <TextView
+                        android:id="@+id/iaPasos"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:lineSpacingExtra="4dp"
+                        android:textColor="@color/text_primary"
+                        android:textSize="14sp"
+                        tools:text="1. Busca tres fuentes\n2. Haz un esquema\n3. Escribe el borrador"/>
+
+                    <TextView
+                        android:id="@+id/labelTiempo"
+                        style="@style/Edu.Texto.Rotulo"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="2dp"
+                        android:text="Tiempo estimado"/>
+
+                    <LinearLayout
+                        android:id="@+id/containerTiempo"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:layout_marginEnd="8dp"
+                            android:importantForAccessibility="no"
+                            android:src="@drawable/ic_clock"
+                            app:tint="@color/purple_accent"/>
+
+                        <TextView
+                            android:id="@+id/iaTiempo"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/text_primary"
+                            android:textSize="14sp"
+                            tools:text="3 sesiones de 45 minutos"/>
+                    </LinearLayout>
+
+                    <TextView
+                        style="@style/Edu.Texto.Rotulo"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="4dp"
+                        android:text="Bibliografía y fuentes de consulta"/>
+
+                    <!-- Una fila por fuente comprobada (item_fuente) -->
+                    <LinearLayout
+                        android:id="@+id/iaFuentes"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"/>
+
+                    <TextView
+                        android:id="@+id/iaSinFuentes"
+                        style="@style/Edu.Texto.Cuerpo"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="No se encontraron fuentes verificables para este tema."
+                        android:visibility="gone"/>
+
+                    <TextView
+                        android:id="@+id/iaBuscarMas"
+                        style="@style/Edu.Texto.Enlace"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:background="?attr/selectableItemBackground"
+                        android:paddingVertical="4dp"
+                        android:text="Buscar más en Google Académico"/>
+
+                    <TextView
+                        style="@style/Edu.Texto.Pie"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:text="El método lo elige el modelo predictivo de EduPlanner; el consejo lo redacta una IA. Las fuentes se comprobaron automáticamente: revisa que encajen con lo que pide tu profesor."/>
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/iaError"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:textColor="@color/estado_error"
+                    android:textSize="14sp"
+                    android:visibility="gone"
+                    tools:text="No hay conexión a internet."/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnRecomendar"
+                    style="@style/Edu.Boton"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/alto_boton"
+                    android:layout_marginTop="12dp"
+                    android:text="Generar recomendaciones"/>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnCerrar"
+            style="@style/Edu.BotonTexto"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="Cerrar"/>
+    </LinearLayout>
+</ScrollView>

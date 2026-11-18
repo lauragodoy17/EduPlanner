@@ -9,14 +9,18 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.softcg.myapplication.data.database.entities.TareaEntity
 
+/** Todas las consultas van filtradas por el uid del usuario con sesión. */
 @Dao
 interface TareasDao {
-    @Query("SELECT * FROM tareas_table ORDER BY id DESC")
-    fun getAllTareas():List<TareaEntity>
+    @Query("SELECT * FROM tareas_table WHERE uid = :uid ORDER BY id DESC")
+    fun getAllTareas(uid: String):List<TareaEntity>
 
     /** Tareas con la calificación que las completó (null si siguen pendientes). */
-    @Query("SELECT t.*, c.valor AS calificacion FROM tareas_table t LEFT JOIN calificaciones_table c ON c.tarea_id = t.id ORDER BY t.id DESC")
-    fun getAllTareasConCalificacion():List<TareaConCalificacion>
+    @Query("SELECT t.*, c.valor AS calificacion FROM tareas_table t LEFT JOIN calificaciones_table c ON c.tarea_id = t.id WHERE t.uid = :uid ORDER BY t.id DESC")
+    fun getAllTareasConCalificacion(uid: String):List<TareaConCalificacion>
+
+    @Query("SELECT t.*, c.valor AS calificacion FROM tareas_table t LEFT JOIN calificaciones_table c ON c.tarea_id = t.id WHERE t.uid = :uid AND t.id = :id")
+    suspend fun getTarea(uid: String, id: Int): TareaConCalificacion?
 
     @Delete
     suspend fun deleteTarea(tareaEntity: TareaEntity)
@@ -28,9 +32,16 @@ interface TareasDao {
     suspend fun insertTarea(tarea:TareaEntity): Long
 
     /** Devuelve 0 si la tarea no existe o ya estaba entregada. */
-    @Query("UPDATE tareas_table SET entregada_millis = :millis WHERE id = :id AND entregada_millis IS NULL")
-    suspend fun marcarEntregada(id:Int, millis:Long): Int
+    @Query("UPDATE tareas_table SET entregada_millis = :millis WHERE id = :id AND uid = :uid AND entregada_millis IS NULL")
+    suspend fun marcarEntregada(uid: String, id:Int, millis:Long): Int
 
+    /** Filas anteriores a la versión 16, sin dueño. */
+    @Query("UPDATE tareas_table SET uid = :uid WHERE uid = ''")
+    fun adoptarSinDueno(uid: String): Int
+
+    /** Enlaza por id las tareas cuya asignatura se escribió con este nombre. */
+    @Query("UPDATE tareas_table SET asignatura_id = :asignaturaId WHERE uid = :uid AND asignatura_id IS NULL AND asignatura = :nombre")
+    suspend fun enlazarAsignatura(uid: String, asignaturaId: Int, nombre: String): Int
 }
 
 data class TareaConCalificacion(

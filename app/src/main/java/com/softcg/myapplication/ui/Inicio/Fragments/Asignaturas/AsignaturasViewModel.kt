@@ -11,6 +11,8 @@ import com.softcg.myapplication.domain.gamificacion.CondicionesRecompensa
 import com.softcg.myapplication.domain.gamificacion.OtorgarRecompensaUseCase
 import com.softcg.myapplication.domain.gamificacion.ResultadoRecompensa
 import com.softcg.myapplication.domain.gamificacion.TipoRecompensa
+import com.softcg.myapplication.domain.prediccion.Extraccion
+import com.softcg.myapplication.domain.prediccion.ExtraerDatosPrediccionUseCase
 import com.softcg.myapplication.ui.Inicio.Fragments.Asignaturas.Models.Asignatura
 import com.softcg.myapplication.ui.Inicio.Fragments.Asignaturas.Models.ListItem
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,11 +20,20 @@ import kotlinx.coroutines.launch
 import java.util.Locale
 import javax.inject.Inject
 
+/** Cuántos datos para predicciones tiene una asignatura, para su tarjeta. */
+data class ResumenDatos(val listos: Int, val total: Int, val actualizarInteres: Boolean)
+
 @HiltViewModel
 class AsignaturasViewModel @Inject constructor(
     private val getAsignaturasUseCase: getAsignaturasUseCase,
-    private val otorgarRecompensa: OtorgarRecompensaUseCase
+    private val otorgarRecompensa: OtorgarRecompensaUseCase,
+    private val extraerDatos: ExtraerDatosPrediccionUseCase
 ) : ViewModel(){
+
+    companion object {
+        /** Cada mes se recuerda confirmar el interés: puede cambiar durante el periodo. */
+        const val DIAS_RECORDAR_INTERES = 30L
+    }
 
     @Inject lateinit var asignaturasRepository : AsignaturasRepository
 
@@ -33,9 +44,31 @@ class AsignaturasViewModel @Inject constructor(
     val recompensa: LiveData<Event<Int>>
         get() = _recompensa
 
+    /** Id de la asignatura recién creada: se le piden sus datos para predicciones. */
+    private val _asignaturaCreada = MutableLiveData<Event<Int>>()
+    val asignaturaCreada: LiveData<Event<Int>>
+        get() = _asignaturaCreada
+
+    private val _resumenDatos = MutableLiveData<Map<Int, ResumenDatos>>(emptyMap())
+    val resumenDatos: LiveData<Map<Int, ResumenDatos>>
+        get() = _resumenDatos
+
     fun obtenerAsignaturas (){
         viewModelScope.launch {
-            _asignaturas.value = getAsignaturasUseCase()
+            val asignaturas = getAsignaturasUseCase()
+            _asignaturas.value = asignaturas
+            actualizarResumenDatos(asignaturas)
+        }
+    }
+
+    fun actualizarResumenDatos(asignaturas: List<Asignatura> = _asignaturas.value.orEmpty()) {
+        viewModelScope.launch {
+            _resumenDatos.value = asignaturas.mapNotNull { asignatura ->
+                val id = asignatura.id ?: return@mapNotNull null
+                val resultado = (extraerDatos.deAsignatura(id) as? Extraccion.Lista)?.resultado ?: return@mapNotNull null
+                val interesViejo = (resultado.diasDesdeInteres ?: 0) >= DIAS_RECORDAR_INTERES
+                id to ResumenDatos(resultado.listos, resultado.total, interesViejo)
+            }.toMap()
         }
     }
     fun deleteAsignatura(asignatura: Asignatura){
@@ -51,6 +84,7 @@ class AsignaturasViewModel @Inject constructor(
         viewModelScope.launch {
             val id = asignaturasRepository.insertAsignatura(asignatura)
             obtenerAsignaturas()
+            if (id > 0) _asignaturaCreada.value = Event(id.toInt())
             if (CondicionesRecompensa.claseValida(hora, duracion, horarios)) {
                 val resultado = otorgarRecompensa(TipoRecompensa.CLASE_REGISTRADA, "$id")
                 if (resultado is ResultadoRecompensa.Otorgada) {

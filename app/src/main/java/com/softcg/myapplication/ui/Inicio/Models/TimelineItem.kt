@@ -14,7 +14,9 @@ data class TimelineItem(
     val horaFin: String? = null, // Solo para eventos
     val imagenUri: String? = null, // Solo para eventos
     val calificacion: Float? = null, // Solo para tareas: si tiene, la tarea está completada
-    val entregadaMillis: Long? = null // Solo para tareas: si tiene, ya se entregó
+    val entregadaMillis: Long? = null, // Solo para tareas: si tiene, ya se entregó
+    val tema: String? = null, // Solo para tareas: tema del catálogo del modelo predictivo
+    val asignaturaId: Int? = null // Solo para tareas
 ) {
     fun getDateForSorting(): Date {
         return try {
@@ -41,7 +43,9 @@ fun Tarea.toTimelineItem(): TimelineItem {
         type = TimelineItemType.TAREA,
         asignatura = this.asignatura,
         calificacion = this.calificacion,
-        entregadaMillis = this.entregadaMillis
+        entregadaMillis = this.entregadaMillis,
+        tema = this.tema,
+        asignaturaId = this.asignaturaId
     )
 }
 

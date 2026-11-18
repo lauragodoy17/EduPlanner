@@ -15,5 +15,11 @@ data class TareaEntity (
     @ColumnInfo(name= "fecha")val fecha:String,
     @ColumnInfo(name= "prioridad")val prioridad:Int,
     // Cuándo la marcó el usuario como entregada; null si sigue pendiente
-    @ColumnInfo(name= "entregada_millis")val entregadaMillis:Long? = null
+    @ColumnInfo(name= "entregada_millis")val entregadaMillis:Long? = null,
+    // Dueño (uid de Firebase). '' = creada antes de la versión 16: la adopta el primer usuario que abre la app
+    @ColumnInfo(name = "uid", defaultValue = "")val uid:String = "",
+    // Tema del catálogo del modelo predictivo (subject_topic); null si no se eligió
+    @ColumnInfo(name = "tema")val tema:String? = null,
+    // Asignatura por id: el nombre se conserva por compatibilidad con las pantallas existentes
+    @ColumnInfo(name = "asignatura_id")val asignaturaId:Int? = null
 )

@@ -14,5 +14,7 @@ data class CalificacionEntity (
     @ColumnInfo(name = "asignatura")val asignatura:String,
     @ColumnInfo(name = "descripcion")val descripcion:String,
     // Tarea que quedó completada con esta calificación (null si se registró desde Calificaciones)
-    @ColumnInfo(name = "tarea_id")val tareaId:Int? = null
+    @ColumnInfo(name = "tarea_id")val tareaId:Int? = null,
+    @ColumnInfo(name = "uid", defaultValue = "")val uid:String = "",
+    @ColumnInfo(name = "asignatura_id")val asignaturaId:Int? = null
     )

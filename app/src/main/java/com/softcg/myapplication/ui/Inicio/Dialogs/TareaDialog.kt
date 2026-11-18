@@ -2,6 +2,7 @@ package com.softcg.myapplication.ui.Inicio.Dialogs
 
 import android.app.Dialog
 import android.content.Context
+import android.view.View
 import android.view.Window
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
@@ -11,6 +12,7 @@ import com.softcg.myapplication.R
 import com.softcg.myapplication.core.ex.showAsBottomSheet
 import com.softcg.myapplication.core.ex.showDatePicker
 
+/** Crear una tarea. El tema no se pregunta: para las predicciones y la bibliografía es el título. */
 class TareaDialog(
     private val context: Context,
     private val asignaturas: List<String>,

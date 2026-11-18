@@ -29,6 +29,7 @@ class UnifiedItemAdapter(
     private val onEditEvento: (Evento) -> Unit = {},
     private val onCalificarTarea: (Tarea) -> Unit = {},
     private val onEntregarTarea: (Tarea) -> Unit = {},
+    private val onVerMasTarea: (Tarea) -> Unit = {},
     private val onItemClick: (TimelineItem) -> Unit = {}
 ) : RecyclerView.Adapter<UnifiedItemAdapter.UnifiedViewHolder>() {
 
@@ -167,6 +168,19 @@ class UnifiedItemAdapter(
             item.imagenUri
         )
 
+        private fun tareaDe(item: TimelineItem) = Tarea(
+            item.id,
+            item.titulo,
+            item.descrip,
+            item.asignatura ?: "",
+            item.fecha,
+            item.prioridad,
+            calificacion = item.calificacion,
+            entregadaMillis = item.entregadaMillis,
+            tema = item.tema,
+            asignaturaId = item.asignaturaId
+        )
+
         private fun formatDisplayDate(dateString: String): String {
             return try {
                 val inputFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
@@ -184,8 +198,6 @@ class UnifiedItemAdapter(
         private fun showPopupMenu(view: View, item: TimelineItem) {
             val popupMenu = PopupMenu(context, view)
             popupMenu.inflate(R.menu.menudos)
-            // Solo los eventos tienen pantalla de detalle
-            popupMenu.menu.findItem(R.id.VerMas).isVisible = item.type == TimelineItemType.EVENTO
             popupMenu.menu.findItem(R.id.Calificar).isVisible =
                 item.type == TimelineItemType.TAREA && item.calificacion == null
             popupMenu.menu.findItem(R.id.Entregar).isVisible =
@@ -194,15 +206,16 @@ class UnifiedItemAdapter(
             popupMenu.setOnMenuItemClickListener { menuItem ->
                 when (menuItem.itemId) {
                     R.id.Calificar -> {
-                        onCalificarTarea(Tarea(item.id, item.titulo, item.descrip, item.asignatura ?: "", item.fecha, item.prioridad, entregadaMillis = item.entregadaMillis))
+                        onCalificarTarea(tareaDe(item))
                         true
                     }
                     R.id.Entregar -> {
-                        onEntregarTarea(Tarea(item.id, item.titulo, item.descrip, item.asignatura ?: "", item.fecha, item.prioridad))
+                        onEntregarTarea(tareaDe(item))
                         true
                     }
                     R.id.VerMas -> {
-                        showEventoDetallesDialog(eventoDe(item))
+                        if (item.type == TimelineItemType.EVENTO) showEventoDetallesDialog(eventoDe(item))
+                        else onVerMasTarea(tareaDe(item))
                         true
                     }
                     R.id.Borrar -> {

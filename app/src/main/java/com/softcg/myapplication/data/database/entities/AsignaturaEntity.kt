@@ -20,5 +20,11 @@ data class AsignaturaEntity (
     @ColumnInfo(name = "sabado")val sabado:Boolean,
     @ColumnInfo(name = "domingo")val domingo:Boolean,
     @ColumnInfo(name = "tipo_calificacion")val tipoCalificacion:String = "",
-    @ColumnInfo(name = "fecha_registro", defaultValue = "0")val fechaRegistro:Long = 0L
+    @ColumnInfo(name = "fecha_registro", defaultValue = "0")val fechaRegistro:Long = 0L,
+    @ColumnInfo(name = "uid", defaultValue = "")val uid:String = "",
+    // Área del catálogo del modelo predictivo (subject_name), confirmada por el estudiante
+    @ColumnInfo(name = "area_modelo")val areaModelo:String? = null,
+    // Rango de la escala de notas cuando el tipo de calificación no la indica (p. ej. 1-5)
+    @ColumnInfo(name = "escala_min")val escalaMin:Float? = null,
+    @ColumnInfo(name = "escala_max")val escalaMax:Float? = null
 )

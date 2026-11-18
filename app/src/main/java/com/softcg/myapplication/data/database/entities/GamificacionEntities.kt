@@ -69,15 +69,28 @@ data class MisionAsignadaEntity(
     @ColumnInfo(name = "mision_id") val misionId: String
 )
 
-/** Sesión de enfoque; con [completadaMillis] null sigue en curso. Abandonarla borra la fila. */
+/**
+ * Sesión de estudio; con [completadaMillis] null sigue en curso. Abandonarla borra la fila.
+ * [origen] ENFOQUE = temporizador de la app (da EduCoins); MANUAL = estudio hecho fuera de la app,
+ * registrado a posteriori: cuenta como tiempo de estudio para las predicciones, pero no da recompensas.
+ */
 @Entity(tableName = "sesiones_enfoque", primaryKeys = ["uid", "inicio_millis"])
 data class SesionEnfoqueEntity(
     @ColumnInfo(name = "uid") val uid: String,
     @ColumnInfo(name = "inicio_millis") val inicioMillis: Long,
     @ColumnInfo(name = "minutos") val minutos: Int,
     @ColumnInfo(name = "asignatura") val asignatura: String,
-    @ColumnInfo(name = "completada_millis") val completadaMillis: Long?
-)
+    @ColumnInfo(name = "completada_millis") val completadaMillis: Long?,
+    @ColumnInfo(name = "asignatura_id") val asignaturaId: Int? = null,
+    // Método de estudio del catálogo del modelo; null si no se indicó
+    @ColumnInfo(name = "metodo") val metodo: String? = null,
+    @ColumnInfo(name = "origen", defaultValue = ORIGEN_ENFOQUE) val origen: String = ORIGEN_ENFOQUE
+) {
+    companion object {
+        const val ORIGEN_ENFOQUE = "ENFOQUE"
+        const val ORIGEN_MANUAL = "MANUAL"
+    }
+}
 
 /** Filas de agregación de [com.softcg.myapplication.data.database.dao.GamificacionDao]. */
 data class ConteoPorTipo(

@@ -14,5 +14,6 @@ data class EventoEntity (
     @ColumnInfo(name= "prioridad")val prioridad:Int,
     @ColumnInfo(name= "horaInicio")val horaInicio:String = "",
     @ColumnInfo(name= "horaFin")val horaFin:String = "",
-    @ColumnInfo(name= "imagenUri")val imagenUri:String? = null
+    @ColumnInfo(name= "imagenUri")val imagenUri:String? = null,
+    @ColumnInfo(name = "uid", defaultValue = "")val uid:String = ""
 )

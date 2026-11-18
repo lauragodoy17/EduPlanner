@@ -109,6 +109,36 @@
                     android:maxLines="1"
                     android:ellipsize="end" />
             </LinearLayout>
+
+            <!-- Progreso de los datos para predicciones; abre el panel de la asignatura -->
+            <LinearLayout
+                android:id="@+id/datos_prediccion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="?attr/selectableItemBackground"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingVertical="4dp"
+                android:visibility="gone">
+
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:layout_marginEnd="6dp"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/ic_ia_destello"
+                    app:tint="@color/purple_accent" />
+
+                <TextView
+                    android:id="@+id/text_datos_prediccion"
+                    style="@style/Edu.Texto.Enlace"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textSize="12sp"
+                    android:text="Datos para predicciones: 5/7" />
+            </LinearLayout>
         </LinearLayout>
 
         <ImageView

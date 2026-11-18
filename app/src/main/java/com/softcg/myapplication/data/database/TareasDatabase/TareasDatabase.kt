@@ -17,15 +17,17 @@ import com.softcg.myapplication.data.database.entities.InventarioEntity
 import com.softcg.myapplication.data.database.entities.MisionAsignadaEntity
 import com.softcg.myapplication.data.database.entities.MovimientoEduCoinsEntity
 import com.softcg.myapplication.data.database.entities.SesionEnfoqueEntity
+import com.softcg.myapplication.data.database.entities.PercepcionEntity
+import com.softcg.myapplication.data.database.dao.PercepcionesDao
 import com.softcg.myapplication.data.database.entities.TareaEntity
 
 @Database(
     entities = [
         TareaEntity::class, EventoEntity::class, AsignaturaEntity::class, CalificacionEntity::class,
         MovimientoEduCoinsEntity::class, AsistenciaEntity::class, InventarioEntity::class, AvatarEquipadoEntity::class,
-        AvatarAparienciaEntity::class, MisionAsignadaEntity::class, SesionEnfoqueEntity::class
+        AvatarAparienciaEntity::class, MisionAsignadaEntity::class, SesionEnfoqueEntity::class, PercepcionEntity::class
     ],
-    version = 15,
+    version = 16,
     exportSchema = false
 )
 abstract class TareasDatabase :RoomDatabase(){
@@ -39,4 +41,6 @@ abstract class TareasDatabase :RoomDatabase(){
     abstract fun getEventosDao():EventosDao
 
     abstract fun getCalificacionesDao():CalificacionesDao
+
+    abstract fun getPercepcionesDao():PercepcionesDao
 }

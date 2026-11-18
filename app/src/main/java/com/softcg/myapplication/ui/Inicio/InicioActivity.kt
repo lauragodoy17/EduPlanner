@@ -69,6 +69,7 @@ class InicioActivity : AppCompatActivity() {
     private val homeViewModel: HomeViewModel by viewModels()
     private val agendaViewModel:AgendaViewModel by viewModels()
     private val calificacionesViewModel :CalificacionesViewModel by viewModels()
+    private val datosEstudio: DatosEstudioViewModel by viewModels()
 
 
     private lateinit var toolbar: Toolbar

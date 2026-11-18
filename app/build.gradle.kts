@@ -77,6 +77,13 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:32.8.0"))
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-auth")
+    // IA (Firebase AI Logic, Gemini Developer API). Versión fija fuera del BoM: la 16.x está compilada con Kotlin 1.8,
+    // compatible con el Kotlin 1.9 del proyecto (las 17+ y los BoM 33.16+ exigen Kotlin 2)
+    implementation("com.google.firebase:firebase-ai:16.2.0")
+    // App Check: AI Logic rechaza las peticiones sin token. Play Integrity en release, proveedor de depuración en debug
+    implementation("com.google.firebase:firebase-appcheck")
+    releaseImplementation("com.google.firebase:firebase-appcheck-playintegrity")
+    debugImplementation("com.google.firebase:firebase-appcheck-debug")
 
     //Menú
     implementation("de.hdodenhof:circleimageview:3.1.0")
@@ -95,6 +102,8 @@ dependencies {
     testImplementation ("org.mockito:mockito-core:5.11.0")
     testImplementation ("org.mockito.kotlin:mockito-kotlin:5.3.1")
     testImplementation ("io.mockk:mockk:1.13.10")
+    // org.json real: el de android.jar en los tests de JVM solo devuelve valores por defecto
+    testImplementation ("org.json:json:20231013")
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

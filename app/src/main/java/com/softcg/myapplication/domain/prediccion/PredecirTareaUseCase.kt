@@ -17,7 +17,7 @@ class PredecirTareaUseCase @Inject constructor(private val servicio: PrediccionS
 }
 
 /**
- * Registro que espera POST /predict. Los nombres JSON son los del modelo; las categorías van
+ * Registro que espera POST /predict. Lo construye ExtraerDatosPrediccionUseCase con los datos reales del estudiante. Los nombres JSON son los del modelo; las categorías van
  * sin tildes, como en el entrenamiento ("Matematicas", "Algebra lineal"): con tilde la API no falla,
  * pero las ignora y la predicción empeora.
  */
@@ -41,18 +41,4 @@ data class DatosPrediccion(
         .put("subject_topic", subjectTopic)
         .put("study_method", studyMethod)
         .toString()
-
-    companion object {
-        /** Datos fijos mientras la tarea no tenga sus propios campos para el modelo. */
-        val PRUEBA = DatosPrediccion(
-            attendanceAvg = 6.5,
-            intensityHours = 4.0,
-            gradeAvg = 7.0,
-            difficultyPerception = 5.0,
-            interestLevel = 8.0,
-            subjectName = "Matematicas",
-            subjectTopic = "Algebra lineal",
-            studyMethod = "Pomodoro"
-        )
-    }
 }

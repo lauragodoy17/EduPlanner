@@ -111,8 +111,19 @@ interface GamificacionDao {
     @Query("SELECT * FROM sesiones_enfoque WHERE uid = :uid AND completada_millis IS NULL LIMIT 1")
     suspend fun sesionEnfoqueActiva(uid: String): SesionEnfoqueEntity?
 
-    @Query("SELECT * FROM sesiones_enfoque WHERE uid = :uid AND completada_millis IS NOT NULL")
+    /** Solo las del temporizador: las registradas a mano no cuentan para misiones, logros ni estadísticas. */
+    @Query("SELECT * FROM sesiones_enfoque WHERE uid = :uid AND completada_millis IS NOT NULL AND origen = 'ENFOQUE'")
     suspend fun sesionesEnfoqueCompletadas(uid: String): List<SesionEnfoqueEntity>
+
+    /** Todo el estudio terminado (temporizador y registros manuales): fuente del tiempo de estudio de las predicciones. */
+    @Query("SELECT * FROM sesiones_enfoque WHERE uid = :uid AND completada_millis IS NOT NULL")
+    suspend fun sesionesEstudio(uid: String): List<SesionEnfoqueEntity>
+
+    @Query("SELECT COUNT(*) FROM sesiones_enfoque WHERE uid = :uid AND inicio_millis = :inicioMillis")
+    suspend fun contarSesion(uid: String, inicioMillis: Long): Int
+
+    @Query("UPDATE sesiones_enfoque SET asignatura_id = :asignaturaId WHERE uid = :uid AND asignatura_id IS NULL AND asignatura = :nombre")
+    suspend fun enlazarSesiones(uid: String, asignaturaId: Int, nombre: String): Int
 
     @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insertarSesionEnfoque(sesion: SesionEnfoqueEntity)

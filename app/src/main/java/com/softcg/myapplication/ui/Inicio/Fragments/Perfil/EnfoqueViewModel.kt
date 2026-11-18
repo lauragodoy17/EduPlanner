@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.softcg.myapplication.core.Event
 import com.softcg.myapplication.core.Reloj
+import com.softcg.myapplication.ui.Inicio.Fragments.Asignaturas.Models.Asignatura
 import com.softcg.myapplication.domain.gamificacion.AbandonarEnfoqueUseCase
 import com.softcg.myapplication.domain.gamificacion.CompletarEnfoqueUseCase
 import com.softcg.myapplication.domain.gamificacion.IniciarEnfoqueUseCase
@@ -43,7 +44,7 @@ class EnfoqueViewModel @Inject constructor(
 
     private var completando = false
 
-    val asignaturas: List<String> get() = getAsignaturas().map { it.nombre }
+    val asignaturas: List<Asignatura> get() = getAsignaturas().filter { it.id != null }
 
     fun ahoraMillis(): Long = reloj.ahora().toInstant().toEpochMilli()
 
@@ -53,9 +54,9 @@ class EnfoqueViewModel @Inject constructor(
         }
     }
 
-    fun iniciar(minutos: Int, asignatura: String) {
+    fun iniciar(minutos: Int, asignatura: Asignatura?, metodo: String?) {
         viewModelScope.launch {
-            val resultado = iniciarEnfoque(minutos, asignatura)
+            val resultado = iniciarEnfoque(minutos, asignatura?.nombre.orEmpty(), asignatura?.id, metodo)
             if (resultado is ResultadoIniciarEnfoque.Iniciada) _sesion.value = resultado.sesion
             _resultadoInicio.value = Event(resultado)
         }

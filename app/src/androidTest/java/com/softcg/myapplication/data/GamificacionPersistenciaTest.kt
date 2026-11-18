@@ -10,6 +10,7 @@ import com.softcg.myapplication.data.Repositories.CalificacionesRespository
 import com.softcg.myapplication.data.Repositories.GamificacionRepository
 import com.softcg.myapplication.data.Repositories.TareasRepository
 import com.softcg.myapplication.data.database.TareasDatabase.TareasDatabase
+import com.softcg.myapplication.data.database.DuenoDatosLocales
 import com.softcg.myapplication.data.database.entities.TareaEntity
 import com.softcg.myapplication.data.network.SesionUsuario
 import com.softcg.myapplication.domain.gamificacion.AvatarBase
@@ -104,6 +105,14 @@ class GamificacionPersistenciaTest {
 
     private fun otorgar() = OtorgarRecompensaUseCase(repository, sesion, reloj)
 
+    private fun asignaturasRepo() = AsignaturasRepository(
+        db.getAsignaturasDao(), db.getTareasDao(), db.getCalificacionesDao(), db.getGamificacionDao(), sesion, DuenoDatosLocales(db)
+    )
+
+    private fun tareasRepo() = TareasRepository(db.getTareasDao(), db.getAsignaturasDao(), sesion, DuenoDatosLocales(db))
+
+    private fun calificacionesRepo() = CalificacionesRespository(db.getCalificacionesDao(), db.getAsignaturasDao(), sesion, DuenoDatosLocales(db))
+
     private suspend fun equipados(): Map<String, String> =
         db.getGamificacionDao().equipados("usuario-1").associate { it.categoria to it.itemId }
 
@@ -112,7 +121,7 @@ class GamificacionPersistenciaTest {
     }
 
     private suspend fun registrarClase(): Int {
-        val asignaturas = AsignaturasRepository(db.getAsignaturasDao())
+        val asignaturas = asignaturasRepo()
         val registro = LocalDateTime.of(2026, 10, 1, 8, 0).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
         return asignaturas.insertAsignatura(
             Asignatura(null, "Física", "Ana", 2, "14:00", List(7) { it == fecha.dayOfWeek.value - 1 }), registro
@@ -120,7 +129,7 @@ class GamificacionPersistenciaTest {
     }
 
     private fun confirmar() = ConfirmarAsistenciaUseCase(
-        AsignaturasRepository(db.getAsignaturasDao()), repository, otorgar(), sesion, reloj
+        asignaturasRepo(), repository, otorgar(), sesion, reloj
     )
 
     @Test
@@ -193,7 +202,7 @@ class GamificacionPersistenciaTest {
     private fun evaluar() = EvaluarProgresoUseCase(repository, sesion, reloj)
 
     private fun obtenerMisiones() = ObtenerMisionesUseCase(
-        AsignaturasRepository(db.getAsignaturasDao()), TareasRepository(db.getTareasDao()), repository, reloj
+        asignaturasRepo(), tareasRepo(), repository, reloj
     )
 
     @Test
@@ -280,10 +289,10 @@ class GamificacionPersistenciaTest {
 
     @Test
     fun entregarUnaTareaYCalificarlaDespuesNoPagaDosVecesLaEntrega() = runBlocking {
-        val tareasRepository = TareasRepository(db.getTareasDao())
-        val tareaId = db.getTareasDao().insertTarea(TareaEntity(null, "Ensayo", "", "Historia", "2026-10-29", 1)).toInt()
+        val tareasRepository = tareasRepo()
+        val tareaId = db.getTareasDao().insertTarea(TareaEntity(null, "Ensayo", "", "Historia", "2026-10-29", 1, uid = "usuario-1")).toInt()
         val entregar = EntregarTareaUseCase(tareasRepository, repository, otorgar(), sesion, reloj)
-        val calificar = CalificarTareaUseCase(CalificacionesRespository(db.getCalificacionesDao()), repository, otorgar(), sesion)
+        val calificar = CalificarTareaUseCase(calificacionesRepo(), repository, otorgar(), sesion)
         val tarea = Tarea(tareaId, "Ensayo", "", "Historia", "2026-10-29", 1)
 
         assertEquals(ResultadoEntregarTarea.Entregada(8, aTiempo = true), entregar(tarea))
@@ -345,15 +354,15 @@ class GamificacionPersistenciaTest {
 
     @Test
     fun calificarUnaTareaLaCompletaYPagaUnaSolaVez() = runBlocking {
-        val tareaId = db.getTareasDao().insertTarea(TareaEntity(null, "Ensayo", "", "Historia", "2026-10-28", 1)).toInt()
-        val calificar = CalificarTareaUseCase(CalificacionesRespository(db.getCalificacionesDao()), repository, otorgar(), sesion)
+        val tareaId = db.getTareasDao().insertTarea(TareaEntity(null, "Ensayo", "", "Historia", "2026-10-28", 1, uid = "usuario-1")).toInt()
+        val calificar = CalificarTareaUseCase(calificacionesRepo(), repository, otorgar(), sesion)
         val tarea = Tarea(tareaId, "Ensayo", "", "Historia", "2026-10-28", 1)
 
         // Vence el mismo día: completar más el bono a tiempo
         assertEquals(ResultadoCalificarTarea.Completada(8, aTiempo = true), calificar(tarea, "4.5"))
         assertEquals(ResultadoCalificarTarea.YaCalificada, calificar(tarea, "5"))
 
-        val guardada = db.getTareasDao().getAllTareasConCalificacion().single()
+        val guardada = db.getTareasDao().getAllTareasConCalificacion("usuario-1").single()
         assertEquals(4.5F, guardada.calificacion)
         assertEquals(8, repository.saldo("usuario-1"))
     }

@@ -17,12 +17,14 @@ import com.softcg.myapplication.core.ex.pintarPrioridad
 import com.softcg.myapplication.core.ex.tintarFondo
 import com.softcg.myapplication.ui.Inicio.Fragments.Agenda.AgendaViewModel
 import com.softcg.myapplication.ui.Inicio.Fragments.Agenda.Models.AgendaItem
+import com.softcg.myapplication.ui.Inicio.Models.Tarea
 import java.text.SimpleDateFormat
 import java.util.*
 
 class UnifiedAgendaAdapter(
     private val context: Context,
-    private val agendaViewModel: AgendaViewModel
+    private val agendaViewModel: AgendaViewModel,
+    private val onVerMasTarea: (Tarea) -> Unit = {}
 ) : RecyclerView.Adapter<UnifiedAgendaAdapter.UnifiedAgendaViewHolder>() {
 
     private var agendaList = emptyList<AgendaItem>()
@@ -110,10 +112,15 @@ class UnifiedAgendaAdapter(
         private fun showPopupMenu(view: View, item: AgendaItem) {
             val popupMenu = PopupMenu(context, view)
             popupMenu.inflate(R.menu.menudos)
-            popupMenu.menu.findItem(R.id.VerMas).isVisible = false
+            // Las tareas abren su detalle con las recomendaciones de la IA; los eventos de la agenda no tienen
+            popupMenu.menu.findItem(R.id.VerMas).isVisible = item.asignatura != null
 
             popupMenu.setOnMenuItemClickListener { menuItem ->
                 when (menuItem.itemId) {
+                    R.id.VerMas -> {
+                        onVerMasTarea(Tarea(item.id, item.titulo, item.descrip, item.asignatura ?: "", item.fecha, item.prioridad))
+                        true
+                    }
                     R.id.Borrar -> {
                         showDeleteDialog(item)
                         true

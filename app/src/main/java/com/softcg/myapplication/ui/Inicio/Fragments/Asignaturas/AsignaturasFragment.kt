@@ -12,6 +12,9 @@ import android.widget.EditText
 import android.widget.Spinner
 import android.widget.TextView
 import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
+import com.softcg.myapplication.ui.Inicio.DatosEstudioViewModel
+import com.softcg.myapplication.ui.Inicio.Dialogs.AccionesDatosEstudio
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -32,6 +35,7 @@ class AsignaturasFragment : Fragment() {
     private var selectedItem: MutableList<ListItem>? = mutableListOf()
     private var spinnerListItem: ArrayList<ListItem> ?= ArrayList()
     private val inicioViewModel: AsignaturasViewModel by viewModels()
+    private val datosEstudio: DatosEstudioViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -53,7 +57,17 @@ class AsignaturasFragment : Fragment() {
 
     fun initRecyclerAsignaturas(view: View){
         inicioViewModel.obtenerAsignaturas()
-        val adapter = AsignaturasAdapter(requireContext(),inicioViewModel)
+        val acciones = AccionesDatosEstudio(this, datosEstudio)
+        val adapter = AsignaturasAdapter(requireContext(),inicioViewModel) { asignatura ->
+            asignatura.id?.let { acciones.abrirProgreso(it) }
+        }
+
+        // Al crear una asignatura se piden sus datos para predicciones (área, escala, interés, método)
+        inicioViewModel.asignaturaCreada.observe(viewLifecycleOwner) { evento ->
+            evento.getContentIfNotHandled()?.let { acciones.abrirDatosAsignatura(it) }
+        }
+        inicioViewModel.resumenDatos.observe(viewLifecycleOwner) { adapter.setResumenes(it) }
+        datosEstudio.cambios.observe(viewLifecycleOwner) { inicioViewModel.actualizarResumenDatos() }
         val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerasignaturas)
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(requireContext())

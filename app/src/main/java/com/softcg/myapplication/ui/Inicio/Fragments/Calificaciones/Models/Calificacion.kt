@@ -7,5 +7,6 @@ data class Calificacion (
     val asignatura:String,
     val descripcion:String,
     // Tarea que esta calificación completó, si se registró al calificar una tarea
-    val tareaId:Int? = null
+    val tareaId:Int? = null,
+    val asignaturaId:Int? = null
 )

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Qué datos tiene registrados una asignatura para las predicciones y cuáles faltan -->
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/dialog_a"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingHorizontal="24dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="20dp">
+
+        <View style="@style/Edu.AsaHoja"/>
+
+        <TextView
+            android:id="@+id/progresoTitulo"
+            style="@style/Edu.Texto.TituloHoja"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            tools:text="Cálculo II"/>
+
+        <TextView
+            android:id="@+id/progresoResumen"
+            style="@style/Edu.Texto.Cuerpo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:gravity="center"
+            tools:text="5 de 7 datos listos para tus predicciones"/>
+
+        <com.google.android.material.progressindicator.LinearProgressIndicator
+            android:id="@+id/progresoBarra"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            app:indicatorColor="@color/purple_accent"
+            app:trackColor="@color/purple_surface"
+            app:trackCornerRadius="4dp"
+            app:trackThickness="8dp"/>
+
+        <LinearLayout
+            android:id="@+id/progresoDatos"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"/>
+
+        <TextView
+            style="@style/Edu.Texto.Pie"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="El tema se elige en cada tarea. Tus registros se quedan en tu teléfono: al predecir solo se envían los 8 valores resumidos."/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/progresoCerrar"
+            style="@style/Edu.BotonTexto"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="8dp"
+            android:text="Cerrar"/>
+    </LinearLayout>
+</ScrollView>

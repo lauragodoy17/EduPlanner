@@ -82,10 +82,26 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Asignatura (opcional)"
-                android:layout_marginBottom="24dp">
+                android:layout_marginBottom="12dp">
 
                 <AutoCompleteTextView
                     android:id="@+id/enfoqueAsignatura"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="none"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Método con que se estudia: dato del modelo predictivo; se recuerda el último de cada asignatura -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/enfoqueMetodoCaja"
+                style="@style/Edu.CampoDesplegable"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="¿Cómo vas a estudiar? (opcional)"
+                android:layout_marginBottom="24dp">
+
+                <AutoCompleteTextView
+                    android:id="@+id/enfoqueMetodo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="none"/>
@@ -97,6 +113,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/alto_boton"
                 android:text="Empezar sesión"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/enfoqueRegistrarManual"
+                style="@style/Edu.BotonTexto"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="8dp"
+                android:text="¿Estudiaste sin el temporizador? Regístralo"/>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 

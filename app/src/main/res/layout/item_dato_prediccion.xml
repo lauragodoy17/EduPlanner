@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Una fila del panel de datos para predicciones: estado, valor, qué falta y cómo completarlo -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingVertical="8dp">
+
+    <ImageView
+        android:id="@+id/datoIcono"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:layout_marginEnd="12dp"
+        android:background="@drawable/circle_shape"
+        android:importantForAccessibility="no"
+        android:padding="5dp"
+        android:src="@drawable/ic_gami_check"
+        app:tint="@color/estado_exito"/>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/datoTitulo"
+                style="@style/Edu.Texto.TituloTarjeta"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                tools:text="Asistencia a clase"/>
+
+            <TextView
+                android:id="@+id/datoValor"
+                style="@style/Edu.Texto.TituloTarjeta"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:textColor="@color/purple_accent"
+                tools:text="86 %"/>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/datoDetalle"
+            style="@style/Edu.Texto.Pie"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            tools:text="19 de 22 clases · últimas 4 semanas: 90 %"/>
+
+        <TextView
+            android:id="@+id/datoAccion"
+            style="@style/Edu.Texto.Enlace"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:background="?attr/selectableItemBackground"
+            android:paddingVertical="4dp"
+            android:visibility="gone"
+            tools:text="Completar"
+            tools:visibility="visible"/>
+    </LinearLayout>
+</LinearLayout>

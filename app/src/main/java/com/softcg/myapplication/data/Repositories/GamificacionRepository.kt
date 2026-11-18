@@ -87,7 +87,13 @@ class GamificacionRepository @Inject constructor(
     // Enfoque
     suspend fun sesionEnfoqueActiva(uid: String): SesionEnfoqueEntity? = dao.sesionEnfoqueActiva(uid)
 
+    /** Solo las del temporizador (las que dan EduCoins). */
     suspend fun sesionesEnfoqueCompletadas(uid: String): List<SesionEnfoqueEntity> = dao.sesionesEnfoqueCompletadas(uid)
+
+    /** Todo el estudio terminado, también el registrado a mano. */
+    suspend fun sesionesEstudio(uid: String): List<SesionEnfoqueEntity> = dao.sesionesEstudio(uid)
+
+    suspend fun existeSesion(uid: String, inicioMillis: Long): Boolean = dao.contarSesion(uid, inicioMillis) > 0
 
     suspend fun insertarSesionEnfoque(sesion: SesionEnfoqueEntity) = dao.insertarSesionEnfoque(sesion)
 

@@ -15,6 +15,11 @@ import androidx.activity.result.contract.ActivityResultContracts
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
+import com.softcg.myapplication.domain.prediccion.CatalogoModelo
+import com.softcg.myapplication.ui.Inicio.DatosEstudioViewModel
+import com.softcg.myapplication.ui.Inicio.Dialogs.AccionesDatosEstudio
+import com.softcg.myapplication.ui.Inicio.Fragments.Asignaturas.Models.Asignatura
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -40,6 +45,7 @@ import java.util.Locale
 class EnfoqueFragment : Fragment() {
 
     private val enfoqueViewModel: EnfoqueViewModel by viewModels()
+    private val datosEstudio: DatosEstudioViewModel by activityViewModels()
     private var temporizador: Job? = null
 
     private val pedirNotificaciones = registerForActivityResult(ActivityResultContracts.RequestPermission()) { }
@@ -66,9 +72,32 @@ class EnfoqueFragment : Fragment() {
         val duraciones = view.findViewById<MaterialButtonToggleGroup>(R.id.enfoqueDuraciones)
         val recompensa = view.findViewById<TextView>(R.id.enfoqueRecompensa)
         val asignatura = view.findViewById<AutoCompleteTextView>(R.id.enfoqueAsignatura)
+        val asignaturas = enfoqueViewModel.asignaturas
         asignatura.setAdapter(
-            ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, enfoqueViewModel.asignaturas)
+            ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, asignaturas.map { it.nombre })
         )
+
+        // Asignatura y método se guardan con la sesión: son el tiempo de estudio y el método de las predicciones
+        val metodos = CatalogoModelo.METODOS
+        val metodo = view.findViewById<AutoCompleteTextView>(R.id.enfoqueMetodo)
+        metodo.setAdapter(ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, metodos.map(CatalogoModelo::etiqueta)))
+        var asignaturaElegida: Asignatura? = null
+        var metodoElegido: String? = null
+        metodo.setOnItemClickListener { _, _, posicion, _ -> metodoElegido = metodos[posicion] }
+        asignatura.setOnItemClickListener { _, _, posicion, _ ->
+            val elegida = asignaturas[posicion]
+            asignaturaElegida = elegida
+            // Se propone el método que suele usar en esa asignatura
+            viewLifecycleOwner.lifecycleScope.launch {
+                val habitual = elegida.id?.let { datosEstudio.metodoHabitual(it) } ?: return@launch
+                metodoElegido = habitual
+                metodo.setText(CatalogoModelo.etiqueta(habitual), false)
+            }
+        }
+
+        view.findViewById<Button>(R.id.enfoqueRegistrarManual).setOnClickListener {
+            AccionesDatosEstudio(this, datosEstudio).registrarEstudio(asignaturaElegida?.id)
+        }
 
         fun duracionElegida() = when (duraciones.checkedButtonId) {
             R.id.enfoque15 -> DuracionEnfoque.CORTA
@@ -85,7 +114,7 @@ class EnfoqueFragment : Fragment() {
 
         view.findViewById<Button>(R.id.enfoqueIniciar).setOnClickListener {
             pedirPermisoNotificaciones()
-            enfoqueViewModel.iniciar(duracionElegida().minutos, asignatura.text.toString())
+            enfoqueViewModel.iniciar(duracionElegida().minutos, asignaturaElegida, metodoElegido)
         }
     }
 

@@ -10,7 +10,10 @@ data class Tarea (
     // Calificación registrada para la tarea; una tarea calificada se considera completada
     val calificacion:Float? = null,
     // Cuándo se marcó como entregada: la nota suele llegar después de la entrega
-    val entregadaMillis:Long? = null
+    val entregadaMillis:Long? = null,
+    // Tema del catálogo del modelo predictivo; null si no se eligió
+    val tema:String? = null,
+    val asignaturaId:Int? = null
 ) {
     val completada: Boolean get() = calificacion != null || entregadaMillis != null
 }

@@ -15,12 +15,23 @@ import com.softcg.myapplication.R
 import com.softcg.myapplication.core.ex.confirmar
 import com.softcg.myapplication.core.ex.mostrarAviso
 import com.softcg.myapplication.ui.Inicio.Fragments.Asignaturas.AsignaturasViewModel
+import com.softcg.myapplication.ui.Inicio.Fragments.Asignaturas.ResumenDatos
 import com.softcg.myapplication.ui.Inicio.Fragments.Asignaturas.Models.Asignatura
 import com.softcg.myapplication.ui.Inicio.Fragments.Horario.Models.AsignaturaConHora
 
-class AsignaturasAdapter (private val context: Context, private val inicioViewModel: AsignaturasViewModel) : RecyclerView.Adapter<AsignaturasAdapter.MyViewHolder>()  {
+class AsignaturasAdapter (
+    private val context: Context,
+    private val inicioViewModel: AsignaturasViewModel,
+    private val onVerDatos: (Asignatura) -> Unit = {}
+) : RecyclerView.Adapter<AsignaturasAdapter.MyViewHolder>()  {
 
     private var asignaturas = emptyList<Asignatura>()
+    private var resumenes = emptyMap<Int, ResumenDatos>()
+
+    fun setResumenes(resumenes: Map<Int, ResumenDatos>) {
+        this.resumenes = resumenes
+        notifyDataSetChanged()
+    }
 
     class MyViewHolder(itemView: View):RecyclerView.ViewHolder(itemView){
         val textNombre : TextView = itemView.findViewById(R.id.text_titulo)
@@ -31,6 +42,8 @@ class AsignaturasAdapter (private val context: Context, private val inicioViewMo
         val boton: ImageView = itemView.findViewById(R.id.Opciones)
         val colorBar: View = itemView.findViewById(R.id.card_color_bar)
         val mainCard: CardView = itemView.findViewById(R.id.main_card)
+        val datos: View = itemView.findViewById(R.id.datos_prediccion)
+        val textDatos: TextView = itemView.findViewById(R.id.text_datos_prediccion)
     }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         return MyViewHolder(
@@ -64,6 +77,18 @@ class AsignaturasAdapter (private val context: Context, private val inicioViewMo
 
         holder.boton.setOnClickListener {v ->
             showPopupMenu(v,position)
+        }
+
+        // Datos para predicciones: cuántos hay y, cada mes, el recordatorio de confirmar el interés
+        val resumen = currentItem.id?.let { resumenes[it] }
+        holder.datos.visibility = if (resumen != null) View.VISIBLE else View.GONE
+        if (resumen != null) {
+            holder.textDatos.text = when {
+                resumen.actualizarInteres -> "¿Sigue igual tu interés? · Datos ${resumen.listos}/${resumen.total}"
+                resumen.listos == resumen.total -> "Datos para predicciones completos"
+                else -> "Datos para predicciones: ${resumen.listos}/${resumen.total}"
+            }
+            holder.datos.setOnClickListener { onVerDatos(currentItem) }
         }
 
         // Add animation for better UX

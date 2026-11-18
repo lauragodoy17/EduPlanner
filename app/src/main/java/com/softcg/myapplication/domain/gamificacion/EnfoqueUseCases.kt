@@ -3,6 +3,7 @@ package com.softcg.myapplication.domain.gamificacion
 import com.softcg.myapplication.core.Reloj
 import com.softcg.myapplication.data.Repositories.GamificacionRepository
 import com.softcg.myapplication.data.database.entities.SesionEnfoqueEntity
+import com.softcg.myapplication.domain.prediccion.CatalogoModelo
 import com.softcg.myapplication.data.network.SesionUsuario
 import javax.inject.Inject
 
@@ -68,14 +69,20 @@ class IniciarEnfoqueUseCase @Inject constructor(
     private val sesion: SesionUsuario,
     private val reloj: Reloj
 ) {
-    suspend operator fun invoke(minutos: Int, asignatura: String): ResultadoIniciarEnfoque {
+    /** [asignaturaId] y [metodo] (del catálogo del modelo) son opcionales: alimentan las predicciones. */
+    suspend operator fun invoke(
+        minutos: Int, asignatura: String, asignaturaId: Int? = null, metodo: String? = null
+    ): ResultadoIniciarEnfoque {
         val uid = sesion.uid() ?: return ResultadoIniciarEnfoque.SinSesion
         DuracionEnfoque.deMinutos(minutos) ?: return ResultadoIniciarEnfoque.DuracionInvalida
+        val metodoValido = metodo?.takeIf { CatalogoModelo.esMetodo(it) }
         return try {
             repository.enTransaccion {
                 if (obtenerActiva() != null) return@enTransaccion ResultadoIniciarEnfoque.YaHayUna
                 val inicio = reloj.ahora().toInstant().toEpochMilli()
-                repository.insertarSesionEnfoque(SesionEnfoqueEntity(uid, inicio, minutos, asignatura, null))
+                repository.insertarSesionEnfoque(
+                    SesionEnfoqueEntity(uid, inicio, minutos, asignatura, null, asignaturaId = asignaturaId, metodo = metodoValido)
+                )
                 ResultadoIniciarEnfoque.Iniciada(SesionEnfoque(inicio, minutos, asignatura))
             }
         } catch (e: Exception) {

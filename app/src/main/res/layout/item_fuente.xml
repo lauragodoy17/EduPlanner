@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Una fuente comprobada de la bibliografía; al tocarla se abre en el navegador -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/selectableItemBackground"
+    android:orientation="horizontal"
+    android:paddingVertical="6dp">
+
+    <ImageView
+        android:id="@+id/fuenteIcono"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:layout_marginTop="2dp"
+        android:layout_marginEnd="10dp"
+        android:importantForAccessibility="no"
+        android:src="@drawable/ic_fuente_libro"
+        app:tint="@color/purple_accent"/>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/fuenteTitulo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/purple_accent"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            tools:text="Cálculo de una variable"/>
+
+        <TextView
+            android:id="@+id/fuenteDetalle"
+            style="@style/Edu.Texto.Pie"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:text="James Stewart · 2012"/>
+    </LinearLayout>
+</LinearLayout>
