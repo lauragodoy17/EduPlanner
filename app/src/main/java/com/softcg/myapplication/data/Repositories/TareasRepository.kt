@@ -52,17 +52,17 @@ class TareasRepository @Inject constructor(
         val uid = uid() ?: return false
         val id = tarea.id ?: return false
         val asignaturaId = asignaturasDao.idPorNombre(uid, tarea.asignatura)
-        return tareasDao.actualizar(uid, id, tarea.titulo, tarea.descrip, tarea.asignatura, asignaturaId, tarea.fecha, tarea.prioridad) > 0
+        return tareasDao.actualizar(uid, id, tarea.titulo, tarea.descrip, tarea.asignatura, asignaturaId, tarea.fecha, tarea.prioridad, tarea.horaEntrega) > 0
     }
 
     private fun TareaConCalificacion.toModel() = Tarea(
         id = tarea.id, titulo = tarea.titulo, descrip = tarea.descrip, asignatura = tarea.asignatura, fecha = tarea.fecha,
         prioridad = tarea.prioridad, calificacion = calificacion, entregadaMillis = tarea.entregadaMillis,
-        tema = tarea.tema, asignaturaId = tarea.asignaturaId
+        tema = tarea.tema, asignaturaId = tarea.asignaturaId, horaEntrega = tarea.horaEntrega
     )
 
     private fun Tarea.toEntity(uid: String) = TareaEntity(
         id = id, titulo = titulo, descrip = descrip, asignatura = asignatura, fecha = fecha, prioridad = prioridad,
-        entregadaMillis = entregadaMillis, uid = uid, tema = tema, asignaturaId = asignaturaId
+        entregadaMillis = entregadaMillis, uid = uid, tema = tema, asignaturaId = asignaturaId, horaEntrega = horaEntrega
     )
 }

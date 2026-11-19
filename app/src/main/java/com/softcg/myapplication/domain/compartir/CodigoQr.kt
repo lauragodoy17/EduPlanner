@@ -44,6 +44,7 @@ object CodigoQr {
             is TareaCompartida -> json
                 .put("ti", contenido.titulo).put("de", contenido.descripcion).put("as", contenido.asignatura)
                 .put("fe", contenido.fecha).put("pr", contenido.prioridad)
+                .apply { if (contenido.horaEntrega.isNotBlank()) put("hr", contenido.horaEntrega) }
             is EventoCompartido -> json
                 .put("ti", contenido.titulo).put("de", contenido.descripcion).put("fe", contenido.fecha)
                 .put("hi", contenido.horaInicio).put("hf", contenido.horaFin).put("pr", contenido.prioridad)
@@ -82,7 +83,8 @@ object CodigoQr {
                 descripcion = json.texto("de", MAX_TEXTO),
                 asignatura = json.texto("as", MAX_TITULO),
                 fecha = json.fecha("fe") ?: return null,
-                prioridad = json.prioridad()
+                prioridad = json.prioridad(),
+                horaEntrega = json.hora("hr")
             )
             TipoCompartido.EVENTO -> EventoCompartido(
                 titulo = json.texto("ti", MAX_TITULO).ifBlank { return null },

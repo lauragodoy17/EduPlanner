@@ -123,7 +123,25 @@ graph TD
     E --> I[Tienda: ComprarAccesorioUseCase → Avatar]
 ```
 
-## 8. Cambiar el tema
+## 8. Notificaciones (con la app cerrada)
+
+```mermaid
+graph TD
+    A[Cambia una tarea, asignatura, asistencia o nota · abrir la app · reiniciar el teléfono] --> B[ReprogramarAvisosUseCase]
+    B --> C[ReglasAvisos.planificar: clase −10 min · resumen 9:00 · tarea −1 h, −5 min y al vencer · asistencia al terminar la clase]
+    C --> D[ProgramadorAlarmas: alarmas exactas en AlarmManager · retira lo que ya no aplica]
+    D -->|llega la hora| E[AvisoReceiver]
+    E --> F{ConstruirAvisoUseCase: ¿sigue aplicando?}
+    F -->|No: entregada, borrada, ya respondida| G([No se muestra])
+    F -->|Sí| H[PublicadorAvisos: notificación con color, icono y botones]
+    H -->|Sí, asistí / No asistí / Marcar como entregada| I[AccionAvisoReceiver → ResponderAvisoUseCase]
+    I --> J[La notificación muestra el resultado · +EduCoins]
+    H -->|Tocar| K[InicioActivity abre la tarea, el horario o la pregunta de asistencia]
+    E --> B
+    I --> B
+```
+
+## 9. Cambiar el tema
 
 ```mermaid
 graph TD

@@ -70,3 +70,10 @@ val MIGRATION_15_16 = object : Migration(15, 16) {
         db.execSQL("UPDATE `sesiones_enfoque` SET `asignatura_id` = ${idPorNombre.format("sesiones_enfoque.asignatura")} WHERE TRIM(asignatura) != ''")
     }
 }
+
+/** Versión 17: hora de entrega opcional de las tareas (para avisar 1 hora y 5 minutos antes de que venzan). */
+val MIGRATION_16_17 = object : Migration(16, 17) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL("ALTER TABLE `tareas_table` ADD COLUMN `hora_entrega` TEXT")
+    }
+}

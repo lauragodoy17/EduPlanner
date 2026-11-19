@@ -47,7 +47,8 @@ fun pintarInfoTarea(raiz: View, tarea: Tarea, hoy: LocalDate = LocalDate.now()) 
 /** "20/11/2026 · faltan 8 días"; sin el plazo si la tarea ya está hecha. */
 fun textoFechaTarea(tarea: Tarea, hoy: LocalDate): String {
     val fecha = runCatching { LocalDate.parse(tarea.fecha) }.getOrNull() ?: return tarea.fecha
-    val texto = fecha.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
+    val dia = fecha.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
+    val texto = tarea.horaEntrega?.takeIf { it.isNotBlank() }?.let { "$dia · hasta las $it" } ?: dia
     if (tarea.completada) return texto
     val plazo = when (val dias = ChronoUnit.DAYS.between(hoy, fecha)) {
         0L -> "hoy"

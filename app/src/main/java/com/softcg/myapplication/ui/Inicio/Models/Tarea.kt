@@ -13,7 +13,9 @@ data class Tarea (
     val entregadaMillis:Long? = null,
     // Tema del catálogo del modelo predictivo; null si no se eligió
     val tema:String? = null,
-    val asignaturaId:Int? = null
+    val asignaturaId:Int? = null,
+    // "HH:mm" del día de entrega; null = hasta las 23:59
+    val horaEntrega:String? = null
 ) {
     val completada: Boolean get() = calificacion != null || entregadaMillis != null
 }

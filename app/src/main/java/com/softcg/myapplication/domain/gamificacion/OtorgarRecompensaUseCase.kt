@@ -42,11 +42,11 @@ class OtorgarRecompensaUseCase @Inject constructor(
      * Premia terminar una tarea, sea entregándola o calificándola. El bono a tiempo solo se concede
      * junto con la recompensa de completar: borrar la nota y volver a calificar no lo repite.
      */
-    suspend fun otorgarTareaTerminadaEnTransaccion(uid: String, tareaId: Int, fechaEntrega: String): TareaTerminada {
+    suspend fun otorgarTareaTerminadaEnTransaccion(uid: String, tareaId: Int, fechaEntrega: String, horaEntrega: String? = null): TareaTerminada {
         val completada = otorgarEnTransaccion(uid, TipoRecompensa.TAREA_COMPLETADA, "$tareaId")
         if (completada !is ResultadoRecompensa.Otorgada) return TareaTerminada(0, false)
 
-        val aTiempo = ReglasEntrega.aTiempo(fechaEntrega, reloj.ahora().toLocalDate())
+        val aTiempo = ReglasEntrega.aTiempo(fechaEntrega, horaEntrega, reloj.ahora().toLocalDateTime())
         val bono = if (aTiempo) otorgarEnTransaccion(uid, TipoRecompensa.TAREA_A_TIEMPO, "$tareaId") else null
         return TareaTerminada(completada.cantidad + ((bono as? ResultadoRecompensa.Otorgada)?.cantidad ?: 0), aTiempo)
     }

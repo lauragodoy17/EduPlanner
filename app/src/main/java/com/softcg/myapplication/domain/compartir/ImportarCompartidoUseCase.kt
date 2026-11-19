@@ -102,7 +102,7 @@ class ImportarCompartidoUseCase @Inject constructor(
                     ResultadoImportacion.Importado(contenido.tipo, contenido.titulo, null, recompensa)
                 }
                 is TareaCompartida -> conAsignatura(contenido, destino) { asignatura ->
-                    val id = tareas.insertTarea(Tarea(null, contenido.titulo, contenido.descripcion, asignatura, contenido.fecha, contenido.prioridad))
+                    val id = tareas.insertTarea(Tarea(null, contenido.titulo, contenido.descripcion, asignatura, contenido.fecha, contenido.prioridad, horaEntrega = contenido.horaEntrega.ifBlank { null }))
                     when {
                         id <= 0 -> null
                         CondicionesRecompensa.tareaValida(contenido.titulo, contenido.fecha) -> Guardado(premiar(TipoRecompensa.TAREA_REGISTRADA, id))

@@ -145,8 +145,8 @@ class InicioViewModel @Inject constructor(
         _navigateToEvento.value= Event(true)
     }
 
-    fun onAgregarTareaSelected(titulo:String,descrip:String,asignatura:String,fecha:String,prioridad:Int){
-        val tarea = Tarea(null,titulo, descrip, asignatura,fecha,prioridad)
+    fun onAgregarTareaSelected(titulo:String,descrip:String,asignatura:String,fecha:String,prioridad:Int, horaEntrega: String? = null){
+        val tarea = Tarea(null,titulo, descrip, asignatura,fecha,prioridad, horaEntrega = horaEntrega)
         saveTarea(tarea)
     }
 

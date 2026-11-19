@@ -33,6 +33,14 @@ class CodigoQrTest {
     }
 
     @Test
+    fun `la hora de entrega viaja si la tarea la tiene y los QR sin ella siguen valiendo`() {
+        val conHora = tarea.copy(horaEntrega = "14:30")
+        assertEquals(LecturaQr.Valida(conHora), CodigoQr.leer(CodigoQr.codificar(conHora)))
+        // Un QR generado antes de existir la hora se lee igual, sin hora
+        assertEquals("", ((CodigoQr.leer(CodigoQr.codificar(tarea)) as LecturaQr.Valida).contenido as TareaCompartida).horaEntrega)
+    }
+
+    @Test
     fun `los QR que no son de EduPlanner se reconocen al instante`() {
         assertEquals(LecturaQr.NoEsEduPlanner, CodigoQr.leer("https://www.ejemplo.com"))
         assertEquals(LecturaQr.NoEsEduPlanner, CodigoQr.leer("eduplanner:1:abc"))

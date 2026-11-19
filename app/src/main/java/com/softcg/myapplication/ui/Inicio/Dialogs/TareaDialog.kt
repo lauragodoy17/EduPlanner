@@ -12,6 +12,7 @@ import com.google.android.material.textfield.TextInputLayout
 import com.softcg.myapplication.R
 import com.softcg.myapplication.core.ex.showAsBottomSheet
 import com.softcg.myapplication.core.ex.showDatePicker
+import com.softcg.myapplication.core.ex.showTimePicker
 import com.softcg.myapplication.ui.Inicio.Models.Tarea
 
 /**
@@ -25,7 +26,7 @@ class TareaDialog(
     asignaturas: List<String>,
     private val onAgregarAsignatura: (() -> Unit)?,
     private val tarea: Tarea? = null,
-    private val onGuardar: (titulo: String, descrip: String, asignatura: String, fecha: String, prioridad: Int) -> Unit
+    private val onGuardar: (titulo: String, descrip: String, asignatura: String, fecha: String, prioridad: Int, horaEntrega: String?) -> Unit
 ) {
 
     companion object {
@@ -59,6 +60,8 @@ class TareaDialog(
         asignaturaContainer = dialog.findViewById(R.id.AsignaturaContainer)
         asignatura = dialog.findViewById(R.id.AsignaturaEditText)
         val fecha = dialog.findViewById<EditText>(R.id.FechaEditText)
+        val horaEntrega = dialog.findViewById<EditText>(R.id.HoraEntregaEditText)
+        val horaContainer = dialog.findViewById<TextInputLayout>(R.id.HoraEntregaContainer)
         val prioridad = dialog.findViewById<AutoCompleteTextView>(R.id.PriorityEditText)
         val guardarBoton = dialog.findViewById<Button>(R.id.botonAgregar)
 
@@ -68,6 +71,7 @@ class TareaDialog(
             titulo.setText(it.titulo)
             descripcion.setText(it.descrip)
             fecha.setText(it.fecha)
+            it.horaEntrega?.let(horaEntrega::setText)
             // Una asignatura que ya no existe no se puede volver a guardar: se pide otra
             if (it.asignatura in asignaturas) asignatura.setText(it.asignatura, false)
         }
@@ -89,6 +93,10 @@ class TareaDialog(
         fecha.setOnClickListener {
             fecha.showDatePicker()
         }
+        horaEntrega.setOnClickListener { horaEntrega.showTimePicker() }
+        // El icono del reloj abre el selector; con una hora elegida, mantener pulsado el campo la quita
+        horaContainer.setEndIconOnClickListener { horaEntrega.showTimePicker() }
+        horaEntrega.setOnLongClickListener { horaEntrega.setText(""); true }
 
         guardarBoton.setOnClickListener {
             val elegida = asignatura.text.toString()
@@ -102,7 +110,8 @@ class TareaDialog(
                 descripcion.text.toString(),
                 elegida,
                 fecha.text.toString(),
-                prioridadDesdeTexto(prioridad.text.toString())
+                prioridadDesdeTexto(prioridad.text.toString()),
+                horaEntrega.text.toString().ifBlank { null }
             )
         }
 

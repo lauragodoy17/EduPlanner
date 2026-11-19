@@ -21,5 +21,7 @@ data class TareaEntity (
     // Tema del catálogo del modelo predictivo (subject_topic); null si no se eligió
     @ColumnInfo(name = "tema")val tema:String? = null,
     // Asignatura por id: el nombre se conserva por compatibilidad con las pantallas existentes
-    @ColumnInfo(name = "asignatura_id")val asignaturaId:Int? = null
+    @ColumnInfo(name = "asignatura_id")val asignaturaId:Int? = null,
+    // Hora límite "HH:mm" del día de entrega; null = hasta las 23:59 (ReglasEntrega.limite)
+    @ColumnInfo(name = "hora_entrega")val horaEntrega:String? = null
 )

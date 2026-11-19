@@ -17,6 +17,12 @@
     <color name="logro_plata">#7F8FA6</color>
     <color name="logro_oro">#D49B00</color>
 
+    <!-- Notificaciones: las dibuja el sistema, fuera de la app y de su tema; de menos a más urgente -->
+    <color name="aviso_marca">#9C27B0</color>
+    <color name="aviso_exito">#2E7D4F</color>
+    <color name="aviso_atencion">#E08A00</color>
+    <color name="aviso_urgente">#D32F2F</color>
+
     <!-- Botón de Google (solo en el inicio de sesión) -->
     <color name="google_border">#DADCE0</color>
 </resources>

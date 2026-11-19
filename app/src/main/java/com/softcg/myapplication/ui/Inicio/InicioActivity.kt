@@ -75,7 +75,16 @@ import com.softcg.myapplication.ui.Inicio.Fragments.Home.HomeViewModel
 import com.softcg.myapplication.ui.Inicio.Fragments.Perfil.ProfileFragment
 import com.softcg.myapplication.ui.login.MainActivity
 import com.softcg.myapplication.ui.notifications.EnfoqueNotification
-import com.softcg.myapplication.ui.notifications.NotificationScheduler
+import com.softcg.myapplication.ui.notifications.CanalesNotificacion
+import com.softcg.myapplication.ui.notifications.IntentsAvisos
+import com.softcg.myapplication.ui.notifications.VigilanteAvisos
+import com.softcg.myapplication.data.preferencias.PreferenciasAvisos
+import com.softcg.myapplication.ui.Inicio.Fragments.Prediccion.PrediccionFragment
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Build
+import androidx.core.content.ContextCompat
+import com.softcg.myapplication.core.ex.preguntar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -94,6 +103,14 @@ class InicioActivity : AppCompatActivity() {
 
     @Inject
     lateinit var credencialGoogle: CredencialGoogleService
+
+    @Inject lateinit var vigilanteAvisos: VigilanteAvisos
+    @Inject lateinit var preferenciasAvisos: PreferenciasAvisos
+
+    /** Android 13+: sin este permiso no se ve ningún aviso (clases, tareas, asistencia). */
+    private val pedirPermisoNotificaciones = registerForActivityResult(ActivityResultContracts.RequestPermission()) { concedido ->
+        if (!concedido) mostrarMensaje("Sin notificaciones no podremos recordarte clases ni entregas. Puedes activarlas en Ajustes")
+    }
 
     /** Formulario de tarea abierto; se oculta mientras se crea una asignatura desde él. */
     private var tareaDialog: TareaDialog? = null
@@ -148,9 +165,10 @@ class InicioActivity : AppCompatActivity() {
         makeSystemBarsTransparent()
         ajustarBarrasDelSistema(tema)
         
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.drawer)) { v, insets ->
+        // De borde a borde: el contenido (no el DrawerLayout, que ignora su propio padding) deja sitio a la
+        // barra de navegación del sistema; arriba no, porque la cabecera se extiende bajo la barra de estado
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.contenidoPrincipal)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            // Only apply left and right padding, not top/bottom since we want transparency
             v.setPadding(systemBars.left, 0, systemBars.right, systemBars.bottom)
             insets
         }
@@ -169,13 +187,54 @@ class InicioActivity : AppCompatActivity() {
         setupBottomNavigation()
         iniciarComprobacionAsistencia()
         abrirEnfoqueSiSePidio(intent)
-        NotificationScheduler.createChannel(this)
-        NotificationScheduler.scheduleDailyReminders(this, homeViewModel._tareas.value?.size.toString())
+        // Al recrear (p. ej. al cambiar el tema) el intent es el mismo: no se vuelve a abrir el destino
+        if (savedInstanceState == null) abrirDestinoDeAviso(intent)
+        CanalesNotificacion.crear(this)
+        vigilanteAvisos.solicitar()
+        pedirPermisoNotificacionesSiHaceFalta()
+    }
+
+    /** Se explica para qué antes de que el sistema pregunte; si se rechaza, no se insiste en cada apertura. */
+    private fun pedirPermisoNotificacionesSiHaceFalta() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) return
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) return
+        if (preferenciasAvisos.permisoPedido) return
+        preferenciasAvisos.permisoPedido = true
+        preguntar(
+            titulo = "¿Activamos tus recordatorios?",
+            mensaje = "EduPlanner te avisa 10 minutos antes de cada clase, antes de que venza una tarea y cada mañana con lo que tienes ese día. " +
+                "Al terminar una clase podrás registrar tu asistencia desde la notificación.",
+            textoSi = "Activar",
+            textoNo = "Ahora no",
+            onSi = { pedirPermisoNotificaciones.launch(Manifest.permission.POST_NOTIFICATIONS) },
+            onNo = {}
+        )
+    }
+
+    /** Al tocar una notificación se llega a lo que avisaba: la tarea, el horario o la pregunta de asistencia. */
+    private fun abrirDestinoDeAviso(intent: Intent?) {
+        val destino = intent?.getStringExtra(IntentsAvisos.EXTRA_DESTINO) ?: return
+        intent.removeExtra(IntentsAvisos.EXTRA_DESTINO)
+        when (destino) {
+            IntentsAvisos.DESTINO_TAREA -> {
+                val id = intent.getIntExtra(IntentsAvisos.EXTRA_TAREA_ID, -1).takeIf { it > 0 } ?: return
+                navController.navigate(
+                    R.id.id_prediction_fragment,
+                    bundleOf(
+                        PrediccionFragment.ARG_TAREA_ID to id,
+                        PrediccionFragment.ARG_TITULO to intent.getStringExtra(IntentsAvisos.EXTRA_TAREA_TITULO).orEmpty(),
+                        PrediccionFragment.ARG_ASIGNATURA to intent.getStringExtra(IntentsAvisos.EXTRA_TAREA_ASIGNATURA)
+                    )
+                )
+            }
+            IntentsAvisos.DESTINO_HORARIO -> irAPestana(R.id.id_schedule_fragment)
+            IntentsAvisos.DESTINO_ASISTENCIA -> comprobarAsistencia()
+            else -> irAPestana(R.id.id_home_fragment)
+        }
     }
 
 
     override fun onSupportNavigateUp(): Boolean {
-        val navController=findNavController(R.id.fragmentContainerView)
         return navController.navigateUp(appBarConfiguration)|| super.onSupportNavigateUp()
     }
 
@@ -229,6 +288,8 @@ class InicioActivity : AppCompatActivity() {
             lifecycleScope.launch {
                 // Olvida también la cuenta de Google elegida para que el próximo inicio vuelva a preguntar
                 credencialGoogle.olvidarCuenta()
+                // Los avisos son de este estudiante: no deben llegarle a quien entre después
+                vigilanteAvisos.cancelarTodo()
                 FirebaseAuth.getInstance().signOut()
                 val intents=Intent(this@InicioActivity, MainActivity::class.java)
                 intents.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
@@ -539,6 +600,7 @@ class InicioActivity : AppCompatActivity() {
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         abrirEnfoqueSiSePidio(intent)
+        abrirDestinoDeAviso(intent)
     }
 
     override fun onResume() {
@@ -720,9 +782,9 @@ class InicioActivity : AppCompatActivity() {
             context = this,
             asignaturas = obtenerNombresAsignaturas(),
             onAgregarAsignatura = { showDialogAsignaturaParaTarea() },
-            onGuardar = { titulo, descrip, asignatura, fecha, prioridad ->
+            onGuardar = { titulo, descrip, asignatura, fecha, prioridad, horaEntrega ->
                 tareaDialog = null
-                inicioViewModel.onAgregarTareaSelected(titulo, descrip, asignatura, fecha, prioridad)
+                inicioViewModel.onAgregarTareaSelected(titulo, descrip, asignatura, fecha, prioridad, horaEntrega)
                 // La lista se recarga sola al terminar de guardar; aquí solo se muestra el día de la tarea
                 homeViewModel.mostrarFecha(fecha)
                 mostrarMensaje("Tarea guardada")

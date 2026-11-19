@@ -8,6 +8,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.softcg.myapplication.data.database.TareasDatabase.MIGRATION_13_14
 import com.softcg.myapplication.data.database.TareasDatabase.MIGRATION_14_15
 import com.softcg.myapplication.data.database.TareasDatabase.MIGRATION_15_16
+import com.softcg.myapplication.data.database.TareasDatabase.MIGRATION_16_17
 import com.softcg.myapplication.data.database.DuenoDatosLocales
 import com.softcg.myapplication.data.database.TareasDatabase.TareasDatabase
 import kotlinx.coroutines.runBlocking
@@ -66,7 +67,7 @@ class MigrationTest {
 
         // Sin fallbackToDestructiveMigration: si la migración no cuadra con las entidades, Room lanza una excepción
         val db = Room.databaseBuilder(context, TareasDatabase::class.java, nombre)
-            .addMigrations(MIGRATION_13_14, MIGRATION_14_15, MIGRATION_15_16)
+            .addMigrations(MIGRATION_13_14, MIGRATION_14_15, MIGRATION_15_16, MIGRATION_16_17)
             .allowMainThreadQueries()
             .build()
 
@@ -86,6 +87,7 @@ class MigrationTest {
             assertNull(tareas[0].calificacion)
             assertNull("Las tareas existentes siguen sin entregar", tareas[0].tarea.entregadaMillis)
             assertNull("Sin tema hasta que el estudiante lo elija", tareas[0].tarea.tema)
+            assertNull("Sin hora de entrega: vence a las 23:59", tareas[0].tarea.horaEntrega)
 
             assertEquals("Feria", db.getEventosDao().getAllEventos("usuario-1").single().titulo)
 

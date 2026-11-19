@@ -26,9 +26,10 @@ class EnfoqueNotification : BroadcastReceiver() {
             context, NOTIFICATION_ID, abrir, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
 
-        val notification = NotificationCompat.Builder(context, NotificationScheduler.MY_CHANNEL_ID)
-            .setSmallIcon(R.drawable.logoblanco)
-            .setContentTitle("Sesión de enfoque terminada")
+        val notification = NotificationCompat.Builder(context, CanalesNotificacion.ENFOQUE)
+            .setSmallIcon(R.drawable.ic_gami_enfoque)
+            .setColor(context.getColor(R.color.aviso_exito))
+            .setContentTitle("¡Sesión de enfoque terminada!")
             .setContentText("Buen trabajo. Abre EduPlanner para cobrar tu recompensa.")
             .setContentIntent(pendingIntent)
             .setAutoCancel(true)

@@ -103,8 +103,8 @@ class PrediccionFragment : Fragment() {
             asignaturas = prediccionViewModel.nombresAsignaturas(),
             onAgregarAsignatura = null,
             tarea = tarea,
-            onGuardar = { titulo, descrip, asignatura, fecha, prioridad ->
-                prediccionViewModel.editar(tarea.copy(titulo = titulo, descrip = descrip, asignatura = asignatura, fecha = fecha, prioridad = prioridad))
+            onGuardar = { titulo, descrip, asignatura, fecha, prioridad, horaEntrega ->
+                prediccionViewModel.editar(tarea.copy(titulo = titulo, descrip = descrip, asignatura = asignatura, fecha = fecha, prioridad = prioridad, horaEntrega = horaEntrega))
             }
         ).show()
     }

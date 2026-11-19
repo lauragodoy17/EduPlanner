@@ -27,7 +27,7 @@ import com.softcg.myapplication.data.database.entities.TareaEntity
         MovimientoEduCoinsEntity::class, AsistenciaEntity::class, InventarioEntity::class, AvatarEquipadoEntity::class,
         AvatarAparienciaEntity::class, MisionAsignadaEntity::class, SesionEnfoqueEntity::class, PercepcionEntity::class
     ],
-    version = 16,
+    version = 17,
     exportSchema = false
 )
 abstract class TareasDatabase :RoomDatabase(){

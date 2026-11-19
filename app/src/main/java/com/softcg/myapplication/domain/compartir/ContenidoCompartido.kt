@@ -21,7 +21,9 @@ sealed class ContenidoCompartido {
         val descripcion: String,
         override val asignatura: String,
         val fecha: String,
-        val prioridad: Int
+        val prioridad: Int,
+        /** "HH:mm" o vacía (vence a las 23:59). */
+        val horaEntrega: String = ""
     ) : ContenidoCompartido() {
         override val tipo get() = TipoCompartido.TAREA
     }
@@ -62,7 +64,7 @@ sealed class ContenidoCompartido {
     }
 
     companion object {
-        fun de(tarea: Tarea) = TareaCompartida(tarea.titulo, tarea.descrip, tarea.asignatura, tarea.fecha, tarea.prioridad)
+        fun de(tarea: Tarea) = TareaCompartida(tarea.titulo, tarea.descrip, tarea.asignatura, tarea.fecha, tarea.prioridad, tarea.horaEntrega.orEmpty())
 
         fun de(evento: Evento) =
             EventoCompartido(evento.titulo, evento.descrip, evento.fecha, evento.horaInicio, evento.horaFin, evento.prioridad)

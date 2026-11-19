@@ -1,6 +1,8 @@
 package com.softcg.myapplication.domain.gamificacion
 
 import java.time.LocalDate
+import java.time.LocalTime
+import java.time.LocalDateTime
 
 /**
  * Única fuente de los valores de recompensa. La clave de cada movimiento es "<TIPO>:<referencia>",
@@ -31,8 +33,25 @@ val TIPOS_ENFOQUE: List<String> = listOf(
 
 /** Una tarea cuenta como a tiempo hasta el final del día de su fecha de entrega. */
 object ReglasEntrega {
+    /** Sin hora de entrega, la tarea vence al terminar su día. */
+    val HORA_LIMITE_POR_DEFECTO: LocalTime = LocalTime.of(23, 59)
+
+    /** Solo por fecha (misiones, listas): a tiempo hasta el final del día de entrega. */
     fun aTiempo(fecha: String, hoy: LocalDate): Boolean =
         runCatching { !hoy.isAfter(LocalDate.parse(fecha)) }.getOrDefault(false)
+
+    /** Momento en que vence: la fecha a la [hora] de entrega o, sin hora válida, a las 23:59. null si la fecha no es válida. */
+    fun limite(fecha: String, hora: String?): LocalDateTime? {
+        val dia = runCatching { LocalDate.parse(fecha) }.getOrNull() ?: return null
+        val horaLimite = hora?.let { AsistenciaReglas.parsearHora(it) } ?: HORA_LIMITE_POR_DEFECTO
+        return dia.atTime(horaLimite)
+    }
+
+    /** Con hora: a tiempo hasta ese minuto incluido. */
+    fun aTiempo(fecha: String, hora: String?, ahora: LocalDateTime): Boolean {
+        val limite = limite(fecha, hora) ?: return false
+        return !ahora.isAfter(limite.withSecond(59).withNano(999_999_999))
+    }
 }
 
 /** Condiciones para que un registro nuevo reciba su recompensa. */

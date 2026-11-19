@@ -26,7 +26,7 @@ object TextosCompartir {
     fun detalles(contenido: ContenidoCompartido): List<Pair<String, String>> = when (contenido) {
         is TareaCompartida -> listOf(
             "Asignatura" to contenido.asignatura,
-            "Fecha de entrega" to fecha(contenido.fecha),
+            "Fecha de entrega" to fecha(contenido.fecha) + contenido.horaEntrega.takeIf { it.isNotBlank() }?.let { " · hasta las $it" }.orEmpty(),
             "Prioridad" to PRIORIDADES[contenido.prioridad].orEmpty(),
             "Descripción" to contenido.descripcion
         )

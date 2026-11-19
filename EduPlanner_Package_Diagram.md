@@ -18,7 +18,7 @@ graph TD
         MODELS["ui.Inicio.Models<br/>Tarea · Evento · TimelineItem · DateFilterItem"]
         COMPARTIR_UI["ui.compartir<br/>EscanerQrActivity · VisorQrView · CompartirViewModel"]
         TEMA_UI["ui.tema<br/>Temas · TemaDialog · TemaViewModel"]
-        NOTIF["ui.notifications<br/>NotificationScheduler · AlarmNotification · EnfoqueNotification"]
+        NOTIF["ui.notifications<br/>ProgramadorAlarmas · PublicadorAvisos · receptores · VigilanteAvisos · CanalesNotificacion"]
     end
 
     subgraph DOMAIN["domain (casos de uso y reglas puras)"]
@@ -28,13 +28,14 @@ graph TD
         D_IA["domain.ia<br/>RecomendarTareaUseCase · Fuentes"]
         D_COMP["domain.compartir<br/>CodigoQr · ContenidoCompartido · ImportarCompartido · TextosCompartir"]
         D_PREF["domain.preferencias<br/>TemaApp"]
+        D_AVISOS["domain.notificaciones<br/>ReglasAvisos · TextosAvisos · Reprogramar/Construir/ResponderAviso"]
     end
 
     subgraph DATA["data (acceso a datos)"]
         REPOS["data.Repositories<br/>Tareas · Eventos · Asignaturas · Calificaciones<br/>Gamificacion · Percepciones"]
         DB["data.database<br/>TareasDatabase v16 · Migrations · DuenoDatosLocales<br/>dao · entities"]
         NET["data.network<br/>FirebaseClient · AuthenticationService · CredencialGoogleService<br/>SesionUsuario · PrediccionService · GeminiRecomendaciones · VerificadorFuentesWeb"]
-        PREFS["data.preferencias<br/>PreferenciasTema (SharedPreferences)"]
+        PREFS["data.preferencias<br/>PreferenciasTema · PreferenciasAvisos (SharedPreferences)"]
     end
 
     subgraph CORE["core (utilidades transversales)"]
@@ -47,6 +48,7 @@ graph TD
         ROOM_M[RoomModule]
         GAMI_M["GamificacionModule<br/>Reloj · SesionUsuario"]
         IA_M["IaModule<br/>Gemini · VerificadorFuentes · ClienteHttp"]
+        AVISOS_M["AvisosModule<br/>ProgramadorAvisos → ProgramadorAlarmas"]
     end
 
     subgraph EXT["Externos"]
@@ -77,6 +79,9 @@ graph TD
     COMPARTIR_UI --> D_COMP
     TEMA_UI --> D_PREF
     TEMA_UI --> PREFS
+    NOTIF --> D_AVISOS
+    D_AVISOS --> REPOS
+    D_AVISOS --> D_GAMI
 
     D_ROOT --> REPOS
     D_ROOT --> NET

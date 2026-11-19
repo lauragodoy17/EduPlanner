@@ -38,14 +38,14 @@ Gradle 8.4 + AGP 8.3 need **JDK 17** (Java 8 is too old and Java 25 is too new).
 - Inject `core/Reloj` instead of calling `now()` and `SesionUsuario` instead of touching FirebaseAuth directly, so tests can replace them.
 
 ### Database (Room)
-- Database: `data/database/TareasDatabase/TareasDatabase.kt`, **version 16**, `exportSchema = false`.
+- Database: `data/database/TareasDatabase/TareasDatabase.kt`, **version 17**, `exportSchema = false`.
 - Entities: `TareaEntity`, `EventoEntity`, `AsignaturaEntity`, `CalificacionEntity`, `PercepcionEntity`, and the gamification entities in `GamificacionEntities.kt` (`MovimientoEduCoinsEntity`, `AsistenciaEntity`, `InventarioEntity`, `AvatarEquipadoEntity`, `AvatarAparienciaEntity`, `MisionAsignadaEntity`, `SesionEnfoqueEntity`).
 - DAOs: `TareasDao`, `EventosDao`, `AsignaturasDao`, `CalificacionesDao`, `GamificacionDao`, `PercepcionesDao`.
 - **All data is per user** (`uid` column). Rows created before v16 have `uid = ''`; `data/database/DuenoDatosLocales` lets the first user who signs in adopt them. Always filter queries by `uid`.
 - Main-thread queries are allowed (`allowMainThreadQueries()`), with `fallbackToDestructiveMigration()` as a last resort.
 
 ### Database Migrations
-- Real migrations live in `data/database/TareasDatabase/Migrations.kt` (`MIGRATION_13_14`, `MIGRATION_14_15`, `MIGRATION_15_16`) and are registered in `RoomModule`. User data must survive upgrades: **do not rely on the destructive fallback**.
+- Real migrations live in `data/database/TareasDatabase/Migrations.kt` (`MIGRATION_13_14` … `MIGRATION_16_17`; 17 adds the optional task delivery time `hora_entrega`) and are registered in `RoomModule`. User data must survive upgrades: **do not rely on the destructive fallback**.
 - When changing the schema: bump the version, add a `MIGRATION_X_Y` whose SQL matches exactly what Room expects for the entity (column types, NOT NULL, defaults, indices), register it in `RoomModule`, and extend `androidTest/.../data/MigrationTest.kt` (it builds a v13 database and migrates it to the latest version).
 
 ### Gamification
@@ -91,7 +91,11 @@ Custom views for progress: `Perfil/AvatarView`, `Perfil/Views/` (`ActividadHeatm
 `ui/Inicio/Dialogs/AccionesTarea` coordinates view/deliver/grade/delete for Home and Agenda: the task sheet has Entregar (or Calificar once delivered) and Borrar; after delivering, `Context.preguntar()` offers "Añadir calificación" / "Más tarde"; difficulty is asked once per task when the flow ends.
 
 ### Notifications
-`ui/notifications/NotificationScheduler` creates the channel and schedules alarms: daily reminders at 9:00 and 11:30 (shown by `AlarmNotification`) and the end of a focus session (`EnfoqueNotification`, which reopens `InicioActivity` on the focus screen; the reward is collected in-app).
+- **What is notified** (`domain/notificaciones/ReglasAvisos`, pure and unit-tested): class 10 min before it starts; daily summary at 9:00 with that day's pending tasks and events (skipped if there is nothing); a pending task 1 hour and 5 minutes before its deadline and 1 minute after it expires; and when a class ends, an attendance question with "Sí, asistí" / "No asistí" buttons. Task deadline = `fecha` + optional `horaEntrega`, or 23:59 (`ReglasEntrega.limite`; "a tiempo" uses the same limit).
+- **How it works with the app closed**: `ReprogramarAvisosUseCase` builds a `PlanAvisos` from the stored data and hands it to `ProgramadorAvisos` (bound in `di/AvisosModule` to `ui/notifications/ProgramadorAlarmas`: exact `AlarmManager` alarms, remembered in SharedPreferences so stale ones are cancelled). It runs on app start, whenever `tareas_table`/`asignaturas_table`/`asistencias`/`calificaciones_table` change (`VigilanteAvisos`, a Room `InvalidationTracker` observer started in `MvvmEduPlannerApp`, debounced), after each alarm or button press, and on boot/time change/app update (`ReprogramarAvisosReceiver`). Sign-out cancels everything.
+- **At fire time** `AvisoReceiver` calls `ConstruirAvisoUseCase`, which re-reads the data and returns null if the notice no longer applies (task delivered/deleted, attendance answered…); texts live in `TextosAvisos`. `PublicadorAvisos` draws it (colour by urgency, large round icon, expandable text, buttons; tag `aviso|<clave>`, one notification per task or class that each new notice replaces) and retires shown notices that are no longer in `PlanAvisos.vigentes`. Buttons go to `AccionAvisoReceiver` → `ResponderAvisoUseCase` (attendance via `ConfirmarAsistenciaUseCase`, delivery via `EntregarTareaUseCase`); the result replaces the notice under tag `respuesta|<clave>` and disappears after a few seconds.
+- Receivers extend `ReceptorConHilt` (Hilt needs `super.onReceive`, abstract in `BroadcastReceiver`) and use `goAsync`. Tapping a notice opens `InicioActivity` with `IntentsAvisos.EXTRA_DESTINO` (task screen, schedule or attendance dialog). Channels (`CanalesNotificacion`): clases, tareas, asistencia, resumen_dia and the historical `myChannel` for focus sessions. Android 13+ permission is explained and requested once (`PreferenciasAvisos`).
+- `NotificationScheduler` only keeps the focus-session alarm (`EnfoqueNotification`). Do not change `TipoAviso.clave`: it is stored in pending alarms. `androidTest/.../PublicadorAvisosTest` publishes one notice of each type (`-e dejarVisibles true` keeps them on screen for review).
 
 ### Firebase
 - `app/google-services.json` (Firebase project config). Analytics enabled.

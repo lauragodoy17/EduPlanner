@@ -51,7 +51,7 @@ class CalificarTareaUseCase @Inject constructor(
                     val recompensa = otorgarRecompensa.otorgarEnTransaccion(uid, TipoRecompensa.CALIFICACION_REGISTRADA, "tarea-$tareaId")
                     ResultadoCalificarTarea.Completada((recompensa as? ResultadoRecompensa.Otorgada)?.cantidad ?: 0)
                 } else {
-                    val terminada = otorgarRecompensa.otorgarTareaTerminadaEnTransaccion(uid, tareaId, tarea.fecha)
+                    val terminada = otorgarRecompensa.otorgarTareaTerminadaEnTransaccion(uid, tareaId, tarea.fecha, tarea.horaEntrega)
                     ResultadoCalificarTarea.Completada(terminada.monedas, terminada.aTiempo)
                 }
             }
@@ -87,8 +87,8 @@ class EntregarTareaUseCase @Inject constructor(
                     return@enTransaccion ResultadoEntregarTarea.YaEntregada
                 }
                 val uid = sesion.uid()
-                    ?: return@enTransaccion ResultadoEntregarTarea.Entregada(0, ReglasEntrega.aTiempo(tarea.fecha, ahora.toLocalDate()))
-                val terminada = otorgarRecompensa.otorgarTareaTerminadaEnTransaccion(uid, tareaId, tarea.fecha)
+                    ?: return@enTransaccion ResultadoEntregarTarea.Entregada(0, ReglasEntrega.aTiempo(tarea.fecha, tarea.horaEntrega, ahora.toLocalDateTime()))
+                val terminada = otorgarRecompensa.otorgarTareaTerminadaEnTransaccion(uid, tareaId, tarea.fecha, tarea.horaEntrega)
                 ResultadoEntregarTarea.Entregada(terminada.monedas, terminada.aTiempo)
             }
         } catch (e: Exception) {

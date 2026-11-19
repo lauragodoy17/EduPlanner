@@ -2,7 +2,7 @@
 
 Clases principales y sus relaciones. Para no saturar, cada diagrama muestra un módulo; los campos y métodos son los relevantes, no todos. Todas las entidades llevan `uid` (dueño): los datos son por usuario.
 
-## Datos (Room, base de datos versión 16)
+## Datos (Room, base de datos versión 17)
 
 ```mermaid
 classDiagram
@@ -24,6 +24,7 @@ classDiagram
         +Int prioridad
         +Long? entregadaMillis
         +String? tema
+        +String? horaEntrega
         +String uid
     }
     class EventoEntity {
