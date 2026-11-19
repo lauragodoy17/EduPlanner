@@ -1,5 +1,6 @@
 package com.softcg.myapplication.ui.Inicio.Fragments.Agenda
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -9,6 +10,7 @@ import com.softcg.myapplication.data.Repositories.TareasRepository
 import com.softcg.myapplication.domain.getEventosUseCase
 import com.softcg.myapplication.domain.getTareasUseCase
 import com.softcg.myapplication.ui.Inicio.Fragments.Agenda.Models.AgendaItem
+import com.softcg.myapplication.ui.Inicio.Fragments.Agenda.Models.FiltroAgenda
 import com.softcg.myapplication.ui.Inicio.Models.Evento
 import com.softcg.myapplication.ui.Inicio.Models.Tarea
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -31,23 +33,47 @@ class AgendaViewModel @Inject constructor(
     val _eventos= MutableLiveData<List<Evento>>()
     val _listAgenda= MutableLiveData<List<AgendaItem>>()
 
+    /** Filtro de arriba a la derecha; empieza en "Sin entregar" y se conserva al volver a la agenda. */
+    private val _filtro = MutableLiveData(FiltroAgenda.SIN_ENTREGAR)
+    val filtro: LiveData<FiltroAgenda>
+        get() = _filtro
+
+    fun elegirFiltro(filtro: FiltroAgenda) {
+        if (_filtro.value == filtro) return
+        _filtro.value = filtro
+        obtenerAgendaList()
+    }
+
     fun obtenerAgendaList() {
-        var list :List<AgendaItem> = emptyList()
         obtenerEventos()
         obtenerTareas()
-        if (_tareas.value?.isNotEmpty() == true){
-            // Solo lo pendiente: las tareas entregadas o calificadas no aparecen
-            list = _tareas.value!!.filterNot { it.completada }.map {
-                AgendaItem(id = it.id,titulo = it.titulo, descrip = it.descrip, asignatura = it.asignatura, fecha = it.fecha, prioridad = it.prioridad)
-            }
+        _listAgenda.value = elementos(
+            _tareas.value.orEmpty(), _eventos.value.orEmpty(), _filtro.value ?: FiltroAgenda.SIN_ENTREGAR
+        )
+    }
+
+    /**
+     * Lo que muestra cada filtro: "Sin entregar" = tareas sin entregar + eventos que no han pasado; "Solo tareas" =
+     * tareas sin entregar; "Solo eventos" = eventos que no han pasado; "Entregados" = tareas entregadas o calificadas.
+     */
+    internal fun elementos(tareas: List<Tarea>, eventos: List<Evento>, filtro: FiltroAgenda): List<AgendaItem> {
+        val tareasElegidas = when (filtro) {
+            FiltroAgenda.SIN_ENTREGAR, FiltroAgenda.SOLO_TAREAS -> tareas.filterNot { it.completada }
+            FiltroAgenda.ENTREGADOS -> tareas.filter { it.completada }
+            FiltroAgenda.SOLO_EVENTOS -> emptyList()
         }
-        if (_eventos.value?.isNotEmpty() == true){
-            val dos: List<AgendaItem> = _eventos.value!!.filterNot { eventoTerminado(it) }.map {
-                AgendaItem(id = it.id,titulo = it.titulo, descrip = it.descrip, asignatura = null, fecha = it.fecha, prioridad = it.prioridad)
-            }
-            list = list.plus(dos)
+        val eventosElegidos = when (filtro) {
+            FiltroAgenda.SIN_ENTREGAR, FiltroAgenda.SOLO_EVENTOS -> eventos.filterNot { eventoTerminado(it) }
+            else -> emptyList()
         }
-        _listAgenda.value=list
+        return tareasElegidas.map {
+            AgendaItem(
+                id = it.id, titulo = it.titulo, descrip = it.descrip, asignatura = it.asignatura, fecha = it.fecha,
+                prioridad = it.prioridad, entregada = it.completada, textoCalificacion = it.textoCalificacion
+            )
+        } + eventosElegidos.map {
+            AgendaItem(id = it.id, titulo = it.titulo, descrip = it.descrip, asignatura = null, fecha = it.fecha, prioridad = it.prioridad)
+        }
     }
     /** Un evento se da por completado cuando pasa su hora de fin (o su día, si no tiene hora de fin). */
     private fun eventoTerminado(evento: Evento): Boolean {

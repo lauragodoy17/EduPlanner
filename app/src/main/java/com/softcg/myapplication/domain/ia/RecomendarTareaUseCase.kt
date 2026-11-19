@@ -86,7 +86,36 @@ class RecomendarTareaUseCase @Inject constructor(
 
     suspend operator fun invoke(tarea: Tarea, nueva: Boolean = false): ResultadoRecomendacion {
         if (!nueva) cache[tarea]?.let { return ResultadoRecomendacion.Exito(it) }
-        val contexto = contextoDe(tarea)
+        return generar(tarea, contextoDe(tarea))
+    }
+
+    /**
+     * Recomendación con una predicción que ya se hizo (pantalla de la tarea): no vuelve a llamar a la API.
+     * Reutiliza la guardada si la tarea y el contexto no cambiaron, salvo con `nueva = true`.
+     */
+    suspend fun conContexto(tarea: Tarea, contexto: ContextoPrediccion, nueva: Boolean = false): ResultadoRecomendacion {
+        if (!nueva) cache[tarea]?.takeIf { it.contexto == contexto }?.let { return ResultadoRecomendacion.Exito(it) }
+        return generar(tarea, contexto)
+    }
+
+    /** Contexto que corresponde a la respuesta de POST /predict para [datos]. */
+    fun contextoDeRespuesta(datos: DatosPrediccion, respuesta: RespuestaApi): ContextoPrediccion {
+        val prediccion = when (respuesta) {
+            is RespuestaApi.Http -> if (respuesta.exitosa) ResultadoPrediccion.desdeJson(respuesta.cuerpo) else {
+                Log.w(TAG, "La API de predicción respondió ${respuesta.codigo}: ${respuesta.cuerpo.take(300)}")
+                null
+            }
+            RespuestaApi.SinSesion -> null
+            is RespuestaApi.ErrorRed -> {
+                Log.w(TAG, "No se pudo conectar con la API de predicción: ${respuesta.mensaje}")
+                null
+            }
+        }
+        return if (prediccion != null) ContextoPrediccion.ConPrediccion(prediccion, datos)
+        else ContextoPrediccion.SinPrediccion(MotivoSinPrediccion.MODELO_NO_DISPONIBLE, emptyList())
+    }
+
+    private suspend fun generar(tarea: Tarea, contexto: ContextoPrediccion): ResultadoRecomendacion {
         val prompt = construirPrompt(tarea, contexto)
 
         var borrador: Borrador? = null
@@ -145,19 +174,7 @@ class RecomendarTareaUseCase @Inject constructor(
         val datos = resultado.datos ?: return ContextoPrediccion.SinPrediccion(
             MotivoSinPrediccion.FALTAN_DATOS, resultado.estados.filterNot { it.listo }.map { it.item.titulo }
         )
-        val prediccion = when (val respuesta = predecir(datos)) {
-            is RespuestaApi.Http -> if (respuesta.exitosa) ResultadoPrediccion.desdeJson(respuesta.cuerpo) else {
-                Log.w(TAG, "La API de predicción respondió ${respuesta.codigo}: ${respuesta.cuerpo.take(300)}")
-                null
-            }
-            RespuestaApi.SinSesion -> null
-            is RespuestaApi.ErrorRed -> {
-                Log.w(TAG, "No se pudo conectar con la API de predicción: ${respuesta.mensaje}")
-                null
-            }
-        }
-        return if (prediccion != null) ContextoPrediccion.ConPrediccion(prediccion, datos)
-        else ContextoPrediccion.SinPrediccion(MotivoSinPrediccion.MODELO_NO_DISPONIBLE, emptyList())
+        return contextoDeRespuesta(datos, predecir(datos))
     }
 
     internal fun construirPrompt(tarea: Tarea, contexto: ContextoPrediccion): String {

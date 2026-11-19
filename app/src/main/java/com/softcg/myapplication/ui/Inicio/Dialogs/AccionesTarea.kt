@@ -1,7 +1,6 @@
 package com.softcg.myapplication.ui.Inicio.Dialogs
 
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
 import com.softcg.myapplication.core.ex.confirmar
 import com.softcg.myapplication.core.ex.mostrarAviso
 import com.softcg.myapplication.core.ex.mostrarMensaje
@@ -9,12 +8,11 @@ import com.softcg.myapplication.core.ex.mostrarRecompensa
 import com.softcg.myapplication.core.ex.preguntar
 import com.softcg.myapplication.domain.gamificacion.ResultadoCalificarTarea
 import com.softcg.myapplication.domain.gamificacion.ResultadoEntregarTarea
-import com.softcg.myapplication.domain.ia.RecomendarTareaUseCase
 import com.softcg.myapplication.ui.Inicio.InicioViewModel
 import com.softcg.myapplication.ui.Inicio.Models.Tarea
 
 /**
- * Ver, entregar, calificar y borrar una tarea, igual desde Inicio y desde Agenda.
+ * Entregar, calificar y borrar una tarea, igual desde Inicio, Agenda y la pantalla de la tarea.
  * Al entregarla se ofrece añadir la calificación o dejarlo para más tarde; al terminar (con nota o sin ella)
  * se pregunta su dificultad, una sola vez por tarea.
  */
@@ -22,10 +20,8 @@ class AccionesTarea(
     private val fragment: Fragment,
     private val inicio: InicioViewModel,
     private val datosEstudio: AccionesDatosEstudio,
-    private val recomendarTarea: RecomendarTareaUseCase,
     /** Borra la tarea en el ViewModel de la pantalla (ya confirmado). */
     private val onBorrar: (Tarea) -> Unit,
-    private val onCompletarDatos: (Tarea) -> Unit,
     /** Recarga la lista de la pantalla tras entregar o calificar. */
     private val onCambio: () -> Unit
 ) {
@@ -68,23 +64,16 @@ class AccionesTarea(
         }
     }
 
-    fun verDetalles(tarea: Tarea) {
-        TareaDetallesDialog(
-            context, tarea, fragment.viewLifecycleOwner.lifecycleScope, recomendarTarea,
-            onCompletarDatos = onCompletarDatos,
-            onEntregar = ::entregar,
-            onCalificar = ::calificar,
-            onBorrar = ::borrar
-        ).show()
-    }
-
     fun entregar(tarea: Tarea) {
         tareaEnCurso = tarea
         inicio.entregarTarea(tarea)
     }
 
     fun calificar(tarea: Tarea) {
-        CalificarTareaDialog(context, tarea) { texto ->
+        CalificarTareaDialog(
+            context, tarea, inicio.asignaturaDe(tarea),
+            onEscalaNueva = { id, escala -> inicio.guardarEscala(id, escala) }
+        ) { texto ->
             tareaEnCurso = tarea
             inicio.calificarTarea(tarea, texto)
         }.show()

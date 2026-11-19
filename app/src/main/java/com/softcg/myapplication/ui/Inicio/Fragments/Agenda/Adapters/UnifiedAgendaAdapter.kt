@@ -70,12 +70,23 @@ class UnifiedAgendaAdapter(
 
             // asignatura null = evento, otherwise = tarea
             val esEvento = item.asignatura == null
-            textAsignatura.text = item.asignatura
+            // Con el filtro "Entregados": la tarea dice si se entregó o ya está calificada, como en Inicio
+            textAsignatura.text = item.textoCalificacion?.let { "${item.asignatura} · Calificación: $it" } ?: item.asignatura
             textAsignatura.visibility = if (esEvento) View.GONE else View.VISIBLE
-            val color = if (esEvento) R.color.evento else R.color.acento
-            val fondo = if (esEvento) R.color.evento_suave else R.color.marca_superficie
-            typeBadge.pintarEtiqueta(if (esEvento) "EVENTO" else "TAREA", color, fondo)
-            icono.setImageResource(if (esEvento) R.drawable.ic_gami_evento else R.drawable.ic_gami_tarea)
+            val (etiqueta, color, fondo) = when {
+                esEvento -> Triple("EVENTO", R.color.evento, R.color.evento_suave)
+                item.textoCalificacion != null -> Triple("COMPLETADA", R.color.estado_exito, R.color.estado_exito_suave)
+                item.entregada -> Triple("ENTREGADA", R.color.estado_exito, R.color.estado_exito_suave)
+                else -> Triple("TAREA", R.color.acento, R.color.marca_superficie)
+            }
+            typeBadge.pintarEtiqueta(etiqueta, color, fondo)
+            icono.setImageResource(
+                when {
+                    esEvento -> R.drawable.ic_gami_evento
+                    item.entregada -> R.drawable.ic_gami_check
+                    else -> R.drawable.ic_gami_tarea
+                }
+            )
             icono.imageTintList = ColorStateList.valueOf(context.getColor(color))
             icono.tintarFondo(fondo)
 
@@ -108,7 +119,7 @@ class UnifiedAgendaAdapter(
             popupMenu.inflate(R.menu.menudos)
             // Las tareas abren su detalle con las recomendaciones de la IA; los eventos de la agenda no tienen
             popupMenu.menu.findItem(R.id.VerMas).isVisible = item.asignatura != null
-            // La fila guarda solo lo básico: la tarea se comparte desde "Ver más", con todos sus datos
+            // La fila guarda solo lo básico: la tarea se comparte desde su pantalla ("Ver más"), con todos sus datos
             popupMenu.menu.findItem(R.id.Compartir).isVisible = false
 
             popupMenu.setOnMenuItemClickListener { menuItem ->

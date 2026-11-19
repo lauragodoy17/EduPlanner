@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Números internos (13-00) de la esfera: el elegido en el color "sobre acento" -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:color="?attr/eduSobreAcento" android:state_activated="true"/>
+    <item android:color="?attr/eduTextSecondary"/>
+</selector>

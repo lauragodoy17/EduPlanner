@@ -80,7 +80,7 @@ class RegisterActivity : AppCompatActivity() {
                     UserRegister(
                         email = binding.emailEditText.text.toString(),
                         password = binding.contrasenaEditText.text.toString(),
-                        passwordConfirmation = binding.contrasenaEditText.text.toString()
+                        passwordConfirmation = binding.confirmarcontraEditText.text.toString()
                     )
                 )
             }
@@ -103,15 +103,15 @@ class RegisterActivity : AppCompatActivity() {
                 updateUI(viewState)
             }
         }
-        viewmodelregister.showErrorDialog.observe(this){ showError ->
-            if (showError) showErrorDialog()
+        viewmodelregister.errorRegistro.observe(this) { evento ->
+            evento.getContentIfNotHandled()?.let { mensaje -> showErrorDialog(mensaje) }
         }
     }
 
-    private fun showErrorDialog() {
+    private fun showErrorDialog(mensaje: String) {
         ErrorDialog.create(
             title = getString(R.string.signin_error_dialog_title),
-            description = getString(R.string.signin_error_dialog_body),
+            description = mensaje.ifBlank { getString(R.string.signin_error_dialog_body) },
             positiveAction = ErrorDialog.Action(getString(R.string.signin_error_dialog_positive_action)) {
                 it.dismiss()
             }

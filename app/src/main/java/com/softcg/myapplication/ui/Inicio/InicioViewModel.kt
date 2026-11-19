@@ -1,6 +1,9 @@
 package com.softcg.myapplication.ui.Inicio
 
 import androidx.lifecycle.LiveData
+import com.softcg.myapplication.ui.Inicio.Fragments.Asignaturas.Models.Asignatura
+import com.softcg.myapplication.domain.calificaciones.GuardarEscalaAsignaturaUseCase
+import com.softcg.myapplication.domain.calificaciones.EscalaCalificacion
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -73,6 +76,7 @@ class InicioViewModel @Inject constructor(
     @Inject lateinit var tareasRepository: TareasRepository
     @Inject lateinit var eventosRepository: EventosRepository
     @Inject lateinit var calificacionesRespository: CalificacionesRespository
+    @Inject lateinit var guardarEscalaAsignatura: GuardarEscalaAsignaturaUseCase
 
 
     init {
@@ -158,6 +162,23 @@ class InicioViewModel @Inject constructor(
     fun obtenerEventos (){
         viewModelScope.launch {
             _eventos.value = getEventosUseCase()
+        }
+    }
+
+    /** Las asignaturas con su escala de notas, para los formularios de calificación. */
+    fun asignaturasCompletas(): List<Asignatura> = getAsignaturasUseCase()
+
+    /** La asignatura de una tarea (por id o, en las antiguas, por nombre). */
+    fun asignaturaDe(tarea: Tarea): Asignatura? {
+        val todas = asignaturasCompletas()
+        return todas.firstOrNull { it.id != null && it.id == tarea.asignaturaId } ?: todas.firstOrNull { it.nombre == tarea.asignatura }
+    }
+
+    /** Escala elegida al calificar en una asignatura antigua que no la tenía. */
+    fun guardarEscala(asignaturaId: Int, escala: EscalaCalificacion) {
+        viewModelScope.launch {
+            guardarEscalaAsignatura(asignaturaId, escala)
+            _calificaciones.value = getCalificacionesUseCase()
         }
     }
 

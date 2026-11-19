@@ -52,21 +52,26 @@
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/calificarValorContainer"
-            style="@style/Edu.Campo"
+        <!-- Solo si la asignatura de la tarea aún no tiene escala: se elige una vez -->
+        <LinearLayout
+            android:id="@+id/calificacionEscalaPendiente"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Calificación obtenida">
+            android:layout_marginBottom="12dp"
+            android:orientation="vertical"
+            android:visibility="gone">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/calificarValor"
-                style="@style/Edu.CampoEntrada"
+            <include
+                layout="@layout/include_selector_escala"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="numberDecimal"
-                android:maxLines="1"/>
-        </com.google.android.material.textfield.TextInputLayout>
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+
+        <include
+            layout="@layout/include_entrada_calificacion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"/>
 
         <LinearLayout
             android:layout_width="match_parent"

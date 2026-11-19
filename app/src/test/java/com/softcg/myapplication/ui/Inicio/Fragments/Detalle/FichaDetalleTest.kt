@@ -50,7 +50,7 @@ class FichaDetalleTest {
         val ficha = FichaDetalle.de(Calificacion(1, "Numerico (1-5)", 4.5f, "Física", "Primer corte"))
         assertEquals("Física", ficha.titulo)
         assertEquals("Primer corte", ficha.descripcion)
-        assertEquals(listOf("Calificación" to "4.5", "Tipo" to "Numerico (1-5)"), ficha.filas)
+        assertEquals(listOf("Calificación" to "4,5", "Tipo" to "Numerico (1-5)"), ficha.filas)
     }
 
     @Test
@@ -63,8 +63,5 @@ class FichaDetalleTest {
     fun `los formularios se rellenan con lo guardado al editar`() {
         assertEquals("Media", TareaDialog.textoPrioridad(2))
         assertEquals("", TareaDialog.textoPrioridad(0))
-        assertEquals(0, AsignaturaDialog.posicionTipo(""))
-        assertEquals(1, AsignaturaDialog.posicionTipo("Numérico (0-10)"))
-        assertEquals("Un tipo escrito a mano es «Otro»", AsignaturaDialog.TIPOS_CALIFICACION.lastIndex, AsignaturaDialog.posicionTipo("Rúbrica"))
     }
 }

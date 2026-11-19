@@ -60,7 +60,8 @@ object CondicionesRecompensa {
 
     fun eventoValido(titulo: String, fecha: String) = titulo.isNotBlank() && fecha.isNotBlank()
 
-    fun calificacionValida(valor: Float, asignatura: String) = valor > 0f && asignatura.isNotBlank()
+    /** Las notas se eligen dentro de su escala: 0 es válida (F, reprobado). */
+    fun calificacionValida(valor: Float, asignatura: String) = valor >= 0f && asignatura.isNotBlank()
 
     fun claseValida(hora: String, duracion: Int, horario: List<Boolean>) =
         AsistenciaReglas.parsearHora(hora) != null && duracion > 0 && horario.any { it }

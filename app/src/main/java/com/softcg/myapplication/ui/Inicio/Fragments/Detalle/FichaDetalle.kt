@@ -59,7 +59,7 @@ object FichaDetalle {
                 "Días de clase" to dias.joinToString(", ").ifEmpty { "Sin días asignados" },
                 "Hora de inicio" to AsignaturaConHora.horaLegible(asignatura.hora),
                 "Duración" to if (asignatura.duracion > 0) "${asignatura.duracion} h" else "",
-                "Tipo de calificación" to asignatura.tipoCalificacion,
+                "Escala de notas" to (asignatura.escala?.let { "${it.etiquetaGuardada} · ${it.descripcion}" } ?: asignatura.tipoCalificacion),
                 "Área" to asignatura.areaModelo?.let(CatalogoModelo::etiqueta).orEmpty()
             ).sinVacias()
         )
@@ -70,8 +70,9 @@ object FichaDetalle {
         titulo = calificacion.asignatura.trim().ifEmpty { "Calificación" },
         descripcion = calificacion.descripcion.trim(),
         filas = listOf(
-            "Calificación" to numero(calificacion.valor),
-            "Tipo" to calificacion.tipo
+            "Calificación" to calificacion.textoValor,
+            "Tipo" to calificacion.tipo,
+            "Escala" to calificacion.escala?.descripcion.orEmpty()
         ).sinVacias()
     )
 
@@ -88,7 +89,6 @@ object FichaDetalle {
         return "${fecha.format(FECHA)} · $plazo"
     }
 
-    private fun numero(valor: Float) = if (valor % 1f == 0f) valor.toInt().toString() else valor.toString()
 
     private fun List<Pair<String, String>>.sinVacias() = filter { it.second.isNotBlank() }
 }

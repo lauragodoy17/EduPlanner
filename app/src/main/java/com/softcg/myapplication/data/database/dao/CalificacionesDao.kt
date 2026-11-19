@@ -16,6 +16,9 @@ interface CalificacionesDao {
     @Query("Select * From calificaciones_table Where uid = :uid And (asignatura_id = :asignaturaId Or (asignatura_id Is Null And asignatura = :nombre))")
     suspend fun deAsignatura(uid: String, asignaturaId: Int, nombre: String): List<CalificacionEntity>
 
+    @Query("Select COUNT(*) From calificaciones_table Where uid = :uid And (asignatura_id = :asignaturaId Or (asignatura_id Is Null And asignatura = :nombre))")
+    suspend fun contarDeAsignatura(uid: String, asignaturaId: Int, nombre: String): Int
+
     @Query("Select COUNT(*) From calificaciones_table Where tarea_id = :tareaId")
     suspend fun contarDeTarea(tareaId:Int):Int
 

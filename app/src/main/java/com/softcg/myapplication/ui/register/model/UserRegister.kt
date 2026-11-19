@@ -8,5 +8,5 @@ data class UserRegister (
 )
 {
     fun isNotEmpty()=
-        email.isNotEmpty()&&password.isNotEmpty()&&passwordConfirmation.isNotEmpty()
+        email.isNotBlank()&&password.isNotEmpty()&&passwordConfirmation.isNotEmpty()
 }

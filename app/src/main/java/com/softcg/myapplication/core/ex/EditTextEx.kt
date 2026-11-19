@@ -6,7 +6,9 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.widget.EditText
 import com.softcg.myapplication.R
-import java.util.Calendar
+import java.time.LocalDate
+import java.time.LocalTime
+import java.time.ZoneId
 import java.util.Locale
 
 fun EditText.onTextChanged(listener: (String) -> Unit) {
@@ -30,36 +32,46 @@ fun EditText.loseFocusAfterAction(action: Int) {
     }
 }
 
-/** Abre un selector de fecha y escribe el resultado con formato yyyy-MM-dd. */
-fun EditText.showDatePicker() {
-    val calendar = Calendar.getInstance()
-    DatePickerDialog(
+/**
+ * Abre un selector de fecha y escribe el resultado con formato yyyy-MM-dd. Empieza en la fecha que ya tiene el campo
+ * (al editar) o en hoy; [minima]/[maxima] limitan los días que se pueden elegir.
+ */
+fun EditText.showDatePicker(minima: LocalDate? = null, maxima: LocalDate? = null) {
+    val actual = runCatching { LocalDate.parse(text.toString()) }.getOrNull() ?: LocalDate.now()
+    val inicial = actual.let { f -> if (minima != null && f.isBefore(minima)) minima else f }
+        .let { f -> if (maxima != null && f.isAfter(maxima)) maxima else f }
+    val selector = DatePickerDialog(
         context,
         R.style.Edu_TemaSelector,
         { _, year, month, dayOfMonth ->
             setText(formatFecha(year, month, dayOfMonth))
         },
-        calendar.get(Calendar.YEAR),
-        calendar.get(Calendar.MONTH),
-        calendar.get(Calendar.DAY_OF_MONTH)
-    ).show()
+        inicial.year,
+        inicial.monthValue - 1,
+        inicial.dayOfMonth
+    )
+    val zona = ZoneId.systemDefault()
+    minima?.let { selector.datePicker.minDate = it.atStartOfDay(zona).toInstant().toEpochMilli() }
+    maxima?.let { selector.datePicker.maxDate = it.atTime(23, 59).atZone(zona).toInstant().toEpochMilli() }
+    selector.show()
 }
 
-/** Abre un selector de hora en formato 24 h y escribe el resultado con formato HH:mm. */
-fun EditText.showTimePicker() {
-    val calendar = Calendar.getInstance()
+/** Abre un selector de hora en formato 24 h y escribe el resultado con formato HH:mm. Empieza en la hora del campo, si la tiene. */
+fun EditText.showTimePicker(onElegida: (String) -> Unit = {}) {
+    val actual = runCatching { LocalTime.parse(text.toString()) }.getOrNull() ?: LocalTime.now()
     TimePickerDialog(
         context,
         { _, hour, minute ->
-            setText(formatHora(hour, minute))
+            val hora = formatHora(hour, minute)
+            setText(hora)
+            onElegida(hora)
         },
-        calendar.get(Calendar.HOUR_OF_DAY),
-        calendar.get(Calendar.MINUTE),
+        actual.hour,
+        actual.minute,
         true
     ).show()
 }
 
-/** [month] empieza en 0, como en [Calendar]. */
 fun formatFecha(year: Int, month: Int, dayOfMonth: Int): String =
     String.format(Locale.US, "%04d-%02d-%02d", year, month + 1, dayOfMonth)
 

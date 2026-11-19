@@ -1,6 +1,7 @@
 package com.softcg.myapplication.domain.compartir
 
 import com.softcg.myapplication.domain.CrearAsignaturaUseCase
+import com.softcg.myapplication.domain.calificaciones.EscalaCalificacion
 import com.softcg.myapplication.domain.compartir.ContenidoCompartido.AsignaturaCompartida
 import com.softcg.myapplication.domain.compartir.ContenidoCompartido.EventoCompartido
 import com.softcg.myapplication.domain.compartir.ContenidoCompartido.NotaCompartida
@@ -46,7 +47,7 @@ object TextosCompartir {
         )
         is NotaCompartida -> listOf(
             "Asignatura" to contenido.asignatura,
-            "Calificación" to numero(contenido.valor),
+            "Calificación" to EscalaCalificacion.texto(contenido.valor, EscalaCalificacion.deTexto(contenido.tipoNota)),
             "Descripción" to contenido.descripcion
         )
     }.filter { it.second.isNotBlank() }
@@ -69,5 +70,4 @@ object TextosCompartir {
 
     private fun fecha(texto: String) = runCatching { LocalDate.parse(texto).format(FECHA) }.getOrDefault(texto)
 
-    private fun numero(valor: Float) = if (valor % 1f == 0f) valor.toInt().toString() else valor.toString()
 }

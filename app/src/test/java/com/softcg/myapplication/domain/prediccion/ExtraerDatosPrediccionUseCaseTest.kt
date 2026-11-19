@@ -94,7 +94,7 @@ class ExtraerDatosPrediccionUseCaseTest {
             DatosPrediccion(
                 attendanceAvg = 8.0,       // 80 % / 10
                 intensityHours = 0.88,     // 2,5 h / (20 días / 7)
-                gradeAvg = 7.75,           // 8/10 y 4 en 1-5 = 7,5
+                gradeAvg = 8.0,            // 8 de 10 y 4 de 5 (= 8 de 10)
                 difficultyPerception = 5.0,
                 interestLevel = 7.5,
                 subjectName = "Matematicas",

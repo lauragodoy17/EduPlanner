@@ -1,6 +1,8 @@
 package com.softcg.myapplication.domain.gamificacion
 
 import com.softcg.myapplication.core.RelojFijo
+import com.softcg.myapplication.ui.Inicio.Fragments.Asignaturas.Models.Asignatura
+import com.softcg.myapplication.data.Repositories.AsignaturasRepository
 import com.softcg.myapplication.core.ejecutarTransaccionesDirectamente
 import com.softcg.myapplication.data.Repositories.CalificacionesRespository
 import com.softcg.myapplication.data.Repositories.GamificacionRepository
@@ -24,6 +26,7 @@ class CalificarTareaUseCaseTest {
     @RelaxedMockK private lateinit var calificacionesRepository: CalificacionesRespository
     @RelaxedMockK private lateinit var repository: GamificacionRepository
     @RelaxedMockK private lateinit var sesion: SesionUsuario
+    @RelaxedMockK private lateinit var asignaturas: AsignaturasRepository
 
     private val tarea = Tarea(12, "Ensayo", "", "Historia", "2026-10-28", 1)
     private lateinit var calificar: CalificarTareaUseCase
@@ -37,8 +40,10 @@ class CalificarTareaUseCaseTest {
         coEvery { repository.contarMovimientosDelDia(any(), any(), any()) } returns 0
         coEvery { repository.insertarMovimiento(any(), any(), any(), any(), any(), any(), any()) } returns true
         repository.ejecutarTransaccionesDirectamente()
+        coEvery { asignaturas.getAsignatura(any()) } returns null
+        every { asignaturas.getAllAsignaturas() } returns emptyList()
         val otorgar = OtorgarRecompensaUseCase(repository, sesion, RelojFijo(LocalDateTime.of(2026, 10, 28, 10, 0)))
-        calificar = CalificarTareaUseCase(calificacionesRepository, repository, otorgar, sesion)
+        calificar = CalificarTareaUseCase(calificacionesRepository, asignaturas, repository, otorgar, sesion)
     }
 
     @Test
@@ -109,5 +114,17 @@ class CalificarTareaUseCaseTest {
 
         assertEquals(ResultadoCalificarTarea.Error, calificar(tarea, "5"))
         coVerify(exactly = 0) { repository.insertarMovimiento(any(), any(), any(), any(), any(), any(), any()) }
+    }
+
+    @Test
+    fun `una nota fuera de la escala de la asignatura no se guarda`() = runBlocking {
+        every { asignaturas.getAllAsignaturas() } returns listOf(
+            Asignatura(4, "Historia", "", 0, "", List(7) { false }, tipoCalificacion = "Numérico (1-5)", escalaMin = 1f, escalaMax = 5f)
+        )
+
+        assertEquals(ResultadoCalificarTarea.ValorInvalido, calificar(tarea, "7"))
+        assertEquals(ResultadoCalificarTarea.ValorInvalido, calificar(tarea, "0.5"))
+        coVerify(exactly = 0) { calificacionesRepository.insertCalificacion(any()) }
+        assertEquals(ResultadoCalificarTarea.Completada(monedas = 8, aTiempo = true), calificar(tarea, "4.5"))
     }
 }

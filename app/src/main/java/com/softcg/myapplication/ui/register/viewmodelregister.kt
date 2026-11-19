@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.softcg.myapplication.core.Event
+import com.softcg.myapplication.data.network.ResultadoRegistro
 import com.softcg.myapplication.domain.CreateAccountUseCase
 import com.softcg.myapplication.ui.register.model.UserRegister
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -34,11 +35,13 @@ class viewmodelregister @Inject constructor(val createAccountUseCase: CreateAcco
     val viewState: StateFlow<RegisterViewState>
         get() = _viewState
 
-    private var _showErrorDialog = MutableLiveData(false)
-    val showErrorDialog: LiveData<Boolean>
-        get() = _showErrorDialog
+    /** Por qué no se pudo crear la cuenta (correo ya usado, contraseña débil...); se muestra una sola vez. */
+    private val _errorRegistro = MutableLiveData<Event<String>>()
+    val errorRegistro: LiveData<Event<String>>
+        get() = _errorRegistro
 
     fun onRegisterSelected(userRegister: UserRegister){
+        if (_viewState.value.isLoading) return
         val viewState = userRegister.toRegisterViewState()
         if (viewState.userValidated()&&userRegister.isNotEmpty()){
             registerUser(userRegister)
@@ -50,11 +53,9 @@ class viewmodelregister @Inject constructor(val createAccountUseCase: CreateAcco
     private fun registerUser(userRegister: UserRegister){
         viewModelScope.launch {
             _viewState.value = RegisterViewState(isLoading =true)
-            val accountCreated= createAccountUseCase(userRegister)
-            if (accountCreated){
-                _navegateToHome.value=Event(true)
-            }else{
-                _showErrorDialog.value=true
+            when (val resultado = createAccountUseCase(userRegister)) {
+                ResultadoRegistro.Creada -> _navegateToHome.value = Event(true)
+                else -> _errorRegistro.value = Event(resultado.mensaje.orEmpty())
             }
             _viewState.value=RegisterViewState(isLoading=false)
         }
@@ -67,7 +68,7 @@ class viewmodelregister @Inject constructor(val createAccountUseCase: CreateAcco
         _navigateToLogin.value= Event(true)
     }
     private fun isValidOrEmptyEmail(email: String) =
-        Patterns.EMAIL_ADDRESS.matcher(email).matches() || email.isEmpty()
+        Patterns.EMAIL_ADDRESS.matcher(email.trim()).matches() || email.isBlank()
     private fun isValidOrEmptyPassword(password: String): Boolean =
         (password.length >= MIN_PASSWORD_LENGTH )|| password.isEmpty()
     private fun isValidOrEmptyPasswordConfirmation(password: String,passwordConfirmation: String):Boolean =

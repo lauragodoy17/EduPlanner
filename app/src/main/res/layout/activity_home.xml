@@ -74,7 +74,7 @@
                 android:ellipsize="end"
                 android:accessibilityHeading="true" />
 
-            <!-- Saldo: lleva al perfil -->
+            <!-- Racha y saldo: llevan al perfil -->
             <LinearLayout
                 android:id="@+id/header_saldo"
                 android:layout_width="wrap_content"
@@ -87,6 +87,27 @@
                 android:clickable="true"
                 android:focusable="true"
                 android:contentDescription="Ver tu progreso">
+
+                <!-- Días de racha (icono dorado fijo: la cabecera siempre es un degradado oscuro) -->
+                <ImageView
+                    android:id="@+id/racha_icon"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:src="@drawable/ic_gami_racha"
+                    app:tint="@color/xp_dorado"
+                    android:importantForAccessibility="no" />
+
+                <TextView
+                    android:id="@+id/racha_counter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginEnd="10dp"
+                    android:text="0"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/white"
+                    android:importantForAccessibility="no" />
 
                 <ImageView
                     android:id="@+id/coin_icon"
@@ -103,7 +124,8 @@
                     android:text="0"
                     android:textSize="15sp"
                     android:textStyle="bold"
-                    android:textColor="@color/white" />
+                    android:textColor="@color/white"
+                    android:importantForAccessibility="no" />
             </LinearLayout>
         </LinearLayout>
 

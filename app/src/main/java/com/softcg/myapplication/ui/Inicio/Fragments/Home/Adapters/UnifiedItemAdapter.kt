@@ -127,7 +127,7 @@ class UnifiedItemAdapter(
                     textAsignatura.visibility = View.VISIBLE
                     // Una tarea calificada está completada
                     textAsignatura.text = if (item.calificacion != null) {
-                        "${item.asignatura} · Calificación: ${formatCalificacion(item.calificacion)}"
+                        "${item.asignatura} · Calificación: ${item.textoCalificacion ?: formatCalificacion(item.calificacion)}"
                     } else {
                         item.asignatura
                     }

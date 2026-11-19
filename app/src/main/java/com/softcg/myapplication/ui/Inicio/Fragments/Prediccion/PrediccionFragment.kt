@@ -15,25 +15,24 @@ import androidx.navigation.fragment.findNavController
 import com.softcg.myapplication.core.ex.confirmar
 import com.softcg.myapplication.core.ex.mostrarAviso
 import com.softcg.myapplication.core.ex.mostrarMensaje
-import com.softcg.myapplication.core.ex.pintarEtiqueta
 import com.softcg.myapplication.domain.compartir.ContenidoCompartido
 import com.softcg.myapplication.ui.Inicio.Dialogs.CompartirQrDialog
 import com.softcg.myapplication.ui.Inicio.Dialogs.TareaDialog
 import com.softcg.myapplication.ui.Inicio.Fragments.Detalle.configurarAccionesDetalle
-import com.softcg.myapplication.data.network.PrediccionService
 import com.softcg.myapplication.ui.Inicio.DatosEstudioViewModel
 import com.softcg.myapplication.ui.Inicio.Dialogs.AccionesDatosEstudio
+import com.softcg.myapplication.ui.Inicio.Dialogs.AccionesTarea
+import com.softcg.myapplication.ui.Inicio.InicioViewModel
 import com.softcg.myapplication.ui.Inicio.Dialogs.pintarDatos
 import com.softcg.myapplication.ui.Inicio.Dialogs.pintarEstadoTarea
 import com.softcg.myapplication.ui.Inicio.Dialogs.pintarInfoTarea
+import com.softcg.myapplication.ui.Inicio.Dialogs.pintarRecomendacion
 import com.softcg.myapplication.ui.Inicio.Models.Tarea
 import dagger.hilt.android.AndroidEntryPoint
-import org.json.JSONArray
-import org.json.JSONObject
 
 /**
  * Pantalla de una tarea (desde su tarjeta): toda su información y, debajo, "Predicción y recomendaciones". Muestra qué datos reales del estudiante tiene el modelo y cuáles
- * faltan (con la acción para completarlos); cuando están todos, envía la petición y muestra la respuesta.
+ * faltan (con la acción para completarlos); cuando están todos, predice y muestra las recomendaciones de la IA.
  */
 @AndroidEntryPoint
 class PrediccionFragment : Fragment() {
@@ -41,6 +40,15 @@ class PrediccionFragment : Fragment() {
     private val prediccionViewModel: PrediccionViewModel by viewModels()
     private val datosEstudio: DatosEstudioViewModel by activityViewModels()
     private val acciones by lazy { AccionesDatosEstudio(this, datosEstudio) }
+    private val inicioViewModel: InicioViewModel by activityViewModels()
+    private val accionesTarea by lazy {
+        AccionesTarea(
+            this, inicioViewModel, acciones,
+            onBorrar = { prediccionViewModel.borrar() },
+            // Tras entregar o calificar se vuelve a leer la tarea (estado, nota) y sus datos
+            onCambio = { prediccionViewModel.cargar(tareaId) }
+        )
+    }
 
     private val tareaId: Int get() = requireArguments().getInt(ARG_TAREA_ID, -1)
 
@@ -51,7 +59,7 @@ class PrediccionFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_prediccion, container, false)
         initTarea(view)
         initDatos(view)
-        initRespuesta(view)
+        initRecomendacion(view)
         // Cada dato que se completa desde esta pantalla vuelve a extraer los datos completos
         datosEstudio.cambios.observe(viewLifecycleOwner) { prediccionViewModel.cargar(tareaId) }
         return view
@@ -71,12 +79,23 @@ class PrediccionFragment : Fragment() {
         val provisional = Tarea(tareaId, args.getString(ARG_TITULO).orEmpty(), "", args.getString(ARG_ASIGNATURA).orEmpty(), "", 0)
         estado.pintarEstadoTarea(provisional)
         pintarInfoTarea(info, provisional)
-        // En la pantalla el título va alineado con la etiqueta; en la hoja "Ver más", centrado
+        // En la pantalla el título va alineado con la etiqueta (el include lo centra)
         view.findViewById<TextView>(R.id.tareaTitulo).textAlignment = View.TEXT_ALIGNMENT_VIEW_START
+
+        // Entregar o calificar sigue el mismo flujo que en Inicio y Agenda (recompensa, nota, dificultad)
+        accionesTarea.observarResultados()
+        val entregar = view.findViewById<MaterialButton>(R.id.tareaEntregar)
         prediccionViewModel.tarea.observe(viewLifecycleOwner) { tarea ->
             tarea ?: return@observe
             estado.pintarEstadoTarea(tarea)
             pintarInfoTarea(info, tarea)
+            val accion: ((Tarea) -> Unit)? = when {
+                tarea.calificacion != null -> null
+                tarea.entregadaMillis != null -> accionesTarea::calificar.also { entregar.text = "Calificar" }
+                else -> accionesTarea::entregar.also { entregar.text = "Entregar" }
+            }
+            entregar.visibility = if (accion != null) View.VISIBLE else View.GONE
+            entregar.setOnClickListener { accion?.invoke(tarea) }
         }
 
         configurarAccionesDetalle(
@@ -150,43 +169,51 @@ class PrediccionFragment : Fragment() {
         }
     }
 
-    private fun initRespuesta(view: View) {
-        val envio = view.findViewById<View>(R.id.prediccionEnvio)
-        val etiqueta = view.findViewById<TextView>(R.id.prediccionEstado)
-        val carga = view.findViewById<LinearProgressIndicator>(R.id.prediccionCarga)
-        val respuesta = view.findViewById<TextView>(R.id.prediccionRespuesta)
-        view.findViewById<TextView>(R.id.prediccionEndpoint).text =
-            "POST ${PrediccionService.URL_BASE}${PrediccionService.RUTA_PREDICT}?top_n=${prediccionViewModel.topN}"
+    /** Plan de estudio de la IA (Gemini) hecho con el resultado del modelo; el botón cambia según el paso. */
+    private fun initRecomendacion(view: View) {
+        val tarjeta = view.findViewById<View>(R.id.prediccionIa)
+        val generando = view.findViewById<View>(R.id.iaGenerando)
+        val generandoTexto = view.findViewById<TextView>(R.id.iaGenerandoTexto)
+        val contenido = view.findViewById<View>(R.id.iaContenido)
+        val error = view.findViewById<TextView>(R.id.iaError)
+        val boton = view.findViewById<MaterialButton>(R.id.prediccionEnviar)
 
-        prediccionViewModel.estado.observe(viewLifecycleOwner) { estado ->
-            envio.visibility = if (estado == null) View.GONE else View.VISIBLE
-            if (estado == null) return@observe
-            view.findViewById<TextView>(R.id.prediccionEnviado).text =
-                prediccionViewModel.datosEnviados?.let { formatearJson(it.aJson()) }.orEmpty()
-            carga.visibility = if (estado is EstadoPrediccion.Cargando) View.VISIBLE else View.GONE
+        val pintarBoton = {
+            val prediciendo = prediccionViewModel.estado.value == EstadoPrediccion.Cargando
+            val ia = prediccionViewModel.recomendacion.value
+            boton.isEnabled = !prediciendo && ia != EstadoRecomendacion.Generando
+            boton.text = when {
+                prediciendo -> "Consultando el modelo…"
+                ia == EstadoRecomendacion.Generando -> "Generando recomendaciones…"
+                ia is EstadoRecomendacion.Lista -> "Generar otras recomendaciones"
+                ia is EstadoRecomendacion.Error -> "Reintentar"
+                else -> "Generar recomendaciones"
+            }
+        }
+        prediccionViewModel.estado.observe(viewLifecycleOwner) {
+            pintarBoton()
+            generandoTexto.text = if (it == EstadoPrediccion.Cargando) "Consultando el modelo predictivo con tus datos…"
+            else "Preparando tu plan de estudio con el resultado del modelo…"
+        }
+        prediccionViewModel.recomendacion.observe(viewLifecycleOwner) { estado ->
+            pintarBoton()
+            tarjeta.visibility = if (estado == null) View.GONE else View.VISIBLE
+            generando.visibility = if (estado == EstadoRecomendacion.Generando) View.VISIBLE else View.GONE
+            error.visibility = View.GONE
             when (estado) {
-                EstadoPrediccion.Cargando -> {
-                    etiqueta.pintarEtiqueta("ENVIANDO", R.color.acento, R.color.marca_superficie)
-                    respuesta.text = "Esperando respuesta…"
+                null, EstadoRecomendacion.Generando -> contenido.visibility = View.GONE
+                is EstadoRecomendacion.Lista -> {
+                    // Aquí solo se predice con todos los datos: no hace falta el enlace "Completar mis datos"
+                    pintarRecomendacion(tarjeta, estado.recomendacion, prediccionViewModel.tarea.value?.titulo.orEmpty())
                 }
-                is EstadoPrediccion.Respuesta -> {
-                    if (estado.exitosa) etiqueta.pintarEtiqueta("HTTP ${estado.codigo}", R.color.estado_exito, R.color.estado_exito_suave)
-                    else etiqueta.pintarEtiqueta("HTTP ${estado.codigo}", R.color.estado_error, R.color.estado_error_suave)
-                    respuesta.text = formatearJson(estado.cuerpo).ifBlank { "(respuesta vacía)" }
-                }
-                is EstadoPrediccion.Error -> {
-                    etiqueta.pintarEtiqueta("SIN RESPUESTA", R.color.estado_error, R.color.estado_error_suave)
-                    respuesta.text = estado.mensaje
+                is EstadoRecomendacion.Error -> {
+                    // Si había un plan anterior se deja a la vista
+                    error.text = estado.mensaje
+                    error.visibility = View.VISIBLE
                 }
             }
         }
     }
-
-    /** JSON con sangría; si no es JSON (p. ej. una página de error de nginx) se muestra tal cual. */
-    private fun formatearJson(texto: String): String = runCatching {
-        val limpio = texto.trim()
-        if (limpio.startsWith("[")) JSONArray(limpio).toString(2) else JSONObject(limpio).toString(2)
-    }.getOrDefault(texto)
 
     companion object {
         const val ARG_TAREA_ID = "tarea_id"

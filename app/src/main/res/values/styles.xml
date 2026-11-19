@@ -283,12 +283,30 @@
         <!-- La cabecera la pinta el sistema: sin esto, en el tema oscuro sale gris -->
         <item name="android:datePickerStyle">@style/Edu.SelectorFecha</item>
         <item name="android:timePickerStyle">@style/Edu.SelectorHora</item>
+        <!-- El texto de la cabecera (sobre el acento) se lee del color inverso: siempre claro -->
+        <item name="android:textColorPrimaryInverse">?attr/eduSobreAcento</item>
+        <item name="android:textColorSecondaryInverse">@color/blanco_70</item>
     </style>
     <style name="Edu.SelectorFecha" parent="android:Widget.Material.DatePicker">
         <item name="android:headerBackground">?attr/eduAcento</item>
+        <!-- Además del color inverso: el sistema también toma el color de la cabecera de estas apariencias -->
+        <item name="android:headerMonthTextAppearance">@style/Edu.SelectorCabecera</item>
+        <item name="android:headerDayOfMonthTextAppearance">@style/Edu.SelectorCabecera</item>
+        <item name="android:headerYearTextAppearance">@style/Edu.SelectorCabecera</item>
     </style>
     <style name="Edu.SelectorHora" parent="android:Widget.Material.TimePicker">
         <item name="android:headerBackground">?attr/eduAcento</item>
+        <item name="android:headerTimeTextAppearance">@style/Edu.SelectorCabecera</item>
+        <item name="android:headerAmPmTextAppearance">@style/Edu.SelectorCabecera</item>
+        <!-- Esfera del reloj con los colores del tema (sin esto sale gris oscuro en los temas claros) -->
+        <item name="android:numbersBackgroundColor">?attr/eduMarcaSuperficie</item>
+        <item name="android:numbersTextColor">@color/reloj_numeros</item>
+        <item name="android:numbersInnerTextColor">@color/reloj_numeros_internos</item>
+        <item name="android:numbersSelectorColor">?attr/eduAcento</item>
+    </style>
+    <!-- Texto sobre la cabecera de color de los selectores de fecha y hora -->
+    <style name="Edu.SelectorCabecera" parent="">
+        <item name="android:textColor">?attr/eduSobreAcento</item>
     </style>
 
     <style name="Edu.MenuEmergente" parent="Widget.AppCompat.PopupMenu">

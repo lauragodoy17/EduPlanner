@@ -292,7 +292,7 @@ class GamificacionPersistenciaTest {
         val tareasRepository = tareasRepo()
         val tareaId = db.getTareasDao().insertTarea(TareaEntity(null, "Ensayo", "", "Historia", "2026-10-29", 1, uid = "usuario-1")).toInt()
         val entregar = EntregarTareaUseCase(tareasRepository, repository, otorgar(), sesion, reloj)
-        val calificar = CalificarTareaUseCase(calificacionesRepo(), repository, otorgar(), sesion)
+        val calificar = CalificarTareaUseCase(calificacionesRepo(), asignaturasRepo(), repository, otorgar(), sesion)
         val tarea = Tarea(tareaId, "Ensayo", "", "Historia", "2026-10-29", 1)
 
         assertEquals(ResultadoEntregarTarea.Entregada(8, aTiempo = true), entregar(tarea))
@@ -355,7 +355,7 @@ class GamificacionPersistenciaTest {
     @Test
     fun calificarUnaTareaLaCompletaYPagaUnaSolaVez() = runBlocking {
         val tareaId = db.getTareasDao().insertTarea(TareaEntity(null, "Ensayo", "", "Historia", "2026-10-28", 1, uid = "usuario-1")).toInt()
-        val calificar = CalificarTareaUseCase(calificacionesRepo(), repository, otorgar(), sesion)
+        val calificar = CalificarTareaUseCase(calificacionesRepo(), asignaturasRepo(), repository, otorgar(), sesion)
         val tarea = Tarea(tareaId, "Ensayo", "", "Historia", "2026-10-28", 1)
 
         // Vence el mismo día: completar más el bono a tiempo

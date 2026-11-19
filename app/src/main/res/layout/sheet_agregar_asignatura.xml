@@ -37,6 +37,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="text"
+                android:maxLength="60"
                 android:maxLines="1"/>
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -52,6 +53,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="text"
+                android:maxLength="60"
                 android:maxLines="1"/>
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -75,51 +77,12 @@
             android:background="@drawable/modern_spinner_background"
             android:layout_marginBottom="14dp"/>
 
-        <TextView
-            style="@style/Edu.Texto.Rotulo"
+        <!-- Escala de notas: se elige aquí al crear la asignatura; con notas ya registradas queda fija -->
+        <include
+            layout="@layout/include_selector_escala"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Tipo de calificación"
-            android:layout_marginBottom="6dp"/>
-
-        <Spinner
-            android:id="@+id/spinnerTipoCalificacion"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:minHeight="56dp"
-            android:paddingHorizontal="8dp"
-            android:paddingEnd="44dp"
-            android:spinnerMode="dropdown"
-            android:contentDescription="Tipo de calificación"
-            android:background="@drawable/modern_spinner_background"
             android:layout_marginBottom="14dp"/>
-
-        <!-- Solo con "Otro" -->
-        <TextView
-            android:id="@+id/labelTipoCalificacionOtro"
-            style="@style/Edu.Texto.Rotulo"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Especifica el tipo de calificación"
-            android:layout_marginBottom="6dp"
-            android:visibility="gone"/>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/layoutTipoCalificacionOtro"
-            style="@style/Edu.Campo"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Escribe el tipo de calificación"
-            android:visibility="gone">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/TipoCalificacionOtroEditText"
-                style="@style/Edu.CampoEntrada"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="text"
-                android:maxLines="1"/>
-        </com.google.android.material.textfield.TextInputLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -128,6 +91,7 @@
             android:baselineAligned="false">
 
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/DuracionContainer"
                 style="@style/Edu.Campo"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -140,7 +104,8 @@
                     style="@style/Edu.CampoEntrada"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="number"/>
+                    android:inputType="number"
+                    android:maxLength="2"/>
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout

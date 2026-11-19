@@ -1,6 +1,9 @@
 package com.softcg.myapplication.domain
 
 import com.softcg.myapplication.data.Repositories.AsignaturasRepository
+import com.softcg.myapplication.domain.calificaciones.TipoEscala
+import com.softcg.myapplication.domain.calificaciones.EscalaCalificacion
+import com.softcg.myapplication.domain.calificaciones.EscalaBloqueadaUseCase
 import com.softcg.myapplication.data.Repositories.CalificacionesRespository
 import com.softcg.myapplication.data.Repositories.GamificacionRepository
 import com.softcg.myapplication.data.Repositories.TareasRepository
@@ -23,7 +26,8 @@ class EditarUseCasesTest {
 
     private val asignaturas: AsignaturasRepository = mockk(relaxed = true)
     private val gamificacion: GamificacionRepository = mockk()
-    private val editarAsignatura = EditarAsignaturaUseCase(asignaturas, gamificacion)
+    private val escalaBloqueada: EscalaBloqueadaUseCase = mockk(relaxed = true)
+    private val editarAsignatura = EditarAsignaturaUseCase(asignaturas, gamificacion, escalaBloqueada)
 
     private val tarea = Tarea(7, "Taller", "", "Cálculo", "2026-11-20", 1, entregadaMillis = 5L)
     private val calculo = Asignatura(1, "Cálculo", "Ana", 2, "08:00", listOf(true) + List(6) { false }, areaModelo = "Matematicas")
@@ -98,5 +102,17 @@ class EditarUseCasesTest {
         editarAsignatura(1, NuevaAsignatura("Química orgánica"))
 
         coVerify { asignaturas.guardarDatosModelo(1, "Quimica", null, null) }
+    }
+
+    @Test
+    fun `la escala se cambia al editar solo si la asignatura no tiene notas`() = runBlocking {
+        val porcentaje = EscalaCalificacion.de(TipoEscala.PORCENTAJE)
+        coEvery { escalaBloqueada(any()) } returns false
+        assertEquals(ResultadoEdicion.Guardada, editarAsignatura(1, NuevaAsignatura("Cálculo", escala = porcentaje)))
+        coVerify { asignaturas.guardarEscala(1, porcentaje) }
+
+        coEvery { escalaBloqueada(any()) } returns true
+        assertEquals(ResultadoEdicion.EscalaBloqueada, editarAsignatura(1, NuevaAsignatura("Cálculo", escala = EscalaCalificacion.de(TipoEscala.LETRAS))))
+        coVerify(exactly = 1) { asignaturas.guardarEscala(any(), any()) }
     }
 }

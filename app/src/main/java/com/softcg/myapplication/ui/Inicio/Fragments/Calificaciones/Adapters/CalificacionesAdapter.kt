@@ -1,6 +1,7 @@
 package com.softcg.myapplication.ui.Inicio.Fragments.Calificaciones.Adapters
 
 import android.content.Context
+import android.content.res.ColorStateList
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.softcg.myapplication.R
 import com.softcg.myapplication.core.ex.confirmar
 import com.softcg.myapplication.core.ex.mostrarAviso
+import com.softcg.myapplication.domain.calificaciones.TipoEscala
 import com.softcg.myapplication.ui.Inicio.Fragments.Calificaciones.CalificacionesViewModel
 import com.softcg.myapplication.ui.Inicio.Fragments.Calificaciones.Models.Calificacion
 import com.softcg.myapplication.domain.compartir.ContenidoCompartido
@@ -46,11 +48,28 @@ class CalificacionesAdapter (
         holder.textTitulo.text=currentItem.asignatura
         holder.textDesc.text=currentItem.descripcion
         holder.textDesc.visibility = if (currentItem.descripcion.isBlank()) View.GONE else View.VISIBLE
-        holder.textCalificacion.text=currentItem.valor.toString()
+        pintarNota(holder.textCalificacion, currentItem)
         holder.boton.setOnClickListener {v ->
             showPopupMenu(v,position)
         }
         holder.itemView.setOnClickListener { onAbrir(currentItem) }
+    }
+
+    /**
+     * La nota en su escala dentro de una pastilla de ancho fijo con texto que se ajusta ("Aprobado" no cabía en el círculo).
+     * Aprobado/reprobado se pintan de éxito o error; las demás con el acento (su nota mínima para aprobar varía).
+     */
+    private fun pintarNota(vista: TextView, nota: Calificacion) {
+        val texto = nota.textoValor
+        vista.text = texto
+        val (color, fondo) = when {
+            nota.escala?.tipo == TipoEscala.APROBADO && nota.valor >= 1f -> R.color.estado_exito to R.color.estado_exito_suave
+            nota.escala?.tipo == TipoEscala.APROBADO -> R.color.estado_error to R.color.estado_error_suave
+            else -> R.color.acento to R.color.marca_superficie
+        }
+        vista.setTextColor(context.getColor(color))
+        vista.backgroundTintList = ColorStateList.valueOf(context.getColor(fondo))
+        vista.contentDescription = "Calificación $texto"
     }
 
     private fun showPopupMenu(view: View,position: Int) {

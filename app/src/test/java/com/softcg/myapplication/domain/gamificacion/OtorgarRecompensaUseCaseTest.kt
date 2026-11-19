@@ -95,7 +95,9 @@ class OtorgarRecompensaUseCaseTest {
     fun `las condiciones de cada registro se respetan`() {
         assertEquals(false, CondicionesRecompensa.tareaValida("", "2026-10-28"))
         assertEquals(false, CondicionesRecompensa.eventoValido("Feria", ""))
-        assertEquals(false, CondicionesRecompensa.calificacionValida(0f, "Física"))
+        // 0 es una nota válida (F, reprobado): la nota se elige siempre dentro de la escala
+        assertEquals(true, CondicionesRecompensa.calificacionValida(0f, "Física"))
+        assertEquals(false, CondicionesRecompensa.calificacionValida(-1f, "Física"))
         assertEquals(false, CondicionesRecompensa.calificacionValida(4f, ""))
         assertEquals(false, CondicionesRecompensa.claseValida("8:00", 2, List(7) { false }))
         assertEquals(false, CondicionesRecompensa.claseValida("", 2, List(7) { true }))

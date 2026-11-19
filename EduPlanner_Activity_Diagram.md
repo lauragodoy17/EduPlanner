@@ -45,7 +45,7 @@ graph TD
 
 ```mermaid
 graph TD
-    A[Pantalla de la tarea / Ver más / menú ⋮] --> B[Entregar]
+    A[Pantalla de la tarea / menú ⋮] --> B[Entregar]
     B --> C[EntregarTareaUseCase: marca entregada y premia si es a tiempo]
     C --> D[Celebración]
     D --> E{¿Ya tienes la calificación?}

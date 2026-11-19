@@ -15,25 +15,24 @@
         android:paddingStart="14dp"
         android:paddingEnd="4dp">
 
-        <FrameLayout
-            android:id="@+id/circleImageView"
-            android:layout_width="52dp"
-            android:layout_height="52dp"
-            android:background="@drawable/circle_shape"
+        <!-- La nota en su escala ("4,5", "85 %", "A", "Reprobado"): todas las pastillas del mismo ancho, para que los
+             títulos queden alineados; el texto se achica solo si no cabe -->
+        <TextView
+            android:id="@+id/textOverlay"
+            android:layout_width="96dp"
+            android:layout_height="48dp"
+            android:layout_marginEnd="12dp"
+            android:autoSizeMaxTextSize="18sp"
+            android:autoSizeMinTextSize="11sp"
+            android:autoSizeTextType="uniform"
+            android:background="@drawable/fondo_nota"
             android:backgroundTint="?attr/eduMarcaSuperficie"
-            android:layout_marginEnd="12dp">
-
-            <TextView
-                android:id="@+id/textOverlay"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="0.0"
-                android:textColor="?attr/eduAcento"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:gravity="center"
-                android:maxLines="1" />
-        </FrameLayout>
+            android:gravity="center"
+            android:maxLines="1"
+            android:paddingHorizontal="8dp"
+            android:text="0"
+            android:textColor="?attr/eduAcento"
+            android:textStyle="bold" />
 
         <LinearLayout
             android:layout_width="0dp"

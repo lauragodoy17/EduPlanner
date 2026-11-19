@@ -85,7 +85,7 @@ class AsignaturasFragment : Fragment() {
     }
 
     private fun showDialog() {
-        AsignaturaDialog(requireContext(), onGuardar = { nueva ->
+        AsignaturaDialog(requireContext(), otrosNombres = inicioViewModel._asignaturas.value.orEmpty().map { it.nombre }, onGuardar = { nueva ->
             inicioViewModel.onAgregarAsignaturaSelected(nueva)
             requireView().mostrarAviso("Asignatura guardada")
         }).show()

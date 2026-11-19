@@ -265,6 +265,30 @@ class RecomendarTareaUseCaseTest {
     }
 
     @Test
+    fun `con una prediccion ya hecha no vuelve a llamar a la API y la pasa a Gemini`() = runTest {
+        val generador = GeneradorFalso({ respuestaConModelo })
+        val caso = caso(generador)
+        val contexto = caso.contextoDeRespuesta(datos, RespuestaApi.Http(200, respuestaApi))
+
+        val r = (caso.conContexto(tarea, contexto) as ResultadoRecomendacion.Exito).recomendacion
+
+        coVerify(exactly = 0) { predecir(any(), any()) }
+        assertTrue(contexto is ContextoPrediccion.ConPrediccion)
+        assertEquals("34 %", r.confianza)
+        assertTrue(generador.prompts.single().contains("34 %"))
+        // Misma tarea y mismo contexto: se reutiliza
+        caso.conContexto(tarea, contexto)
+        assertEquals(1, generador.llamadas)
+    }
+
+    @Test
+    fun `si la API respondio con error el contexto dice que el modelo no estuvo disponible`() {
+        val contexto = caso(GeneradorFalso()).contextoDeRespuesta(datos, RespuestaApi.Http(502, "Bad Gateway"))
+
+        assertEquals(ContextoPrediccion.SinPrediccion(MotivoSinPrediccion.MODELO_NO_DISPONIBLE, emptyList()), contexto)
+    }
+
+    @Test
     fun `distingue la falta de conexion de otros errores`() = runTest {
         val sinRed = caso(GeneradorFalso({ throw RuntimeException("fallo", IOException("sin red")) }))
         val otro = caso(GeneradorFalso({ throw IllegalStateException("cuota") }))

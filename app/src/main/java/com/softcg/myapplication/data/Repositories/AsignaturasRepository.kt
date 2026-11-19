@@ -1,5 +1,6 @@
 package com.softcg.myapplication.data.Repositories
 
+import com.softcg.myapplication.domain.calificaciones.EscalaCalificacion
 import com.softcg.myapplication.data.database.DuenoDatosLocales
 import com.softcg.myapplication.data.database.dao.AsignaturasDao
 import com.softcg.myapplication.data.database.dao.CalificacionesDao
@@ -74,6 +75,12 @@ class AsignaturasRepository @Inject constructor(
         tareasDao.renombrarAsignatura(uid, id, viejo, nuevo)
         calificacionesDao.renombrarAsignatura(uid, id, viejo, nuevo)
         gamificacionDao.renombrarAsignaturaSesiones(uid, id, viejo, nuevo)
+    }
+
+    /** Tipo de calificación y rango de la escala de notas, juntos. */
+    suspend fun guardarEscala(id: Int, escala: EscalaCalificacion): Boolean {
+        val uid = uid() ?: return false
+        return asignaturasDao.guardarEscala(uid, id, escala.etiquetaGuardada, escala.min, escala.max) > 0
     }
 
     /** Área del modelo y rango de la escala de notas, que el estudiante confirma. */

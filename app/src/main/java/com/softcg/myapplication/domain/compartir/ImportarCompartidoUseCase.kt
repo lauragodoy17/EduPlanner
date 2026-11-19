@@ -9,6 +9,8 @@ import com.softcg.myapplication.data.network.SesionUsuario
 import com.softcg.myapplication.domain.CrearAsignaturaUseCase
 import com.softcg.myapplication.domain.NuevaAsignatura
 import com.softcg.myapplication.domain.ResultadoCrearAsignatura
+import com.softcg.myapplication.domain.calificaciones.EscalaCalificacion
+import com.softcg.myapplication.domain.calificaciones.TipoEscala
 import com.softcg.myapplication.domain.compartir.ContenidoCompartido.AsignaturaCompartida
 import com.softcg.myapplication.domain.compartir.ContenidoCompartido.EventoCompartido
 import com.softcg.myapplication.domain.compartir.ContenidoCompartido.NotaCompartida
@@ -127,12 +129,12 @@ class ImportarCompartidoUseCase @Inject constructor(
     private suspend fun importarAsignatura(a: AsignaturaCompartida): ResultadoImportacion {
         if (buscar(a.nombre, nombresLocales()) != null) return ResultadoImportacion.AsignaturaRepetida
         val dias = CrearAsignaturaUseCase.DIAS.filterIndexed { i, _ -> a.dias.getOrElse(i) { false } }
-        val creada = crearAsignatura(NuevaAsignatura(a.nombre, a.tutor, a.duracion, a.hora, dias, a.tipoCalificacion))
+        // Solo las escalas de la app: una antigua con rango propio llega sin escala y se pedirá al calificar
+        val escala = EscalaCalificacion.deAsignatura(a.tipoCalificacion, a.escalaMin, a.escalaMax)?.takeIf { it.tipo in TipoEscala.ELEGIBLES }
+        val creada = crearAsignatura(NuevaAsignatura(a.nombre, a.tutor, a.duracion, a.hora, dias, escala))
             as? ResultadoCrearAsignatura.Creada ?: return ResultadoImportacion.Error
         // El área elegida por quien la comparte vale más que la detectada por el nombre
-        if (a.area != null || a.escalaMin != null) {
-            asignaturas.guardarDatosModelo(creada.id, a.area ?: creada.area, a.escalaMin, a.escalaMax)
-        }
+        if (a.area != null) asignaturas.guardarDatosModelo(creada.id, a.area, escala?.min, escala?.max)
         return ResultadoImportacion.Importado(a.tipo, creada.nombre, null, creada.recompensa)
     }
 
@@ -149,7 +151,9 @@ class ImportarCompartidoUseCase @Inject constructor(
             is DestinoAsignatura.Existente -> buscar(destino.nombre, locales) ?: return ResultadoImportacion.FaltaAsignatura
             is DestinoAsignatura.Nueva -> {
                 val nombre = destino.nombre.trim().ifEmpty { return ResultadoImportacion.FaltaAsignatura }
-                buscar(nombre, locales) ?: when (val r = crearAsignatura(NuevaAsignatura(nombre))) {
+                // Una nota trae su escala en el tipo ("Numérico (1-5)"): la asignatura nueva la usa
+                val escala = (contenido as? NotaCompartida)?.let { EscalaCalificacion.deTexto(it.tipoNota) }?.takeIf { it.tipo in TipoEscala.ELEGIBLES }
+                buscar(nombre, locales) ?: when (val r = crearAsignatura(NuevaAsignatura(nombre, escala = escala))) {
                     is ResultadoCrearAsignatura.Creada -> r.nombre.also { creada = it }
                     else -> return ResultadoImportacion.Error
                 }

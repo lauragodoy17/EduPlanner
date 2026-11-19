@@ -6,6 +6,7 @@ import com.softcg.myapplication.data.database.dao.TareaConCalificacion
 import com.softcg.myapplication.data.database.dao.TareasDao
 import com.softcg.myapplication.data.database.entities.TareaEntity
 import com.softcg.myapplication.data.network.SesionUsuario
+import com.softcg.myapplication.domain.calificaciones.EscalaCalificacion
 import com.softcg.myapplication.ui.Inicio.Models.Tarea
 import javax.inject.Inject
 
@@ -21,12 +22,13 @@ class TareasRepository @Inject constructor(
 
     fun getTareas():List<Tarea>{
         val uid = uid() ?: return emptyList()
-        return tareasDao.getAllTareasConCalificacion(uid).map { it.toModel() }
+        return conEscala(uid, tareasDao.getAllTareasConCalificacion(uid).map { it.toModel() })
     }
 
     suspend fun getTarea(id: Int): Tarea? {
         val uid = uid() ?: return null
-        return tareasDao.getTarea(uid, id)?.toModel()
+        val tarea = tareasDao.getTarea(uid, id)?.toModel() ?: return null
+        return conEscala(uid, listOf(tarea)).first()
     }
 
     /** false si la tarea ya estaba entregada. */
@@ -53,6 +55,18 @@ class TareasRepository @Inject constructor(
         val id = tarea.id ?: return false
         val asignaturaId = asignaturasDao.idPorNombre(uid, tarea.asignatura)
         return tareasDao.actualizar(uid, id, tarea.titulo, tarea.descrip, tarea.asignatura, asignaturaId, tarea.fecha, tarea.prioridad, tarea.horaEntrega) > 0
+    }
+
+    /** Las tareas calificadas llevan la escala de su asignatura, para mostrar la nota ("4,5", "A"). */
+    private fun conEscala(uid: String, tareas: List<Tarea>): List<Tarea> {
+        if (tareas.none { it.calificacion != null }) return tareas
+        val asignaturas = asignaturasDao.getAllAsignaturas(uid)
+        val porId = asignaturas.associate { it.id to EscalaCalificacion.deAsignatura(it.tipoCalificacion, it.escalaMin, it.escalaMax) }
+        val porNombre = asignaturas.associate { it.nombre to EscalaCalificacion.deAsignatura(it.tipoCalificacion, it.escalaMin, it.escalaMax) }
+        return tareas.map { tarea ->
+            if (tarea.calificacion == null) tarea
+            else tarea.copy(escalaNota = tarea.asignaturaId?.let { porId[it] } ?: porNombre[tarea.asignatura])
+        }
     }
 
     private fun TareaConCalificacion.toModel() = Tarea(

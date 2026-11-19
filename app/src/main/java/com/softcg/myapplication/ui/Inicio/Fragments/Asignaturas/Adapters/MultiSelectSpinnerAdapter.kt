@@ -56,21 +56,24 @@ class MultiSelectSpinnerAdapter(
             val itemName = view.findViewById<TextView>(R.id.itemName)
 
             itemName.text = items[position].name
+            // La fila se reutiliza: primero su estado, después el listener (si no, el de otra fila se dispararía)
+            checkBox.setOnCheckedChangeListener(null)
+            checkBox.isChecked = checkedItems[position]
             checkBox.setOnCheckedChangeListener { _, isChecked ->
                 checkedItems[position] = isChecked
                 if (isChecked) {
                     if (!selectedItems.contains(items[position])) {
                         selectedItems.add(items[position])
                     }
-
                 } else {
                     selectedItems.remove(items[position])
-
                 }
                 notifyDataSetChanged()
-                onItemSelectedListener?.onItemSelected(selectedItems,position)
-
+                onItemSelectedListener?.onItemSelected(selectedItems, position)
             }
+            // Tocar cualquier parte de la fila marca o desmarca el día (y la lista sigue abierta para elegir varios)
+            view.setOnClickListener { checkBox.toggle() }
+            view.contentDescription = "${items[position].name}, ${if (checkedItems[position]) "marcado" else "sin marcar"}"
         } else {
             if (selectedItems.isEmpty()){
                 textView.text = "Selecciona los días"

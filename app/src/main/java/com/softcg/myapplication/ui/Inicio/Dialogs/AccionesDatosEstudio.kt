@@ -42,8 +42,8 @@ class AccionesDatosEstudio(
     }
 
     /**
-     * Área y escala de notas. Con [soloSiFalta] (al crear la asignatura) no se abre si el área ya se detectó
-     * por el nombre y el tipo de calificación indica la escala: no hay nada que preguntar.
+     * Área y, en asignaturas antiguas sin ella, escala de notas. Con [soloSiFalta] (al crear la asignatura) no se
+     * abre si el área ya se detectó por el nombre y la escala se eligió en el formulario.
      */
     fun abrirDatosAsignatura(asignaturaId: Int, soloSiFalta: Boolean = true, onGuardado: () -> Unit = {}) {
         scope.launch {
@@ -51,7 +51,7 @@ class AccionesDatosEstudio(
             if (soloSiFalta && !DatosAsignaturaDialog.hayQuePreguntar(asignatura)) return@launch
             DatosAsignaturaDialog(
                 context, asignatura, scope,
-                guardar = { area, min, max -> datos.guardarAsignatura(asignaturaId, area, min, max) },
+                guardar = { area, escala -> datos.guardarAreaYEscala(asignaturaId, area, escala) },
                 onGuardado = {
                     fragment.view?.mostrarAviso("Datos guardados")
                     onGuardado()

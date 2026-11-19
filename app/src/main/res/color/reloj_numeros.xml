@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Números de la esfera del reloj: el elegido va sobre el círculo de acento, en el color "sobre acento" -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:color="?attr/eduSobreAcento" android:state_activated="true"/>
+    <item android:color="?attr/eduTextPrimary"/>
+</selector>

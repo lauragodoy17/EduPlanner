@@ -1,63 +1,94 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<!-- Agenda: arriba el resumen y el filtro (siempre a la vista, también con la lista vacía); debajo la lista o el vacío -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".ui.Inicio.Fragments.Agenda.AgendaFragment">
 
-    <androidx.core.widget.NestedScrollView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fillViewport="true">
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingHorizontal="@dimen/margen_pantalla"
+        android:paddingTop="16dp"
+        android:paddingBottom="8dp">
+
+        <TextView
+            android:id="@+id/agendaResumen"
+            style="@style/Edu.Texto.Seccion"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:accessibilityHeading="true"
+            android:text="Todo lo pendiente" />
+
+        <Spinner
+            android:id="@+id/agendaFiltro"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/filter_spinner_background"
+            android:contentDescription="Filtrar la agenda"
+            android:minHeight="36dp"
+            android:paddingEnd="26dp" />
+    </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true">
+
+            <LinearLayout
+                android:id="@+id/container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingHorizontal="@dimen/margen_pantalla"
+                android:paddingBottom="88dp">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recycleragenda"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="false" />
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
 
         <LinearLayout
-            android:id="@+id/container"
+            android:id="@+id/textoAgenda"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:background="?attr/eduFondoApp"
+            android:gravity="center"
             android:orientation="vertical"
-            android:paddingHorizontal="@dimen/margen_pantalla"
-            android:paddingTop="16dp"
-            android:paddingBottom="88dp">
+            android:padding="32dp"
+            android:visibility="gone">
+
+            <ImageView
+                style="@style/Edu.VacioIcono"
+                android:importantForAccessibility="no"
+                android:src="@drawable/ic_calendar_modern" />
 
             <TextView
-                android:id="@+id/agendaResumen"
-                style="@style/Edu.Texto.Seccion"
-                android:layout_width="match_parent"
+                android:id="@+id/agendaVacioTitulo"
+                style="@style/Edu.VacioTitulo"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Todo lo pendiente"
-                android:layout_marginBottom="8dp"
-                android:accessibilityHeading="true"/>
+                android:text="Tu agenda está libre" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recycleragenda"
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/agendaVacioDetalle"
+                style="@style/Edu.VacioDetalle"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:nestedScrollingEnabled="false"/>
+                android:text="Agrega una tarea o un evento con el botón + para verlos aquí" />
         </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
-
-    <LinearLayout
-        android:id="@+id/textoAgenda"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:gravity="center"
-        android:padding="32dp"
-        android:background="?attr/eduFondoApp"
-        android:visibility="gone">
-
-        <ImageView style="@style/Edu.VacioIcono" android:src="@drawable/ic_calendar_modern" android:importantForAccessibility="no"/>
-
-        <TextView
-            style="@style/Edu.VacioTitulo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Tu agenda está libre"/>
-
-        <TextView
-            style="@style/Edu.VacioDetalle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Agrega una tarea o un evento con el botón + para verlos aquí"/>
-    </LinearLayout>
-</FrameLayout>
+    </FrameLayout>
+</LinearLayout>

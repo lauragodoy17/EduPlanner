@@ -32,7 +32,7 @@ fun pintarInfoTarea(raiz: View, tarea: Tarea, hoy: LocalDate = LocalDate.now()) 
 
     val nota = tarea.calificacion
     raiz.findViewById<TextView>(R.id.tareaCalificacion).apply {
-        text = nota?.let { if (it % 1f == 0f) it.toInt().toString() else it.toString() }.orEmpty()
+        text = tarea.textoCalificacion.orEmpty()
         visibility = if (nota != null) View.VISIBLE else View.GONE
     }
     raiz.findViewById<View>(R.id.labelCalificacion).visibility = if (nota != null) View.VISIBLE else View.GONE

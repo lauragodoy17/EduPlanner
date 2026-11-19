@@ -1,6 +1,8 @@
 package com.softcg.myapplication.domain.compartir
 
 import com.softcg.myapplication.data.Repositories.AsignaturasRepository
+import com.softcg.myapplication.domain.calificaciones.TipoEscala
+import com.softcg.myapplication.domain.calificaciones.EscalaCalificacion
 import com.softcg.myapplication.data.Repositories.CalificacionesRespository
 import com.softcg.myapplication.data.Repositories.EventosRepository
 import com.softcg.myapplication.data.Repositories.TareasRepository
@@ -154,7 +156,8 @@ class ImportarCompartidoUseCaseTest {
         val r = caso.importar(compartida)
 
         assertEquals(ResultadoImportacion.Importado(TipoCompartido.ASIGNATURA, "Historia del arte", null, 5), r)
-        coVerify { crearAsignatura(NuevaAsignatura("Historia del arte", "Luis", 2, "10:00", listOf("Martes", "Viernes"), "")) }
+        // El rango 1-5 que trae el QR es la escala "Numérico (1-5)"
+        coVerify { crearAsignatura(NuevaAsignatura("Historia del arte", "Luis", 2, "10:00", listOf("Martes", "Viernes"), EscalaCalificacion.de(TipoEscala.UNO_A_CINCO))) }
         coVerify { asignaturas.guardarDatosModelo(4, "Arte", 1f, 5f) }
     }
 

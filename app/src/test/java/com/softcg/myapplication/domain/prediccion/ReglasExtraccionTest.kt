@@ -1,6 +1,8 @@
 package com.softcg.myapplication.domain.prediccion
 
 import com.softcg.myapplication.core.ZONA_PRUEBAS
+import com.softcg.myapplication.domain.calificaciones.TipoEscala
+import com.softcg.myapplication.domain.calificaciones.EscalaCalificacion
 import com.softcg.myapplication.core.millis
 import com.softcg.myapplication.data.database.entities.AsistenciaEntity
 import com.softcg.myapplication.data.database.entities.PercepcionEntity
@@ -44,23 +46,24 @@ class ReglasExtraccionTest {
 
     @Test
     fun `la escala de la nota manda, despues la que fijo el estudiante y por ultimo la de la asignatura`() {
-        assertEquals(Escala(1f, 5f), ReglasExtraccion.escalaDe("Numerico (1-5)", 0f, 100f, "Numérico (0-10)"))
-        assertEquals(Escala(0f, 100f), ReglasExtraccion.escalaDe("Tarea", 0f, 100f, "Numérico (0-10)"))
-        assertEquals(Escala(0f, 10f), ReglasExtraccion.escalaDe("Tarea", null, null, "Numérico (0-10)"))
+        assertEquals(TipoEscala.UNO_A_CINCO, ReglasExtraccion.escalaDe("Numerico (1-5)", 0f, 100f, "Numérico (0-10)")!!.tipo)
+        assertEquals(TipoEscala.PORCENTAJE, ReglasExtraccion.escalaDe("Tarea", 0f, 100f, "Numérico (0-10)")!!.tipo)
+        assertEquals(TipoEscala.CERO_A_DIEZ, ReglasExtraccion.escalaDe("Tarea", null, null, "Numérico (0-10)")!!.tipo)
         assertNull(ReglasExtraccion.escalaDe("Tarea", null, null, "Letras (A-F)"))
     }
 
     @Test
     fun `el promedio se lleva a 0-10 y no usa notas sin escala o fuera de ella`() {
+        val unoACinco = EscalaCalificacion.de(TipoEscala.UNO_A_CINCO)
         val medida = ReglasExtraccion.notas(
             listOf(
-                4f to Escala(1f, 5f),    // 7,5
-                80f to Escala(0f, 100f), // 8,0
-                9f to null,              // sin escala: no se adivina
-                7f to Escala(1f, 5f)     // fuera de 1-5: inconsistente
+                4f to unoACinco,                                    // 4 de 5 = 8,0
+                80f to EscalaCalificacion.de(TipoEscala.PORCENTAJE), // 80 % = 8,0
+                9f to null,                                          // sin escala: no se adivina
+                7f to unoACinco                                      // fuera de 1-5: inconsistente
             )
         )
-        assertEquals(7.75, medida.promedio10!!, 0.001)
+        assertEquals(8.0, medida.promedio10!!, 0.001)
         assertEquals(2, medida.usadas)
         assertEquals(1, medida.sinEscala)
         assertEquals(1, medida.fueraDeEscala)

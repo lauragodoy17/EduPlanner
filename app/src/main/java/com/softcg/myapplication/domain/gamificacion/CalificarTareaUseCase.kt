@@ -1,6 +1,7 @@
 package com.softcg.myapplication.domain.gamificacion
 
 import com.softcg.myapplication.core.Reloj
+import com.softcg.myapplication.data.Repositories.AsignaturasRepository
 import com.softcg.myapplication.data.Repositories.CalificacionesRespository
 import com.softcg.myapplication.data.Repositories.GamificacionRepository
 import com.softcg.myapplication.data.Repositories.TareasRepository
@@ -20,9 +21,11 @@ sealed class ResultadoCalificarTarea {
  * Registrar la calificación de una tarea la da por completada. La calificación aparece también en
  * Calificaciones (es el mismo registro). Si la tarea no se había entregado da la recompensa de tarea
  * completada; si ya se había entregado, esa se cobró al entregar y se da la de calificación registrada.
+ * La nota debe estar dentro de la escala de la asignatura (si la tiene).
  */
 class CalificarTareaUseCase @Inject constructor(
     private val calificacionesRepository: CalificacionesRespository,
+    private val asignaturasRepository: AsignaturasRepository,
     private val gamificacionRepository: GamificacionRepository,
     private val otorgarRecompensa: OtorgarRecompensaUseCase,
     private val sesion: SesionUsuario
@@ -38,6 +41,8 @@ class CalificarTareaUseCase @Inject constructor(
     suspend operator fun invoke(tarea: Tarea, textoValor: String): ResultadoCalificarTarea {
         val tareaId = tarea.id ?: return ResultadoCalificarTarea.Error
         val valor = valorDesdeTexto(textoValor) ?: return ResultadoCalificarTarea.ValorInvalido
+        val escala = asignaturaDe(tarea)?.escala
+        if (escala != null && !escala.contiene(valor)) return ResultadoCalificarTarea.ValorInvalido
         return try {
             gamificacionRepository.enTransaccion {
                 if (calificacionesRepository.tareaTieneCalificacion(tareaId)) {
@@ -59,6 +64,10 @@ class CalificarTareaUseCase @Inject constructor(
             ResultadoCalificarTarea.Error
         }
     }
+
+    private suspend fun asignaturaDe(tarea: Tarea) =
+        tarea.asignaturaId?.let { asignaturasRepository.getAsignatura(it) }
+            ?: asignaturasRepository.getAllAsignaturas().firstOrNull { it.nombre == tarea.asignatura }
 }
 
 sealed class ResultadoEntregarTarea {

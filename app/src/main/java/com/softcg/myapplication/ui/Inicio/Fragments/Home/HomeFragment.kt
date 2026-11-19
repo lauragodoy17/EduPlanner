@@ -19,8 +19,6 @@ import com.softcg.myapplication.R
 import com.softcg.myapplication.ui.Inicio.Dialogs.AccionesDatosEstudio
 import com.softcg.myapplication.ui.Inicio.Dialogs.AccionesTarea
 import com.softcg.myapplication.ui.Inicio.DatosEstudioViewModel
-import com.softcg.myapplication.domain.ia.RecomendarTareaUseCase
-import javax.inject.Inject
 import com.softcg.myapplication.ui.Inicio.InicioViewModel
 import com.softcg.myapplication.ui.Inicio.Models.TimelineItemType
 import com.softcg.myapplication.ui.Inicio.Fragments.Detalle.TipoDetalle
@@ -40,15 +38,13 @@ class HomeFragment : Fragment() {
     private val inicioViewModel: InicioViewModel by activityViewModels()
     private val datosEstudio: DatosEstudioViewModel by activityViewModels()
     private val acciones by lazy { AccionesDatosEstudio(this, datosEstudio) }
-    @Inject lateinit var recomendarTarea: RecomendarTareaUseCase
     private lateinit var unifiedAdapter: UnifiedItemAdapter
     private var currentFilter = 0 // 0: Todos, 1: Solo Tareas, 2: Solo Eventos
 
     private val accionesTarea by lazy {
         AccionesTarea(
-            this, inicioViewModel, acciones, recomendarTarea,
+            this, inicioViewModel, acciones,
             onBorrar = { homeViewModel.deleteTarea(it) },
-            onCompletarDatos = { abrirTarea(it.id, it.titulo, it.asignatura) },
             onCambio = { homeViewModel.obtenerTareas() }
         )
     }
@@ -135,7 +131,7 @@ class HomeFragment : Fragment() {
             onDeleteEvento = { evento -> homeViewModel.deleteEvento(evento) },
             onCalificarTarea = accionesTarea::calificar,
             onEntregarTarea = accionesTarea::entregar,
-            onVerMasTarea = accionesTarea::verDetalles,
+            onVerMasTarea = { abrirTarea(it.id, it.titulo, it.asignatura) },
             onItemClick = { item ->
                 if (item.type == TimelineItemType.TAREA) abrirTarea(item.id, item.titulo, item.asignatura)
                 else abrirDetalle(TipoDetalle.EVENTO, item.id)
@@ -159,7 +155,7 @@ class HomeFragment : Fragment() {
         // Entregar o calificar (desde la tarjeta o desde la tarea) recarga la lista y sigue el flujo de la tarea
         accionesTarea.observarResultados()
 
-        // Un tema elegido desde "Ver más" cambia la tarea: se recarga la lista
+        // Un dato completado (p. ej. el tema) cambia la tarea: se recarga la lista
         datosEstudio.cambios.observe(viewLifecycleOwner) { homeViewModel.obtenerTareas() }
 
     }

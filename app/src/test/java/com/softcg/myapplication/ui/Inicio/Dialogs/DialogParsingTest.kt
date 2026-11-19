@@ -5,6 +5,7 @@ import com.softcg.myapplication.domain.prediccion.DeteccionArea
 import com.softcg.myapplication.ui.Inicio.Fragments.Asignaturas.Models.Asignatura
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
@@ -24,31 +25,12 @@ class DialogParsingTest {
     }
 
     @Test
-    fun `la calificacion numerica se convierte a Float`() {
-        assertEquals(4.5F, CalificacionDialog.valorDesdeTexto("4.5"))
-        assertEquals(3F, CalificacionDialog.valorDesdeTexto("3"))
-    }
-
-    @Test
-    fun `una calificacion vacia o invalida se guarda como 0`() {
-        assertEquals(0F, CalificacionDialog.valorDesdeTexto(""))
-        assertEquals(0F, CalificacionDialog.valorDesdeTexto("."))
-    }
-
-    @Test
     fun `la tarea solo acepta una asignatura existente`() {
         val asignaturas = listOf("Física", "Química")
         assertTrue(TareaDialog.asignaturaValida("Física", asignaturas))
         assertFalse(TareaDialog.asignaturaValida("", asignaturas))
         assertFalse(TareaDialog.asignaturaValida("+ Agregar asignatura", asignaturas))
         assertFalse(TareaDialog.asignaturaValida("Historia", asignaturas))
-    }
-
-    @Test
-    fun `el tipo de calificacion usa el texto propio con Otro y vacio sin elegir`() {
-        assertEquals("Letras (A-F)", AsignaturaDialog.tipoCalificacion("Letras (A-F)", ""))
-        assertEquals("Por rúbrica", AsignaturaDialog.tipoCalificacion("Otro", " Por rúbrica "))
-        assertEquals("", AsignaturaDialog.tipoCalificacion("Selecciona un tipo", "x"))
     }
 
     @Test
@@ -84,5 +66,21 @@ class DialogParsingTest {
         assertTrue(DatosAsignaturaDialog.hayQuePreguntar(base.copy(areaModelo = null)))
         assertTrue(DatosAsignaturaDialog.hayQuePreguntar(base.copy(tipoCalificacion = "Letras (A-F)")))
         assertFalse(DatosAsignaturaDialog.hayQuePreguntar(base.copy(tipoCalificacion = "", escalaMin = 1f, escalaMax = 5f)))
+    }
+
+    @Test
+    fun `la tarea necesita una fecha real`() {
+        assertEquals(java.time.LocalDate.of(2026, 11, 20), TareaDialog.fechaValida("2026-11-20"))
+        assertNull(TareaDialog.fechaValida(""))
+        assertNull(TareaDialog.fechaValida("mañana"))
+    }
+
+    @Test
+    fun `la duracion de una clase va de 1 a 12 horas o vacia`() {
+        assertNull(AsignaturaDialog.errorDuracion(""))
+        assertNull(AsignaturaDialog.errorDuracion(" 2 "))
+        assertNull(AsignaturaDialog.errorDuracion("12"))
+        assertEquals("Entre 1 y 12 horas", AsignaturaDialog.errorDuracion("0"))
+        assertEquals("Entre 1 y 12 horas", AsignaturaDialog.errorDuracion("30"))
     }
 }

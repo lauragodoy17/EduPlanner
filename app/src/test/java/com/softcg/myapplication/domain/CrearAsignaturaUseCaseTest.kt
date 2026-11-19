@@ -7,6 +7,7 @@ import com.softcg.myapplication.domain.gamificacion.TipoRecompensa
 import com.softcg.myapplication.ui.Inicio.Fragments.Asignaturas.Models.Asignatura
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.mockk
 import io.mockk.slot
 import kotlinx.coroutines.runBlocking
@@ -18,6 +19,10 @@ class CrearAsignaturaUseCaseTest {
     private val repository: AsignaturasRepository = mockk()
     private val otorgarRecompensa: OtorgarRecompensaUseCase = mockk()
     private val useCase = CrearAsignaturaUseCase(repository, otorgarRecompensa)
+
+    init {
+        every { repository.getAllAsignaturas() } returns emptyList()
+    }
 
     @Test
     fun `los dias elegidos se convierten en el horario de lunes a domingo`() {
@@ -74,5 +79,13 @@ class CrearAsignaturaUseCaseTest {
         coEvery { repository.insertAsignatura(any(), any()) } returns -1L
 
         assertEquals(ResultadoCrearAsignatura.Error, useCase(NuevaAsignatura("Física")))
+    }
+
+    @Test
+    fun `no se crea una asignatura con el nombre de otra, sin distinguir tildes ni mayusculas`() = runBlocking {
+        every { repository.getAllAsignaturas() } returns listOf(Asignatura(1, "Física", "", 0, "", List(7) { false }))
+
+        assertEquals(ResultadoCrearAsignatura.NombreRepetido, useCase(NuevaAsignatura("  fisica ")))
+        coVerify(exactly = 0) { repository.insertAsignatura(any(), any()) }
     }
 }

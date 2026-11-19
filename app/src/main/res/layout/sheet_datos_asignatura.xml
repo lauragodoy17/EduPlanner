@@ -66,71 +66,20 @@
             tools:text="Sugerida por el nombre de la asignatura"
             tools:visibility="visible"/>
 
+        <!-- Solo en asignaturas antiguas sin escala de notas (las nuevas la eligen al crearse) -->
         <LinearLayout
             android:id="@+id/datosEscala"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
             android:orientation="vertical"
             android:visibility="gone"
             tools:visibility="visible">
 
-            <TextView
-                style="@style/Edu.Texto.Rotulo"
+            <include
+                layout="@layout/include_selector_escala"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="2dp"
-                android:text="Escala de tus notas"/>
-
-            <TextView
-                android:id="@+id/datosEscalaDetalle"
-                style="@style/Edu.Texto.Pie"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="6dp"
-                tools:text="El tipo de calificación no indica un rango. Por ejemplo, de 1 a 5."/>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-            android:baselineAligned="false">
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/datosEscalaMinCaja"
-                    style="@style/Edu.Campo"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="6dp"
-                    android:layout_weight="1"
-                    android:hint="Nota mínima">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/datosEscalaMin"
-                        style="@style/Edu.CampoEntrada"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="numberDecimal"
-                        android:maxLines="1"/>
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/datosEscalaMaxCaja"
-                    style="@style/Edu.Campo"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="6dp"
-                    android:layout_weight="1"
-                    android:hint="Nota máxima">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/datosEscalaMax"
-                        style="@style/Edu.CampoEntrada"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="numberDecimal"
-                        android:maxLines="1"/>
-                </com.google.android.material.textfield.TextInputLayout>
-            </LinearLayout>
+                android:layout_height="wrap_content"/>
         </LinearLayout>
 
         <TextView

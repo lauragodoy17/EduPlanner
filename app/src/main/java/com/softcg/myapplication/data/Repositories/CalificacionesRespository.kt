@@ -5,6 +5,7 @@ import com.softcg.myapplication.data.database.dao.AsignaturasDao
 import com.softcg.myapplication.data.database.dao.CalificacionesDao
 import com.softcg.myapplication.data.database.entities.CalificacionEntity
 import com.softcg.myapplication.data.network.SesionUsuario
+import com.softcg.myapplication.domain.calificaciones.EscalaCalificacion
 import com.softcg.myapplication.ui.Inicio.Fragments.Calificaciones.Models.Calificacion
 import javax.inject.Inject
 
@@ -19,12 +20,18 @@ class CalificacionesRespository @Inject constructor(
 
     fun getAllCalificaciones():List<Calificacion>{
         val uid = uid() ?: return emptyList()
-        return calificacionesDao.getAllCalificaciones(uid).map { it.toModel() }
+        return conEscala(uid, calificacionesDao.getAllCalificaciones(uid).map { it.toModel() })
     }
 
     suspend fun deAsignatura(asignaturaId: Int, nombre: String): List<Calificacion> {
         val uid = uid() ?: return emptyList()
-        return calificacionesDao.deAsignatura(uid, asignaturaId, nombre).map { it.toModel() }
+        return conEscala(uid, calificacionesDao.deAsignatura(uid, asignaturaId, nombre).map { it.toModel() })
+    }
+
+    /** Cuántas notas tiene la asignatura: con una sola, su escala ya no se puede cambiar. */
+    suspend fun contarDeAsignatura(asignaturaId: Int, nombre: String): Int {
+        val uid = uid() ?: return 0
+        return calificacionesDao.contarDeAsignatura(uid, asignaturaId, nombre)
     }
 
     suspend fun deleteCalificacion(calificacion: Calificacion){
@@ -41,7 +48,8 @@ class CalificacionesRespository @Inject constructor(
 
     suspend fun getCalificacion(id: Int): Calificacion? {
         val uid = uid() ?: return null
-        return calificacionesDao.getCalificacion(uid, id)?.toModel()
+        val calificacion = calificacionesDao.getCalificacion(uid, id)?.toModel() ?: return null
+        return conEscala(uid, listOf(calificacion)).first()
     }
 
     /** Guarda lo editado; la asignatura se vuelve a enlazar por su nombre. */
@@ -62,6 +70,20 @@ class CalificacionesRespository @Inject constructor(
 
     suspend fun tareaTieneCalificacion(tareaId: Int): Boolean{
         return calificacionesDao.contarDeTarea(tareaId) > 0
+    }
+
+    /** Cada nota se lee con la escala de su tipo ("Numérico (1-5)") o, si no la dice, con la de su asignatura. */
+    private fun conEscala(uid: String, notas: List<Calificacion>): List<Calificacion> {
+        if (notas.isEmpty()) return notas
+        val asignaturas = asignaturasDao.getAllAsignaturas(uid)
+        val porId = asignaturas.associate { it.id to EscalaCalificacion.deAsignatura(it.tipoCalificacion, it.escalaMin, it.escalaMax) }
+        val porNombre = asignaturas.associate { it.nombre to EscalaCalificacion.deAsignatura(it.tipoCalificacion, it.escalaMin, it.escalaMax) }
+        return notas.map { nota ->
+            val escala = EscalaCalificacion.deTexto(nota.tipo)
+                ?: nota.asignaturaId?.let { porId[it] }
+                ?: porNombre[nota.asignatura]
+            nota.copy(escala = escala)
+        }
     }
 
     private fun CalificacionEntity.toModel() = Calificacion(

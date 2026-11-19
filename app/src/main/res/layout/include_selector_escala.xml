@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Escala de notas de una asignatura: se elige al crearla (formulario de asignatura) y, en asignaturas antiguas sin
+     escala, una sola vez. La maneja ui/Inicio/Dialogs/SelectorEscala.kt -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/escalaSelector"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/escalaRotulo"
+        style="@style/Edu.Texto.Rotulo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="6dp"
+        android:text="¿Cómo te califican en esta asignatura?" />
+
+    <com.google.android.material.chip.ChipGroup
+        android:id="@+id/escalaOpciones"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:chipSpacingVertical="2dp"
+        app:selectionRequired="true"
+        app:singleSelection="true" />
+
+    <!-- Cómo se verán las notas con la escala elegida -->
+    <TextView
+        android:id="@+id/escalaVista"
+        style="@style/Edu.Texto.Pie"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        tools:text="Notas de 1 a 5 con un decimal, por ejemplo 4,5" />
+
+    <TextView
+        android:id="@+id/escalaError"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:textColor="?attr/eduEstadoError"
+        android:textSize="13sp"
+        android:visibility="gone"
+        tools:text="Elige la escala de notas" />
+
+    <!-- Con notas registradas la escala ya no cambia -->
+    <TextView
+        android:id="@+id/escalaBloqueo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:drawablePadding="6dp"
+        android:gravity="center_vertical"
+        android:text="La escala no se puede cambiar porque esta asignatura ya tiene calificaciones."
+        android:textColor="?attr/eduEstadoAviso"
+        android:textSize="13sp"
+        android:visibility="gone"
+        tools:visibility="visible" />
+</LinearLayout>

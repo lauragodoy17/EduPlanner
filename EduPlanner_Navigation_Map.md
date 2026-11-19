@@ -72,11 +72,12 @@ graph TD
     PERFIL --> TIENDA
     PERFIL --> ENFOQUE
 
-    HOME -->|menú ⋮ · Ver más| VERMAS[[TareaDetallesDialog<br/>Entregar / Calificar · Borrar · Compartir · IA]]
+    HOME -->|menú ⋮ · Ver más| TAREA_PANT
+    AGENDA -->|menú ⋮ · Ver más| TAREA_PANT
     TAREA_FORM -->|+ Agregar asignatura| ASIG_FORM[[AsignaturaDialog]] -->|vuelve con la asignatura elegida| TAREA_FORM
 ```
 
-- **Pantalla de la tarea** (`PrediccionFragment`): tarjeta con el estado, la información de la tarea y los iconos editar · borrar · compartir; debajo, "Predicción y recomendaciones" (datos del modelo y su respuesta).
+- **Pantalla de la tarea** (`PrediccionFragment`): tarjeta con el estado, la información de la tarea, los iconos editar · borrar · compartir y el botón Entregar (Calificar si ya se entregó); debajo, "Predicción y recomendaciones" (datos del modelo y recomendaciones de la IA). Se abre al tocar la tarjeta o con "Ver más" en su menú ⋮.
 - **Pantalla de detalle** (`DetalleFragment`): la misma tarjeta para eventos, asignaturas y calificaciones (`TipoDetalle`). Editar abre el formulario de creación relleno; borrar pide confirmación y vuelve atrás.
 - **Subpantallas** (`InicioActivity.SUBPANTALLAS`: tarea, detalle, tienda, enfoque): la cabecera muestra una flecha para volver. En la barra inferior queda marcada la pestaña desde la que se abrieron.
 - **Perfil**: `ViewPager2` con las pestañas Misiones, Logros, Estadísticas y Avatar.
@@ -85,7 +86,6 @@ graph TD
 
 | Desde | Hoja | Para |
 |---|---|---|
-| Tarjeta de tarea (⋮) | `TareaDetallesDialog` | Ver más, entregar, calificar, borrar, compartir, recomendaciones de la IA |
 | Entregar una tarea | `Context.preguntar()` | "¿Ya tienes la calificación?" → `CalificarTareaDialog` o "Más tarde" |
 | Datos para predicciones | `DatosEstudioDialogs` | Área, escala, tiempo y método, interés y dificultad |
 | Cualquier tarjeta (compartir) | `CompartirQrDialog` | Mostrar el QR de una tarea, evento, asignatura o nota |

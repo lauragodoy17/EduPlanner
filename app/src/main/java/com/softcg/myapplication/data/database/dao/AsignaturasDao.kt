@@ -26,6 +26,10 @@ interface AsignaturasDao {
     @Insert(onConflict= OnConflictStrategy.REPLACE)
     suspend fun insertAsignatura(asignatura: AsignaturaEntity): Long
 
+    /** Escala de notas: el tipo de calificación y su rango, juntos. */
+    @Query("Update asignaturas_table Set tipo_calificacion = :tipo, escala_min = :escalaMin, escala_max = :escalaMax Where id = :id And uid = :uid")
+    suspend fun guardarEscala(uid: String, id: Int, tipo: String, escalaMin: Float, escalaMax: Float): Int
+
     @Query("Update asignaturas_table Set area_modelo = :area, escala_min = :escalaMin, escala_max = :escalaMax Where id = :id And uid = :uid")
     suspend fun guardarDatosModelo(uid: String, id: Int, area: String?, escalaMin: Float?, escalaMax: Float?): Int
 

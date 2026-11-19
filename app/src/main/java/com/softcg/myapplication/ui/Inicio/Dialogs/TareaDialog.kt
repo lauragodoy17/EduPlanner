@@ -8,12 +8,14 @@ import android.widget.AutoCompleteTextView
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import androidx.core.widget.doAfterTextChanged
 import com.google.android.material.textfield.TextInputLayout
 import com.softcg.myapplication.R
 import com.softcg.myapplication.core.ex.showAsBottomSheet
 import com.softcg.myapplication.core.ex.showDatePicker
 import com.softcg.myapplication.core.ex.showTimePicker
 import com.softcg.myapplication.ui.Inicio.Models.Tarea
+import java.time.LocalDate
 
 /**
  * Crear una tarea o, si se pasa [tarea], editarla. El tema no se pregunta: para las predicciones y la bibliografía
@@ -37,6 +39,9 @@ class TareaDialog(
 
         /** Alta = 1, Media = 2, Baja = 3; 0 si no se eligió ninguna. */
         fun prioridadDesdeTexto(texto: String): Int = PRIORIDADES.indexOf(texto) + 1
+
+        /** La fecha del campo (yyyy-MM-dd); null si está vacía o no es una fecha. */
+        fun fechaValida(texto: String): LocalDate? = runCatching { LocalDate.parse(texto.trim()) }.getOrNull()
 
         /** Solo vale una asignatura que exista; el texto de la opción "Agregar asignatura" no cuenta. */
         fun asignaturaValida(texto: String, asignaturas: List<String>): Boolean =
@@ -64,6 +69,8 @@ class TareaDialog(
         val horaContainer = dialog.findViewById<TextInputLayout>(R.id.HoraEntregaContainer)
         val prioridad = dialog.findViewById<AutoCompleteTextView>(R.id.PriorityEditText)
         val guardarBoton = dialog.findViewById<Button>(R.id.botonAgregar)
+        val tituloContainer = dialog.findViewById<TextInputLayout>(R.id.TituloContainer)
+        val fechaContainer = dialog.findViewById<TextInputLayout>(R.id.FechaContainer)
 
         tarea?.let {
             dialog.findViewById<TextView>(R.id.formTitulo).text = "Editar tarea"
@@ -91,8 +98,10 @@ class TareaDialog(
         if (tarea != null) prioridad.setText(textoPrioridad(tarea.prioridad), false)
 
         fecha.setOnClickListener {
+            fechaContainer.error = null
             fecha.showDatePicker()
         }
+        titulo.doAfterTextChanged { if (!it.isNullOrBlank()) tituloContainer.error = null }
         horaEntrega.setOnClickListener { horaEntrega.showTimePicker() }
         // El icono del reloj abre el selector; con una hora elegida, mantener pulsado el campo la quita
         horaContainer.setEndIconOnClickListener { horaEntrega.showTimePicker() }
@@ -100,14 +109,17 @@ class TareaDialog(
 
         guardarBoton.setOnClickListener {
             val elegida = asignatura.text.toString()
-            if (!asignaturaValida(elegida, asignaturas)) {
-                asignaturaContainer.error = context.getString(R.string.tarea_error_asignatura)
-                return@setOnClickListener
-            }
+            // Sin título ni fecha la tarea no se puede mostrar en la agenda ni avisar a tiempo: se piden aquí
+            val sinTitulo = titulo.text.isNullOrBlank()
+            val sinFecha = fechaValida(fecha.text.toString()) == null
+            tituloContainer.error = if (sinTitulo) "Escribe el título de la tarea" else null
+            fechaContainer.error = if (sinFecha) "Elige la fecha de entrega" else null
+            asignaturaContainer.error = if (!asignaturaValida(elegida, asignaturas)) context.getString(R.string.tarea_error_asignatura) else null
+            if (sinTitulo || sinFecha || asignaturaContainer.error != null) return@setOnClickListener
             dialog.dismiss()
             onGuardar(
-                titulo.text.toString(),
-                descripcion.text.toString(),
+                titulo.text.toString().trim(),
+                descripcion.text.toString().trim(),
                 elegida,
                 fecha.text.toString(),
                 prioridadDesdeTexto(prioridad.text.toString()),

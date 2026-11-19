@@ -3,18 +3,14 @@ package com.softcg.myapplication.domain.prediccion
 import com.softcg.myapplication.data.database.entities.AsistenciaEntity
 import com.softcg.myapplication.data.database.entities.PercepcionEntity
 import com.softcg.myapplication.data.database.entities.SesionEnfoqueEntity
+import com.softcg.myapplication.domain.calificaciones.EscalaCalificacion
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
 import java.time.temporal.ChronoUnit
 
-/** Rango numérico de una escala de notas, p. ej. 1-5 o 0-100. */
-data class Escala(val min: Float, val max: Float) {
-    fun contiene(valor: Float) = valor in min..max
-
-    /** Lleva el valor a la escala 0-10 del modelo. */
-    fun a10(valor: Float): Double = ((valor - min) / (max - min) * 10f).toDouble()
-}
+/** Rango numérico escrito en un texto, p. ej. "1-5" o "0-100" (lo lee [ReglasExtraccion.escalaDeTexto]). */
+data class Escala(val min: Float, val max: Float)
 
 data class MedidaAsistencia(val respondidas: Int, val asistidas: Int, val recientesRespondidas: Int, val recientesAsistidas: Int) {
     val porcentaje: Double get() = if (respondidas == 0) 0.0 else asistidas * 100.0 / respondidas
@@ -98,17 +94,18 @@ object ReglasExtraccion {
     }
 
     /**
-     * Escala de una nota: la de su propio tipo si la indica ("Numerico (1-5)"), si no la que el estudiante
-     * fijó para la asignatura y, por último, la del tipo de calificación de la asignatura.
+     * Escala de una nota: la de su propio tipo si la indica ("Numérico (1-5)", "Letras (A-F)"), si no la de la
+     * asignatura ([EscalaCalificacion.deAsignatura]). Las letras y aprobado/reprobado se guardan como números.
      */
-    fun escalaDe(tipoNota: String, escalaMin: Float?, escalaMax: Float?, tipoAsignatura: String): Escala? {
-        escalaDeTexto(tipoNota)?.let { return it }
-        if (escalaMin != null && escalaMax != null && escalaMax > escalaMin) return Escala(escalaMin, escalaMax)
-        return escalaDeTexto(tipoAsignatura)
-    }
+    fun escalaDe(tipoNota: String, escalaMin: Float?, escalaMax: Float?, tipoAsignatura: String): EscalaCalificacion? =
+        EscalaCalificacion.deTexto(tipoNota) ?: EscalaCalificacion.deAsignatura(tipoAsignatura, escalaMin, escalaMax)
 
-    /** Promedio en 0-10. Las notas sin escala conocida o fuera de su escala no se usan (no se adivinan). */
-    fun notas(valores: List<Pair<Float, Escala?>>): MedidaNotas {
+    /**
+     * Promedio en 0-10 ([EscalaCalificacion.a10]): cada nota se convierte con su propia escala y después se promedian,
+     * así se pueden mezclar notas de escalas distintas. Las que no tienen escala conocida o están fuera de ella no se
+     * usan (no se adivinan).
+     */
+    fun notas(valores: List<Pair<Float, EscalaCalificacion?>>): MedidaNotas {
         val sinEscala = valores.count { it.second == null }
         val conEscala = valores.filter { it.second != null }
         val validas = conEscala.filter { (valor, escala) -> escala!!.contiene(valor) }

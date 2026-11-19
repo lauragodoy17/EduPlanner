@@ -44,6 +44,7 @@ import com.softcg.myapplication.ui.Inicio.Fragments.Calificaciones.Calificacione
 import com.softcg.myapplication.core.ex.mostrarAvisoLogro
 import com.softcg.myapplication.data.network.CredencialGoogleService
 import javax.inject.Inject
+import com.softcg.myapplication.core.ex.copiarImagenEvento
 import com.softcg.myapplication.core.ex.mostrarMensaje
 import com.softcg.myapplication.core.ex.mostrarRecompensa
 import com.softcg.myapplication.domain.ResultadoCrearAsignatura
@@ -134,7 +135,13 @@ class InicioActivity : AppCompatActivity() {
 
     private var eventoDialog: EventoDialog? = null
     private val seleccionarImagen = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
-        uri?.let { eventoDialog?.mostrarImagen(it) }
+        // Se guarda una copia reducida: la Uri del selector deja de valer al cerrar la app
+        uri ?: return@registerForActivityResult
+        lifecycleScope.launch {
+            val copia = copiarImagenEvento(uri)
+            if (copia != null) eventoDialog?.mostrarImagen(copia, "Imagen seleccionada")
+            else mostrarMensaje("No se pudo abrir esa imagen. Prueba con otra.")
+        }
     }
 
     // COMPARTIR POR QR: el lector devuelve el texto de un QR de EduPlanner; aquí se confirma y se agrega
@@ -510,17 +517,31 @@ class InicioActivity : AppCompatActivity() {
         inicioViewModel.celebraciones.observe(this){
             it.getContentIfNotHandled()?.let { nuevas -> encolarCelebraciones(nuevas) }
         }
-        // El observador mantiene el resumen del inicio al día aunque esa pantalla no esté visible
-        inicioViewModel.panelProgreso.observe(this){ }
+        // El observador mantiene el resumen del inicio al día aunque esa pantalla no esté visible; además pinta la
+        // racha de la cabecera, junto a las monedas
+        inicioViewModel.panelProgreso.observe(this){ panel ->
+            rachaMostrada = panel.racha.actual
+            findViewById<TextView>(R.id.racha_counter).text = panel.racha.actual.toString()
+            describirCabecera()
+        }
     }
 
     private var saldoMostrado: Int? = null
+    private var rachaMostrada: Int = 0
+
+    /** Lo que lee TalkBack en la pastilla de la cabecera. */
+    private fun describirCabecera() {
+        val dias = if (rachaMostrada == 1) "1 día" else "$rachaMostrada días"
+        findViewById<View>(R.id.header_saldo).contentDescription =
+            "Racha de $dias, ${saldoMostrado ?: 0} EduCoins. Ver tu progreso"
+    }
 
     /** La primera lectura se muestra tal cual; los cambios posteriores se cuentan y el contador pulsa. */
     private fun actualizarContadorMonedas(saldo: Int) {
         val contador = findViewById<TextView>(R.id.coin_counter)
         val anterior = saldoMostrado
         saldoMostrado = saldo
+        describirCabecera()
         if (anterior == null || anterior == saldo) {
             contador.text = saldo.toString()
             return
@@ -796,6 +817,7 @@ class InicioActivity : AppCompatActivity() {
     private fun showDialogAsignaturaParaTarea() {
         AsignaturaDialog(
             context = this,
+            otrosNombres = inicioViewModel.asignaturasCompletas().map { it.nombre },
             onGuardar = { nueva -> inicioViewModel.onCrearAsignaturaDesdeTarea(nueva) },
             // Si se guardó, la tarea vuelve cuando el ViewModel confirma (observador de asignaturaParaTarea)
             onCerrar = { guardada -> if (!guardada) tareaDialog?.volver() }
@@ -856,7 +878,10 @@ class InicioActivity : AppCompatActivity() {
     }
 
     private fun showDialogCalificacion(){
-        CalificacionDialog(this, obtenerNombresAsignaturas()) { tipo, valor, asignatura, descripcion ->
+        CalificacionDialog(
+            this, inicioViewModel.asignaturasCompletas(),
+            onEscalaNueva = { id, escala -> inicioViewModel.guardarEscala(id, escala) }
+        ) { tipo, valor, asignatura, descripcion ->
             inicioViewModel.onAgregarCalificacionSelected(tipo, valor, asignatura, descripcion)
             mostrarMensaje("Calificación guardada")
         }.show()

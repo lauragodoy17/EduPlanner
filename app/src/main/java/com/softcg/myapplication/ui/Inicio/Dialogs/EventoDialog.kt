@@ -3,7 +3,6 @@ package com.softcg.myapplication.ui.Inicio.Dialogs
 import android.app.Dialog
 import android.content.Context
 import android.net.Uri
-import androidx.core.net.toUri
 import android.view.View
 import android.view.Window
 import android.widget.Button
@@ -11,6 +10,8 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
+import androidx.core.net.toUri
+import androidx.core.widget.doAfterTextChanged
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.textfield.TextInputLayout
 import com.softcg.myapplication.R
@@ -18,6 +19,7 @@ import com.softcg.myapplication.core.ex.showAsBottomSheet
 import com.softcg.myapplication.core.ex.showDatePicker
 import com.softcg.myapplication.core.ex.showTimePicker
 import com.softcg.myapplication.ui.Inicio.Models.Evento
+import java.time.LocalTime
 
 /**
  * Hoja para crear un evento o, si se pasa [evento], editarlo.
@@ -88,30 +90,46 @@ class EventoDialog(
             onSeleccionarImagen()
         }
 
+        val nombreContainer = dialog.findViewById<TextInputLayout>(R.id.NombreContainer)
+        val fechaContainer = dialog.findViewById<TextInputLayout>(R.id.FechaContainer)
+        val horaFinContainer = dialog.findViewById<TextInputLayout>(R.id.HoraFinContainer)
+        titulo.doAfterTextChanged { if (!it.isNullOrBlank()) nombreContainer.error = null }
+        fecha.doAfterTextChanged { fechaContainer.error = null }
+        horaInicio.doAfterTextChanged { horaFinContainer.error = null }
+        horaFin.doAfterTextChanged { horaFinContainer.error = null }
+
         guardarBoton.setOnClickListener {
-            if (titulo.text.toString().isNotEmpty() && fecha.text.toString().isNotEmpty()) {
-                dialog.dismiss()
-                onGuardar(
-                    Evento(
-                        evento?.id,
-                        titulo.text.toString(),
-                        descripcion.text.toString(),
-                        fecha.text.toString(),
-                        selectedPrioridad,
-                        horaInicio.text.toString(),
-                        horaFin.text.toString(),
-                        selectedImageUri?.toString()
-                    )
+            val sinTitulo = titulo.text.isNullOrBlank()
+            val sinFecha = TareaDialog.fechaValida(fecha.text.toString()) == null
+            val errorHoras = errorHoras(horaInicio.text.toString(), horaFin.text.toString())
+            nombreContainer.error = if (sinTitulo) "Escribe un nombre" else null
+            fechaContainer.error = if (sinFecha) "Elige una fecha" else null
+            horaFinContainer.error = errorHoras
+            if (sinTitulo || sinFecha || errorHoras != null) return@setOnClickListener
+            dialog.dismiss()
+            onGuardar(
+                Evento(
+                    evento?.id,
+                    titulo.text.toString().trim(),
+                    descripcion.text.toString().trim(),
+                    fecha.text.toString(),
+                    selectedPrioridad,
+                    horaInicio.text.toString(),
+                    horaFin.text.toString(),
+                    selectedImageUri?.toString()
                 )
-            } else {
-                dialog.findViewById<TextInputLayout>(R.id.NombreContainer).error =
-                    if (titulo.text.isNullOrEmpty()) "Escribe un nombre" else null
-                dialog.findViewById<TextInputLayout>(R.id.FechaContainer).error =
-                    if (fecha.text.isNullOrEmpty()) "Elige una fecha" else null
-            }
+            )
         }
 
         dialog.showAsBottomSheet()
+    }
+
+    /** La hora de fin necesita la de inicio y tiene que ser posterior; null si están bien (o vacías). */
+    private fun errorHoras(inicio: String, fin: String): String? {
+        if (fin.isBlank()) return null
+        val desde = runCatching { LocalTime.parse(inicio) }.getOrNull() ?: return "Elige primero la hora de inicio"
+        val hasta = runCatching { LocalTime.parse(fin) }.getOrNull() ?: return "Hora no válida"
+        return if (hasta.isAfter(desde)) null else "Debe ser después de la hora de inicio"
     }
 
     fun mostrarImagen(uri: Uri, nombre: String = uri.lastPathSegment ?: "Imagen seleccionada") {

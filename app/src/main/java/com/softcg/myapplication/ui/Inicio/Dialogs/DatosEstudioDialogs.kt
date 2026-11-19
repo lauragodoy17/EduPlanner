@@ -21,11 +21,13 @@ import com.softcg.myapplication.core.ex.mostrarCarga
 import com.softcg.myapplication.core.ex.showAsBottomSheet
 import com.softcg.myapplication.core.ex.showDatePicker
 import com.softcg.myapplication.core.ex.tintarFondo
+import com.softcg.myapplication.domain.calificaciones.EscalaCalificacion
 import com.softcg.myapplication.domain.prediccion.CatalogoModelo
 import com.softcg.myapplication.domain.prediccion.DeteccionArea
 import com.softcg.myapplication.domain.prediccion.TextosArea
 import com.softcg.myapplication.domain.prediccion.EstadoDato
 import com.softcg.myapplication.domain.prediccion.NivelesPercepcion
+import com.softcg.myapplication.domain.prediccion.RegistrarEstudioManualUseCase
 import com.softcg.myapplication.domain.prediccion.ReglasExtraccion
 import com.softcg.myapplication.domain.prediccion.ResultadoExtraccion
 import com.softcg.myapplication.domain.prediccion.ResultadoGuardarDatos
@@ -62,26 +64,27 @@ private fun ChipGroup.indiceMarcado(): Int? = findViewById<Chip>(checkedChipId)?
 private fun numero(texto: String): Float? = texto.trim().replace(',', '.').toFloatOrNull()
 
 /**
- * Área y escala de notas de una asignatura. Se abre al crearla (solo si falta alguno de los dos) y desde el
- * ítem de notas cuando hay notas que no se pueden usar sin escala. Interés, dificultad, tiempo
- * tienen sus propias hojas.
+ * Área de una asignatura y, solo si es antigua y aún no tiene escala de notas, su escala (las nuevas la eligen al
+ * crearse). Se abre al crear la asignatura si el área no se detectó por el nombre, y desde el ítem de notas cuando
+ * hay notas que no se pueden usar sin escala. Interés, dificultad y tiempo tienen sus propias hojas.
  */
 class DatosAsignaturaDialog(
     private val context: Context,
     private val asignatura: Asignatura,
     private val scope: CoroutineScope,
-    private val guardar: suspend (area: String?, escalaMin: Float?, escalaMax: Float?) -> ResultadoGuardarDatos,
+    private val guardar: suspend (area: String?, escala: EscalaCalificacion?) -> ResultadoGuardarDatos,
     private val onGuardado: () -> Unit = {}
 ) {
     companion object {
-        /** El tipo de calificación no dice el rango y el estudiante aún no lo indicó. */
-        fun faltaEscala(asignatura: Asignatura): Boolean =
-            ReglasExtraccion.escalaDeTexto(asignatura.tipoCalificacion) == null &&
-                (asignatura.escalaMin == null || asignatura.escalaMax == null)
+        /** Asignatura antigua que aún no tiene escala de notas. */
+        fun faltaEscala(asignatura: Asignatura): Boolean = asignatura.escala == null
 
         fun faltaArea(asignatura: Asignatura): Boolean = !CatalogoModelo.esArea(asignatura.areaModelo)
 
-        /** Al crear la asignatura solo se abre si queda algo por preguntar. */
+        /**
+         * Al crear la asignatura solo se abre si queda algo por preguntar: casi siempre el área, porque la escala se
+         * elige en el formulario (solo falta en las creadas desde un QR que no la traía).
+         */
         fun hayQuePreguntar(asignatura: Asignatura): Boolean = faltaArea(asignatura) || faltaEscala(asignatura)
     }
 
@@ -111,28 +114,24 @@ class DatosAsignaturaDialog(
         }
         campoArea.setOnItemClickListener { _, _, posicion, _ -> area = areas[posicion] }
 
-        // Escala: solo si el tipo de calificación no dice el rango
-        val sinRango = ReglasExtraccion.escalaDeTexto(asignatura.tipoCalificacion) == null
-        val minimo = dialog.findViewById<EditText>(R.id.datosEscalaMin)
-        val maximo = dialog.findViewById<EditText>(R.id.datosEscalaMax)
-        if (sinRango) {
-            dialog.findViewById<View>(R.id.datosEscala).visibility = View.VISIBLE
-            dialog.findViewById<TextView>(R.id.datosEscalaDetalle).text =
-                if (asignatura.tipoCalificacion.isBlank()) "No indicaste el tipo de calificación. ¿Entre qué valores van tus notas? Por ejemplo, de 1 a 5."
-                else "“${asignatura.tipoCalificacion}” no indica un rango. ¿Entre qué valores van tus notas? Por ejemplo, de 1 a 5."
-            asignatura.escalaMin?.let { minimo.setText(formatear(it)) }
-            asignatura.escalaMax?.let { maximo.setText(formatear(it)) }
+        // Escala: solo si la asignatura no la tiene; una vez elegida ya no se pregunta aquí
+        val pedirEscala = faltaEscala(asignatura)
+        val seccionEscala = dialog.findViewById<View>(R.id.datosEscala)
+        val selector = SelectorEscala(seccionEscala)
+        if (pedirEscala) {
+            seccionEscala.visibility = View.VISIBLE
+            dialog.findViewById<TextView>(R.id.escalaRotulo).text =
+                "Esta asignatura aún no tiene escala de notas. ¿Cómo te califican?"
         }
 
         val error = dialog.findViewById<TextView>(R.id.datosError)
         val boton = dialog.findViewById<MaterialButton>(R.id.datosGuardar)
         boton.setOnClickListener {
-            val min = if (sinRango) numero(minimo.text.toString()) else asignatura.escalaMin
-            val max = if (sinRango) numero(maximo.text.toString()) else asignatura.escalaMax
+            val escala = if (pedirEscala) selector.validar() ?: return@setOnClickListener else null
             error.visibility = View.GONE
             boton.mostrarCarga(true, "Guardar", "Guardando…")
             scope.launch {
-                val resultado = guardar(area, min, max)
+                val resultado = guardar(area, escala)
                 boton.mostrarCarga(false, "Guardar", "")
                 val mensaje = resultado.mensajeError()
                 if (mensaje == null) {
@@ -147,9 +146,8 @@ class DatosAsignaturaDialog(
         dialog.findViewById<View>(R.id.datosAhoraNo).setOnClickListener { dialog.dismiss() }
         dialog.showAsBottomSheet()
     }
-
-    private fun formatear(valor: Float) = if (valor % 1f == 0f) valor.toInt().toString() else valor.toString()
 }
+
 class EstudioDeclaradoDialog(
     private val context: Context,
     private val nombreAsignatura: String,
@@ -432,7 +430,9 @@ class RegistroEstudioDialog(
 
         val fecha = dialog.findViewById<EditText>(R.id.registroFecha)
         fecha.setText(LocalDate.now().toString())
-        fecha.setOnClickListener { fecha.showDatePicker() }
+        // Solo se aceptan los últimos días (RegistrarEstudioManualUseCase): el calendario no ofrece otros
+        val hoy = LocalDate.now()
+        fecha.setOnClickListener { fecha.showDatePicker(minima = hoy.minusDays(RegistrarEstudioManualUseCase.DIAS_ATRAS), maxima = hoy) }
 
         val metodos = CatalogoModelo.METODOS
         var metodo: String? = null

@@ -57,8 +57,15 @@ class MiViewModel @Inject constructor(
         get() = _mensajeError
 
     fun onLoginSelected(email: String,password: String){
-        if (isValidEmail(email) && isValidPassword(password)){
-            loginUser(email, password)
+        if (_viewState.value.isLoading) return
+        val correo = email.trim()
+        if (correo.isEmpty() || password.isEmpty()) {
+            // Vacíos no son "válidos": se marcan en vez de mandar una petición que Firebase rechaza
+            _viewState.value = LoginViewState(isValidEmail = correo.isNotEmpty() && isValidEmail(correo), isValidPasswords = password.isNotEmpty())
+            return
+        }
+        if (isValidEmail(correo) && isValidPassword(password)){
+            loginUser(correo, password)
         }else{
             onFieldsChanged(email,password)
         }
@@ -134,7 +141,7 @@ class MiViewModel @Inject constructor(
     }
 
     private fun isValidEmail(email: String)=
-        Patterns.EMAIL_ADDRESS.matcher(email).matches() || email.isEmpty()
+        Patterns.EMAIL_ADDRESS.matcher(email.trim()).matches() || email.isBlank()
 
     private fun isValidPassword(password: String): Boolean =
         password.length >= MIN_PASSWORD_LENGHT || password.isEmpty()

@@ -26,21 +26,7 @@
             android:layout_marginBottom="20dp"/>
 
         <com.google.android.material.textfield.TextInputLayout
-            style="@style/Edu.CampoDesplegable"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Tipo de calificación">
-
-            <AutoCompleteTextView
-                android:id="@+id/CalificacionEditText"
-                style="@style/Edu.CampoEntrada"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="16dp"
-                android:inputType="none"/>
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/AsignaturaContainer"
             style="@style/Edu.CampoDesplegable"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -55,21 +41,35 @@
                 android:inputType="none"/>
         </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/TextoCalificacion"
-            style="@style/Edu.Campo"
+        <!-- Hasta elegir la asignatura no se sabe la escala -->
+        <TextView
+            android:id="@+id/calificacionSinAsignatura"
+            style="@style/Edu.Texto.Pie"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Calificación">
+            android:layout_marginBottom="16dp"
+            android:text="Elige la asignatura: la calificación se registra con su escala de notas."/>
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/NombreEditText"
-                style="@style/Edu.CampoEntrada"
+        <!-- Solo en asignaturas antiguas que aún no tienen escala: se elige una vez -->
+        <LinearLayout
+            android:id="@+id/calificacionEscalaPendiente"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <include
+                layout="@layout/include_selector_escala"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="numberDecimal"
-                android:maxLines="1"/>
-        </com.google.android.material.textfield.TextInputLayout>
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+
+        <include
+            layout="@layout/include_entrada_calificacion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"/>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/DescripcionContainer"

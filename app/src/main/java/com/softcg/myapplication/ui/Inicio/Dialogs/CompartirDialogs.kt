@@ -2,6 +2,7 @@ package com.softcg.myapplication.ui.Inicio.Dialogs
 
 import android.app.Dialog
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.Window
@@ -13,6 +14,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RadioGroup
 import android.widget.TextView
+import android.widget.Toast
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.radiobutton.MaterialRadioButton
 import com.google.android.material.textfield.TextInputLayout
@@ -51,8 +53,16 @@ class CompartirQrDialog(
         }
 
         val lado = (248 * context.resources.displayMetrics.density).roundToInt()
+        // Un contenido demasiado largo no cabe en un QR (ZXing lanza): se avisa en vez de cerrar la app
+        val qr = runCatching { GeneradorQr.generar(CodigoQr.codificar(contenido), lado, context.getColor(R.color.degradado_inicio)) }
+            .onFailure { Log.w("CompartirQr", "No se pudo generar el QR", it) }
+            .getOrNull()
+        if (qr == null) {
+            Toast.makeText(context, "No se pudo crear el QR: el contenido es demasiado largo. Acorta la descripción.", Toast.LENGTH_LONG).show()
+            return
+        }
         dialog.findViewById<ImageView>(R.id.compartirQr).apply {
-            setImageBitmap(GeneradorQr.generar(CodigoQr.codificar(contenido), lado, context.getColor(R.color.degradado_inicio)))
+            setImageBitmap(qr)
             contentDescription = "Código QR de ${tipo.articulo} ${tipo.nombre} ${TextosCompartir.titulo(contenido)}"
         }
         dialog.findViewById<View>(R.id.compartirListo).setOnClickListener { dialog.dismiss() }

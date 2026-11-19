@@ -11,9 +11,11 @@ import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.softcg.myapplication.R
 import com.softcg.myapplication.core.ex.confirmar
+import com.softcg.myapplication.core.ex.copiarImagenEvento
 import com.softcg.myapplication.core.ex.mostrarAviso
 import com.softcg.myapplication.core.ex.mostrarMensaje
 import com.softcg.myapplication.core.ex.pintarEtiqueta
@@ -25,6 +27,7 @@ import com.softcg.myapplication.ui.Inicio.Dialogs.CompartirQrDialog
 import com.softcg.myapplication.ui.Inicio.Dialogs.EventoDialog
 import com.softcg.myapplication.ui.Inicio.Fragments.Calificaciones.Models.Calificacion
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 
 /**
@@ -41,7 +44,13 @@ class DetalleFragment : Fragment() {
 
     private var eventoDialog: EventoDialog? = null
     private val seleccionarImagen = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
-        uri?.let { eventoDialog?.mostrarImagen(it) }
+        // Se guarda una copia reducida: la Uri del selector deja de valer al cerrar la app
+        uri ?: return@registerForActivityResult
+        viewLifecycleOwner.lifecycleScope.launch {
+            val copia = requireContext().copiarImagenEvento(uri)
+            if (copia != null) eventoDialog?.mostrarImagen(copia, "Imagen seleccionada")
+            else view?.mostrarAviso("No se pudo abrir esa imagen. Prueba con otra.", esError = true)
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -116,13 +125,20 @@ class DetalleFragment : Fragment() {
                     onGuardar = { viewModel.actualizarEvento(it) }
                 ).also { it.show() }
             }
-            is ElementoDetalle.DeAsignatura -> AsignaturaDialog(
-                context = requireContext(),
-                asignatura = actual.asignatura,
-                onGuardar = { datos: NuevaAsignatura -> viewModel.actualizarAsignatura(datos) }
-            ).show()
+            is ElementoDetalle.DeAsignatura -> viewLifecycleOwner.lifecycleScope.launch {
+                // Con notas registradas la escala se muestra fija
+                val bloqueada = viewModel.escalaBloqueada(actual.asignatura)
+                AsignaturaDialog(
+                    context = requireContext(),
+                    asignatura = actual.asignatura,
+                    escalaBloqueada = bloqueada,
+                    otrosNombres = viewModel.asignaturasCompletas().filter { it.id != actual.asignatura.id }.map { it.nombre },
+                    onGuardar = { datos: NuevaAsignatura -> viewModel.actualizarAsignatura(datos) }
+                ).show()
+            }
             is ElementoDetalle.DeNota -> CalificacionDialog(
-                requireContext(), viewModel.nombresAsignaturas(), actual.calificacion
+                requireContext(), viewModel.asignaturasCompletas(), actual.calificacion,
+                onEscalaNueva = { asignaturaId, escala -> viewModel.guardarEscala(asignaturaId, escala) }
             ) { tipoNota, valor, asignatura, descripcion ->
                 viewModel.actualizarCalificacion(
                     Calificacion(null, tipoNota, valor, asignatura, descripcion, tareaId = actual.calificacion.tareaId)

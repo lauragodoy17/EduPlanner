@@ -30,4 +30,11 @@ class CreateAccountUseCaseTest {
         //THEN
         coVerify { authenticationService.createAccount(userRegister.email,userRegister.password) }
     }
+
+    @Test
+    fun `el correo se envia sin los espacios que deja el teclado`() = runBlocking {
+        createAccountUseCase(UserRegister(" prueba@prueba.co ", "111111", "111111"))
+
+        coVerify { authenticationService.createAccount("prueba@prueba.co", "111111") }
+    }
 }

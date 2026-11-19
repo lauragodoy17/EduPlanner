@@ -11,6 +11,9 @@ import com.softcg.myapplication.data.Repositories.EventosRepository
 import com.softcg.myapplication.domain.EditarAsignaturaUseCase
 import com.softcg.myapplication.domain.NuevaAsignatura
 import com.softcg.myapplication.domain.ResultadoEdicion
+import com.softcg.myapplication.domain.calificaciones.EscalaBloqueadaUseCase
+import com.softcg.myapplication.domain.calificaciones.EscalaCalificacion
+import com.softcg.myapplication.domain.calificaciones.GuardarEscalaAsignaturaUseCase
 import com.softcg.myapplication.ui.Inicio.Fragments.Asignaturas.Models.Asignatura
 import com.softcg.myapplication.ui.Inicio.Fragments.Calificaciones.Models.Calificacion
 import com.softcg.myapplication.ui.Inicio.Models.Evento
@@ -33,7 +36,9 @@ class DetalleViewModel @Inject constructor(
     private val eventos: EventosRepository,
     private val asignaturas: AsignaturasRepository,
     private val calificaciones: CalificacionesRespository,
-    private val editarAsignatura: EditarAsignaturaUseCase
+    private val editarAsignatura: EditarAsignaturaUseCase,
+    private val escalaBloqueada: EscalaBloqueadaUseCase,
+    private val guardarEscalaAsignatura: GuardarEscalaAsignaturaUseCase
 ) : ViewModel() {
 
     private val _elemento = MutableLiveData<ElementoDetalle>()
@@ -70,7 +75,15 @@ class DetalleViewModel @Inject constructor(
         }
     }
 
-    fun nombresAsignaturas(): List<String> = asignaturas.getAllAsignaturas().map { it.nombre }
+    fun asignaturasCompletas(): List<Asignatura> = asignaturas.getAllAsignaturas()
+
+    /** Con notas registradas, la escala de la asignatura ya no se puede cambiar. */
+    suspend fun escalaBloqueada(asignatura: Asignatura): Boolean = escalaBloqueada.invoke(asignatura)
+
+    /** Escala elegida al editar una nota de una asignatura antigua que no la tenía. */
+    fun guardarEscala(asignaturaId: Int, escala: EscalaCalificacion) {
+        viewModelScope.launch { guardarEscalaAsignatura(asignaturaId, escala) }
+    }
 
     fun actualizarEvento(evento: Evento) {
         viewModelScope.launch {
@@ -88,6 +101,7 @@ class DetalleViewModel @Inject constructor(
                     ResultadoEdicion.NombreVacio -> "Escribe el nombre de la asignatura"
                     ResultadoEdicion.NombreRepetido -> "Ya tienes otra asignatura con ese nombre"
                     ResultadoEdicion.NoExiste -> "No se pudo guardar: la asignatura ya no existe"
+                    ResultadoEdicion.EscalaBloqueada -> "La escala no se puede cambiar: la asignatura ya tiene calificaciones"
                 }
             )
             recargar()

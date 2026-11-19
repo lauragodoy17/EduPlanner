@@ -4,6 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.softcg.myapplication.data.Repositories.PercepcionesRepository
+import com.softcg.myapplication.domain.calificaciones.EscalaCalificacion
+import com.softcg.myapplication.domain.calificaciones.GuardarEscalaAsignaturaUseCase
+import com.softcg.myapplication.domain.calificaciones.ResultadoEscala
 import com.softcg.myapplication.domain.getAsignaturasUseCase
 import com.softcg.myapplication.domain.prediccion.Extraccion
 import com.softcg.myapplication.domain.prediccion.ExtraerDatosPrediccionUseCase
@@ -34,7 +37,8 @@ class DatosEstudioViewModel @Inject constructor(
     private val guardarPercepciones: GuardarPercepcionesUseCase,
     private val registrarEstudio: RegistrarEstudioManualUseCase,
     private val percepciones: PercepcionesRepository,
-    private val getAsignaturas: getAsignaturasUseCase
+    private val getAsignaturas: getAsignaturasUseCase,
+    private val guardarEscalaAsignatura: GuardarEscalaAsignaturaUseCase
 ) : ViewModel() {
 
     private val _cambios = MutableLiveData(0)
@@ -67,6 +71,21 @@ class DatosEstudioViewModel @Inject constructor(
     /** Área y escala de notas. */
     suspend fun guardarAsignatura(asignaturaId: Int, area: String?, escalaMin: Float?, escalaMax: Float?) =
         avisarCambio(guardarDatosAsignatura(asignaturaId, area, escalaMin, escalaMax, null, null))
+
+    /** Área y, si la asignatura aún no tenía, escala de notas (con notas registradas ya no cambia). */
+    suspend fun guardarAreaYEscala(asignaturaId: Int, area: String?, escala: EscalaCalificacion?): ResultadoGuardarDatos {
+        if (escala != null) {
+            when (guardarEscalaAsignatura(asignaturaId, escala)) {
+                ResultadoEscala.Guardada -> Unit
+                ResultadoEscala.Bloqueada ->
+                    return ResultadoGuardarDatos.Invalido("La escala no se puede cambiar: la asignatura ya tiene calificaciones")
+                ResultadoEscala.NoExiste -> return ResultadoGuardarDatos.Invalido("La asignatura ya no existe")
+            }
+        }
+        val asignatura = asignaturas().firstOrNull { it.id == asignaturaId }
+            ?: return ResultadoGuardarDatos.Invalido("La asignatura ya no existe")
+        return guardarAsignatura(asignaturaId, area, asignatura.escalaMin, asignatura.escalaMax)
+    }
 
     /** Solo el área: conserva la escala de notas que ya tuviera la asignatura. */
     suspend fun guardarArea(asignaturaId: Int, area: String): ResultadoGuardarDatos {

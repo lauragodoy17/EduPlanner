@@ -10,6 +10,10 @@ import com.softcg.myapplication.data.Repositories.TareasRepository
 import com.softcg.myapplication.domain.EditarTareaUseCase
 import com.softcg.myapplication.domain.ResultadoEdicion
 import com.softcg.myapplication.data.network.RespuestaApi
+import com.softcg.myapplication.domain.ia.ContextoPrediccion
+import com.softcg.myapplication.domain.ia.RecomendacionTarea
+import com.softcg.myapplication.domain.ia.RecomendarTareaUseCase
+import com.softcg.myapplication.domain.ia.ResultadoRecomendacion
 import com.softcg.myapplication.domain.prediccion.DatosPrediccion
 import com.softcg.myapplication.domain.prediccion.Extraccion
 import com.softcg.myapplication.domain.prediccion.ExtraerDatosPrediccionUseCase
@@ -23,6 +27,8 @@ import javax.inject.Inject
 /**
  * Predicción de una tarea con los datos reales del estudiante: primero se extraen y validan;
  * solo si están todos se construye la petición. Nunca se envían datos inventados o de prueba.
+ * El resultado del modelo se pasa a la IA (Gemini), que redacta el plan de estudio: consejo, pasos,
+ * tiempo estimado y fuentes comprobadas, sin poder cambiar que eligió el modelo.
  */
 @HiltViewModel
 class PrediccionViewModel @Inject constructor(
@@ -30,7 +36,8 @@ class PrediccionViewModel @Inject constructor(
     private val extraer: ExtraerDatosPrediccionUseCase,
     private val predecir: PredecirTareaUseCase,
     private val asignaturas: AsignaturasRepository,
-    private val editarTarea: EditarTareaUseCase
+    private val editarTarea: EditarTareaUseCase,
+    private val recomendar: RecomendarTareaUseCase
 ) : ViewModel() {
 
     val topN: Int = PredecirTareaUseCase.TOP_N
@@ -47,6 +54,13 @@ class PrediccionViewModel @Inject constructor(
     private val _estado = MutableLiveData<EstadoPrediccion?>()
     val estado: LiveData<EstadoPrediccion?>
         get() = _estado
+
+    private val _recomendacion = MutableLiveData<EstadoRecomendacion?>()
+    val recomendacion: LiveData<EstadoRecomendacion?>
+        get() = _recomendacion
+
+    /** Contexto de la última predicción (con su resultado o por qué no lo hubo): lo que recibe la IA. */
+    private var contexto: ContextoPrediccion? = null
 
     /** Aviso breve tras editar. */
     private val _mensaje = MutableLiveData<Event<String>>()
@@ -77,9 +91,10 @@ class PrediccionViewModel @Inject constructor(
                 is Extraccion.Lista -> EstadoDatos.Listos(extraccion.resultado)
             }
             _datos.value = nuevo
-            // La primera vez que los datos están completos se predice sin pedir nada más
-            if (nuevo is EstadoDatos.Listos && datosEnviados == null && _estado.value == null) {
-                nuevo.resultado.datos?.let { enviar(it) }
+            // Nunca se genera nada al abrir (gastaría créditos de la IA sin querer): solo se muestra la recomendación
+            // que el estudiante ya pidió para esta tarea, si sigue en memoria
+            if (_recomendacion.value == null) {
+                tarea?.let(recomendar::enCache)?.let { _recomendacion.value = EstadoRecomendacion.Lista(it) }
             }
         }
     }
@@ -108,23 +123,68 @@ class PrediccionViewModel @Inject constructor(
         }
     }
 
-    /** Envía los datos ya validados; no hace nada si faltan o si son los mismos que la última vez. */
+    /**
+     * Botón "Generar recomendaciones": es lo único que llama a la API y a la IA. Con datos nuevos, o si la predicción
+     * anterior falló, vuelve a predecir (y a recomendar). Con los mismos datos y una predicción buena no repite la API:
+     * pide a la IA otro plan (o reintenta si falló). Si ya hay un plan a la vista, siempre se pide uno distinto.
+     */
     fun predecirDeNuevo() {
         val listos = (_datos.value as? EstadoDatos.Listos)?.resultado?.datos ?: return
-        if (listos == datosEnviados && _estado.value !is EstadoPrediccion.Error) return
-        enviar(listos)
+        if (ocupado()) return
+        val anterior = _estado.value
+        val prediccionBuena = anterior is EstadoPrediccion.Respuesta && anterior.exitosa
+        val previo = contexto
+        if (listos == datosEnviados && prediccionBuena && previo != null) {
+            recomendarCon(previo, nueva = _recomendacion.value is EstadoRecomendacion.Lista)
+        } else {
+            enviar(listos)
+        }
     }
 
+    private fun ocupado() =
+        _estado.value == EstadoPrediccion.Cargando || _recomendacion.value == EstadoRecomendacion.Generando
+
     private fun enviar(datos: DatosPrediccion) {
-        if (_estado.value == EstadoPrediccion.Cargando) return
+        if (ocupado()) return
         datosEnviados = datos
+        val hayPlanAnterior = _recomendacion.value is EstadoRecomendacion.Lista
         _estado.value = EstadoPrediccion.Cargando
+        _recomendacion.value = EstadoRecomendacion.Generando
         viewModelScope.launch {
-            _estado.value = when (val respuesta = predecir(datos, topN)) {
+            val respuesta = predecir(datos, topN)
+            _estado.value = when (respuesta) {
                 is RespuestaApi.Http -> EstadoPrediccion.Respuesta(respuesta.codigo, respuesta.cuerpo, respuesta.exitosa)
                 RespuestaApi.SinSesion -> EstadoPrediccion.Error("No hay una sesión de Firebase iniciada")
                 is RespuestaApi.ErrorRed -> EstadoPrediccion.Error("No se pudo conectar con la API: ${respuesta.mensaje}")
             }
+            // Sin sesión tampoco hay IA (Firebase AI Logic la necesita); en los demás casos la IA recomienda igual,
+            // aclarando que el modelo no respondió
+            if (respuesta == RespuestaApi.SinSesion) {
+                _recomendacion.value = null
+                return@launch
+            }
+            val nuevo = recomendar.contextoDeRespuesta(datos, respuesta)
+            contexto = nuevo
+            generarRecomendacion(nuevo, nueva = hayPlanAnterior)
+        }
+    }
+
+    private fun recomendarCon(contexto: ContextoPrediccion, nueva: Boolean) {
+        _recomendacion.value = EstadoRecomendacion.Generando
+        viewModelScope.launch { generarRecomendacion(contexto, nueva) }
+    }
+
+    private suspend fun generarRecomendacion(contexto: ContextoPrediccion, nueva: Boolean) {
+        val tarea = _tarea.value ?: run {
+            _recomendacion.value = null
+            return
+        }
+        _recomendacion.value = when (val resultado = recomendar.conContexto(tarea, contexto, nueva)) {
+            is ResultadoRecomendacion.Exito -> EstadoRecomendacion.Lista(resultado.recomendacion)
+            ResultadoRecomendacion.SinConexion ->
+                EstadoRecomendacion.Error("No se pudo conectar con la IA. Revisa tu conexión a internet e inténtalo de nuevo.")
+            ResultadoRecomendacion.Error ->
+                EstadoRecomendacion.Error("No se pudieron generar las recomendaciones. Inténtalo de nuevo en unos minutos.")
         }
     }
 }
@@ -140,4 +200,10 @@ sealed class EstadoPrediccion {
     object Cargando : EstadoPrediccion()
     data class Respuesta(val codigo: Int, val cuerpo: String, val exitosa: Boolean) : EstadoPrediccion()
     data class Error(val mensaje: String) : EstadoPrediccion()
+}
+
+sealed class EstadoRecomendacion {
+    object Generando : EstadoRecomendacion()
+    data class Lista(val recomendacion: RecomendacionTarea) : EstadoRecomendacion()
+    data class Error(val mensaje: String) : EstadoRecomendacion()
 }
