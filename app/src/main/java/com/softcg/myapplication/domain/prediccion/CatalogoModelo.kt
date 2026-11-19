@@ -43,7 +43,6 @@ object CatalogoModelo {
     /** Rangos de los datos de entrenamiento: fuera de ellos el modelo extrapola y la predicción es menos fiable. */
     val RANGO_ASISTENCIA = 0.08..9.09
     val RANGO_INTENSIDAD = 1.0..6.0
-    val RANGO_ESCALA_10 = 0.0..10.0
 
     fun temasDe(area: String?): List<String> = TEMAS_POR_AREA[area].orEmpty()
 
@@ -55,19 +54,35 @@ object CatalogoModelo {
     fun etiqueta(valor: String): String = ETIQUETAS[valor] ?: valor
 
     /**
-     * Sugerencia de área a partir del nombre que el estudiante le dio a la asignatura ("Cálculo II" → Matematicas).
-     * Solo es una sugerencia: el área se guarda cuando el estudiante la confirma.
+     * Área del modelo a partir del nombre que el estudiante le dio a la asignatura. Solo [DeteccionArea.Unica] se
+     * asigna sin preguntar ("Cálculo II" → Matematicas); si el nombre encaja con varias áreas ("Historia del arte")
+     * o con ninguna, se le pregunta al estudiante.
      */
-    fun sugerirArea(nombreAsignatura: String): String? {
+    fun detectarArea(nombreAsignatura: String): DeteccionArea {
         val nombre = normalizar(nombreAsignatura)
-        if (nombre.isBlank()) return null
-        AREAS.firstOrNull { normalizar(it) == nombre }?.let { return it }
+        if (nombre.isBlank()) return DeteccionArea.Ninguna
+        AREAS.firstOrNull { normalizar(it) == nombre }?.let { return DeteccionArea.Unica(it) }
         // Por inicio de palabra, para que "arte" no coincida dentro de "departamento"
         val palabrasNombre = nombre.split(Regex("[^a-z0-9]+")).filter { it.isNotEmpty() }
         fun coincide(clave: String) =
             if (' ' in clave) nombre.contains(clave) else palabrasNombre.any { it.startsWith(clave) }
-        return PALABRAS_POR_AREA.entries.firstOrNull { (_, claves) -> claves.any(::coincide) }?.key
+        val candidatas = PALABRAS_POR_AREA.filterValues { claves -> claves.any(::coincide) }.keys.toList()
+        return when (candidatas.size) {
+            0 -> DeteccionArea.Ninguna
+            1 -> DeteccionArea.Unica(candidatas.single())
+            else -> DeteccionArea.Ambigua(candidatas)
+        }
     }
+
+    /** El área detectada o, si es ambigua, la más probable (las candidatas van en orden de prioridad). */
+    fun sugerirArea(nombreAsignatura: String): String? = when (val deteccion = detectarArea(nombreAsignatura)) {
+        is DeteccionArea.Unica -> deteccion.area
+        is DeteccionArea.Ambigua -> deteccion.candidatas.first()
+        DeteccionArea.Ninguna -> null
+    }
+
+    /** Solo el área que se puede asignar sin preguntar. */
+    fun areaDetectada(nombreAsignatura: String): String? = (detectarArea(nombreAsignatura) as? DeteccionArea.Unica)?.area
 
     /**
      * El tema del catálogo de [area] que menciona un texto (el título de una tarea): "Taller de integrales" → Integrales.
@@ -93,13 +108,13 @@ object CatalogoModelo {
     fun normalizar(texto: String): String =
         Normalizer.normalize(texto.trim().lowercase(), Normalizer.Form.NFD).replace(Regex("\\p{M}+"), "")
 
-    // El orden importa: "fisicoquimica" o "quimica organica" deben ir a Quimica antes que a Fisica
+    // El orden importa para la sugerencia de un nombre ambiguo: "termodinamica quimica" sugiere Quimica antes que Fisica
     private val PALABRAS_POR_AREA: Map<String, List<String>> = linkedMapOf(
         "Quimica" to listOf("quimic", "fisicoquimic", "bioquimic", "estequiometr"),
         "Biologia" to listOf("biolog", "anatom", "genetic", "microbio", "ecolog", "botanic", "zoolog", "ciencias naturales"),
-        "Fisica" to listOf("fisica", "mecanica", "electromagnet", "optica", "termodinamica"),
+        "Fisica" to listOf("fisica", "mecanica", "electromagnet", "electricidad", "optica", "termodinamica"),
         "Programacion" to listOf("program", "algoritm", "software", "base de datos", "bases de datos", "desarrollo web", "inteligencia artificial", "computacion", "informatica", "sistemas"),
-        "Matematicas" to listOf("matemat", "calculo", "algebra", "estadistic", "probabilidad", "trigonometr", "geometr", "aritmet", "precalculo"),
+        "Matematicas" to listOf("matemat", "calculo", "precalculo", "algebra", "estadistic", "probabilidad", "trigonometr", "geometr", "aritmet", "ecuacion"),
         "Geografia" to listOf("geograf", "cartograf", "climatolog", "geopolitic"),
         "Historia" to listOf("histori"),
         "Ingles" to listOf("ingles", "english"),
@@ -126,4 +141,11 @@ object CatalogoModelo {
         "Termodinamica quimica" to "Termodinámica química", "Ejercicios practicos" to "Ejercicios prácticos",
         "Metodo Feynman" to "Método Feynman", "Sin metodo definido" to "No uso un método definido"
     )
+}
+
+/** Resultado de relacionar el nombre de una asignatura con un área del modelo. */
+sealed class DeteccionArea {
+    data class Unica(val area: String) : DeteccionArea()
+    data class Ambigua(val candidatas: List<String>) : DeteccionArea()
+    object Ninguna : DeteccionArea()
 }

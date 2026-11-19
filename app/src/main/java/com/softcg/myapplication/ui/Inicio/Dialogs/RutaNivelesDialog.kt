@@ -38,7 +38,7 @@ class RutaNivelesDialog(
             fila.findViewById<TextView>(R.id.nivelNumero).apply {
                 text = nivel.numero.toString()
                 backgroundTintList = ColorStateList.valueOf(
-                    context.getColor(if (alcanzado) R.color.purple_accent else R.color.logro_bloqueado)
+                    context.getColor(if (alcanzado) R.color.acento else R.color.logro_bloqueado)
                 )
             }
             fila.findViewById<TextView>(R.id.nivelNombre).text = nivel.nombre + if (actual) " · Estás aquí" else ""

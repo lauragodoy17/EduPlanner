@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -13,9 +14,9 @@
         android:layout_gravity="center_horizontal"
         android:padding="14dp"
         android:background="@drawable/circle_shape"
-        android:backgroundTint="@color/estado_error_suave"
+        android:backgroundTint="?attr/eduEstadoErrorSuave"
         android:src="@drawable/baseline_question_mark_24"
-        android:tint="@color/estado_error"
+        app:tint="?attr/eduEstadoError"
         android:layout_marginBottom="12dp"
         android:importantForAccessibility="no"/>
 

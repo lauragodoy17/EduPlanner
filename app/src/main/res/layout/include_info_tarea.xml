@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Información de una tarea (título, descripción, asignatura, fecha, calificación y prioridad).
+     La usan la hoja "Ver más" y la pantalla de la tarea; la pinta pintarInfoTarea() -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tareaTitulo"
+        style="@style/Edu.Texto.TituloHoja"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        tools:text="Ensayo de historia"/>
+
+    <TextView
+        android:id="@+id/labelDescripcion"
+        style="@style/Edu.Texto.Rotulo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="2dp"
+        android:text="Descripción"/>
+
+    <TextView
+        android:id="@+id/tareaDescripcion"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="14dp"
+        android:textColor="?attr/eduTextPrimary"
+        android:textSize="15sp"
+        tools:text="Escribir 3 páginas sobre la independencia"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/time_row_bg"
+        android:orientation="vertical"
+        android:padding="12dp">
+
+        <TextView
+            style="@style/Edu.Texto.Rotulo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="2dp"
+            android:text="Asignatura"/>
+
+        <TextView
+            android:id="@+id/tareaAsignatura"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:textColor="?attr/eduTextPrimary"
+            android:textSize="15sp"
+            tools:text="Historia"/>
+
+        <TextView
+            style="@style/Edu.Texto.Rotulo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="2dp"
+            android:text="Fecha de entrega"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:layout_marginEnd="8dp"
+                android:importantForAccessibility="no"
+                android:src="@drawable/baseline_calendar_month_24"
+                app:tint="?attr/eduAcento"/>
+
+            <TextView
+                android:id="@+id/tareaFecha"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="?attr/eduTextPrimary"
+                android:textSize="15sp"
+                tools:text="20/11/2026 · faltan 8 días"/>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/labelCalificacion"
+            style="@style/Edu.Texto.Rotulo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="2dp"
+            android:text="Calificación"
+            android:visibility="gone"/>
+
+        <TextView
+            android:id="@+id/tareaCalificacion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:textColor="?attr/eduTextPrimary"
+            android:textSize="15sp"
+            android:visibility="gone"
+            tools:text="9.5"/>
+
+        <TextView
+            android:id="@+id/labelPrioridad"
+            style="@style/Edu.Texto.Rotulo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="2dp"
+            android:text="Prioridad"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <View
+                android:id="@+id/prioridadIndicador"
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:layout_marginStart="4dp"
+                android:layout_marginEnd="12dp"
+                android:background="@drawable/circle_shape"/>
+
+            <TextView
+                android:id="@+id/prioridadTexto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="?attr/eduTextPrimary"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                tools:text="Alta"/>
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

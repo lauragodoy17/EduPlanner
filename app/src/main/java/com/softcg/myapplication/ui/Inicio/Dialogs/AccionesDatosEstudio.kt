@@ -2,8 +2,6 @@ package com.softcg.myapplication.ui.Inicio.Dialogs
 
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
-import com.softcg.myapplication.R
 import com.softcg.myapplication.core.ex.mostrarAviso
 import com.softcg.myapplication.domain.prediccion.AccionDato
 import com.softcg.myapplication.domain.prediccion.CatalogoModelo
@@ -35,28 +33,55 @@ class AccionesDatosEstudio(
     fun ejecutar(estado: EstadoDato, resultado: ResultadoExtraccion) {
         val asignaturaId = resultado.asignatura.id ?: return
         when (estado.accion) {
-            AccionDato.DATOS_ASIGNATURA -> abrirDatosAsignatura(asignaturaId)
-            AccionDato.DIFICULTAD -> preguntarDificultadAsignatura(asignaturaId, resultado.asignatura.nombre, resultado.tarea?.tema)
-            AccionDato.ENFOQUE -> fragment.findNavController().navigate(R.id.id_focus_fragment)
-            AccionDato.REGISTRAR_ESTUDIO -> registrarEstudio(asignaturaId)
-            AccionDato.CALIFICACIONES -> fragment.findNavController().navigate(R.id.id_ratings_fragment)
+            AccionDato.AREA -> elegirArea(asignaturaId, resultado.asignatura.nombre)
+            AccionDato.ESCALA -> abrirDatosAsignatura(asignaturaId, soloSiFalta = false)
+            AccionDato.ESTUDIO -> declararEstudio(asignaturaId, resultado.asignatura.nombre)
+            AccionDato.PERCEPCION -> declararInteresYDificultad(asignaturaId, resultado.asignatura.nombre, resultado.tarea?.tema)
             null -> Unit
         }
     }
 
-    fun abrirDatosAsignatura(asignaturaId: Int, onGuardado: () -> Unit = {}) {
+    /**
+     * Área y escala de notas. Con [soloSiFalta] (al crear la asignatura) no se abre si el área ya se detectó
+     * por el nombre y el tipo de calificación indica la escala: no hay nada que preguntar.
+     */
+    fun abrirDatosAsignatura(asignaturaId: Int, soloSiFalta: Boolean = true, onGuardado: () -> Unit = {}) {
         scope.launch {
             val asignatura = datos.asignaturas().firstOrNull { it.id == asignaturaId } ?: return@launch
-            val (interes, metodo) = datos.respuestasActuales(asignaturaId)
+            if (soloSiFalta && !DatosAsignaturaDialog.hayQuePreguntar(asignatura)) return@launch
             DatosAsignaturaDialog(
-                context, asignatura, interes, metodo, scope,
-                guardar = { area, min, max, valorInteres, valorMetodo ->
-                    datos.guardarAsignatura(asignaturaId, area, min, max, valorInteres, valorMetodo)
-                },
+                context, asignatura, scope,
+                guardar = { area, min, max -> datos.guardarAsignatura(asignaturaId, area, min, max) },
                 onGuardado = {
                     fragment.view?.mostrarAviso("Datos guardados")
                     onGuardado()
                 }
+            ).show()
+        }
+    }
+
+    private fun elegirArea(asignaturaId: Int, nombre: String) {
+        AreaAsignaturaDialog(context, nombre, onGuardar = { area ->
+            scope.launch { avisar(datos.guardarArea(asignaturaId, area), "Área guardada: ${CatalogoModelo.etiqueta(area)}") }
+        }).show()
+    }
+
+    private fun declararEstudio(asignaturaId: Int, nombre: String) {
+        scope.launch {
+            EstudioDeclaradoDialog(
+                context, nombre, datos.respuestasActuales(asignaturaId), scope,
+                guardar = { horas, metodo -> datos.guardarEstudio(asignaturaId, horas, metodo) },
+                onGuardado = { fragment.view?.mostrarAviso("Datos guardados") }
+            ).show()
+        }
+    }
+
+    private fun declararInteresYDificultad(asignaturaId: Int, nombre: String, tema: String?) {
+        scope.launch {
+            InteresDificultadDialog(
+                context, nombre, tema, datos.respuestasActuales(asignaturaId), scope,
+                guardar = { interes, dificultad -> datos.guardarInteresYDificultad(asignaturaId, tema, interes, dificultad) },
+                onGuardado = { fragment.view?.mostrarAviso("Respuestas guardadas") }
             ).show()
         }
     }
@@ -78,15 +103,6 @@ class AccionesDatosEstudio(
                 onGuardar = { valor -> scope.launch { avisar(datos.dificultadDeTarea(tarea, valor), "Respuesta guardada") } }
             ).show()
         }
-    }
-
-    private fun preguntarDificultadAsignatura(asignaturaId: Int, nombre: String, tema: String?) {
-        DificultadDialog(
-            context,
-            if (tema != null) "¿Qué tan difícil te parece este tema?" else "¿Qué tan difícil te parece la asignatura?",
-            listOfNotNull(tema?.let(CatalogoModelo::etiqueta), nombre).joinToString(" · "),
-            onGuardar = { valor -> scope.launch { avisar(datos.dificultadDeAsignatura(asignaturaId, tema, valor), "Respuesta guardada") } }
-        ).show()
     }
 
     fun registrarEstudio(asignaturaId: Int? = null) {

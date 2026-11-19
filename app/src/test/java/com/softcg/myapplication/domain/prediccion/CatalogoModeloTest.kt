@@ -35,6 +35,34 @@ class CatalogoModeloTest {
     }
 
     @Test
+    fun `un nombre que solo encaja con un area se detecta sin preguntar`() {
+        assertEquals(DeteccionArea.Unica("Matematicas"), CatalogoModelo.detectarArea("Cálculo II"))
+        assertEquals(DeteccionArea.Unica("Matematicas"), CatalogoModelo.detectarArea("Ecuaciones diferenciales"))
+        assertEquals(DeteccionArea.Unica("Fisica"), CatalogoModelo.detectarArea("FÍSICA mecánica"))
+        assertEquals(DeteccionArea.Unica("Fisica"), CatalogoModelo.detectarArea("Electricidad y magnetismo"))
+        assertEquals(DeteccionArea.Unica("Quimica"), CatalogoModelo.detectarArea("Fisicoquímica"))
+        assertEquals(DeteccionArea.Unica("Arte"), CatalogoModelo.detectarArea("arte"))
+        assertEquals("Programacion", CatalogoModelo.areaDetectada("Bases de datos"))
+    }
+
+    @Test
+    fun `un nombre que encaja con varias areas es ambiguo y se pregunta`() {
+        assertEquals(DeteccionArea.Ambigua(listOf("Historia", "Arte")), CatalogoModelo.detectarArea("Historia del arte"))
+        assertEquals(DeteccionArea.Ambigua(listOf("Quimica", "Fisica")), CatalogoModelo.detectarArea("Termodinámica química"))
+        assertNull(CatalogoModelo.areaDetectada("Historia del arte"))
+        // La sugerencia sigue ofreciendo la más probable
+        assertEquals("Historia", CatalogoModelo.sugerirArea("Historia del arte"))
+    }
+
+    @Test
+    fun `un nombre sin relacion con ningun area no se detecta`() {
+        assertEquals(DeteccionArea.Ninguna, CatalogoModelo.detectarArea("Ética"))
+        assertEquals(DeteccionArea.Ninguna, CatalogoModelo.detectarArea("Departamento de deportes"))
+        assertEquals(DeteccionArea.Ninguna, CatalogoModelo.detectarArea("   "))
+        assertNull(CatalogoModelo.areaDetectada("Ética"))
+    }
+
+    @Test
     fun `sin coincidencia clara no sugiere nada`() {
         assertNull(CatalogoModelo.sugerirArea("Ética"))
         assertNull(CatalogoModelo.sugerirArea("Departamento de deportes"))
@@ -65,7 +93,7 @@ class CatalogoModeloTest {
         assertFalse(CatalogoModelo.esTema(null, "Integrales"))
         assertFalse(CatalogoModelo.esArea("Matemáticas"))
         assertTrue(CatalogoModelo.esMetodo("Metodo Feynman"))
-        assertEquals("Métodos Feynman", CatalogoModelo.etiqueta("Metodo Feynman"))
+        assertEquals("Método Feynman", CatalogoModelo.etiqueta("Metodo Feynman"))
         assertEquals("Álgebra lineal", CatalogoModelo.etiqueta("Algebra lineal"))
     }
 }

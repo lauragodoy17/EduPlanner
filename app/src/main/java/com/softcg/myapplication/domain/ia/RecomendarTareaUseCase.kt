@@ -20,7 +20,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.math.roundToInt
 
-/** Modelo de lenguaje que responde con el JSON del esquema de [GeminiRecomendaciones]. Se sustituye en los tests. */
+/** Modelo de lenguaje que responde con el JSON del esquema de [com.softcg.myapplication.data.network.GeminiRecomendaciones]. Se sustituye en los tests. */
 interface GeneradorRecomendaciones {
     suspend fun generar(prompt: String): String
 }
@@ -70,7 +70,7 @@ sealed class ResultadoRecomendacion {
  *    tarea (su título). La respuesta se rechaza si cambia el método o no cita la confianza.
  * 3. La bibliografía que propone Gemini se comprueba una a una; lo que no existe no se muestra.
  * Si no hay datos suficientes para predecir, Gemini elige uno de los métodos del modelo y lo dice abiertamente.
- * Las respuestas se guardan en memoria mientras la tarea no cambie; "Generar otras" pasa [nueva] = true.
+ * Las respuestas se guardan en memoria mientras la tarea no cambie; "Generar otras" pasa `nueva = true`.
  */
 @Singleton
 class RecomendarTareaUseCase @Inject constructor(
@@ -143,7 +143,7 @@ class RecomendarTareaUseCase @Inject constructor(
             Extraccion.SinSesion -> return ContextoPrediccion.SinPrediccion(MotivoSinPrediccion.FALTAN_DATOS, emptyList())
         }
         val datos = resultado.datos ?: return ContextoPrediccion.SinPrediccion(
-            MotivoSinPrediccion.FALTAN_DATOS, resultado.estados.filterNot { it.listo }.map { it.parametro.titulo }
+            MotivoSinPrediccion.FALTAN_DATOS, resultado.estados.filterNot { it.listo }.map { it.item.titulo }
         )
         val prediccion = when (val respuesta = predecir(datos)) {
             is RespuestaApi.Http -> if (respuesta.exitosa) ResultadoPrediccion.desdeJson(respuesta.cuerpo) else {
@@ -303,9 +303,10 @@ class RecomendarTareaUseCase @Inject constructor(
         }
     }
 
-    private fun resumenDatos(datos: DatosPrediccion): List<String> = listOf(
+    private fun resumenDatos(datos: DatosPrediccion): List<String> = listOfNotNull(
         "Promedio de notas: ${decimal(datos.gradeAvg)} / 10",
-        "Asistencia a clase: ${(datos.attendanceAvg * 10).roundToInt()} %",
+        // La asistencia supuesta no es un dato del estudiante: Gemini no debe comentarla
+        if (datos.asistenciaSupuesta) null else "Asistencia a clase: ${(datos.attendanceAvg * 10).roundToInt()} %",
         "Tiempo de estudio: ${decimal(datos.intensityHours)} horas por semana",
         "Interés en la asignatura: ${decimal(datos.interestLevel)} / 10",
         "Dificultad percibida: ${decimal(datos.difficultyPerception)} / 10",

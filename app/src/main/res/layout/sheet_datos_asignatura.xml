@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Datos de una asignatura que alimentan las predicciones: área, escala de notas, interés y método -->
+<!-- Datos de una asignatura que alimentan las predicciones: área y escala de notas (solo lo que falta) -->
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -32,7 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="18dp"
             android:gravity="center"
-            android:text="Con estos datos EduPlanner puede predecir cómo vas en cada tema y qué método te conviene. Todo es opcional."/>
+            android:text="Con estos datos EduPlanner puede predecir cómo vas en cada tema y qué método te conviene."/>
 
         <TextView
             style="@style/Edu.Texto.Rotulo"
@@ -93,7 +92,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+            android:baselineAligned="false">
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/datosEscalaMinCaja"
@@ -134,55 +134,11 @@
         </LinearLayout>
 
         <TextView
-            style="@style/Edu.Texto.Rotulo"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="2dp"
-            android:text="¿Cuánto te interesa esta asignatura?"/>
-
-        <TextView
-            android:id="@+id/datosInteresDetalle"
-            style="@style/Edu.Texto.Pie"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="4dp"
-            android:text="Puedes cambiar la respuesta cuando cambie tu interés."/>
-
-        <com.google.android.material.chip.ChipGroup
-            android:id="@+id/datosInteres"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="14dp"
-            app:singleSelection="true"/>
-
-        <TextView
-            style="@style/Edu.Texto.Rotulo"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="6dp"
-            android:text="¿Cómo estudias normalmente esta asignatura?"/>
-
-        <com.google.android.material.textfield.TextInputLayout
-            style="@style/Edu.CampoDesplegable"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Método de estudio">
-
-            <AutoCompleteTextView
-                android:id="@+id/datosMetodo"
-                style="@style/Edu.CampoEntrada"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="none"
-                android:padding="16dp"/>
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <TextView
             android:id="@+id/datosError"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:textColor="@color/estado_error"
+            android:textColor="?attr/eduEstadoError"
             android:textSize="14sp"
             android:visibility="gone"
             tools:text="El máximo de la escala debe ser mayor que el mínimo"/>

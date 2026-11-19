@@ -26,7 +26,7 @@
         android:id="@+id/id_schedule_fragment"
         android:name="com.softcg.myapplication.ui.Inicio.Fragments.Horario.ScheduleFragment"
         android:label="Horario"
-        tools:layout="@layout/fragment_schedule" />
+        tools:layout="@layout/activity_week_view" />
     <fragment
         android:id="@+id/id_subjects_fragment"
         android:name="com.softcg.myapplication.ui.Inicio.Fragments.Asignaturas.AsignaturasFragment"
@@ -55,6 +55,12 @@
     <fragment
         android:id="@+id/id_prediction_fragment"
         android:name="com.softcg.myapplication.ui.Inicio.Fragments.Prediccion.PrediccionFragment"
-        android:label="Predicción"
+        android:label="Tarea"
         tools:layout="@layout/fragment_prediccion" />
+    <!-- Evento, asignatura o calificación: el título de la cabecera sale del tipo (InicioActivity) -->
+    <fragment
+        android:id="@+id/id_detail_fragment"
+        android:name="com.softcg.myapplication.ui.Inicio.Fragments.Detalle.DetalleFragment"
+        android:label="Detalle"
+        tools:layout="@layout/fragment_detalle" />
 </navigation>

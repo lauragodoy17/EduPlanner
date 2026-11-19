@@ -5,7 +5,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:gravity="center_vertical"
     android:orientation="horizontal"
     android:paddingVertical="8dp">
 
@@ -14,11 +13,12 @@
         android:layout_width="28dp"
         android:layout_height="28dp"
         android:layout_marginEnd="12dp"
+        android:layout_marginTop="1dp"
         android:background="@drawable/circle_shape"
         android:importantForAccessibility="no"
         android:padding="5dp"
         android:src="@drawable/ic_gami_check"
-        app:tint="@color/estado_exito"/>
+        app:tint="?attr/eduEstadoExito"/>
 
     <LinearLayout
         android:layout_width="0dp"
@@ -45,9 +45,21 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:textColor="@color/purple_accent"
+                android:textColor="?attr/eduAcento"
                 tools:text="86 %"/>
         </LinearLayout>
+
+        <!-- Valores largos ("4 h/semana · Mapas mentales"): debajo del título para no aplastarlo -->
+        <TextView
+            android:id="@+id/datoValorLinea"
+            style="@style/Edu.Texto.TituloTarjeta"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:textColor="?attr/eduAcento"
+            android:textSize="14sp"
+            android:visibility="gone"
+            tools:text="4 h/semana · Mapas mentales"/>
 
         <TextView
             android:id="@+id/datoDetalle"

@@ -54,6 +54,20 @@ fun Context.confirmar(titulo: String, mensaje: String, textoAccion: String, onCo
         .show()
 }
 
+/**
+ * Pregunta con dos caminos válidos (p. ej. "Añadir calificación" / "Más tarde"), con el mismo estilo que [confirmar].
+ * Cerrarla tocando fuera cuenta como [textoNo].
+ */
+fun Context.preguntar(titulo: String, mensaje: String, textoSi: String, textoNo: String, onSi: () -> Unit, onNo: () -> Unit) {
+    MaterialAlertDialogBuilder(this)
+        .setTitle(titulo)
+        .setMessage(mensaje)
+        .setNegativeButton(textoNo) { _, _ -> onNo() }
+        .setPositiveButton(textoSi) { _, _ -> onSi() }
+        .setOnCancelListener { onNo() }
+        .show()
+}
+
 /** Aviso breve con el estilo de la app, encima de la barra inferior y del botón flotante. */
 fun View.mostrarAviso(mensaje: String, esError: Boolean = false) {
     if (!isAttachedToWindow) return
@@ -71,8 +85,12 @@ fun MaterialButton.mostrarCarga(cargando: Boolean, textoNormal: String, textoCar
     isEnabled = !cargando
     text = if (cargando) textoCarga else textoNormal
     icon = if (cargando) {
-        val spec = CircularProgressIndicatorSpec(context, null, 0, com.google.android.material.R.style.Widget_MaterialComponents_CircularProgressIndicator_ExtraSmall).apply {
-            indicatorColors = intArrayOf(context.getColor(R.color.white))
+        val densidad = resources.displayMetrics.density
+        val spec = CircularProgressIndicatorSpec(context, null).apply {
+            indicatorColors = intArrayOf(context.getColor(R.color.sobre_acento))
+            indicatorSize = (16 * densidad).toInt()
+            indicatorInset = 0
+            trackThickness = (2 * densidad).toInt()
         }
         IndeterminateDrawable.createCircularDrawable(context, spec)
     } else null

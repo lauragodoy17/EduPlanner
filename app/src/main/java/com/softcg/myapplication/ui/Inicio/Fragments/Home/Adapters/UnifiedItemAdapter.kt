@@ -5,19 +5,18 @@ import android.content.res.ColorStateList
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.Window
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.widget.PopupMenu
 import androidx.recyclerview.widget.RecyclerView
 import com.softcg.myapplication.R
 import com.softcg.myapplication.core.ex.confirmar
-import com.softcg.myapplication.core.ex.estiloPrioridad
 import com.softcg.myapplication.core.ex.mostrarAviso
 import com.softcg.myapplication.core.ex.pintarEtiqueta
 import com.softcg.myapplication.core.ex.pintarPrioridad
-import com.softcg.myapplication.core.ex.showAsBottomSheet
 import com.softcg.myapplication.core.ex.tintarFondo
+import com.softcg.myapplication.domain.compartir.ContenidoCompartido
+import com.softcg.myapplication.ui.Inicio.Dialogs.CompartirQrDialog
 import com.softcg.myapplication.ui.Inicio.Models.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -26,10 +25,10 @@ class UnifiedItemAdapter(
     private val context: Context,
     private val onDeleteTarea: (Tarea) -> Unit = {},
     private val onDeleteEvento: (Evento) -> Unit = {},
-    private val onEditEvento: (Evento) -> Unit = {},
     private val onCalificarTarea: (Tarea) -> Unit = {},
     private val onEntregarTarea: (Tarea) -> Unit = {},
     private val onVerMasTarea: (Tarea) -> Unit = {},
+    /** Tocar la tarjeta abre la pantalla de la tarea o del evento. */
     private val onItemClick: (TimelineItem) -> Unit = {}
 ) : RecyclerView.Adapter<UnifiedItemAdapter.UnifiedViewHolder>() {
 
@@ -101,10 +100,7 @@ class UnifiedItemAdapter(
             timelineCircle.visibility = View.VISIBLE
 
             // Set click listeners
-            itemView.setOnClickListener {
-                onItemClick(item)
-                if (item.type == TimelineItemType.EVENTO) showEventoDetallesDialog(eventoDe(item))
-            }
+            itemView.setOnClickListener { onItemClick(item) }
 
             opciones.setOnClickListener { view ->
                 showPopupMenu(view, item)
@@ -145,8 +141,8 @@ class UnifiedItemAdapter(
                 else -> {
                     textAsignatura.visibility = View.VISIBLE
                     textAsignatura.text = item.asignatura
-                    typeBadge.pintarEtiqueta("TAREA", R.color.purple_accent, R.color.purple_surface)
-                    pintarIcono(R.drawable.ic_gami_tarea, R.color.purple_accent, R.color.purple_surface)
+                    typeBadge.pintarEtiqueta("TAREA", R.color.acento, R.color.marca_superficie)
+                    pintarIcono(R.drawable.ic_gami_tarea, R.color.acento, R.color.marca_superficie)
                 }
             }
         }
@@ -181,16 +177,11 @@ class UnifiedItemAdapter(
             asignaturaId = item.asignaturaId
         )
 
-        private fun formatDisplayDate(dateString: String): String {
-            return try {
-                val inputFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-                val outputFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-                val date = inputFormat.parse(dateString)
-                date?.let { outputFormat.format(it) } ?: dateString
-            } catch (e: Exception) {
-                dateString
-            }
-        }
+        /** "2026-11-20" → "20/11/2026"; un texto que no es fecha se muestra tal cual. */
+        private fun formatDisplayDate(dateString: String): String = runCatching {
+            val date = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(dateString)
+            date?.let { SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(it) } ?: dateString
+        }.getOrDefault(dateString)
 
         private fun formatCalificacion(valor: Float): String =
             if (valor % 1f == 0f) valor.toInt().toString() else valor.toString()
@@ -214,8 +205,14 @@ class UnifiedItemAdapter(
                         true
                     }
                     R.id.VerMas -> {
-                        if (item.type == TimelineItemType.EVENTO) showEventoDetallesDialog(eventoDe(item))
+                        if (item.type == TimelineItemType.EVENTO) onItemClick(item)
                         else onVerMasTarea(tareaDe(item))
+                        true
+                    }
+                    R.id.Compartir -> {
+                        val contenido = if (item.type == TimelineItemType.EVENTO) ContenidoCompartido.de(eventoDe(item))
+                        else ContenidoCompartido.de(tareaDe(item))
+                        CompartirQrDialog(context, contenido).show()
                         true
                     }
                     R.id.Borrar -> {
@@ -244,93 +241,6 @@ class UnifiedItemAdapter(
                 onDeleteEvento(evento)
                 itemView.mostrarAviso("Evento eliminado")
             }
-        }
-
-        private fun showEventoDetallesDialog(evento: Evento) {
-            val dialog = android.app.Dialog(context)
-            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-            dialog.setContentView(R.layout.dialog_evento_detalles)
-
-            // Referencias a los elementos del diálogo
-            val titulo = dialog.findViewById<TextView>(R.id.eventoTitulo)
-            val descripcion = dialog.findViewById<TextView>(R.id.eventoDescripcion)
-            val labelDescripcion = dialog.findViewById<TextView>(R.id.labelDescripcion)
-            val fecha = dialog.findViewById<TextView>(R.id.eventoFecha)
-            val horario = dialog.findViewById<TextView>(R.id.eventoHorario)
-            val labelHorario = dialog.findViewById<TextView>(R.id.labelHorario)
-            val containerHorario = dialog.findViewById<View>(R.id.containerHorario)
-            val prioridadIndicador = dialog.findViewById<View>(R.id.prioridadIndicador)
-            val prioridadTexto = dialog.findViewById<TextView>(R.id.prioridadTexto)
-            val imagenEvento = dialog.findViewById<ImageView>(R.id.eventoImagen)
-            val imageContainer = dialog.findViewById<View>(R.id.imageContainer)
-
-            val btnEditar = dialog.findViewById<com.google.android.material.button.MaterialButton>(R.id.btnEditar)
-            val btnEliminar = dialog.findViewById<com.google.android.material.button.MaterialButton>(R.id.btnEliminar)
-            val btnCerrar = dialog.findViewById<com.google.android.material.button.MaterialButton>(R.id.btnCerrar)
-
-            // Configurar datos
-            titulo.text = evento.titulo
-
-            // Manejar descripción
-            if (evento.descrip.isNotEmpty()) {
-                descripcion.text = evento.descrip
-                descripcion.visibility = View.VISIBLE
-                labelDescripcion.visibility = View.VISIBLE
-            } else {
-                descripcion.visibility = View.GONE
-                labelDescripcion.visibility = View.GONE
-            }
-
-            fecha.text = formatDisplayDate(evento.fecha)
-
-            // Mostrar horario si existe
-            if (evento.horaInicio.isNotEmpty() && evento.horaFin.isNotEmpty()) {
-                horario.text = "${evento.horaInicio} - ${evento.horaFin}"
-                labelHorario.visibility = View.VISIBLE
-                containerHorario.visibility = View.VISIBLE
-            } else if (evento.horaInicio.isNotEmpty()) {
-                horario.text = evento.horaInicio
-                labelHorario.visibility = View.VISIBLE
-                containerHorario.visibility = View.VISIBLE
-            } else {
-                labelHorario.visibility = View.GONE
-                containerHorario.visibility = View.GONE
-            }
-
-            pintarPrioridad(evento.prioridad, prioridadIndicador, prioridadTexto)
-            estiloPrioridad(evento.prioridad)?.let { prioridadTexto.setTextColor(context.getColor(it.color)) }
-
-            // Mostrar imagen si existe
-            if (!evento.imagenUri.isNullOrEmpty()) {
-                try {
-                    val uri = android.net.Uri.parse(evento.imagenUri)
-                    imagenEvento.setImageURI(uri)
-                    imageContainer.visibility = View.VISIBLE
-                } catch (e: Exception) {
-                    imageContainer.visibility = View.GONE
-                }
-            } else {
-                imageContainer.visibility = View.GONE
-            }
-
-            // Botón Editar
-            btnEditar.setOnClickListener {
-                dialog.dismiss()
-                onEditEvento(evento)
-            }
-
-            // Botón Eliminar
-            btnEliminar.setOnClickListener {
-                dialog.dismiss()
-                confirmarBorrarEvento(evento)
-            }
-
-            // Botón Cerrar
-            btnCerrar.setOnClickListener {
-                dialog.dismiss()
-            }
-
-            dialog.showAsBottomSheet()
         }
     }
 }

@@ -46,7 +46,7 @@
             android:layout_marginBottom="12dp"
             app:cardCornerRadius="16dp"
             app:cardElevation="2dp"
-            app:cardBackgroundColor="@color/white">
+            app:cardBackgroundColor="?attr/eduSuperficie">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -65,7 +65,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="0 XP esta semana"
-                    android:textColor="@color/text_secondary"
+                    android:textColor="?attr/eduTextSecondary"
                     android:textSize="13sp"
                     android:layout_marginBottom="12dp"/>
 
@@ -85,7 +85,7 @@
             android:layout_marginBottom="20dp"
             app:cardCornerRadius="16dp"
             app:cardElevation="2dp"
-            app:cardBackgroundColor="@color/white">
+            app:cardBackgroundColor="?attr/eduSuperficie">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -104,7 +104,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Toca un día para ver su detalle"
-                    android:textColor="@color/text_secondary"
+                    android:textColor="?attr/eduTextSecondary"
                     android:textSize="13sp"
                     android:layout_marginBottom="12dp"/>
 
@@ -127,7 +127,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Menos"
-                        android:textColor="@color/text_hint"
+                        android:textColor="?attr/eduTextHint"
                         android:textSize="11sp"
                         android:layout_marginEnd="6dp"/>
 
@@ -135,36 +135,36 @@
                         android:layout_width="12dp"
                         android:layout_height="12dp"
                         android:layout_marginEnd="3dp"
-                        android:background="@color/pista_clara"/>
+                        android:background="?attr/eduPistaClara"/>
 
                     <View
                         android:layout_width="12dp"
                         android:layout_height="12dp"
                         android:layout_marginEnd="3dp"
-                        android:background="@color/purple_soft"/>
+                        android:background="?attr/eduMarcaSuave"/>
 
                     <View
                         android:layout_width="12dp"
                         android:layout_height="12dp"
                         android:layout_marginEnd="3dp"
-                        android:background="@color/purple_light"/>
+                        android:background="?attr/eduMarcaClara"/>
 
                     <View
                         android:layout_width="12dp"
                         android:layout_height="12dp"
                         android:layout_marginEnd="3dp"
-                        android:background="@color/purple_accent"/>
+                        android:background="?attr/eduAcento"/>
 
                     <View
                         android:layout_width="12dp"
                         android:layout_height="12dp"
-                        android:background="@color/purple_deep"/>
+                        android:background="?attr/eduMarcaProfunda"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Más"
-                        android:textColor="@color/text_hint"
+                        android:textColor="?attr/eduTextHint"
                         android:textSize="11sp"
                         android:layout_marginStart="6dp"/>
                 </LinearLayout>
@@ -184,7 +184,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Todavía no tienes movimientos. Registra tareas, eventos, clases y calificaciones para ganar EduCoins."
-            android:textColor="@color/text_hint"
+            android:textColor="?attr/eduTextHint"
             android:textSize="14sp"
             android:paddingVertical="16dp"
             android:visibility="gone"/>

@@ -57,6 +57,25 @@ class AsignaturasRepository @Inject constructor(
         return id
     }
 
+    /** Guarda los datos del formulario (no el área ni la escala). false si no existe o sin sesión. */
+    suspend fun actualizarAsignatura(asignatura: Asignatura): Boolean {
+        val uid = uid() ?: return false
+        val id = asignatura.id ?: return false
+        val h = asignatura.horario
+        return asignaturasDao.actualizar(
+            uid, id, asignatura.nombre, asignatura.tutor, asignatura.duracion, asignatura.hora,
+            h[0], h[1], h[2], h[3], h[4], h[5], h[6], asignatura.tipoCalificacion
+        ) > 0
+    }
+
+    /** Lo que se guardó con el nombre anterior (tareas, notas, sesiones de estudio) pasa al nombre nuevo. */
+    suspend fun renombrarEnRegistros(id: Int, viejo: String, nuevo: String) {
+        val uid = uid() ?: return
+        tareasDao.renombrarAsignatura(uid, id, viejo, nuevo)
+        calificacionesDao.renombrarAsignatura(uid, id, viejo, nuevo)
+        gamificacionDao.renombrarAsignaturaSesiones(uid, id, viejo, nuevo)
+    }
+
     /** Área del modelo y rango de la escala de notas, que el estudiante confirma. */
     suspend fun guardarDatosModelo(id: Int, area: String?, escalaMin: Float?, escalaMax: Float?): Boolean {
         val uid = uid() ?: return false

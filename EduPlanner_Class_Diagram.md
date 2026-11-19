@@ -1,442 +1,346 @@
 # Diagrama de Clases - EduPlanner
 
+Clases principales y sus relaciones. Para no saturar, cada diagrama muestra un módulo; los campos y métodos son los relevantes, no todos. Todas las entidades llevan `uid` (dueño): los datos son por usuario.
+
+## Datos (Room, base de datos versión 16)
+
 ```mermaid
 classDiagram
-    %% Application Layer
-    class MvvmEduPlannerApp {
-        +onCreate()
-    }
-    
-    %% Database Layer
     class TareasDatabase {
-        +getTareasDao(): TareasDao
-        +getEventosDao(): EventosDao
-        +getAsignaturasDao(): AsignaturasDao
-        +getCalificacionesDao(): CalificacionesDao
-        +getPruebaDao(): PruebaDao
+        +getTareasDao() TareasDao
+        +getEventosDao() EventosDao
+        +getAsignaturasDao() AsignaturasDao
+        +getCalificacionesDao() CalificacionesDao
+        +getGamificacionDao() GamificacionDao
+        +getPercepcionesDao() PercepcionesDao
     }
-    
-    %% Entity Classes
     class TareaEntity {
         +Int? id
         +String titulo
         +String descrip
         +String asignatura
+        +Int? asignaturaId
         +String fecha
         +Int prioridad
+        +Long? entregadaMillis
+        +String? tema
+        +String uid
     }
-    
     class EventoEntity {
         +Int? id
         +String titulo
         +String descrip
         +String fecha
         +Int prioridad
+        +String horaInicio
+        +String horaFin
+        +String? imagenUri
+        +String uid
     }
-    
     class AsignaturaEntity {
         +Int? id
         +String nombre
         +String tutor
         +Int duracion
-        +Boolean lunes
-        +Boolean martes
-        +Boolean miercoles
-        +Boolean jueves
-        +Boolean viernes
-        +Boolean sabado
-        +Boolean domingo
+        +String hora
+        +Boolean lunes … domingo
+        +String tipoCalificacion
+        +Long fechaRegistro
+        +String? areaModelo
+        +Float? escalaMin
+        +Float? escalaMax
+        +String uid
     }
-    
     class CalificacionEntity {
         +Int? id
         +String tipo
         +Float valor
         +String asignatura
+        +Int? asignaturaId
         +String descripcion
+        +Int? tareaId
+        +String uid
     }
-    
-    %% DAO Interfaces
-    class TareasDao {
-        +getAllTareas(): List~TareaEntity~
-        +deleteTarea(TareaEntity)
-        +insertTarea(TareaEntity)
-        +insertAll(List~TareaEntity~)
-    }
-    
-    class EventosDao {
-        +getAllEventos(): List~EventoEntity~
-        +deleteEvento(EventoEntity)
-        +insertEvento(EventoEntity)
-    }
-    
-    class AsignaturasDao {
-        +getAllAsignaturas(): List~AsignaturaEntity~
-        +deleteAsignatura(AsignaturaEntity)
-        +insertAsignatura(AsignaturaEntity)
-    }
-    
-    class CalificacionesDao {
-        +getAllCalificaciones(): List~CalificacionEntity~
-        +deleteCalificacion(CalificacionEntity)
-        +insertCalificacion(CalificacionEntity)
-    }
-    
-    %% Repository Layer
-    class TareasRepository {
-        -TareasDao tareasDao
-        +getTareas(): List~Tarea~
-        +deleteTarea(Tarea)
-        +insertTarea(Tarea)
-    }
-    
-    class EventosRepository {
-        -EventosDao eventosDao
-        +getEventos(): List~Evento~
-        +deleteEvento(Evento)
-        +insertEvento(Evento)
-    }
-    
-    class AsignaturasRepository {
-        -AsignaturasDao asignaturasDao
-        +getAsignaturas(): List~Asignatura~
-        +deleteAsignatura(Asignatura)
-        +insertAsignatura(Asignatura)
-    }
-    
-    class CalificacionesRespository {
-        -CalificacionesDao calificacionesDao
-        +getCalificaciones(): List~Calificacion~
-        +deleteCalificacion(Calificacion)
-        +insertCalificacion(Calificacion)
-    }
-    
-    %% Model Classes (UI Layer)
-    class Tarea {
-        +Int? id
-        +String titulo
-        +String descrip
-        +String asignatura
-        +String fecha
-        +Int prioridad
-    }
-    
-    class Evento {
-        +Int? id
-        +String titulo
-        +String descrip
-        +String fecha
-        +Int prioridad
-    }
-    
-    class Asignatura {
-        +Int? id
-        +String nombre
-        +String tutor
-        +Int duracion
-        +Boolean lunes
-        +Boolean martes
-        +Boolean miercoles
-        +Boolean jueves
-        +Boolean viernes
-        +Boolean sabado
-        +Boolean domingo
-    }
-    
-    class Calificacion {
-        +Int? id
+    class PercepcionEntity {
         +String tipo
-        +Float valor
-        +String asignatura
+        +String origen
+        +Int asignaturaId
+        +String? tema
+        +Float? valor
+        +String? texto
+        +Long fechaMillis
+    }
+    class MovimientoEduCoinsEntity {
+        +String clave «TIPO:referencia»
+        +String tipo
+        +Int cantidad
         +String descripcion
+        +Long fechaMillis
     }
-    
-    %% Use Cases
-    class getTareasUseCase {
-        -TareasRepository tareasRepository
-        +invoke(): List~Tarea~
+    class SesionEnfoqueEntity {
+        +Long inicioMillis
+        +Int minutos
+        +String asignatura
+        +Int? asignaturaId
+        +String? metodo
+        +Long? completadaMillis
     }
-    
-    class getEventosUseCase {
-        -EventosRepository eventosRepository
-        +invoke(): List~Evento~
+    class AsistenciaEntity {
+        +Int asignaturaId
+        +String fecha
+        +Boolean asistio
     }
-    
-    %% ViewModels
-    class HomeViewModel {
-        -getTareasUseCase getTareasUseCase
-        -getEventosUseCase getEventosUseCase
-        -TareasRepository tareasRepository
-        -EventosRepository eventosRepository
-        +MutableLiveData~List~Tarea~~ _tareas
-        +MutableLiveData~List~Evento~~ _eventos
-        +obtenerTareas()
-        +obtenerEventos()
-        +deleteTarea(Tarea)
-        +deleteEvento(Evento)
+    class InventarioEntity {
+        +String itemId
     }
-    
-    class AsignaturasViewModel {
-        -AsignaturasRepository asignaturasRepository
-        +getAsignaturas()
-        +insertAsignatura(Asignatura)
-        +deleteAsignatura(Asignatura)
+    class AvatarEquipadoEntity {
+        +String categoria
+        +String itemId
     }
-    
-    class CalificacionesViewModel {
-        -CalificacionesRespository calificacionesRepository
-        +getCalificaciones()
-        +insertCalificacion(Calificacion)
-        +deleteCalificacion(Calificacion)
+    class AvatarAparienciaEntity {
+        +Int indicePiel
+        +Int indicePelo
     }
-    
-    class AgendaViewModel {
-        -EventosRepository eventosRepository
-        +getEventos()
-        +insertEvento(Evento)
-        +deleteEvento(Evento)
+    class MisionAsignadaEntity {
+        +String periodo
+        +String misionId
     }
-    
-    class HorarioViewModel {
-        -AsignaturasRepository asignaturasRepository
-        +getAsignaturas()
-        +getHorarioData()
-    }
-    
-    %% Fragment Classes
-    class HomeFragment {
-        -HomeViewModel homeViewModel
-        -TareasAdapter tareasAdapter
-        -EventosAdapter eventosAdapter
-        +onViewCreated()
-        +observeViewModel()
-    }
-    
-    class AsignaturasFragment {
-        -AsignaturasViewModel asignaturasViewModel
-        -AsignaturasAdapter asignaturasAdapter
-        +onViewCreated()
-        +observeViewModel()
-    }
-    
-    class RatingsFragment {
-        -CalificacionesViewModel calificacionesViewModel
-        -CalificacionesAdapter calificacionesAdapter
-        +onViewCreated()
-        +observeViewModel()
-    }
-    
-    class AgendaFragment {
-        -AgendaViewModel agendaViewModel
-        -AgendaAdapter agendaAdapter
-        +onViewCreated()
-        +observeViewModel()
-    }
-    
-    class ScheduleFragment {
-        -HorarioViewModel horarioViewModel
-        -HorarioAdapter horarioAdapter
-        +onViewCreated()
-        +observeViewModel()
-    }
-    
-    %% Adapter Classes
-    class TareasAdapter {
-        -List~Tarea~ tareas
-        +onCreateViewHolder()
-        +onBindViewHolder()
-        +getItemCount()
-    }
-    
-    class EventosAdapter {
-        -List~Evento~ eventos
-        +onCreateViewHolder()
-        +onBindViewHolder()
-        +getItemCount()
-    }
-    
-    class AsignaturasAdapter {
-        -List~Asignatura~ asignaturas
-        +onCreateViewHolder()
-        +onBindViewHolder()
-        +getItemCount()
-    }
-    
-    class CalificacionesAdapter {
-        -List~Calificacion~ calificaciones
-        +onCreateViewHolder()
-        +onBindViewHolder()
-        +getItemCount()
-    }
-    
-    %% DI Module
-    class RoomModule {
-        +provideRoom(Context): TareasDatabase
-        +provideTareasDao(TareasDatabase): TareasDao
-        +provideEventosDao(TareasDatabase): EventosDao
-        +provideAsignaturasDao(TareasDatabase): AsignaturasDao
-        +provideCalificacionesDao(TareasDatabase): CalificacionesDao
-        +provideTareasRepository(TareasDao): TareasRepository
-        +provideEventosRepository(EventosDao): EventosRepository
-        +provideAsignaturasRepository(AsignaturasDao): AsignaturasRepository
-        +provideCalificacionesRepository(CalificacionesDao): CalificacionesRespository
-    }
-    
-    %% Authentication Layer
-    class AuthenticationService {
-        +login(String, String): LoginResponse
-        +createAccount(String, String): Boolean
-    }
-    
-    class FirebaseClient {
-        +authenticate(String, String): Boolean
-        +createUser(String, String): Boolean
-    }
-    
-    class LoginUseCase {
-        -AuthenticationService authService
-        +invoke(UserLogin): LoginResponse
-    }
-    
-    class CreateAccountUseCase {
-        -AuthenticationService authService
-        +invoke(UserRegister): Boolean
-    }
-    
-    class UserLogin {
-        +String email
-        +String password
-    }
-    
-    class UserRegister {
-        +String email
-        +String password
-        +String confirmPassword
-    }
-    
-    %% Main Activities
-    class MainActivity {
-        -Myviewmodel viewModel
-        +onCreate()
-        +navigateToHome()
-    }
-    
-    class RegisterActivity {
-        -viewmodelregister viewModel
-        +onCreate()
-        +register()
-    }
-    
-    class InicioActivity {
-        -InicioViewModel viewModel
-        +onCreate()
-        +setupNavigation()
-    }
-    
-    %% Relationships
-    MvvmEduPlannerApp --> RoomModule : uses DI
-    
-    TareasDatabase --> TareaEntity : contains
-    TareasDatabase --> EventoEntity : contains
-    TareasDatabase --> AsignaturaEntity : contains
-    TareasDatabase --> CalificacionEntity : contains
-    
-    TareasDatabase --> TareasDao : provides
-    TareasDatabase --> EventosDao : provides
-    TareasDatabase --> AsignaturasDao : provides
-    TareasDatabase --> CalificacionesDao : provides
-    
-    TareasDao --> TareaEntity : operates on
-    EventosDao --> EventoEntity : operates on
-    AsignaturasDao --> AsignaturaEntity : operates on
-    CalificacionesDao --> CalificacionEntity : operates on
-    
-    TareasRepository --> TareasDao : uses
-    EventosRepository --> EventosDao : uses
-    AsignaturasRepository --> AsignaturasDao : uses
-    CalificacionesRespository --> CalificacionesDao : uses
-    
-    TareasRepository --> Tarea : converts to/from
-    EventosRepository --> Evento : converts to/from
-    AsignaturasRepository --> Asignatura : converts to/from
-    CalificacionesRespository --> Calificacion : converts to/from
-    
-    getTareasUseCase --> TareasRepository : uses
-    getEventosUseCase --> EventosRepository : uses
-    
-    HomeViewModel --> getTareasUseCase : uses
-    HomeViewModel --> getEventosUseCase : uses
-    HomeViewModel --> TareasRepository : uses
-    HomeViewModel --> EventosRepository : uses
-    
-    AsignaturasViewModel --> AsignaturasRepository : uses
-    CalificacionesViewModel --> CalificacionesRespository : uses
-    AgendaViewModel --> EventosRepository : uses
-    HorarioViewModel --> AsignaturasRepository : uses
-    
-    HomeFragment --> HomeViewModel : uses
-    HomeFragment --> TareasAdapter : uses
-    HomeFragment --> EventosAdapter : uses
-    
-    AsignaturasFragment --> AsignaturasViewModel : uses
-    AsignaturasFragment --> AsignaturasAdapter : uses
-    
-    RatingsFragment --> CalificacionesViewModel : uses
-    RatingsFragment --> CalificacionesAdapter : uses
-    
-    AgendaFragment --> AgendaViewModel : uses
-    AgendaFragment --> AgendaAdapter : uses
-    
-    ScheduleFragment --> HorarioViewModel : uses
-    ScheduleFragment --> HorarioAdapter : uses
-    
-    LoginUseCase --> AuthenticationService : uses
-    CreateAccountUseCase --> AuthenticationService : uses
-    AuthenticationService --> FirebaseClient : uses
-    
-    MainActivity --> LoginUseCase : uses
-    RegisterActivity --> CreateAccountUseCase : uses
-    
-    RoomModule --> TareasDatabase : provides
-    RoomModule --> TareasRepository : provides
-    RoomModule --> EventosRepository : provides
-    RoomModule --> AsignaturasRepository : provides
-    RoomModule --> CalificacionesRespository : provides
+
+    TareasDatabase --> TareaEntity
+    TareasDatabase --> EventoEntity
+    TareasDatabase --> AsignaturaEntity
+    TareasDatabase --> CalificacionEntity
+    TareasDatabase --> PercepcionEntity
+    TareasDatabase --> MovimientoEduCoinsEntity
+    TareasDatabase --> SesionEnfoqueEntity
+    TareasDatabase --> AsistenciaEntity
+    TareasDatabase --> InventarioEntity
+    TareasDatabase --> AvatarEquipadoEntity
+    TareasDatabase --> AvatarAparienciaEntity
+    TareasDatabase --> MisionAsignadaEntity
+    TareaEntity ..> AsignaturaEntity : asignaturaId / nombre
+    CalificacionEntity ..> AsignaturaEntity : asignaturaId / nombre
+    CalificacionEntity ..> TareaEntity : tareaId
+    SesionEnfoqueEntity ..> AsignaturaEntity
+    AsistenciaEntity ..> AsignaturaEntity
+    PercepcionEntity ..> AsignaturaEntity
 ```
 
-## Descripción del Diagrama
+## Repositorios y servicios
 
-### Arquitectura MVVM
-El diagrama muestra la implementación de la arquitectura MVVM (Model-View-ViewModel) con las siguientes capas:
+```mermaid
+classDiagram
+    class SesionUsuario {
+        <<interface>>
+        +uid() String?
+    }
+    class DuenoDatosLocales {
+        +asegurar(uid)
+    }
+    class TareasRepository {
+        +getTareas() List~Tarea~
+        +getTarea(id) Tarea?
+        +insertTarea(tarea) Long
+        +updateTarea(tarea) Boolean
+        +marcarEntregada(id, millis) Boolean
+        +deleteTarea(tarea)
+    }
+    class AsignaturasRepository {
+        +getAllAsignaturas() List~Asignatura~
+        +insertAsignatura(a) Long
+        +actualizarAsignatura(a) Boolean
+        +renombrarEnRegistros(id, viejo, nuevo)
+        +guardarDatosModelo(id, area, min, max)
+        +deleteAsignatura(a)
+    }
+    class CalificacionesRespository {
+        +getAllCalificaciones()
+        +getCalificacion(id)
+        +insertCalificacion(c) Long
+        +updateCalificacion(c) Boolean
+        +moverDeTarea(tareaId, asignatura)
+    }
+    class EventosRepository {
+        +getAllEventos()
+        +getEvento(id)
+        +insertEvento(e) Long
+        +updateEvento(e)
+        +deleteEvento(e)
+    }
+    class GamificacionRepository {
+        +enTransaccion(bloque)
+        +observarSaldo(uid) LiveData~Int~
+    }
+    class PercepcionesRepository
+    class PreferenciasTema {
+        +tema() TemaApp
+        +guardar(tema)
+    }
+    class PrediccionService {
+        +predecir(cuerpoJson, topN) RespuestaApi
+    }
+    class GeminiRecomendaciones {
+        «GeneradorRecomendaciones»
+    }
+    class VerificadorFuentesWeb {
+        «VerificadorFuentes»
+    }
+    class AuthenticationService
+    class CredencialGoogleService {
+        +obtenerIdToken(activity)
+        +olvidarCuenta()
+    }
 
-1. **Application Layer**: `MvvmEduPlannerApp` como punto de entrada principal
-2. **View Layer**: Fragments que representan la interfaz de usuario
-3. **ViewModel Layer**: ViewModels que manejan la lógica de presentación
-4. **Model Layer**: Entidades, repositorios y casos de uso
-5. **Database Layer**: Room database con DAOs y entidades
+    TareasRepository --> SesionUsuario
+    AsignaturasRepository --> SesionUsuario
+    CalificacionesRespository --> SesionUsuario
+    EventosRepository --> SesionUsuario
+    TareasRepository --> DuenoDatosLocales
+    AsignaturasRepository ..> TareasRepository : renombra por id o nombre
+```
 
-### Inyección de Dependencias
-- `RoomModule` configura todas las dependencias usando Dagger Hilt
-- Proporciona instancias singleton de la base de datos, DAOs y repositorios
+## Dominio
 
-### Patrones de Diseño Implementados
-- **Repository Pattern**: Abstrae el acceso a datos
-- **Use Case Pattern**: Encapsula la lógica de negocio
-- **Adapter Pattern**: Para RecyclerViews
-- **MVVM Pattern**: Separación de responsabilidades
-- **Dependency Injection**: Gestión automática de dependencias
+```mermaid
+classDiagram
+    class CrearAsignaturaUseCase {
+        +invoke(NuevaAsignatura) ResultadoCrearAsignatura
+    }
+    class EditarTareaUseCase {
+        +invoke(Tarea) ResultadoEdicion
+    }
+    class EditarAsignaturaUseCase {
+        +invoke(id, NuevaAsignatura) ResultadoEdicion
+    }
+    class OtorgarRecompensaUseCase {
+        +invoke(TipoRecompensa, referencia) ResultadoRecompensa
+    }
+    class EntregarTareaUseCase
+    class CalificarTareaUseCase
+    class EvaluarProgresoUseCase
+    class ComprarAccesorioUseCase
+    class ExtraerDatosPrediccionUseCase {
+        +deTarea(Tarea) Extraccion
+        +deAsignatura(id) Extraccion
+    }
+    class PredecirTareaUseCase
+    class RecomendarTareaUseCase {
+        +invoke(Tarea) ResultadoRecomendacion
+    }
+    class ImportarCompartidoUseCase {
+        +analizar(contenido) AnalisisImportacion
+        +importar(contenido, destino) ResultadoImportacion
+    }
+    class CodigoQr {
+        <<object>>
+        +codificar(ContenidoCompartido) String
+        +leer(String) LecturaQr
+    }
+    class CatalogoModelo {
+        <<object>>
+        +detectarArea(nombre) DeteccionArea
+        +METODOS_RECOMENDABLES
+    }
+    class TipoRecompensa {
+        <<enum>>
+        cantidad · topeDiario
+    }
+    class TemaApp {
+        <<enum>>
+        CLARO · OSCURO · AZUL · CLASICO
+    }
+    class ContenidoCompartido {
+        <<sealed>>
+        Tarea · Evento · Asignatura · Nota
+    }
 
-### Entidades Principales
-- **TareaEntity/Tarea**: Gestión de tareas académicas
-- **EventoEntity/Evento**: Gestión de eventos y calendario
-- **AsignaturaEntity/Asignatura**: Gestión de asignaturas y horarios
-- **CalificacionEntity/Calificacion**: Gestión de calificaciones
+    CrearAsignaturaUseCase --> OtorgarRecompensaUseCase
+    CrearAsignaturaUseCase --> CatalogoModelo
+    EditarAsignaturaUseCase --> GamificacionRepository : transacción
+    EditarTareaUseCase --> CalificacionesRespository
+    EntregarTareaUseCase --> OtorgarRecompensaUseCase
+    CalificarTareaUseCase --> OtorgarRecompensaUseCase
+    OtorgarRecompensaUseCase --> TipoRecompensa
+    RecomendarTareaUseCase --> ExtraerDatosPrediccionUseCase
+    RecomendarTareaUseCase --> PredecirTareaUseCase
+    RecomendarTareaUseCase --> GeminiRecomendaciones
+    RecomendarTareaUseCase --> VerificadorFuentesWeb
+    PredecirTareaUseCase --> PrediccionService
+    ImportarCompartidoUseCase --> CrearAsignaturaUseCase
+    ImportarCompartidoUseCase --> OtorgarRecompensaUseCase
+    ImportarCompartidoUseCase --> ContenidoCompartido
+    CodigoQr --> ContenidoCompartido
+```
 
-### Navegación
-El app utiliza Navigation Component con 6 fragments principales:
-- HomeFragment (tareas y eventos)
-- AgendaFragment (calendario)
-- RatingsFragment (calificaciones)
-- ScheduleFragment (horario)
-- AsignaturasFragment (asignaturas)
-- HelpFragment (ayuda)
+## Presentación
+
+```mermaid
+classDiagram
+    class InicioActivity {
+        -InicioViewModel inicioViewModel
+        -CompartirViewModel compartir
+        -TemaViewModel temaViewModel
+        +onCreate() aplica el tema elegido
+    }
+    class InicioViewModel
+    class DatosEstudioViewModel
+    class HomeFragment
+    class AgendaFragment
+    class ScheduleFragment
+    class RatingsFragment
+    class AsignaturasFragment
+    class ProfileFragment
+    class PrediccionFragment {
+        pantalla "Tarea"
+    }
+    class PrediccionViewModel {
+        +cargar(id)
+        +editar(tarea)
+        +borrar()
+    }
+    class DetalleFragment {
+        evento · asignatura · calificación
+    }
+    class DetalleViewModel {
+        +cargar(tipo, id)
+        +actualizar…()
+        +borrar()
+    }
+    class FichaDetalle {
+        <<object>>
+        +de(evento / asignatura / calificación) Ficha
+    }
+    class AccionesTarea {
+        ver · entregar · calificar · borrar
+    }
+    class CompartirViewModel {
+        +onQrLeido(texto)
+        +onAgregar(contenido, destino)
+    }
+    class EscanerQrActivity
+    class TemaViewModel {
+        +elegir(TemaApp)
+    }
+    class TemaDialog
+
+    InicioActivity --> InicioViewModel
+    InicioActivity --> CompartirViewModel
+    InicioActivity --> TemaViewModel
+    InicioActivity ..> EscanerQrActivity : Contrato
+    InicioActivity ..> TemaDialog
+    HomeFragment --> AccionesTarea
+    AgendaFragment --> AccionesTarea
+    HomeFragment ..> PrediccionFragment : abrirTarea()
+    HomeFragment ..> DetalleFragment : abrirDetalle()
+    AgendaFragment ..> DetalleFragment
+    ScheduleFragment ..> DetalleFragment
+    AsignaturasFragment ..> DetalleFragment
+    RatingsFragment ..> DetalleFragment
+    PrediccionFragment --> PrediccionViewModel
+    DetalleFragment --> DetalleViewModel
+    DetalleFragment --> FichaDetalle
+    PrediccionViewModel --> EditarTareaUseCase
+    DetalleViewModel --> EditarAsignaturaUseCase
+    CompartirViewModel --> ImportarCompartidoUseCase
+    TemaViewModel --> PreferenciasTema
+```

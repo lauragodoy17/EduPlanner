@@ -25,7 +25,7 @@ class AvatarView @JvmOverloads constructor(
 ) : FrameLayout(context, attrs) {
 
     init {
-        setBackgroundColor(context.getColor(R.color.purple_surface))
+        setBackgroundColor(context.getColor(R.color.marca_superficie))
         outlineProvider = object : ViewOutlineProvider() {
             override fun getOutline(view: View, outline: Outline) {
                 outline.setOval(0, 0, view.width, view.height)

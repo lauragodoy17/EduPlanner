@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Una fila rótulo/valor de lo que llegó por QR -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="10dp"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/datoCompartidoRotulo"
+        style="@style/Edu.Texto.Rotulo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="2dp"
+        tools:text="Asignatura"/>
+
+    <TextView
+        android:id="@+id/datoCompartidoValor"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="?attr/eduTextPrimary"
+        android:textSize="15sp"
+        tools:text="Cálculo"/>
+</LinearLayout>

@@ -43,6 +43,10 @@ import com.softcg.myapplication.ui.Inicio.Models.Evento
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.time.LocalDate
+import com.softcg.myapplication.domain.CrearAsignaturaUseCase
+import com.softcg.myapplication.domain.prediccion.DetectarAreasPendientesUseCase
+import com.softcg.myapplication.domain.NuevaAsignatura
+import com.softcg.myapplication.domain.ResultadoCrearAsignatura
 import javax.inject.Inject
 
 @HiltViewModel
@@ -51,6 +55,8 @@ class InicioViewModel @Inject constructor(
     private val getEventosUseCase: getEventosUseCase,
     private val getAsignaturasUseCase: getAsignaturasUseCase,
     private val getCalificacionesUseCase: getCalificacionesUseCase,
+    private val crearAsignatura: CrearAsignaturaUseCase,
+    private val detectarAreasPendientes: DetectarAreasPendientesUseCase,
     private val otorgarRecompensa: OtorgarRecompensaUseCase,
     private val calificarTareaUseCase: CalificarTareaUseCase,
     private val obtenerClasesPorConfirmar: ObtenerClasesPorConfirmarUseCase,
@@ -68,6 +74,11 @@ class InicioViewModel @Inject constructor(
     @Inject lateinit var eventosRepository: EventosRepository
     @Inject lateinit var calificacionesRespository: CalificacionesRespository
 
+
+    init {
+        // Las asignaturas creadas antes de la detección automática reciben su área si el nombre no deja dudas
+        viewModelScope.launch { detectarAreasPendientes() }
+    }
 
     val _asignaturas = MutableLiveData<List<String>>()
     val _tareas = MutableLiveData<List<Tarea>>()
@@ -125,9 +136,6 @@ class InicioViewModel @Inject constructor(
     val navigateToEvento: LiveData<Event<Boolean>>
         get() = _navigateToEvento
 
-    private val _navigateToCalificacion= MutableLiveData<Event<Boolean>>()
-    val navigateToCalificacion: LiveData<Event<Boolean>>
-        get() = _navigateToCalificacion
 
     fun onTareaSelected(){
         _navigateToTarea.value= Event(true)
@@ -138,7 +146,7 @@ class InicioViewModel @Inject constructor(
     }
 
     fun onAgregarTareaSelected(titulo:String,descrip:String,asignatura:String,fecha:String,prioridad:Int){
-        val tarea: Tarea = Tarea(null,titulo, descrip, asignatura,fecha,prioridad)
+        val tarea = Tarea(null,titulo, descrip, asignatura,fecha,prioridad)
         saveTarea(tarea)
     }
 
@@ -157,8 +165,21 @@ class InicioViewModel @Inject constructor(
         viewModelScope.launch {
             _asignaturas.value = getAsignaturasUseCase().map { it.nombre }
         }
-        if(_asignaturas.value?.isEmpty() == true){
-            _asignaturas.value= listOf("Agregar Asignatura")
+    }
+
+    /** Resultado de crear una asignatura desde el formulario de tarea: al recibirlo, el formulario vuelve y la deja elegida. */
+    private val _asignaturaParaTarea = MutableLiveData<Event<ResultadoCrearAsignatura>>()
+    val asignaturaParaTarea: LiveData<Event<ResultadoCrearAsignatura>>
+        get() = _asignaturaParaTarea
+
+    fun onCrearAsignaturaDesdeTarea(nueva: NuevaAsignatura) {
+        viewModelScope.launch {
+            val resultado = crearAsignatura(nueva)
+            if (resultado is ResultadoCrearAsignatura.Creada) {
+                obtenerAsignaturas()
+                resultado.recompensa?.let { _recompensa.value = Event(it) }
+            }
+            _asignaturaParaTarea.value = Event(resultado)
         }
     }
     fun onAgregarCalificacionSelected(tipo:String,valor:Float,asignatura:String,descripcion:String){
@@ -233,7 +254,7 @@ class InicioViewModel @Inject constructor(
     }
 
     fun onAgregarEventoSelected(titulo:String,descrip:String, fecha:String,prioridad:Int, horaInicio:String = "", horaFin:String = "", imagenUri:String? = null){
-        val evento: Evento = Evento(null,titulo, descrip,fecha,prioridad, horaInicio, horaFin, imagenUri)
+        val evento = Evento(null,titulo, descrip,fecha,prioridad, horaInicio, horaFin, imagenUri)
         saveEvento(evento)
     }
     fun saveEvento(evento: Evento){
@@ -255,7 +276,7 @@ class InicioViewModel @Inject constructor(
     }
 
     fun onActualizarEventoSelected(id: Int?, titulo:String, descrip:String, fecha:String, prioridad:Int, horaInicio:String = "", horaFin:String = "", imagenUri:String? = null){
-        val evento: Evento = Evento(id, titulo, descrip, fecha, prioridad, horaInicio, horaFin, imagenUri)
+        val evento = Evento(id, titulo, descrip, fecha, prioridad, horaInicio, horaFin, imagenUri)
         updateEvento(evento)
     }
 

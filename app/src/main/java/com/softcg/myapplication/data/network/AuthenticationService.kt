@@ -1,9 +1,7 @@
 package com.softcg.myapplication.data.network
 import com.softcg.myapplication.data.response.LoginResult
 import com.google.firebase.auth.AuthResult
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import com.google.firebase.auth.GoogleAuthProvider
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -13,6 +11,11 @@ class AuthenticationService @Inject constructor(private val firebase: FirebaseCl
 
     suspend fun login(email: String, password: String): LoginResult = runCatching {
         firebase.auth.signInWithEmailAndPassword(email, password).await()
+    }.toLoginResult()
+
+    /** Canjea el ID token de Google por una sesión de Firebase; la primera vez crea la cuenta. */
+    suspend fun loginConGoogle(idToken: String): LoginResult = runCatching {
+        firebase.auth.signInWithCredential(GoogleAuthProvider.getCredential(idToken, null)).await()
     }.toLoginResult()
 
     suspend fun createAccount(email: String, password: String): AuthResult? {

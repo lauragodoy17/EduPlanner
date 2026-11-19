@@ -6,7 +6,7 @@ import com.softcg.myapplication.domain.prediccion.DatosPrediccion
 import com.softcg.myapplication.domain.prediccion.EstadoDato
 import com.softcg.myapplication.domain.prediccion.Extraccion
 import com.softcg.myapplication.domain.prediccion.ExtraerDatosPrediccionUseCase
-import com.softcg.myapplication.domain.prediccion.ParametroModelo
+import com.softcg.myapplication.domain.prediccion.ItemDato
 import com.softcg.myapplication.domain.prediccion.PredecirTareaUseCase
 import com.softcg.myapplication.domain.prediccion.ResultadoExtraccion
 import com.softcg.myapplication.ui.Inicio.Fragments.Asignaturas.Models.Asignatura
@@ -82,7 +82,7 @@ class RecomendarTareaUseCaseTest {
         RecomendarTareaUseCase(generador, reloj, extraer, predecir, verificador)
 
     private fun extraccionCompleta() = Extraccion.Lista(
-        ResultadoExtraccion(asignatura, tarea, listOf(EstadoDato(ParametroModelo.AREA, true, "Matemáticas", "")), datos, emptyList())
+        ResultadoExtraccion(asignatura, tarea, listOf(EstadoDato(ItemDato.AREA, true, "Matemáticas", "")), datos, emptyList())
     )
 
     @Before
@@ -161,8 +161,8 @@ class RecomendarTareaUseCaseTest {
             ResultadoExtraccion(
                 asignatura, tarea,
                 listOf(
-                    EstadoDato(ParametroModelo.NOTAS, true, "7,8 / 10", ""),
-                    EstadoDato(ParametroModelo.ASISTENCIA, false, "", "2 de 4 clases")
+                    EstadoDato(ItemDato.NOTAS, true, "7,8 / 10", ""),
+                    EstadoDato(ItemDato.ESTUDIO, false, "", "Falta con qué método estudias esta asignatura")
                 ),
                 datos = null, avisos = emptyList()
             )
@@ -177,10 +177,10 @@ class RecomendarTareaUseCaseTest {
         assertNull(r.confianza)
         val contexto = r.contexto as ContextoPrediccion.SinPrediccion
         assertEquals(MotivoSinPrediccion.FALTAN_DATOS, contexto.motivo)
-        assertEquals(listOf("Asistencia a clase"), contexto.faltantes)
+        assertEquals(listOf("Tiempo y método de estudio"), contexto.faltantes)
         val prompt = generador.prompts.single()
         assertTrue(prompt.contains("empiece exactamente con \"No tengo suficiente información sobre ti, sin embargo te recomiendo\""))
-        assertTrue(prompt.contains("faltan: Asistencia a clase"))
+        assertTrue(prompt.contains("faltan: Tiempo y método de estudio"))
     }
 
     @Test

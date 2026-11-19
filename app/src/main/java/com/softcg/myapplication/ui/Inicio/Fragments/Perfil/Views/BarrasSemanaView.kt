@@ -21,10 +21,10 @@ class BarrasSemanaView @JvmOverloads constructor(
     private val densidad = resources.displayMetrics.density
     private val tamanoTexto = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 12f, resources.displayMetrics)
 
-    private val barra = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = context.getColor(R.color.purple_soft) }
-    private val barraDestacada = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = context.getColor(R.color.purple_accent) }
+    private val barra = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = context.getColor(R.color.marca_suave) }
+    private val barraDestacada = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = context.getColor(R.color.acento) }
     private val base = Paint().apply {
-        color = context.getColor(R.color.input_border)
+        color = context.getColor(R.color.borde_suave)
         strokeWidth = densidad
     }
     private val textoDia = Paint(Paint.ANTI_ALIAS_FLAG).apply {

@@ -22,6 +22,13 @@ class EventosRepository @Inject constructor(
         }
     }
 
+    suspend fun getEvento(id: Int): Evento? {
+        val uid = uid() ?: return null
+        return eventosDao.getEvento(uid, id)?.let {
+            Evento(id = it.id, titulo = it.titulo, descrip = it.descrip, fecha = it.fecha, prioridad = it.prioridad, horaInicio = it.horaInicio, horaFin = it.horaFin, imagenUri = it.imagenUri)
+        }
+    }
+
     suspend fun deleteEvento(evento: Evento){
         val uid = uid() ?: return
         eventosDao.deleteEvento(evento.toEntity(uid))

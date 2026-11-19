@@ -29,6 +29,14 @@ interface AsignaturasDao {
     @Query("Update asignaturas_table Set area_modelo = :area, escala_min = :escalaMin, escala_max = :escalaMax Where id = :id And uid = :uid")
     suspend fun guardarDatosModelo(uid: String, id: Int, area: String?, escalaMin: Float?, escalaMax: Float?): Int
 
+    /** Edita los datos del formulario; el área, la escala y la fecha de registro no cambian. */
+    @Query("Update asignaturas_table Set nombre = :nombre, tutor = :tutor, Duracion = :duracion, hora = :hora, lunes = :lunes, martes = :martes, miercoles = :miercoles, jueves = :jueves, viernes = :viernes, sabado = :sabado, domingo = :domingo, tipo_calificacion = :tipoCalificacion Where id = :id And uid = :uid")
+    suspend fun actualizar(
+        uid: String, id: Int, nombre: String, tutor: String, duracion: Int, hora: String,
+        lunes: Boolean, martes: Boolean, miercoles: Boolean, jueves: Boolean, viernes: Boolean, sabado: Boolean, domingo: Boolean,
+        tipoCalificacion: String
+    ): Int
+
     @Query("Update asignaturas_table Set uid = :uid Where uid = ''")
     fun adoptarSinDueno(uid: String): Int
 }

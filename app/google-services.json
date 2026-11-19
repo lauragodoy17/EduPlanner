@@ -12,7 +12,20 @@
           "package_name": "com.softcg.myapplication"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "415509795739-mj7b6hbfnvsjq7pfchp9u1k2ks0db3ne.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.softcg.myapplication",
+            "certificate_hash": "d93a6c768f331a8ee0bf4019fa324943c80f239c"
+          }
+        },
+        {
+          "client_id": "415509795739-r6h8aetsgj5lvo53ojvhh9bru387c9kb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCpUxBR2WrQI63ofa2HCfVTTdq_PJ1TOu8"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "415509795739-r6h8aetsgj5lvo53ojvhh9bru387c9kb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

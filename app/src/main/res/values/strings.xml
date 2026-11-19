@@ -13,6 +13,14 @@
     <string name="login_error_dialog_body">Verifique los datos o vuelva a intentarlo</string>
     <string name="login_error_dialog_negative_action">Cancelar</string>
     <string name="login_error_dialog_positive_action">Reintentar</string>
+    <string name="asignatura_error_nombre">Escribe el nombre de la asignatura</string>
+    <string name="asignatura_error_guardar">No se pudo guardar la asignatura</string>
+    <string name="tarea_opcion_agregar_asignatura">+ Agregar asignatura</string>
+    <string name="tarea_error_asignatura">Elige una asignatura o agrega una nueva</string>
+    <string name="login_google">Continuar con Google</string>
+    <string name="login_google_cargando">Conectando con Google…</string>
+    <string name="login_google_error">No se pudo iniciar sesión con Google. Inténtalo de nuevo</string>
+    <string name="login_google_sin_cuentas">Agrega una cuenta de Google en el dispositivo para continuar</string>
     <string name="introduction_button_signin">Crear cuenta</string>
 
     <string name="signin_form_real_name">Nombre completo</string>

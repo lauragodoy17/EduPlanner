@@ -17,6 +17,7 @@
         android:paddingBottom="88dp">
 
         <ImageView
+            android:importantForAccessibility="no"
             style="@style/Edu.VacioIcono"
             android:layout_width="72dp"
             android:layout_height="72dp"

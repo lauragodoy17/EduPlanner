@@ -2,7 +2,7 @@ package com.softcg.myapplication.ui.Inicio.Fragments.Asignaturas.Adapters
 
 import android.content.Context
 import android.content.res.ColorStateList
-import android.graphics.Color
+import androidx.core.graphics.toColorInt
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +13,8 @@ import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.softcg.myapplication.R
 import com.softcg.myapplication.core.ex.confirmar
+import com.softcg.myapplication.domain.compartir.ContenidoCompartido
+import com.softcg.myapplication.ui.Inicio.Dialogs.CompartirQrDialog
 import com.softcg.myapplication.core.ex.mostrarAviso
 import com.softcg.myapplication.ui.Inicio.Fragments.Asignaturas.AsignaturasViewModel
 import com.softcg.myapplication.ui.Inicio.Fragments.Asignaturas.ResumenDatos
@@ -22,7 +24,9 @@ import com.softcg.myapplication.ui.Inicio.Fragments.Horario.Models.AsignaturaCon
 class AsignaturasAdapter (
     private val context: Context,
     private val inicioViewModel: AsignaturasViewModel,
-    private val onVerDatos: (Asignatura) -> Unit = {}
+    private val onVerDatos: (Asignatura) -> Unit = {},
+    /** Tocar la tarjeta abre la pantalla de la asignatura. */
+    private val onAbrir: (Asignatura) -> Unit = {}
 ) : RecyclerView.Adapter<AsignaturasAdapter.MyViewHolder>()  {
 
     private var asignaturas = emptyList<Asignatura>()
@@ -73,11 +77,12 @@ class AsignaturasAdapter (
         holder.textDias.text = if (dias.isNotEmpty()) dias.joinToString(", ") else "Sin días asignados"
 
         // Color que identifica la asignatura
-        holder.colorBar.backgroundTintList = ColorStateList.valueOf(Color.parseColor(AsignaturaConHora.getColorAsignatura(position)))
+        holder.colorBar.backgroundTintList = ColorStateList.valueOf(AsignaturaConHora.getColorAsignatura(position).toColorInt())
 
         holder.boton.setOnClickListener {v ->
             showPopupMenu(v,position)
         }
+        holder.mainCard.setOnClickListener { onAbrir(currentItem) }
 
         // Datos para predicciones: cuántos hay y, cada mes, el recordatorio de confirmar el interés
         val resumen = currentItem.id?.let { resumenes[it] }
@@ -107,6 +112,10 @@ class AsignaturasAdapter (
 
         popupMenu.setOnMenuItemClickListener { item ->
             when (item.itemId) {
+                R.id.Compartir -> {
+                    asignaturas.getOrNull(position)?.let { CompartirQrDialog(context, ContenidoCompartido.de(it)).show() }
+                    true
+                }
                 R.id.Borrar -> {
                     deleteItem(position, view)
                     true

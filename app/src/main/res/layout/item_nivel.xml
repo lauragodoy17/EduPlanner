@@ -29,7 +29,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Primíparo"
-            android:textColor="@color/text_primary"
+            android:textColor="?attr/eduTextPrimary"
             android:textSize="15sp"
             android:textStyle="bold"/>
 
@@ -38,7 +38,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="0 XP"
-            android:textColor="@color/text_secondary"
+            android:textColor="?attr/eduTextSecondary"
             android:textSize="13sp"/>
 
         <TextView
@@ -46,7 +46,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Desbloquea: Audífonos"
-            android:textColor="@color/purple_accent"
+            android:textColor="?attr/eduAcento"
             android:textSize="13sp"
             android:visibility="gone"/>
     </LinearLayout>

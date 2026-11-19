@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Paleta de la app: cada tema (values/themes.xml) da un valor a cada uno. En XML se usan como
+     ?attr/eduAcento; desde el código, con context.getColor(R.color.acento) (res/color/acento.xml). -->
+<resources>
+    <attr name="eduMarcaProfunda" format="color"/>
+    <attr name="eduMarca" format="color"/>
+    <attr name="eduAcento" format="color"/>
+    <attr name="eduSobreAcento" format="color"/>
+    <attr name="eduMarcaClara" format="color"/>
+    <attr name="eduMarcaSuave" format="color"/>
+    <attr name="eduMarcaSuperficie" format="color"/>
+    <attr name="eduDegradadoInicio" format="color"/>
+    <attr name="eduDegradadoFin" format="color"/>
+    <attr name="eduFondoApp" format="color"/>
+    <attr name="eduSuperficie" format="color"/>
+    <attr name="eduBordeSuave" format="color"/>
+    <attr name="eduPistaClara" format="color"/>
+    <attr name="eduVeloOscuro" format="color"/>
+    <attr name="eduTextPrimary" format="color"/>
+    <attr name="eduTextSecondary" format="color"/>
+    <attr name="eduTextHint" format="color"/>
+    <attr name="eduEstadoExito" format="color"/>
+    <attr name="eduEstadoExitoSuave" format="color"/>
+    <attr name="eduEstadoAviso" format="color"/>
+    <attr name="eduEstadoAvisoSuave" format="color"/>
+    <attr name="eduEstadoError" format="color"/>
+    <attr name="eduEstadoErrorSuave" format="color"/>
+    <attr name="eduEvento" format="color"/>
+    <attr name="eduEventoSuave" format="color"/>
+    <attr name="eduLogroBloqueado" format="color"/>
+</resources>

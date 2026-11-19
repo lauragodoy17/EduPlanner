@@ -40,8 +40,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
-            app:indicatorColor="@color/purple_accent"
-            app:trackColor="@color/purple_surface"
+            app:indicatorColor="?attr/eduAcento"
+            app:trackColor="?attr/eduMarcaSuperficie"
             app:trackCornerRadius="4dp"
             app:trackThickness="8dp"/>
 
@@ -56,7 +56,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="El tema se elige en cada tarea. Tus registros se quedan en tu teléfono: al predecir solo se envían los 8 valores resumidos."/>
+            android:text="El tema sale del título de cada tarea y la asistencia se cuenta sola al terminar tus clases. Tus registros se quedan en tu teléfono: al predecir solo se envían los valores resumidos."/>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/progresoCerrar"

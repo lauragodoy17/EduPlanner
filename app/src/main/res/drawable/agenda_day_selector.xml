@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_selected="true">
-        <shape android:shape="oval"><solid android:color="@color/purple_accent"/></shape>
+        <shape android:shape="oval"><solid android:color="?attr/eduAcento"/></shape>
     </item>
     <item android:state_activated="true">
         <shape android:shape="oval">
-            <solid android:color="@color/purple_surface"/>
-            <stroke android:width="1.5dp" android:color="@color/purple_accent"/>
+            <solid android:color="?attr/eduMarcaSuperficie"/>
+            <stroke android:width="1.5dp" android:color="?attr/eduAcento"/>
         </shape>
     </item>
     <item><shape android:shape="oval"><solid android:color="@android:color/transparent"/></shape></item>

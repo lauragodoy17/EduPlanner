@@ -70,8 +70,9 @@ class HomeViewModel @Inject constructor(
     }
 
     fun selectDate(dateItem: DateFilterItem) {
-        selectedDate = dateFormat.format(dateItem.date)
-        _fechaSeleccionada.value = selectedDate
+        val fecha = dateFormat.format(dateItem.date)
+        selectedDate = fecha
+        _fechaSeleccionada.value = fecha
         filterDataByDate()
     }
 

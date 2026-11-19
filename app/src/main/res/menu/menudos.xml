@@ -12,6 +12,9 @@
         android:title="Calificar"
         android:visible="false"/>
     <item
+        android:id="@+id/Compartir"
+        android:title="Compartir por QR"/>
+    <item
         android:id="@+id/Borrar"
         android:title="Borrar"/>
 </menu>

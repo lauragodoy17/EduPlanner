@@ -98,7 +98,7 @@
             android:layout_height="@dimen/alto_boton"
             android:layout_marginTop="8dp"
             android:text="Continuar"
-            android:textColor="@color/purple_deep"
+            android:textColor="?attr/eduDegradadoInicio"
             android:textStyle="bold"
             app:backgroundTint="@color/white"
             app:cornerRadius="16dp"

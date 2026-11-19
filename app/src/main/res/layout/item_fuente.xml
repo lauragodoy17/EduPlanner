@@ -17,7 +17,7 @@
         android:layout_marginEnd="10dp"
         android:importantForAccessibility="no"
         android:src="@drawable/ic_fuente_libro"
-        app:tint="@color/purple_accent"/>
+        app:tint="?attr/eduAcento"/>
 
     <LinearLayout
         android:layout_width="0dp"
@@ -29,7 +29,7 @@
             android:id="@+id/fuenteTitulo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/purple_accent"
+            android:textColor="?attr/eduAcento"
             android:textSize="14sp"
             android:textStyle="bold"
             tools:text="Cálculo de una variable"/>

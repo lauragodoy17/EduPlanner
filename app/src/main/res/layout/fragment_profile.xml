@@ -4,13 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/fondo_app"
+    android:background="?attr/eduFondoApp"
     tools:context=".ui.Inicio.Fragments.Perfil.ProfileFragment">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/fondo_app"
+        android:background="?attr/eduFondoApp"
         app:elevation="0dp">
 
         <!-- Nivel, XP y resumen: se oculta al desplazar para dejar sitio al contenido -->
@@ -240,16 +240,16 @@
             android:id="@+id/perfilTabs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/fondo_app"
+            android:background="?attr/eduFondoApp"
             app:tabMode="fixed"
             app:tabGravity="fill"
             app:tabPaddingStart="2dp"
             app:tabPaddingEnd="2dp"
-            app:tabIndicatorColor="@color/purple_accent"
+            app:tabIndicatorColor="?attr/eduAcento"
             app:tabIndicatorFullWidth="false"
             app:tabIndicatorHeight="3dp"
-            app:tabSelectedTextColor="@color/purple_accent"
-            app:tabTextColor="@color/text_secondary"
+            app:tabSelectedTextColor="?attr/eduAcento"
+            app:tabTextColor="?attr/eduTextSecondary"
             app:tabTextAppearance="@style/TextoPestanaProgreso"/>
     </com.google.android.material.appbar.AppBarLayout>
 

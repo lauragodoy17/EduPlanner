@@ -8,7 +8,7 @@ import com.softcg.myapplication.domain.prediccion.DatosPrediccion
 import com.softcg.myapplication.domain.prediccion.EstadoDato
 import com.softcg.myapplication.domain.prediccion.Extraccion
 import com.softcg.myapplication.domain.prediccion.ExtraerDatosPrediccionUseCase
-import com.softcg.myapplication.domain.prediccion.ParametroModelo
+import com.softcg.myapplication.domain.prediccion.ItemDato
 import com.softcg.myapplication.domain.prediccion.PredecirTareaUseCase
 import com.softcg.myapplication.domain.prediccion.ResultadoExtraccion
 import com.softcg.myapplication.ui.Inicio.Fragments.Asignaturas.Models.Asignatura
@@ -41,11 +41,11 @@ class PrediccionViewModelTest {
 
     private fun resultado(datos: DatosPrediccion?) = ResultadoExtraccion(
         asignatura, tarea,
-        ParametroModelo.values().map { EstadoDato(it, listo = datos != null, valor = "", detalle = "") },
+        ItemDato.entries.map { EstadoDato(it, listo = datos != null, valor = "", detalle = "") },
         datos, emptyList()
     )
 
-    private fun viewModel() = PrediccionViewModel(tareas, extraer, predecir)
+    private fun viewModel() = PrediccionViewModel(tareas, extraer, predecir, mockk(relaxed = true), mockk(relaxed = true))
 
     @Test
     fun `con todos los datos envia los datos reales extraidos y muestra la respuesta`() {

@@ -21,7 +21,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:src="@drawable/ic_gami_insignia"
-            app:tint="@color/logro_bloqueado"
+            app:tint="?attr/eduLogroBloqueado"
             android:importantForAccessibility="no"/>
 
         <ImageView
@@ -40,7 +40,7 @@
         android:layout_height="wrap_content"
         android:text="Logro"
         android:textAlignment="center"
-        android:textColor="@color/text_primary"
+        android:textColor="?attr/eduTextPrimary"
         android:textSize="12sp"
         android:textStyle="bold"
         android:minLines="2"
@@ -54,7 +54,7 @@
         android:layout_marginTop="4dp"
         app:trackThickness="4dp"
         app:trackCornerRadius="2dp"
-        app:indicatorColor="@color/purple_light"
-        app:trackColor="@color/pista_clara"
+        app:indicatorColor="?attr/eduMarcaClara"
+        app:trackColor="?attr/eduPistaClara"
         android:importantForAccessibility="no"/>
 </LinearLayout>

@@ -9,6 +9,7 @@ import com.softcg.myapplication.domain.prediccion.Extraccion
 import com.softcg.myapplication.domain.prediccion.ExtraerDatosPrediccionUseCase
 import com.softcg.myapplication.domain.prediccion.GuardarDatosAsignaturaUseCase
 import com.softcg.myapplication.domain.prediccion.GuardarDificultadUseCase
+import com.softcg.myapplication.domain.prediccion.GuardarPercepcionesUseCase
 import com.softcg.myapplication.domain.prediccion.RegistrarEstudioManualUseCase
 import com.softcg.myapplication.domain.prediccion.ReglasExtraccion
 import com.softcg.myapplication.domain.prediccion.ResultadoGuardarDatos
@@ -17,6 +18,9 @@ import com.softcg.myapplication.ui.Inicio.Models.Tarea
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.time.LocalDate
 import javax.inject.Inject
+
+/** Respuestas que el estudiante ya dio de una asignatura; null las que nunca respondió. */
+data class RespuestasDeclaradas(val interes: Float?, val dificultad: Float?, val metodo: String?, val horasSemana: Float?)
 
 /**
  * Datos de estudio que alimentan las predicciones, compartido por las pantallas que los recogen
@@ -27,6 +31,7 @@ class DatosEstudioViewModel @Inject constructor(
     private val extraer: ExtraerDatosPrediccionUseCase,
     private val guardarDatosAsignatura: GuardarDatosAsignaturaUseCase,
     private val guardarDificultad: GuardarDificultadUseCase,
+    private val guardarPercepciones: GuardarPercepcionesUseCase,
     private val registrarEstudio: RegistrarEstudioManualUseCase,
     private val percepciones: PercepcionesRepository,
     private val getAsignaturas: getAsignaturasUseCase
@@ -45,26 +50,38 @@ class DatosEstudioViewModel @Inject constructor(
 
     suspend fun progresoAsignatura(asignaturaId: Int): Extraccion = extraer.deAsignatura(asignaturaId)
 
-    suspend fun progresoTarea(tarea: Tarea): Extraccion = extraer.deTarea(tarea)
-
     suspend fun metodoHabitual(asignaturaId: Int): String? = extraer.metodoHabitual(asignaturaId)
 
-    /** Interés y método que el estudiante ya indicó, para mostrarlos marcados al volver a abrir la hoja. */
-    suspend fun respuestasActuales(asignaturaId: Int): Pair<Float?, String?> {
+    /** Lo último que el estudiante declaró, para mostrarlo marcado al volver a abrir una hoja. */
+    suspend fun respuestasActuales(asignaturaId: Int): RespuestasDeclaradas {
         val suyas = percepciones.deAsignatura(asignaturaId)
-        val interes = ReglasExtraccion.interes(suyas)?.valor
-        val metodo = suyas.firstOrNull { it.tipo == ReglasExtraccion.TIPO_METODO }?.texto
-        return interes to metodo
+        fun ultima(tipo: String) = suyas.filter { it.tipo == tipo }.maxByOrNull { it.fechaMillis }
+        return RespuestasDeclaradas(
+            interes = ReglasExtraccion.interes(suyas)?.valor,
+            dificultad = ultima(ReglasExtraccion.TIPO_DIFICULTAD)?.valor,
+            metodo = ultima(ReglasExtraccion.TIPO_METODO)?.texto,
+            horasSemana = ReglasExtraccion.horasDeclaradas(suyas)?.valor
+        )
     }
 
-    suspend fun guardarAsignatura(
-        asignaturaId: Int, area: String?, escalaMin: Float?, escalaMax: Float?, interes: Float?, metodo: String?
-    ) = avisarCambio(guardarDatosAsignatura(asignaturaId, area, escalaMin, escalaMax, interes, metodo))
+    /** Área y escala de notas. */
+    suspend fun guardarAsignatura(asignaturaId: Int, area: String?, escalaMin: Float?, escalaMax: Float?) =
+        avisarCambio(guardarDatosAsignatura(asignaturaId, area, escalaMin, escalaMax, null, null))
+
+    /** Solo el área: conserva la escala de notas que ya tuviera la asignatura. */
+    suspend fun guardarArea(asignaturaId: Int, area: String): ResultadoGuardarDatos {
+        val asignatura = asignaturas().firstOrNull { it.id == asignaturaId }
+            ?: return ResultadoGuardarDatos.Invalido("La asignatura ya no existe")
+        return guardarAsignatura(asignaturaId, area, asignatura.escalaMin, asignatura.escalaMax)
+    }
+
+    suspend fun guardarEstudio(asignaturaId: Int, horasSemana: Float?, metodo: String?) =
+        avisarCambio(guardarPercepciones.estudio(asignaturaId, horasSemana, metodo))
+
+    suspend fun guardarInteresYDificultad(asignaturaId: Int, tema: String?, interes: Float?, dificultad: Float?) =
+        avisarCambio(guardarPercepciones.interesYDificultad(asignaturaId, tema, interes, dificultad))
 
     suspend fun dificultadDeTarea(tarea: Tarea, valor: Float) = avisarCambio(guardarDificultad.deTarea(tarea, valor))
-
-    suspend fun dificultadDeAsignatura(asignaturaId: Int, tema: String?, valor: Float) =
-        avisarCambio(guardarDificultad.deAsignatura(asignaturaId, tema, valor))
 
     /** Solo se pregunta la dificultad una vez por tarea. */
     suspend fun debePreguntarDificultad(tarea: Tarea): Boolean {

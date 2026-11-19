@@ -17,6 +17,7 @@
         <View style="@style/Edu.AsaHoja"/>
 
         <TextView
+            android:id="@+id/formTitulo"
             style="@style/Edu.Texto.TituloHoja"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -142,14 +143,14 @@
                         android:layout_width="10dp"
                         android:layout_height="10dp"
                         android:background="@drawable/circle_shape"
-                        android:backgroundTint="@color/estado_error"
+                        android:backgroundTint="?attr/eduEstadoError"
                         android:layout_marginEnd="6dp"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Alta"
-                        android:textColor="@color/text_primary"
+                        android:textColor="?attr/eduTextPrimary"
                         android:textStyle="bold"
                         android:textSize="14sp"/>
                 </LinearLayout>
@@ -179,14 +180,14 @@
                         android:layout_width="10dp"
                         android:layout_height="10dp"
                         android:background="@drawable/circle_shape"
-                        android:backgroundTint="@color/estado_aviso"
+                        android:backgroundTint="?attr/eduEstadoAviso"
                         android:layout_marginEnd="6dp"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Media"
-                        android:textColor="@color/text_primary"
+                        android:textColor="?attr/eduTextPrimary"
                         android:textStyle="bold"
                         android:textSize="14sp"/>
                 </LinearLayout>
@@ -216,14 +217,14 @@
                         android:layout_width="10dp"
                         android:layout_height="10dp"
                         android:background="@drawable/circle_shape"
-                        android:backgroundTint="@color/estado_exito"
+                        android:backgroundTint="?attr/eduEstadoExito"
                         android:layout_marginEnd="6dp"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Baja"
-                        android:textColor="@color/text_primary"
+                        android:textColor="?attr/eduTextPrimary"
                         android:textStyle="bold"
                         android:textSize="14sp"/>
                 </LinearLayout>
@@ -252,7 +253,7 @@
                     android:layout_width="28dp"
                     android:layout_height="28dp"
                     android:src="@drawable/ic_image"
-                    app:tint="@color/purple_accent"
+                    app:tint="?attr/eduAcento"
                     android:layout_marginEnd="12dp"
                     android:importantForAccessibility="no"/>
 
@@ -282,7 +283,7 @@
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:src="@drawable/ic_chevron_right"
-                    app:tint="@color/purple_accent"
+                    app:tint="?attr/eduAcento"
                     android:importantForAccessibility="no"/>
             </LinearLayout>
         </androidx.cardview.widget.CardView>

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Token del tema: su valor lo da el tema activo (?attr/eduBordeSuave). -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:color="?attr/eduBordeSuave"/>
+</selector>

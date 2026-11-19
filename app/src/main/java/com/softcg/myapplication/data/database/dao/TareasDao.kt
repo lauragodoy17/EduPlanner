@@ -36,6 +36,14 @@ interface TareasDao {
     suspend fun marcarEntregada(uid: String, id:Int, millis:Long): Int
 
     /** Filas anteriores a la versión 16, sin dueño. */
+    /** Edita lo que el estudiante escribió; el estado (entregada, calificada) no cambia. */
+    @Query("UPDATE tareas_table SET titulo = :titulo, descrip = :descrip, asignatura = :asignatura, asignatura_id = :asignaturaId, fecha = :fecha, prioridad = :prioridad WHERE id = :id AND uid = :uid")
+    suspend fun actualizar(uid: String, id: Int, titulo: String, descrip: String, asignatura: String, asignaturaId: Int?, fecha: String, prioridad: Int): Int
+
+    /** Al renombrar una asignatura, sus tareas (por id o, las antiguas, por nombre) pasan al nombre nuevo. */
+    @Query("UPDATE tareas_table SET asignatura = :nuevo, asignatura_id = :asignaturaId WHERE uid = :uid AND (asignatura_id = :asignaturaId OR (asignatura_id IS NULL AND asignatura = :viejo))")
+    suspend fun renombrarAsignatura(uid: String, asignaturaId: Int, viejo: String, nuevo: String): Int
+
     @Query("UPDATE tareas_table SET uid = :uid WHERE uid = ''")
     fun adoptarSinDueno(uid: String): Int
 

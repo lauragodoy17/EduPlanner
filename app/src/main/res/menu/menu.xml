@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:showIn="navigation_view"
-    >
+    tools:showIn="navigation_view">
+
     <group android:id="@+id/menu_principal" android:checkableBehavior="single">
         <item
             android:id="@+id/id_home_fragment"
             android:icon="@drawable/ic_home_modern"
-            android:title="Inicio"
-            />
+            android:title="Inicio"/>
         <item
             android:id="@+id/id_diary_fragment"
             android:icon="@drawable/ic_calendar_modern"
@@ -32,23 +30,30 @@
             android:title="Perfil y progreso"/>
     </group>
 
-    <group
-        android:id="@+id/menu_cuenta"
-        android:checkableBehavior="single"
-        >
-
-        <item
-            android:id="@+id/id_help_fragment"
-            android:icon="@drawable/baseline_question_mark_24"
-            android:title="Ayuda y opiniones"/>
-
-        <item
-            android:id="@+id/signout"
-            android:icon="@drawable/baseline_exit_24"
-            android:title="Cerrar sesión"
-            />
-
-    </group>
-
-
+    <!-- Opciones: la única separación del menú está sobre este título -->
+    <item
+        android:id="@+id/menu_opciones"
+        android:title="Opciones">
+        <menu>
+            <group
+                android:id="@+id/menu_opciones_grupo"
+                android:checkableBehavior="single">
+                <!-- Preferencia del dispositivo: abre una hoja, no navega -->
+                <item
+                    android:id="@+id/opcion_tema"
+                    android:checkable="false"
+                    android:icon="@drawable/ic_paleta"
+                    android:title="Tema de la app"/>
+                <item
+                    android:id="@+id/id_help_fragment"
+                    android:icon="@drawable/baseline_question_mark_24"
+                    android:title="Ayuda y opiniones"/>
+                <item
+                    android:id="@+id/signout"
+                    android:checkable="false"
+                    android:icon="@drawable/baseline_exit_24"
+                    android:title="Cerrar sesión"/>
+            </group>
+        </menu>
+    </item>
 </menu>

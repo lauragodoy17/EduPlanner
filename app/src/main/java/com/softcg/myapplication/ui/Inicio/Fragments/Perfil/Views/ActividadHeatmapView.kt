@@ -31,7 +31,7 @@ class ActividadHeatmapView @JvmOverloads constructor(
     private val radio = 3 * densidad
     private val anchoEtiquetas = 16 * densidad
 
-    private val rampa = listOf(R.color.pista_clara, R.color.purple_soft, R.color.purple_light, R.color.purple_accent, R.color.purple_deep)
+    private val rampa = listOf(R.color.pista_clara, R.color.marca_suave, R.color.marca_clara, R.color.acento, R.color.marca_profunda)
         .map { context.getColor(it) }
     private val celda = Paint(Paint.ANTI_ALIAS_FLAG)
     private val marcaHoy = Paint(Paint.ANTI_ALIAS_FLAG).apply {

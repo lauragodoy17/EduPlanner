@@ -29,7 +29,9 @@ data class DatosPrediccion(
     val interestLevel: Double,
     val subjectName: String,
     val subjectTopic: String,
-    val studyMethod: String
+    val studyMethod: String,
+    /** La asistencia es el 100 % supuesto (aún no hay clases respondidas). No se envía a la API. */
+    val asistenciaSupuesta: Boolean = false
 ) {
     fun aJson(): String = JSONObject()
         .put("attendance_avg", attendanceAvg)

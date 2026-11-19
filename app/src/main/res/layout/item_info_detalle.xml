@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Una fila rótulo → valor en la ficha de un evento, asignatura o nota (mismo estilo que la información de la tarea) -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingVertical="5dp">
+
+    <TextView
+        android:id="@+id/infoRotulo"
+        style="@style/Edu.Texto.Rotulo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="2dp"
+        tools:text="Horario"/>
+
+    <TextView
+        android:id="@+id/infoValor"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="?attr/eduTextPrimary"
+        android:textSize="15sp"
+        tools:text="08:00 - 10:00"/>
+</LinearLayout>

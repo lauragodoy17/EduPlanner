@@ -20,6 +20,6 @@
         android:layout_weight="1"
         android:text="Item Name"
         android:textSize="14sp"
-        android:textColor="@color/text_primary" />
+        android:textColor="?attr/eduTextPrimary" />
 
 </LinearLayout>

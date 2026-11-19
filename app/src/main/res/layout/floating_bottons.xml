@@ -10,7 +10,7 @@
         android:id="@+id/fab_velo"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/velo_oscuro"
+        android:background="?attr/eduVeloOscuro"
         android:clickable="true"
         android:focusable="false"
         android:alpha="0"
@@ -105,7 +105,7 @@
         android:layout_marginBottom="16dp"
         android:contentDescription="Añadir"
         android:src="@drawable/baseline_cruz_24"
-        app:backgroundTint="@color/purple_accent"
-        app:tint="@color/white"
+        app:backgroundTint="?attr/eduAcento"
+        app:tint="?attr/eduSobreAcento"
         />
 </RelativeLayout>

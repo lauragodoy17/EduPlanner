@@ -81,12 +81,15 @@ class ExtraerDatosPrediccionUseCaseTest {
         (caso.deAsignatura(3, tarea) as Extraccion.Lista).resultado
     }
 
+    private fun item(r: ResultadoExtraccion, item: ItemDato) = r.estados.single { it.item == item }
+
     @Test
     fun `con todos los datos construye la peticion con los valores reales`() {
         val r = resultado()
 
         assertTrue(r.completo)
-        assertEquals(8, r.total)
+        // Área y tema salen solos: solo quedan notas, estudio e interés y dificultad
+        assertEquals(listOf(ItemDato.NOTAS, ItemDato.ESTUDIO, ItemDato.PERCEPCION), r.estados.map { it.item })
         assertEquals(
             DatosPrediccion(
                 attendanceAvg = 8.0,       // 80 % / 10
@@ -101,6 +104,23 @@ class ExtraerDatosPrediccionUseCaseTest {
             r.datos
         )
         assertEquals(5L, r.diasDesdeInteres)
+        assertEquals("0,9 h/semana · Pomodoro", item(r, ItemDato.ESTUDIO).valor)
+        assertEquals("Interés 7,5 · Dificultad 5,0", item(r, ItemDato.PERCEPCION).valor)
+    }
+
+    @Test
+    fun `sin clases respondidas suficientes la asistencia se supone del 100 por ciento y no se pide`() {
+        coEvery { gamificacion.asistencias("u1") } returns listOf(AsistenciaEntity("u1", 3, hoy.toString(), false, 0, 0, 0))
+
+        val r = resultado()
+
+        assertTrue(r.completo)
+        assertEquals(10.0, r.datos!!.attendanceAvg, 0.001)
+        assertTrue("Gemini no debe comentar una asistencia que no se midió", r.datos!!.asistenciaSupuesta)
+        // Lo supuesto no viaja a la API como campo propio
+        assertFalse(r.datos!!.aJson().contains("asistencia"))
+        // El 100 % supuesto está fuera del rango de entrenamiento, pero no es un dato del estudiante: no se avisa
+        assertTrue(r.avisos.none { it.contains("asistencia") })
     }
 
     @Test
@@ -111,28 +131,35 @@ class ExtraerDatosPrediccionUseCaseTest {
     }
 
     @Test
-    fun `sin area confirmada no hay peticion y se pide confirmarla con una sugerencia`() {
+    fun `sin area solo entonces aparece el item del area y no hay peticion`() {
         coEvery { asignaturas.getAsignatura(3) } returns calculo.copy(areaModelo = null)
 
         val r = resultado()
 
         assertFalse(r.completo)
         assertNull(r.datos)
-        val area = r.estados.single { it.parametro == ParametroModelo.AREA }
+        val area = item(r, ItemDato.AREA)
         assertFalse(area.listo)
-        assertEquals(AccionDato.DATOS_ASIGNATURA, area.accion)
+        assertEquals(AccionDato.AREA, area.accion)
         assertTrue(area.detalle.contains("Matemáticas"))
-        // Sin área tampoco hay temas
-        assertEquals(AccionDato.DATOS_ASIGNATURA, r.estados.single { it.parametro == ParametroModelo.TEMA }.accion)
+        // El tema depende del área: no se muestra un segundo ítem por lo mismo
+        assertTrue(r.estados.none { it.item == ItemDato.TEMA })
     }
 
     @Test
     fun `el tema no se pregunta, sale del titulo de la tarea`() {
         val r = resultado(tarea.copy(tema = null, titulo = "Taller de integrales por partes"))
-        val tema = r.estados.single { it.parametro == ParametroModelo.TEMA }
-        assertTrue(tema.listo)
-        assertNull(tema.accion)
+        assertTrue(r.estados.none { it.item == ItemDato.TEMA })
         assertEquals("Integrales", r.datos!!.subjectTopic)
+    }
+
+    @Test
+    fun `una tarea sin titulo pide ponerle uno`() {
+        val r = resultado(tarea.copy(tema = null, titulo = "  "))
+        val tema = item(r, ItemDato.TEMA)
+        assertFalse(tema.listo)
+        assertNull(tema.accion)
+        assertNull(r.datos)
     }
 
     @Test
@@ -144,16 +171,15 @@ class ExtraerDatosPrediccionUseCaseTest {
     }
 
     @Test
-    fun `con pocas clases o notas faltan esos datos y no se rellenan`() {
-        coEvery { gamificacion.asistencias("u1") } returns listOf(AsistenciaEntity("u1", 3, hoy.toString(), true, 0, 0, 0))
+    fun `con pocas notas se pide registrar mas, sin boton para hacerlo desde ahi`() {
         coEvery { calificaciones.deAsignatura(3, "Cálculo") } returns listOf(Calificacion(1, "Tarea", 8f, "Cálculo", ""))
 
         val r = resultado()
 
-        assertFalse(r.estados.single { it.parametro == ParametroModelo.ASISTENCIA }.listo)
-        val notas = r.estados.single { it.parametro == ParametroModelo.NOTAS }
+        val notas = item(r, ItemDato.NOTAS)
         assertFalse(notas.listo)
-        assertEquals(AccionDato.CALIFICACIONES, notas.accion)
+        assertNull(notas.accion)
+        assertTrue(notas.detalle.startsWith("Registra más notas en esta asignatura para poder realizar la recomendación"))
         assertNull(r.datos)
     }
 
@@ -164,20 +190,64 @@ class ExtraerDatosPrediccionUseCaseTest {
             Calificacion(1, "Tarea", 4f, "Cálculo", ""), Calificacion(2, "Tarea", 5f, "Cálculo", "")
         )
 
-        val notas = resultado().estados.single { it.parametro == ParametroModelo.NOTAS }
+        val notas = item(resultado(), ItemDato.NOTAS)
 
         assertFalse(notas.listo)
-        assertEquals(AccionDato.DATOS_ASIGNATURA, notas.accion)
+        assertEquals(AccionDato.ESCALA, notas.accion)
     }
 
     @Test
-    fun `menos de dos semanas de estudio aun no es suficiente`() {
+    fun `con menos de dos semanas de sesiones y sin horas declaradas falta el tiempo`() {
         coEvery { gamificacion.sesionesEstudio("u1") } returns listOf(sesionEstudio(ahora.minusDays(3), 60, "Pomodoro"))
 
-        val estudio = resultado().estados.single { it.parametro == ParametroModelo.ESTUDIO }
+        val estudio = item(resultado(), ItemDato.ESTUDIO)
 
         assertFalse(estudio.listo)
-        assertEquals(AccionDato.REGISTRAR_ESTUDIO, estudio.accion)
+        assertEquals(AccionDato.ESTUDIO, estudio.accion)
+        assertTrue(estudio.detalle.startsWith("Falta cuántas horas a la semana"))
+    }
+
+    @Test
+    fun `las horas declaradas cuentan mientras no haya dos semanas de sesiones`() {
+        coEvery { gamificacion.sesionesEstudio("u1") } returns listOf(sesionEstudio(ahora.minusDays(3), 60, "Pomodoro"))
+        coEvery { percepciones.deAsignatura(3) } returns listOf(
+            percepcion(ReglasExtraccion.TIPO_INTERES, 5, 7.5f),
+            percepcion(ReglasExtraccion.TIPO_DIFICULTAD, 3, 5f),
+            percepcion(ReglasExtraccion.TIPO_HORAS, 2, 3f)
+        )
+
+        val r = resultado()
+
+        val estudio = item(r, ItemDato.ESTUDIO)
+        assertTrue(estudio.listo)
+        assertEquals("Según lo que nos contaste", estudio.detalle)
+        assertEquals(3.0, r.datos!!.intensityHours, 0.001)
+    }
+
+    @Test
+    fun `con dos semanas de sesiones mandan las sesiones sobre lo declarado`() {
+        coEvery { percepciones.deAsignatura(3) } returns listOf(
+            percepcion(ReglasExtraccion.TIPO_INTERES, 5, 7.5f),
+            percepcion(ReglasExtraccion.TIPO_DIFICULTAD, 3, 5f),
+            percepcion(ReglasExtraccion.TIPO_HORAS, 2, 3f)
+        )
+
+        val r = resultado()
+
+        assertEquals("Según tus sesiones de estudio", item(r, ItemDato.ESTUDIO).detalle)
+        assertEquals(0.88, r.datos!!.intensityHours, 0.001)
+    }
+
+    @Test
+    fun `sin metodo el item de estudio dice que falta el metodo`() {
+        coEvery { gamificacion.sesionesEstudio("u1") } returns listOf(
+            sesionEstudio(ahora.minusDays(19), 60, null), sesionEstudio(ahora.minusDays(2), 30, null)
+        )
+
+        val estudio = item(resultado(), ItemDato.ESTUDIO)
+
+        assertFalse(estudio.listo)
+        assertEquals("Falta con qué método estudias esta asignatura", estudio.detalle)
     }
 
     @Test
@@ -189,16 +259,27 @@ class ExtraerDatosPrediccionUseCaseTest {
 
         val r = resultado()
 
-        val interes = r.estados.single { it.parametro == ParametroModelo.INTERES }
-        assertFalse(interes.listo)
-        assertEquals(AccionDato.DATOS_ASIGNATURA, interes.accion)
+        val percepcion = item(r, ItemDato.PERCEPCION)
+        assertFalse(percepcion.listo)
+        assertEquals(AccionDato.PERCEPCION, percepcion.accion)
+        assertTrue(percepcion.detalle.contains("actualízala"))
         assertNull(r.datos)
     }
 
     @Test
-    fun `sin tarea evalua solo los 7 datos de la asignatura`() {
+    fun `sin dificultad el item de interes y dificultad dice que falta la dificultad`() {
+        coEvery { percepciones.deAsignatura(3) } returns listOf(percepcion(ReglasExtraccion.TIPO_INTERES, 5, 7.5f))
+
+        val percepcion = item(resultado(), ItemDato.PERCEPCION)
+
+        assertFalse(percepcion.listo)
+        assertEquals("Falta qué tan difícil te parece esta asignatura", percepcion.detalle)
+    }
+
+    @Test
+    fun `sin tarea evalua solo los datos de la asignatura`() {
         val r = resultado(tarea = null)
-        assertEquals(7, r.total)
+        assertEquals(3, r.total)
         assertTrue(r.completo)
         assertNull("Sin tarea no hay tema, así que no hay petición", r.datos)
     }

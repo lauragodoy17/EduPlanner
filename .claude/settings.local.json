@@ -1,7 +1,18 @@
 {
+  "env": {
+    "JAVA_HOME": "C:\\Users\\juane\\.jdks\\jbr-17.0.14"
+  },
   "permissions": {
     "allow": [
-      "Bash(./gradlew:*)"
+      "Bash(./gradlew:*)",
+      "Bash(./gradlew.bat:*)",
+      "PowerShell(./gradlew:*)",
+      "PowerShell(.\\gradlew:*)",
+      "PowerShell(.\\gradlew.bat:*)",
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(git show:*)"
     ],
     "deny": []
   }

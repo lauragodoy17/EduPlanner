@@ -32,6 +32,10 @@ import com.softcg.myapplication.domain.gamificacion.OtorgarRecompensaUseCase
 import com.softcg.myapplication.domain.gamificacion.ResultadoEntregarTarea
 import com.softcg.myapplication.domain.gamificacion.ResultadoRecompensa
 import com.softcg.myapplication.domain.gamificacion.TipoRecompensa
+import com.softcg.myapplication.domain.CrearAsignaturaUseCase
+import com.softcg.myapplication.domain.prediccion.DetectarAreasPendientesUseCase
+import com.softcg.myapplication.domain.NuevaAsignatura
+import com.softcg.myapplication.domain.ResultadoCrearAsignatura
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -60,6 +64,8 @@ class InicioViewModelTest {
     @RelaxedMockK private lateinit var getEventosUseCase: getEventosUseCase
     @RelaxedMockK private lateinit var getAsignaturasUseCase: getAsignaturasUseCase
     @RelaxedMockK private lateinit var getCalificacionesUseCase: getCalificacionesUseCase
+    @RelaxedMockK private lateinit var crearAsignatura: CrearAsignaturaUseCase
+    @RelaxedMockK private lateinit var detectarAreasPendientes: DetectarAreasPendientesUseCase
     @RelaxedMockK private lateinit var tareasRepository: TareasRepository
     @RelaxedMockK private lateinit var eventosRepository: EventosRepository
     @RelaxedMockK private lateinit var calificacionesRepository: CalificacionesRespository
@@ -85,7 +91,7 @@ class InicioViewModelTest {
         coEvery { otorgarRecompensa(any(), any()) } returns ResultadoRecompensa.YaOtorgada
         viewModel = InicioViewModel(
             getTareasUseCase, getEventosUseCase, getAsignaturasUseCase, getCalificacionesUseCase,
-            otorgarRecompensa, calificarTarea, obtenerClasesPorConfirmar, confirmarAsistencia,
+            crearAsignatura, detectarAreasPendientes, otorgarRecompensa, calificarTarea, obtenerClasesPorConfirmar, confirmarAsistencia,
             entregarTarea, evaluarProgreso, obtenerPanel, obtenerEnfoqueActivo,
             reloj, gamificacionRepository, sesion
         )
@@ -153,7 +159,7 @@ class InicioViewModelTest {
     }
 
     @Test
-    fun `sin asignaturas se ofrece la opcion de agregar una`() {
+    fun `sin asignaturas la lista queda vacia, sin opciones falsas`() {
         //GIVEN
         every { getAsignaturasUseCase() } returns emptyList()
 
@@ -161,7 +167,44 @@ class InicioViewModelTest {
         viewModel.obtenerAsignaturas()
 
         //THEN
-        assertEquals(listOf("Agregar Asignatura"), viewModel._asignaturas.value)
+        assertEquals(emptyList<String>(), viewModel._asignaturas.value)
+    }
+
+    @Test
+    fun `la asignatura creada desde la tarea recarga la lista, premia y avisa al formulario`() {
+        //GIVEN
+        val nueva = NuevaAsignatura("Física", hora = "08:00", duracion = 2, dias = listOf("Lunes"))
+        coEvery { crearAsignatura(nueva) } returns ResultadoCrearAsignatura.Creada(7, "Física", 5)
+        every { getAsignaturasUseCase() } returns listOf(Asignatura(7, "Física", "", 2, "08:00", List(7) { it == 0 }))
+
+        //WHEN
+        viewModel.onCrearAsignaturaDesdeTarea(nueva)
+
+        //THEN
+        assertEquals(listOf("Física"), viewModel._asignaturas.value)
+        assertEquals(5, viewModel.recompensa.value?.getContentIfNotHandled())
+        assertEquals(
+            ResultadoCrearAsignatura.Creada(7, "Física", 5),
+            viewModel.asignaturaParaTarea.value?.getContentIfNotHandled()
+        )
+    }
+
+    @Test
+    fun `al abrir la app se completan las areas pendientes`() {
+        coVerify(exactly = 1) { detectarAreasPendientes() }
+    }
+
+    @Test
+    fun `si la asignatura no se guarda el formulario de tarea recibe el error`() {
+        //GIVEN
+        coEvery { crearAsignatura(any()) } returns ResultadoCrearAsignatura.Error
+
+        //WHEN
+        viewModel.onCrearAsignaturaDesdeTarea(NuevaAsignatura("Física"))
+
+        //THEN
+        assertEquals(ResultadoCrearAsignatura.Error, viewModel.asignaturaParaTarea.value?.getContentIfNotHandled())
+        assertNull(viewModel.recompensa.value)
     }
 
     @Test

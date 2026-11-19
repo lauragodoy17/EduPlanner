@@ -122,6 +122,9 @@ interface GamificacionDao {
     @Query("SELECT COUNT(*) FROM sesiones_enfoque WHERE uid = :uid AND inicio_millis = :inicioMillis")
     suspend fun contarSesion(uid: String, inicioMillis: Long): Int
 
+    @Query("UPDATE sesiones_enfoque SET asignatura = :nuevo, asignatura_id = :asignaturaId WHERE uid = :uid AND (asignatura_id = :asignaturaId OR (asignatura_id IS NULL AND asignatura = :viejo))")
+    suspend fun renombrarAsignaturaSesiones(uid: String, asignaturaId: Int, viejo: String, nuevo: String): Int
+
     @Query("UPDATE sesiones_enfoque SET asignatura_id = :asignaturaId WHERE uid = :uid AND asignatura_id IS NULL AND asignatura = :nombre")
     suspend fun enlazarSesiones(uid: String, asignaturaId: Int, nombre: String): Int
 

@@ -4,13 +4,18 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.softcg.myapplication.core.Event
+import com.softcg.myapplication.data.Repositories.AsignaturasRepository
 import com.softcg.myapplication.data.Repositories.TareasRepository
+import com.softcg.myapplication.domain.EditarTareaUseCase
+import com.softcg.myapplication.domain.ResultadoEdicion
 import com.softcg.myapplication.data.network.RespuestaApi
 import com.softcg.myapplication.domain.prediccion.DatosPrediccion
 import com.softcg.myapplication.domain.prediccion.Extraccion
 import com.softcg.myapplication.domain.prediccion.ExtraerDatosPrediccionUseCase
 import com.softcg.myapplication.domain.prediccion.PredecirTareaUseCase
 import com.softcg.myapplication.domain.prediccion.ResultadoExtraccion
+import com.softcg.myapplication.ui.Inicio.Models.Tarea
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -23,10 +28,17 @@ import javax.inject.Inject
 class PrediccionViewModel @Inject constructor(
     private val tareas: TareasRepository,
     private val extraer: ExtraerDatosPrediccionUseCase,
-    private val predecir: PredecirTareaUseCase
+    private val predecir: PredecirTareaUseCase,
+    private val asignaturas: AsignaturasRepository,
+    private val editarTarea: EditarTareaUseCase
 ) : ViewModel() {
 
     val topN: Int = PredecirTareaUseCase.TOP_N
+
+    /** La tarea tal como está guardada ahora (puede haberse entregado o calificado desde otra pantalla). */
+    private val _tarea = MutableLiveData<Tarea?>()
+    val tarea: LiveData<Tarea?>
+        get() = _tarea
 
     private val _datos = MutableLiveData<EstadoDatos>()
     val datos: LiveData<EstadoDatos>
@@ -36,14 +48,28 @@ class PrediccionViewModel @Inject constructor(
     val estado: LiveData<EstadoPrediccion?>
         get() = _estado
 
+    /** Aviso breve tras editar. */
+    private val _mensaje = MutableLiveData<Event<String>>()
+    val mensaje: LiveData<Event<String>>
+        get() = _mensaje
+
+    /** La tarea se borró: la pantalla se cierra con este aviso. */
+    private val _borrada = MutableLiveData<Event<String>>()
+    val borrada: LiveData<Event<String>>
+        get() = _borrada
+
+    private var tareaId: Int = -1
+
     /** Lo último que se envió: si los datos no cambian, no se repite la petición. */
     var datosEnviados: DatosPrediccion? = null
         private set
 
     /** Vuelve a leer los datos (al abrir y cada vez que el estudiante completa alguno). */
     fun cargar(tareaId: Int) {
+        this.tareaId = tareaId
         viewModelScope.launch {
             val tarea = tareas.getTarea(tareaId)
+            _tarea.value = tarea
             val nuevo = when (val extraccion = tarea?.let { extraer.deTarea(it) }) {
                 null -> EstadoDatos.SinTarea
                 Extraccion.SinSesion -> EstadoDatos.SinSesion
@@ -55,6 +81,30 @@ class PrediccionViewModel @Inject constructor(
             if (nuevo is EstadoDatos.Listos && datosEnviados == null && _estado.value == null) {
                 nuevo.resultado.datos?.let { enviar(it) }
             }
+        }
+    }
+
+    fun nombresAsignaturas(): List<String> = asignaturas.getAllAsignaturas().map { it.nombre }
+
+    /** Guarda lo editado y vuelve a extraer los datos (la asignatura o el título pueden haber cambiado). */
+    fun editar(tarea: Tarea) {
+        viewModelScope.launch {
+            _mensaje.value = Event(
+                when (editarTarea(tarea.copy(id = tareaId))) {
+                    ResultadoEdicion.Guardada -> "Tarea actualizada"
+                    ResultadoEdicion.NombreVacio -> "Escribe el nombre de la tarea"
+                    else -> "No se pudo guardar: la tarea ya no existe"
+                }
+            )
+            cargar(tareaId)
+        }
+    }
+
+    fun borrar() {
+        val tarea = _tarea.value ?: return
+        viewModelScope.launch {
+            tareas.deleteTarea(tarea)
+            _borrada.value = Event("Tarea eliminada")
         }
     }
 

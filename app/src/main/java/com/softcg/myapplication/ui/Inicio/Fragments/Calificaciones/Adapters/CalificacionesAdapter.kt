@@ -13,10 +13,15 @@ import com.softcg.myapplication.core.ex.confirmar
 import com.softcg.myapplication.core.ex.mostrarAviso
 import com.softcg.myapplication.ui.Inicio.Fragments.Calificaciones.CalificacionesViewModel
 import com.softcg.myapplication.ui.Inicio.Fragments.Calificaciones.Models.Calificacion
-import com.softcg.myapplication.ui.Inicio.Fragments.Home.HomeViewModel
-import com.softcg.myapplication.ui.Inicio.Models.Tarea
+import com.softcg.myapplication.domain.compartir.ContenidoCompartido
+import com.softcg.myapplication.ui.Inicio.Dialogs.CompartirQrDialog
 
-class CalificacionesAdapter (private val context: Context, private val inicioViewModel: CalificacionesViewModel) : RecyclerView.Adapter<CalificacionesAdapter.MyViewHolder>() {
+class CalificacionesAdapter (
+    private val context: Context,
+    private val inicioViewModel: CalificacionesViewModel,
+    /** Tocar la tarjeta abre la pantalla de la calificación. */
+    private val onAbrir: (Calificacion) -> Unit = {}
+) : RecyclerView.Adapter<CalificacionesAdapter.MyViewHolder>() {
 
     private var calificaciones= emptyList<Calificacion>()
 
@@ -26,8 +31,8 @@ class CalificacionesAdapter (private val context: Context, private val inicioVie
         val textCalificacion: TextView =itemView.findViewById(R.id.textOverlay)
         val boton: ImageButton = itemView.findViewById(R.id.Opciones)
     }
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CalificacionesAdapter.MyViewHolder {
-        return CalificacionesAdapter.MyViewHolder(
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
+        return MyViewHolder(
             LayoutInflater.from(parent.context).inflate(R.layout.item_calificacion_list, parent, false)
         )
     }
@@ -36,7 +41,7 @@ class CalificacionesAdapter (private val context: Context, private val inicioVie
         return calificaciones.size
     }
 
-    override fun onBindViewHolder(holder: CalificacionesAdapter.MyViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val currentItem=calificaciones[position]
         holder.textTitulo.text=currentItem.asignatura
         holder.textDesc.text=currentItem.descripcion
@@ -45,6 +50,7 @@ class CalificacionesAdapter (private val context: Context, private val inicioVie
         holder.boton.setOnClickListener {v ->
             showPopupMenu(v,position)
         }
+        holder.itemView.setOnClickListener { onAbrir(currentItem) }
     }
 
     private fun showPopupMenu(view: View,position: Int) {
@@ -54,6 +60,10 @@ class CalificacionesAdapter (private val context: Context, private val inicioVie
 
         popupMenu.setOnMenuItemClickListener { item ->
             when (item.itemId) {
+                R.id.Compartir -> {
+                    calificaciones.getOrNull(position)?.let { CompartirQrDialog(context, ContenidoCompartido.de(it)).show() }
+                    true
+                }
                 R.id.Borrar -> {
                     deleteCalificacion(position, view)
                     true

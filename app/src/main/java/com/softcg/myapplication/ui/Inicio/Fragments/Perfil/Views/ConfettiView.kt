@@ -1,5 +1,6 @@
 package com.softcg.myapplication.ui.Inicio.Fragments.Perfil.Views
 
+import androidx.core.graphics.withRotation
 import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Canvas
@@ -29,7 +30,7 @@ class ConfettiView @JvmOverloads constructor(
 
     private val densidad = resources.displayMetrics.density
     private val pintura = Paint(Paint.ANTI_ALIAS_FLAG)
-    private val colores = listOf(R.color.purple_accent, R.color.purple_soft, R.color.xp_dorado, R.color.white)
+    private val colores = listOf(R.color.acento, R.color.marca_suave, R.color.xp_dorado, R.color.white)
         .map { context.getColor(it) }
     private var particulas = emptyList<Particula>()
     private var tiempo = 0f
@@ -75,10 +76,9 @@ class ConfettiView @JvmOverloads constructor(
             val x = p.x * width + sin(avance * 8f + p.fase) * p.oscilacion
             pintura.color = p.color
             pintura.alpha = ((1f - avance) * 2f * 255).toInt().coerceIn(0, 255)
-            canvas.save()
-            canvas.rotate(p.giro * avance, x, y)
-            canvas.drawRect(x - ancho / 2, y - alto / 2, x + ancho / 2, y + alto / 2, pintura)
-            canvas.restore()
+            canvas.withRotation(p.giro * avance, x, y) {
+                drawRect(x - ancho / 2, y - alto / 2, x + ancho / 2, y + alto / 2, pintura)
+            }
         }
     }
 

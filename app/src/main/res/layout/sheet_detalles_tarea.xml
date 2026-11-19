@@ -18,145 +18,61 @@
 
         <View style="@style/Edu.AsaHoja"/>
 
-        <TextView
-            android:id="@+id/tareaEstado"
-            style="@style/Edu.Texto.Etiqueta"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="6dp"
-            tools:text="TAREA"/>
-
-        <TextView
-            android:id="@+id/tareaTitulo"
-            style="@style/Edu.Texto.TituloHoja"
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
-            tools:text="Ensayo de historia"/>
+            android:layout_marginBottom="2dp">
 
-        <TextView
-            android:id="@+id/labelDescripcion"
-            style="@style/Edu.Texto.Rotulo"
+            <TextView
+                android:id="@+id/tareaEstado"
+                style="@style/Edu.Texto.Etiqueta"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                tools:text="TAREA"/>
+
+            <ImageButton
+                android:id="@+id/btnCompartirTarea"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:layout_gravity="end|center_vertical"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Compartir por QR"
+                android:src="@drawable/ic_compartir"
+                app:tint="?attr/eduAcento"/>
+        </FrameLayout>
+
+        <include
+            layout="@layout/include_info_tarea"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="2dp"
-            android:text="Descripción"/>
+            android:layout_marginBottom="16dp"/>
 
-        <TextView
-            android:id="@+id/tareaDescripcion"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="14dp"
-            android:textColor="@color/text_primary"
-            android:textSize="15sp"
-            tools:text="Escribir 3 páginas sobre la independencia"/>
-
+        <!-- Acciones: entregar (o calificar, si ya se entregó) y borrar -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            android:background="@drawable/time_row_bg"
-            android:orientation="vertical"
-            android:padding="12dp">
+            android:orientation="horizontal">
 
-            <TextView
-                style="@style/Edu.Texto.Rotulo"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="2dp"
-                android:text="Asignatura"/>
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnBorrarTarea"
+                style="@style/Edu.BotonContorno"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/alto_boton"
+                android:layout_weight="1"
+                android:text="Borrar"
+                android:textColor="?attr/eduEstadoError"
+                app:strokeColor="?attr/eduEstadoError"/>
 
-            <TextView
-                android:id="@+id/tareaAsignatura"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:textColor="@color/text_primary"
-                android:textSize="15sp"
-                tools:text="Historia"/>
-
-            <TextView
-                style="@style/Edu.Texto.Rotulo"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="2dp"
-                android:text="Fecha de entrega"/>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:layout_width="18dp"
-                    android:layout_height="18dp"
-                    android:layout_marginEnd="8dp"
-                    android:importantForAccessibility="no"
-                    android:src="@drawable/baseline_calendar_month_24"
-                    app:tint="@color/purple_accent"/>
-
-                <TextView
-                    android:id="@+id/tareaFecha"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/text_primary"
-                    android:textSize="15sp"
-                    tools:text="20/11/2026 · faltan 8 días"/>
-            </LinearLayout>
-
-            <TextView
-                android:id="@+id/labelCalificacion"
-                style="@style/Edu.Texto.Rotulo"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="2dp"
-                android:text="Calificación"
-                android:visibility="gone"/>
-
-            <TextView
-                android:id="@+id/tareaCalificacion"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:textColor="@color/text_primary"
-                android:textSize="15sp"
-                android:visibility="gone"
-                tools:text="9.5"/>
-
-            <TextView
-                android:id="@+id/labelPrioridad"
-                style="@style/Edu.Texto.Rotulo"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="2dp"
-                android:text="Prioridad"/>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <View
-                    android:id="@+id/prioridadIndicador"
-                    android:layout_width="10dp"
-                    android:layout_height="10dp"
-                    android:layout_marginStart="4dp"
-                    android:layout_marginEnd="12dp"
-                    android:background="@drawable/circle_shape"/>
-
-                <TextView
-                    android:id="@+id/prioridadTexto"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/text_primary"
-                    android:textSize="15sp"
-                    android:textStyle="bold"
-                    tools:text="Alta"/>
-            </LinearLayout>
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnEntregarTarea"
+                style="@style/Edu.Boton"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/alto_boton"
+                android:layout_marginStart="12dp"
+                android:layout_weight="1"
+                android:text="Entregar"/>
         </LinearLayout>
 
         <!-- Recomendaciones de la IA -->
@@ -184,7 +100,7 @@
                         android:layout_marginEnd="8dp"
                         android:importantForAccessibility="no"
                         android:src="@drawable/ic_ia_destello"
-                        app:tint="@color/purple_accent"/>
+                        app:tint="?attr/eduAcento"/>
 
                     <TextView
                         style="@style/Edu.Texto.TituloTarjeta"
@@ -231,7 +147,7 @@
                             android:id="@+id/iaMetodo"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:textColor="@color/purple_primary"
+                            android:textColor="?attr/eduMarca"
                             android:textSize="18sp"
                             android:textStyle="bold"
                             tools:text="Mapas mentales"/>
@@ -280,7 +196,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="8dp"
                         android:lineSpacingExtra="2dp"
-                        android:textColor="@color/text_primary"
+                        android:textColor="?attr/eduTextPrimary"
                         android:textSize="15sp"
                         tools:text="Según los datos que has registrado, te recomiendo Mapas mentales con un 34 % de confianza."/>
 
@@ -307,7 +223,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="10dp"
                         android:lineSpacingExtra="4dp"
-                        android:textColor="@color/text_primary"
+                        android:textColor="?attr/eduTextPrimary"
                         android:textSize="14sp"
                         tools:text="1. Busca tres fuentes\n2. Haz un esquema\n3. Escribe el borrador"/>
 
@@ -333,13 +249,13 @@
                             android:layout_marginEnd="8dp"
                             android:importantForAccessibility="no"
                             android:src="@drawable/ic_clock"
-                            app:tint="@color/purple_accent"/>
+                            app:tint="?attr/eduAcento"/>
 
                         <TextView
                             android:id="@+id/iaTiempo"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textColor="@color/text_primary"
+                            android:textColor="?attr/eduTextPrimary"
                             android:textSize="14sp"
                             tools:text="3 sesiones de 45 minutos"/>
                     </LinearLayout>
@@ -389,7 +305,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:textColor="@color/estado_error"
+                    android:textColor="?attr/eduEstadoError"
                     android:textSize="14sp"
                     android:visibility="gone"
                     tools:text="No hay conexión a internet."/>

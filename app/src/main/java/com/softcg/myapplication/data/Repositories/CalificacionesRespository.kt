@@ -39,6 +39,27 @@ class CalificacionesRespository @Inject constructor(
         return calificacionesDao.insertCalificacion(calificacion.copy(asignaturaId = asignaturaId).toEntity(uid))
     }
 
+    suspend fun getCalificacion(id: Int): Calificacion? {
+        val uid = uid() ?: return null
+        return calificacionesDao.getCalificacion(uid, id)?.toModel()
+    }
+
+    /** Guarda lo editado; la asignatura se vuelve a enlazar por su nombre. */
+    suspend fun updateCalificacion(calificacion: Calificacion): Boolean {
+        val uid = uid() ?: return false
+        val id = calificacion.id ?: return false
+        val asignaturaId = asignaturasDao.idPorNombre(uid, calificacion.asignatura)
+        return calificacionesDao.actualizar(
+            uid, id, calificacion.tipo, calificacion.valor, calificacion.asignatura, asignaturaId, calificacion.descripcion
+        ) > 0
+    }
+
+    /** La nota de una tarea sigue a la tarea cuando esta cambia de asignatura. */
+    suspend fun moverDeTarea(tareaId: Int, asignatura: String) {
+        val uid = uid() ?: return
+        calificacionesDao.moverDeTarea(uid, tareaId, asignatura, asignaturasDao.idPorNombre(uid, asignatura))
+    }
+
     suspend fun tareaTieneCalificacion(tareaId: Int): Boolean{
         return calificacionesDao.contarDeTarea(tareaId) > 0
     }

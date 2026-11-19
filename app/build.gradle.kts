@@ -77,6 +77,10 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:32.8.0"))
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-auth")
+    // Inicio de sesión con Google: Credential Manager entrega el ID token que se canjea en Firebase Auth
+    implementation("androidx.credentials:credentials:1.3.0")
+    implementation("androidx.credentials:credentials-play-services-auth:1.3.0")
+    implementation("com.google.android.libraries.identity.googleid:googleid:1.1.1")
     // IA (Firebase AI Logic, Gemini Developer API). Versión fija fuera del BoM: la 16.x está compilada con Kotlin 1.8,
     // compatible con el Kotlin 1.9 del proyecto (las 17+ y los BoM 33.16+ exigen Kotlin 2)
     implementation("com.google.firebase:firebase-ai:16.2.0")
@@ -84,6 +88,14 @@ dependencies {
     implementation("com.google.firebase:firebase-appcheck")
     releaseImplementation("com.google.firebase:firebase-appcheck-playintegrity")
     debugImplementation("com.google.firebase:firebase-appcheck-debug")
+
+    // Compartir por QR: ZXing dibuja el código; CameraX y ML Kit (modelo incluido en el APK, funciona sin
+    // conexión) lo leen. CameraX 1.4.2: sus .so están alineados a 16 KB (Android 15+; la 1.3 no) y aún admite compileSdk 34 (la 1.5 exige 35)
+    implementation("com.google.zxing:core:3.5.3")
+    implementation("androidx.camera:camera-camera2:1.4.2")
+    implementation("androidx.camera:camera-lifecycle:1.4.2")
+    implementation("androidx.camera:camera-view:1.4.2")
+    implementation("com.google.mlkit:barcode-scanning:17.3.0")
 
     //Menú
     implementation("de.hdodenhof:circleimageview:3.1.0")

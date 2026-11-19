@@ -11,17 +11,28 @@ import androidx.fragment.app.viewModels
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.softcg.myapplication.R
+import androidx.navigation.fragment.findNavController
+import com.softcg.myapplication.core.ex.confirmar
+import com.softcg.myapplication.core.ex.mostrarAviso
+import com.softcg.myapplication.core.ex.mostrarMensaje
 import com.softcg.myapplication.core.ex.pintarEtiqueta
+import com.softcg.myapplication.domain.compartir.ContenidoCompartido
+import com.softcg.myapplication.ui.Inicio.Dialogs.CompartirQrDialog
+import com.softcg.myapplication.ui.Inicio.Dialogs.TareaDialog
+import com.softcg.myapplication.ui.Inicio.Fragments.Detalle.configurarAccionesDetalle
 import com.softcg.myapplication.data.network.PrediccionService
 import com.softcg.myapplication.ui.Inicio.DatosEstudioViewModel
 import com.softcg.myapplication.ui.Inicio.Dialogs.AccionesDatosEstudio
 import com.softcg.myapplication.ui.Inicio.Dialogs.pintarDatos
+import com.softcg.myapplication.ui.Inicio.Dialogs.pintarEstadoTarea
+import com.softcg.myapplication.ui.Inicio.Dialogs.pintarInfoTarea
+import com.softcg.myapplication.ui.Inicio.Models.Tarea
 import dagger.hilt.android.AndroidEntryPoint
 import org.json.JSONArray
 import org.json.JSONObject
 
 /**
- * Predicción desde una tarjeta de tarea. Muestra qué datos reales del estudiante tiene el modelo y cuáles
+ * Pantalla de una tarea (desde su tarjeta): toda su información y, debajo, "Predicción y recomendaciones". Muestra qué datos reales del estudiante tiene el modelo y cuáles
  * faltan (con la acción para completarlos); cuando están todos, envía la petición y muestra la respuesta.
  */
 @AndroidEntryPoint
@@ -53,12 +64,55 @@ class PrediccionFragment : Fragment() {
     }
 
     private fun initTarea(view: View) {
+        val estado = view.findViewById<TextView>(R.id.tareaEstado)
+        val info = view.findViewById<View>(R.id.prediccionInfoTarea)
+        // Mientras se lee la tarea guardada se muestra lo que trajo la tarjeta
         val args = requireArguments()
-        view.findViewById<TextView>(R.id.prediccionTareaTitulo).text = args.getString(ARG_TITULO).orEmpty()
-        val asignatura = args.getString(ARG_ASIGNATURA).orEmpty()
-        view.findViewById<TextView>(R.id.prediccionTareaAsignatura).apply {
-            text = asignatura
-            visibility = if (asignatura.isBlank()) View.GONE else View.VISIBLE
+        val provisional = Tarea(tareaId, args.getString(ARG_TITULO).orEmpty(), "", args.getString(ARG_ASIGNATURA).orEmpty(), "", 0)
+        estado.pintarEstadoTarea(provisional)
+        pintarInfoTarea(info, provisional)
+        // En la pantalla el título va alineado con la etiqueta; en la hoja "Ver más", centrado
+        view.findViewById<TextView>(R.id.tareaTitulo).textAlignment = View.TEXT_ALIGNMENT_VIEW_START
+        prediccionViewModel.tarea.observe(viewLifecycleOwner) { tarea ->
+            tarea ?: return@observe
+            estado.pintarEstadoTarea(tarea)
+            pintarInfoTarea(info, tarea)
+        }
+
+        configurarAccionesDetalle(
+            view.findViewById(R.id.tareaAcciones),
+            onEditar = ::editar,
+            onBorrar = ::confirmarBorrar,
+            onCompartir = {
+                prediccionViewModel.tarea.value?.let { CompartirQrDialog(requireContext(), ContenidoCompartido.de(it)).show() }
+            }
+        )
+        prediccionViewModel.mensaje.observe(viewLifecycleOwner) { it.getContentIfNotHandled()?.let { texto -> view.mostrarAviso(texto) } }
+        prediccionViewModel.borrada.observe(viewLifecycleOwner) { evento ->
+            evento.getContentIfNotHandled()?.let { texto ->
+                requireActivity().mostrarMensaje(texto)
+                findNavController().popBackStack()
+            }
+        }
+    }
+
+    private fun editar() {
+        val tarea = prediccionViewModel.tarea.value ?: return
+        TareaDialog(
+            context = requireContext(),
+            asignaturas = prediccionViewModel.nombresAsignaturas(),
+            onAgregarAsignatura = null,
+            tarea = tarea,
+            onGuardar = { titulo, descrip, asignatura, fecha, prioridad ->
+                prediccionViewModel.editar(tarea.copy(titulo = titulo, descrip = descrip, asignatura = asignatura, fecha = fecha, prioridad = prioridad))
+            }
+        ).show()
+    }
+
+    private fun confirmarBorrar() {
+        prediccionViewModel.tarea.value ?: return
+        requireContext().confirmar("¿Eliminar la tarea?", "Esta acción no se puede deshacer.", "Eliminar") {
+            prediccionViewModel.borrar()
         }
     }
 
@@ -112,7 +166,7 @@ class PrediccionFragment : Fragment() {
             carga.visibility = if (estado is EstadoPrediccion.Cargando) View.VISIBLE else View.GONE
             when (estado) {
                 EstadoPrediccion.Cargando -> {
-                    etiqueta.pintarEtiqueta("ENVIANDO", R.color.purple_accent, R.color.purple_surface)
+                    etiqueta.pintarEtiqueta("ENVIANDO", R.color.acento, R.color.marca_superficie)
                     respuesta.text = "Esperando respuesta…"
                 }
                 is EstadoPrediccion.Respuesta -> {

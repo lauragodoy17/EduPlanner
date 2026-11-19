@@ -3,6 +3,7 @@ package com.softcg.myapplication.ui.Inicio.Dialogs
 import android.app.Dialog
 import android.content.Context
 import android.net.Uri
+import androidx.core.net.toUri
 import android.view.View
 import android.view.Window
 import android.widget.Button
@@ -66,7 +67,10 @@ class EventoDialog(
         imageNameText = dialog.findViewById(R.id.imageNameText)
         imagePreviewCard.visibility = View.GONE
 
-        evento?.let { cargarEvento(it, titulo, descripcion, fecha, horaInicio, horaFin, guardarBoton) }
+        evento?.let {
+            dialog.findViewById<TextView>(R.id.formTitulo).text = "Editar evento"
+            cargarEvento(it, titulo, descripcion, fecha, horaInicio, horaFin, guardarBoton)
+        }
 
         fecha.setOnClickListener { fecha.showDatePicker() }
         horaInicio.setOnClickListener { horaInicio.showTimePicker() }
@@ -131,12 +135,11 @@ class EventoDialog(
         fecha.setText(evento.fecha)
         horaInicio.setText(evento.horaInicio)
         horaFin.setText(evento.horaFin)
-        guardarBoton.text = "Actualizar Evento"
+        guardarBoton.text = "Guardar cambios"
 
-        if (!evento.imagenUri.isNullOrEmpty()) {
-            try {
-                mostrarImagen(Uri.parse(evento.imagenUri), "Imagen cargada")
-            } catch (e: Exception) {
+        // Una imagen que ya no existe (se borró del teléfono) simplemente no se muestra
+        evento.imagenUri?.takeIf { it.isNotEmpty() }?.let { guardada ->
+            runCatching { mostrarImagen(guardada.toUri(), "Imagen cargada") }.onFailure {
                 selectedImageUri = null
                 imagePreviewCard.visibility = View.GONE
             }
@@ -146,8 +149,8 @@ class EventoDialog(
     private fun pintarPrioridad(tarjetas: Map<Int, MaterialCardView>) {
         tarjetas.forEach { (prioridad, tarjeta) ->
             val elegida = prioridad == selectedPrioridad
-            tarjeta.setCardBackgroundColor(context.getColor(if (elegida) R.color.purple_surface else R.color.superficie))
-            tarjeta.strokeColor = context.getColor(if (elegida) R.color.purple_accent else R.color.borde_suave)
+            tarjeta.setCardBackgroundColor(context.getColor(if (elegida) R.color.marca_superficie else R.color.superficie))
+            tarjeta.strokeColor = context.getColor(if (elegida) R.color.acento else R.color.borde_suave)
             tarjeta.isSelected = elegida
         }
     }

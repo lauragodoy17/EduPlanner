@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     app:cardCornerRadius="12dp"
     app:cardElevation="2dp"
-    app:cardBackgroundColor="@color/superficie"
+    app:cardBackgroundColor="?attr/eduSuperficie"
     app:cardUseCompatPadding="false">
 
     <LinearLayout
@@ -20,7 +20,7 @@
             android:layout_width="4dp"
             android:layout_height="match_parent"
             android:background="@drawable/bg_barra_color"
-            android:backgroundTint="@color/purple_accent"
+            android:backgroundTint="?attr/eduAcento"
             android:layout_marginEnd="10dp" />
 
         <LinearLayout
@@ -44,7 +44,7 @@
                 android:layout_height="wrap_content"
                 android:text="08:30 - 10:30"
                 android:textSize="12sp"
-                android:textColor="@color/purple_accent"
+                android:textColor="?attr/eduAcento"
                 android:textStyle="bold"
                 android:maxLines="1" />
 

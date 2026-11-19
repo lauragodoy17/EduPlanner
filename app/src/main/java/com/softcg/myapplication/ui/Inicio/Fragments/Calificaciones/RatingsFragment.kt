@@ -7,12 +7,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.softcg.myapplication.R
 import com.softcg.myapplication.ui.Inicio.Fragments.Calificaciones.Adapters.CalificacionesAdapter
+import com.softcg.myapplication.ui.Inicio.Fragments.Detalle.TipoDetalle
+import com.softcg.myapplication.ui.Inicio.Fragments.Detalle.abrirDetalle
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -30,7 +31,9 @@ class RatingsFragment : Fragment() {
 
     private fun initRecyclerCalificaciones(view: View){
         calificacionesViewModel.obtenerCalificaciones()
-        val adapter = CalificacionesAdapter(requireContext(),calificacionesViewModel)
+        val adapter = CalificacionesAdapter(requireContext(), calificacionesViewModel) { calificacion ->
+            abrirDetalle(TipoDetalle.NOTA, calificacion.id)
+        }
         val recyclerView= view.findViewById<RecyclerView>(R.id.recyclercalificaciones)
         recyclerView.adapter=adapter
         recyclerView.layoutManager=LinearLayoutManager(requireContext())

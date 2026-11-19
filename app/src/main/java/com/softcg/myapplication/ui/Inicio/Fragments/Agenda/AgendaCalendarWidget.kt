@@ -2,8 +2,8 @@ package com.softcg.myapplication.ui.Inicio.Fragments.Agenda
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.Gravity
 import android.view.LayoutInflater
-import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -13,6 +13,9 @@ import androidx.core.content.ContextCompat
 import com.softcg.myapplication.R
 import java.text.SimpleDateFormat
 import java.util.*
+
+/** Los nombres de mes se muestran en español, como el resto de la app. */
+private val ESPANOL = Locale("es", "ES")
 
 class AgendaCalendarWidget @JvmOverloads constructor(
     context: Context,
@@ -27,11 +30,10 @@ class AgendaCalendarWidget @JvmOverloads constructor(
     private lateinit var calendarGrid: LinearLayout
 
     private val calendar = Calendar.getInstance()
-    private val monthYearFormat = SimpleDateFormat("MMMM yyyy", Locale("es", "ES"))
+    private val monthYearFormat = SimpleDateFormat("MMMM yyyy", ESPANOL)
     private val dayFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
 
     private var selectedDate: String? = null
-    private var datesWithEvents: Set<String> = emptySet()
     private var dayViews: MutableList<TextView> = mutableListOf()
     private var isExpanded: Boolean = false // Calendar starts collapsed
 
@@ -80,14 +82,9 @@ class AgendaCalendarWidget @JvmOverloads constructor(
 
     fun updateCalendar() {
         if (::monthYearText.isInitialized && ::calendarGrid.isInitialized) {
-            monthYearText.text = monthYearFormat.format(calendar.time).capitalize()
+            monthYearText.text = monthYearFormat.format(calendar.time).replaceFirstChar { it.titlecase(ESPANOL) }
             generateCalendarDays()
         }
-    }
-
-    fun setEventsForDates(dates: Set<String>) {
-        datesWithEvents = dates
-        updateCalendar()
     }
 
     private fun generateCalendarDays() {
@@ -209,7 +206,7 @@ class AgendaCalendarWidget @JvmOverloads constructor(
     private fun createDayView(dayInfo: DayInfo): TextView {
         val dayView = TextView(context)
         val lado = (40 * resources.displayMetrics.density).toInt()
-        val layoutParams = FrameLayout.LayoutParams(lado, lado, android.view.Gravity.CENTER)
+        val layoutParams = FrameLayout.LayoutParams(lado, lado, Gravity.CENTER)
         layoutParams.topMargin = (2 * resources.displayMetrics.density).toInt()
         layoutParams.bottomMargin = layoutParams.topMargin
         dayView.layoutParams = layoutParams
@@ -227,11 +224,11 @@ class AgendaCalendarWidget @JvmOverloads constructor(
                 dayView.alpha = 0.5f
             }
             dayInfo.dateString == selectedDate -> {
-                dayView.setTextColor(ContextCompat.getColor(context, R.color.white))
+                dayView.setTextColor(ContextCompat.getColor(context, R.color.sobre_acento))
                 dayView.isSelected = true
             }
             dayInfo.isToday -> {
-                dayView.setTextColor(ContextCompat.getColor(context, R.color.purple_primary))
+                dayView.setTextColor(ContextCompat.getColor(context, R.color.marca))
                 dayView.isActivated = true
             }
             else -> {
@@ -267,12 +264,12 @@ class AgendaCalendarWidget @JvmOverloads constructor(
                         dayView.alpha = 0.5f
                     }
                     tag.dateString == selectedDate -> {
-                        dayView.setTextColor(ContextCompat.getColor(context, R.color.white))
+                        dayView.setTextColor(ContextCompat.getColor(context, R.color.sobre_acento))
                         dayView.isSelected = true
                         dayView.alpha = 1.0f
                     }
                     tag.isToday -> {
-                        dayView.setTextColor(ContextCompat.getColor(context, R.color.purple_primary))
+                        dayView.setTextColor(ContextCompat.getColor(context, R.color.marca))
                         dayView.isActivated = true
                         dayView.alpha = 1.0f
                     }

@@ -14,6 +14,9 @@ interface EventosDao {
     @Query("SELECT * FROM eventos_table WHERE uid = :uid")
     fun getAllEventos(uid: String):List<EventoEntity>
 
+    @Query("SELECT * FROM eventos_table WHERE uid = :uid AND id = :id")
+    suspend fun getEvento(uid: String, id: Int): EventoEntity?
+
     @Delete
     suspend fun deleteEvento(eventoEntity: EventoEntity)
 

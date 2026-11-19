@@ -24,20 +24,17 @@ import java.util.*
 class UnifiedAgendaAdapter(
     private val context: Context,
     private val agendaViewModel: AgendaViewModel,
-    private val onVerMasTarea: (Tarea) -> Unit = {}
+    private val onVerMasTarea: (Tarea) -> Unit = {},
+    /** Tocar la fila abre la pantalla de la tarea o del evento. */
+    private val onAbrir: (AgendaItem) -> Unit = {}
 ) : RecyclerView.Adapter<UnifiedAgendaAdapter.UnifiedAgendaViewHolder>() {
 
     private var agendaList = emptyList<AgendaItem>()
 
     fun setData(items: List<AgendaItem>) {
         // Sort agenda items by date
-        agendaList = items.sortedBy { item ->
-            try {
-                SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(item.fecha)
-            } catch (e: Exception) {
-                Date()
-            }
-        }
+        val formato = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        agendaList = items.sortedBy { item -> runCatching { formato.parse(item.fecha) }.getOrNull() ?: Date() }
         notifyDataSetChanged()
     }
 
@@ -75,14 +72,16 @@ class UnifiedAgendaAdapter(
             val esEvento = item.asignatura == null
             textAsignatura.text = item.asignatura
             textAsignatura.visibility = if (esEvento) View.GONE else View.VISIBLE
-            val color = if (esEvento) R.color.evento else R.color.purple_accent
-            val fondo = if (esEvento) R.color.evento_suave else R.color.purple_surface
+            val color = if (esEvento) R.color.evento else R.color.acento
+            val fondo = if (esEvento) R.color.evento_suave else R.color.marca_superficie
             typeBadge.pintarEtiqueta(if (esEvento) "EVENTO" else "TAREA", color, fondo)
             icono.setImageResource(if (esEvento) R.drawable.ic_gami_evento else R.drawable.ic_gami_tarea)
             icono.imageTintList = ColorStateList.valueOf(context.getColor(color))
             icono.tintarFondo(fondo)
 
             pintarPrioridad(item.prioridad, priorityIndicator, prioridadTexto)
+
+            itemView.setOnClickListener { onAbrir(item) }
 
             // Set click listener for options
             opciones.setOnClickListener { view ->
@@ -98,22 +97,19 @@ class UnifiedAgendaAdapter(
                 .start()
         }
 
-        private fun formatDisplayDate(dateString: String): String {
-            return try {
-                val inputFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-                val outputFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-                val date = inputFormat.parse(dateString)
-                date?.let { outputFormat.format(it) } ?: dateString
-            } catch (e: Exception) {
-                dateString
-            }
-        }
+        /** "2026-11-20" → "20/11/2026"; un texto que no es fecha se muestra tal cual. */
+        private fun formatDisplayDate(dateString: String): String = runCatching {
+            val date = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(dateString)
+            date?.let { SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(it) } ?: dateString
+        }.getOrDefault(dateString)
 
         private fun showPopupMenu(view: View, item: AgendaItem) {
             val popupMenu = PopupMenu(context, view)
             popupMenu.inflate(R.menu.menudos)
             // Las tareas abren su detalle con las recomendaciones de la IA; los eventos de la agenda no tienen
             popupMenu.menu.findItem(R.id.VerMas).isVisible = item.asignatura != null
+            // La fila guarda solo lo básico: la tarea se comparte desde "Ver más", con todos sus datos
+            popupMenu.menu.findItem(R.id.Compartir).isVisible = false
 
             popupMenu.setOnMenuItemClickListener { menuItem ->
                 when (menuItem.itemId) {

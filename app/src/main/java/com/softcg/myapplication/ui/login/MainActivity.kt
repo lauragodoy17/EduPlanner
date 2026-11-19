@@ -10,6 +10,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.lifecycle.Lifecycle
 import com.softcg.myapplication.PrincipalSplash
 import com.softcg.myapplication.R
 import com.softcg.myapplication.core.dialog.DialogFragmentLauncher
@@ -17,6 +19,9 @@ import com.softcg.myapplication.core.dialog.ErrorDialog
 import com.softcg.myapplication.core.ex.dismissKeyboard
 import com.softcg.myapplication.core.ex.loseFocusAfterAction
 import com.softcg.myapplication.core.ex.mostrarCarga
+import com.softcg.myapplication.core.ex.mostrarMensaje
+import com.softcg.myapplication.data.network.CredencialGoogleService
+import kotlinx.coroutines.launch
 import com.softcg.myapplication.core.ex.onTextChanged
 import com.softcg.myapplication.core.ex.show
 import com.softcg.myapplication.databinding.ActivityMainBinding
@@ -41,6 +46,9 @@ class MainActivity : AppCompatActivity() {
     @Inject
     lateinit var dialogLauncher: DialogFragmentLauncher
 
+    @Inject
+    lateinit var credencialGoogle: CredencialGoogleService
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -53,10 +61,6 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         init()
-    }
-
-    private fun pass(){
-
     }
 
     private fun init(){
@@ -84,7 +88,10 @@ class MainActivity : AppCompatActivity() {
 
         with(binding){
             textoregistrar.setOnClickListener{miViewModel.onRegisterSelected()}
-
+            btnGoogle.setOnClickListener {
+                it.dismissKeyboard()
+                miViewModel.onGoogleSelected()
+            }
         }
 
     }
@@ -106,9 +113,21 @@ class MainActivity : AppCompatActivity() {
             if (userLogin.showErrorDialog) showErrorDialog(userLogin)
         }
 
-        lifecycleScope.launchWhenStarted {
-            miViewModel.viewState.collect(){ viewState ->
-                updateUI(viewState)
+        miViewModel.solicitarCredencialGoogle.observe(this) {
+            it.getContentIfNotHandled()?.let {
+                lifecycleScope.launch {
+                    miViewModel.onResultadoGoogle(credencialGoogle.obtenerIdToken(this@MainActivity))
+                }
+            }
+        }
+
+        miViewModel.mensajeError.observe(this) {
+            it.getContentIfNotHandled()?.let { mensaje -> mostrarMensaje(getString(mensaje)) }
+        }
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                miViewModel.viewState.collect { viewState -> updateUI(viewState) }
             }
         }
     }
@@ -116,6 +135,12 @@ class MainActivity : AppCompatActivity() {
     private fun updateUI(viewState: LoginViewState){
         with(binding){
             botoningresar.mostrarCarga(viewState.isLoading, "Ingresar", "Ingresando…")
+            botoningresar.isEnabled = !viewState.isLoading && !viewState.isLoadingGoogle
+            btnGoogle.isEnabled = !viewState.isLoading && !viewState.isLoadingGoogle
+            btnGoogle.alpha = if (viewState.isLoadingGoogle) 0.6f else 1f
+            textoGoogle.text = getString(
+                if (viewState.isLoadingGoogle) R.string.login_google_cargando else R.string.login_google
+            )
             campoemail.error =
                 if (viewState.isValidEmail) null else getString(R.string.login_error_mail)
             campocontrasea.error=

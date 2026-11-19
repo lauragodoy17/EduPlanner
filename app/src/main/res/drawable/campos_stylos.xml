@@ -8,7 +8,7 @@
         android:bottomRightRadius="10dp"
         />
     <solid
-        android:color="@color/purple_surface"
+        android:color="?attr/eduMarcaSuperficie"
         />
 
 

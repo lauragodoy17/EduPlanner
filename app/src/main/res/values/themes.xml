@@ -1,17 +1,61 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- La app se muestra siempre en claro: no hay paleta oscura definida. -->
+<resources>
+    <!--
+        TEMAS. Cada tema da un valor a cada color de la paleta (values/attrs_tema.xml); las pantallas nunca usan
+        un color fijo sino el atributo (?attr/eduAcento) o su selector (R.color.acento). Para añadir un tema:
+        una paleta completa aquí, una entrada en domain/preferencias/TemaApp y su estilo en ui/tema/Temas.kt.
+        El inicio de sesión, el registro y la pantalla de carga usan siempre Theme.MyApplication (claro).
+    -->
+
+    <!-- Claro: el tema original, morado -->
     <style name="Base.Theme.MyApplication" parent="Theme.MaterialComponents.Light.NoActionBar">
-        <item name="colorPrimary">@color/purple_accent</item>
-        <item name="colorPrimaryVariant">@color/purple_deep</item>
-        <item name="colorSecondary">@color/purple_accent</item>
-        <item name="colorOnSecondary">@color/white</item>
-        <item name="colorAccent">@color/purple_accent</item>
-        <item name="android:colorBackground">@color/fondo_app</item>
-        <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="android:navigationBarColor">@color/superficie</item>
+        <item name="eduMarcaProfunda">#4A1F5C</item>
+        <item name="eduMarca">#8B5A9F</item>
+        <item name="eduAcento">#9C27B0</item>
+        <item name="eduSobreAcento">#FFFFFF</item>
+        <item name="eduMarcaClara">#B48BBF</item>
+        <item name="eduMarcaSuave">#E1BEE7</item>
+        <item name="eduMarcaSuperficie">#F3E5F5</item>
+        <item name="eduDegradadoInicio">#4A1F5C</item>
+        <item name="eduDegradadoFin">#9C27B0</item>
+        <item name="eduFondoApp">#F7F4F9</item>
+        <item name="eduSuperficie">#FFFFFF</item>
+        <item name="eduBordeSuave">#E8E2EC</item>
+        <item name="eduPistaClara">#EEEAF0</item>
+        <item name="eduVeloOscuro">#664A1F5C</item>
+        <item name="eduTextPrimary">#2B1E33</item>
+        <item name="eduTextSecondary">#6A6072</item>
+        <item name="eduTextHint">#8F8697</item>
+        <item name="eduEstadoExito">#2E7D4F</item>
+        <item name="eduEstadoExitoSuave">#E3F4E9</item>
+        <item name="eduEstadoAviso">#A86400</item>
+        <item name="eduEstadoAvisoSuave">#FFF3DC</item>
+        <item name="eduEstadoError">#C62F3B</item>
+        <item name="eduEstadoErrorSuave">#FCE8EA</item>
+        <item name="eduEvento">#5E4BB8</item>
+        <item name="eduEventoSuave">#ECE9FA</item>
+        <item name="eduLogroBloqueado">#D6D2D9</item>
         <item name="android:windowLightNavigationBar">true</item>
+
+        <!-- Lo común a todos los temas (repetido en Tema.EduPlanner.Oscuro, que parte de un tema oscuro) -->
+        <item name="colorPrimary">?attr/eduAcento</item>
+        <item name="colorPrimaryVariant">?attr/eduMarcaProfunda</item>
+        <item name="colorOnPrimary">?attr/eduSobreAcento</item>
+        <item name="colorSecondary">?attr/eduAcento</item>
+        <item name="colorOnSecondary">?attr/eduSobreAcento</item>
+        <item name="colorAccent">?attr/eduAcento</item>
+        <item name="colorSurface">?attr/eduSuperficie</item>
+        <item name="colorOnSurface">?attr/eduTextPrimary</item>
+        <item name="colorOnBackground">?attr/eduTextPrimary</item>
+        <item name="colorError">?attr/eduEstadoError</item>
+        <item name="colorControlNormal">?attr/eduTextSecondary</item>
+        <item name="colorControlActivated">?attr/eduAcento</item>
+        <item name="android:colorBackground">?attr/eduFondoApp</item>
+        <item name="android:windowBackground">?attr/eduFondoApp</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">?attr/eduSuperficie</item>
         <item name="android:textColorPrimary">@color/text_primary</item>
         <item name="android:textColorSecondary">@color/text_secondary</item>
+        <item name="android:textColorHint">@color/text_hint</item>
         <item name="textAppearanceButton">@style/Edu.TextoBoton</item>
         <item name="shapeAppearanceSmallComponent">@style/Edu.FormaTarjeta</item>
         <item name="materialAlertDialogTheme">@style/Edu.TemaAlerta</item>
@@ -26,13 +70,126 @@
 
     <!-- Login y registro: el degradado cubre toda la pantalla, también bajo las barras del sistema -->
     <style name="Theme.MyApplication.Acceso">
-        <item name="android:statusBarColor">@color/purple_deep</item>
-        <item name="android:navigationBarColor">@color/fondo_app</item>
+        <item name="android:statusBarColor">?attr/eduMarcaProfunda</item>
+        <item name="android:navigationBarColor">?attr/eduFondoApp</item>
+    </style>
+
+    <!-- ===== Temas que se eligen en Opciones > Tema de la app ===== -->
+    <style name="Tema.EduPlanner.Claro" parent="Base.Theme.MyApplication"/>
+
+    <!-- Azul -->
+    <style name="Tema.EduPlanner.Azul" parent="Base.Theme.MyApplication">
+        <item name="eduMarcaProfunda">#0B3A66</item>
+        <item name="eduMarca">#2F6FAD</item>
+        <item name="eduAcento">#1A6FD6</item>
+        <item name="eduSobreAcento">#FFFFFF</item>
+        <item name="eduMarcaClara">#7FB0E8</item>
+        <item name="eduMarcaSuave">#C6DCF7</item>
+        <item name="eduMarcaSuperficie">#EAF2FD</item>
+        <item name="eduDegradadoInicio">#0B3A66</item>
+        <item name="eduDegradadoFin">#1A6FD6</item>
+        <item name="eduFondoApp">#F3F7FB</item>
+        <item name="eduSuperficie">#FFFFFF</item>
+        <item name="eduBordeSuave">#DCE5EF</item>
+        <item name="eduPistaClara">#E6ECF3</item>
+        <item name="eduVeloOscuro">#660B3A66</item>
+        <item name="eduTextPrimary">#172534</item>
+        <item name="eduTextSecondary">#56677A</item>
+        <item name="eduTextHint">#8593A3</item>
+        <item name="eduEvento">#00838F</item>
+        <item name="eduEventoSuave">#DFF3F4</item>
+        <item name="eduLogroBloqueado">#D3DAE2</item>
+    </style>
+
+    <!-- Clásico: tonos verdes -->
+    <style name="Tema.EduPlanner.Clasico" parent="Base.Theme.MyApplication">
+        <item name="eduMarcaProfunda">#1B4D3E</item>
+        <item name="eduMarca">#3A7D5C</item>
+        <item name="eduAcento">#2E7D32</item>
+        <item name="eduSobreAcento">#FFFFFF</item>
+        <item name="eduMarcaClara">#8CC7A0</item>
+        <item name="eduMarcaSuave">#C8E6C9</item>
+        <item name="eduMarcaSuperficie">#EBF5EC</item>
+        <item name="eduDegradadoInicio">#1B4D3E</item>
+        <item name="eduDegradadoFin">#2E7D32</item>
+        <item name="eduFondoApp">#F3F7F3</item>
+        <item name="eduSuperficie">#FFFFFF</item>
+        <item name="eduBordeSuave">#DCE7DD</item>
+        <item name="eduPistaClara">#E5EDE6</item>
+        <item name="eduVeloOscuro">#661B4D3E</item>
+        <item name="eduTextPrimary">#1C2A21</item>
+        <item name="eduTextSecondary">#56685C</item>
+        <item name="eduTextHint">#86958A</item>
+        <item name="eduEvento">#3949AB</item>
+        <item name="eduEventoSuave">#E8EAF6</item>
+        <item name="eduLogroBloqueado">#D2DBD3</item>
+    </style>
+
+    <!-- Oscuro: fondos casi negros con un toque de la marca; parte de un tema oscuro para que los controles
+         del sistema (menús, selectores de fecha y hora, casillas) también se vean oscuros -->
+    <style name="Tema.EduPlanner.Oscuro" parent="Theme.MaterialComponents.NoActionBar">
+        <item name="eduMarcaProfunda">#E9CFF2</item>
+        <item name="eduMarca">#C9A3DB</item>
+        <item name="eduAcento">#B66BD9</item>
+        <item name="eduSobreAcento">#FFFFFF</item>
+        <item name="eduMarcaClara">#8E6AA3</item>
+        <item name="eduMarcaSuave">#4A3356</item>
+        <item name="eduMarcaSuperficie">#2C2333</item>
+        <item name="eduDegradadoInicio">#2A1238</item>
+        <item name="eduDegradadoFin">#6A2C8A</item>
+        <item name="eduFondoApp">#121017</item>
+        <item name="eduSuperficie">#1E1B24</item>
+        <item name="eduBordeSuave">#35303C</item>
+        <item name="eduPistaClara">#2A2731</item>
+        <item name="eduVeloOscuro">#B3000000</item>
+        <item name="eduTextPrimary">#EEE8F2</item>
+        <item name="eduTextSecondary">#B5ABBD</item>
+        <item name="eduTextHint">#8A8192</item>
+        <item name="eduEstadoExito">#73D19B</item>
+        <item name="eduEstadoExitoSuave">#1C3326</item>
+        <item name="eduEstadoAviso">#F4B860</item>
+        <item name="eduEstadoAvisoSuave">#3A2E18</item>
+        <item name="eduEstadoError">#FF8A94</item>
+        <item name="eduEstadoErrorSuave">#3E1F25</item>
+        <item name="eduEvento">#A99CF6</item>
+        <item name="eduEventoSuave">#29254A</item>
+        <item name="eduLogroBloqueado">#3B3642</item>
+        <item name="android:windowLightNavigationBar">false</item>
+        <!-- Las superficies usan el color de la paleta tal cual, sin el aclarado por elevación de Material -->
+        <item name="elevationOverlayEnabled">false</item>
+
+        <item name="colorPrimary">?attr/eduAcento</item>
+        <item name="colorPrimaryVariant">?attr/eduMarcaProfunda</item>
+        <item name="colorOnPrimary">?attr/eduSobreAcento</item>
+        <item name="colorSecondary">?attr/eduAcento</item>
+        <item name="colorOnSecondary">?attr/eduSobreAcento</item>
+        <item name="colorAccent">?attr/eduAcento</item>
+        <item name="colorSurface">?attr/eduSuperficie</item>
+        <item name="colorOnSurface">?attr/eduTextPrimary</item>
+        <item name="colorOnBackground">?attr/eduTextPrimary</item>
+        <item name="colorError">?attr/eduEstadoError</item>
+        <item name="colorControlNormal">?attr/eduTextSecondary</item>
+        <item name="colorControlActivated">?attr/eduAcento</item>
+        <item name="android:colorBackground">?attr/eduFondoApp</item>
+        <item name="android:windowBackground">?attr/eduFondoApp</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">?attr/eduSuperficie</item>
+        <item name="android:textColorPrimary">@color/text_primary</item>
+        <item name="android:textColorSecondary">@color/text_secondary</item>
+        <item name="android:textColorHint">@color/text_hint</item>
+        <item name="textAppearanceButton">@style/Edu.TextoBoton</item>
+        <item name="shapeAppearanceSmallComponent">@style/Edu.FormaTarjeta</item>
+        <item name="materialAlertDialogTheme">@style/Edu.TemaAlerta</item>
+        <item name="popupMenuStyle">@style/Edu.MenuEmergente</item>
+        <item name="snackbarStyle">@style/Edu.Aviso</item>
+        <item name="snackbarTextViewStyle">@style/Edu.AvisoTexto</item>
+        <item name="android:datePickerDialogTheme">@style/Edu.TemaSelector</item>
+        <item name="android:timePickerDialogTheme">@style/Edu.TemaSelector</item>
     </style>
 
     <style name="Theme.APISplashScreen" parent="Theme.SplashScreen">
         <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="windowSplashScreenBackground">@color/purple_deep</item>
+        <item name="windowSplashScreenBackground">@color/marca_lanzador</item>
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash</item>
         <item name="windowSplashScreenAnimationDuration">300</item>
         <item name="postSplashScreenTheme">@style/Base.Theme.MyApplication</item>

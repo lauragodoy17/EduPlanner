@@ -10,7 +10,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
-import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Button
@@ -40,12 +39,9 @@ class HelpFragment : Fragment() {
         val guardarBoton= view.findViewById<Button>(R.id.botonAgregar)
 
         val items= listOf("Problemas técnicos", "Problemas de usabilidad", "Problemas de contenido", "Problemas de comunicación", "Problemas de seguridad", "Problemas administrativos")
-        val autoComplete =view.findViewById<AutoCompleteTextView>(R.id.QuejaEditText)
+        val autoComplete = quejas
         val adapter= ArrayAdapter(requireContext(), R.layout.item_menu_asignatura,items)
         autoComplete.setAdapter(adapter)
-        autoComplete.onItemClickListener= AdapterView.OnItemClickListener{
-                adapterView, view, i, l ->
-        }
         guardarBoton.setOnClickListener {
             quejas.setText("")
             quejados.setText("")
@@ -61,12 +57,9 @@ class HelpFragment : Fragment() {
         val guardarBoton= view.findViewById<Button>(R.id.botonAgregar)
 
         val items= listOf("La aplicación no se carga", "Funcionalidades que no funcionan", "Problemas con la interfaz de usuario", "La aplicación es lenta o se bloquea", "Alto consumo de batería", "Interfaz confusa o difícil de entender", "Problemas para encontrar ciertas funcionalidades","Dificultad para personalizar horarios o eventos", "Problemas al agregar, editar o eliminar eventos/tareas", "Notificaciones de eventos/tareas que no funcionan correctamente", "Problemas al visualizar el calendario semanal", "Confusión con zonas horarias y fechas", "No recibir notificaciones importantes", "Problemas al iniciar sesión o recuperar contraseñas", "Dificultad para crear o eliminar cuentas de usuario")
-        val autoComplete =view.findViewById<AutoCompleteTextView>(R.id.QuejadosEditText)
+        val autoComplete = quejados
         val adapter= ArrayAdapter(requireContext(), R.layout.item_menu_asignatura,items)
         autoComplete.setAdapter(adapter)
-        autoComplete.onItemClickListener= AdapterView.OnItemClickListener{
-                adapterView, view, i, l ->
-        }
         guardarBoton.setOnClickListener {
             quejas.setText("")
             quejados.setText("")

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Una opción de tema: muestra (cabecera, tarjeta y acento del propio tema), nombre, descripción y marca de elegido -->
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/temaTarjeta"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="10dp"
+    android:clickable="true"
+    android:focusable="true"
+    app:cardBackgroundColor="?attr/eduSuperficie"
+    app:cardCornerRadius="@dimen/radio_tarjeta"
+    app:cardElevation="0dp"
+    app:strokeColor="?attr/eduBordeSuave"
+    app:strokeWidth="1dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="12dp">
+
+        <!-- Miniatura de una pantalla con los colores del tema -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/temaMuestra"
+            android:layout_width="64dp"
+            android:layout_height="52dp"
+            android:layout_marginEnd="14dp"
+            android:importantForAccessibility="no"
+            app:cardCornerRadius="10dp"
+            app:cardElevation="0dp"
+            app:strokeColor="?attr/eduBordeSuave"
+            app:strokeWidth="1dp">
+
+            <View
+                android:id="@+id/temaMuestraCabecera"
+                android:layout_width="match_parent"
+                android:layout_height="16dp"/>
+
+            <View
+                android:id="@+id/temaMuestraTarjeta"
+                android:layout_width="38dp"
+                android:layout_height="22dp"
+                android:layout_marginStart="6dp"
+                android:layout_marginTop="22dp"
+                android:background="@drawable/type_badge_bg"/>
+
+            <View
+                android:id="@+id/temaMuestraAcento"
+                android:layout_width="14dp"
+                android:layout_height="14dp"
+                android:layout_gravity="end|bottom"
+                android:layout_margin="6dp"
+                android:background="@drawable/circle_shape"/>
+        </com.google.android.material.card.MaterialCardView>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/temaNombre"
+                style="@style/Edu.Texto.TituloTarjeta"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:text="Oscuro"/>
+
+            <TextView
+                android:id="@+id/temaDescripcion"
+                style="@style/Edu.Texto.Pie"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                tools:text="Fondos oscuros, cómodo de noche"/>
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/temaElegido"
+            android:layout_width="26dp"
+            android:layout_height="26dp"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/circle_shape"
+            android:backgroundTint="?attr/eduAcento"
+            android:importantForAccessibility="no"
+            android:padding="5dp"
+            android:src="@drawable/ic_gami_check"
+            app:tint="?attr/eduSobreAcento"/>
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

@@ -6,18 +6,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.softcg.myapplication.data.Repositories.AsignaturasRepository
 import com.softcg.myapplication.core.Event
+import com.softcg.myapplication.domain.CrearAsignaturaUseCase
+import com.softcg.myapplication.domain.NuevaAsignatura
+import com.softcg.myapplication.domain.ResultadoCrearAsignatura
 import com.softcg.myapplication.domain.getAsignaturasUseCase
-import com.softcg.myapplication.domain.gamificacion.CondicionesRecompensa
-import com.softcg.myapplication.domain.gamificacion.OtorgarRecompensaUseCase
-import com.softcg.myapplication.domain.gamificacion.ResultadoRecompensa
-import com.softcg.myapplication.domain.gamificacion.TipoRecompensa
 import com.softcg.myapplication.domain.prediccion.Extraccion
 import com.softcg.myapplication.domain.prediccion.ExtraerDatosPrediccionUseCase
 import com.softcg.myapplication.ui.Inicio.Fragments.Asignaturas.Models.Asignatura
-import com.softcg.myapplication.ui.Inicio.Fragments.Asignaturas.Models.ListItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import java.util.Locale
 import javax.inject.Inject
 
 /** Cuántos datos para predicciones tiene una asignatura, para su tarjeta. */
@@ -26,7 +23,7 @@ data class ResumenDatos(val listos: Int, val total: Int, val actualizarInteres: 
 @HiltViewModel
 class AsignaturasViewModel @Inject constructor(
     private val getAsignaturasUseCase: getAsignaturasUseCase,
-    private val otorgarRecompensa: OtorgarRecompensaUseCase,
+    private val crearAsignatura: CrearAsignaturaUseCase,
     private val extraerDatos: ExtraerDatosPrediccionUseCase
 ) : ViewModel(){
 
@@ -78,35 +75,14 @@ class AsignaturasViewModel @Inject constructor(
         }
     }
 
-    fun onAgregarAsignaturaSelected(nombre:String,tutor:String,duracion:Int,hora:String, horario:List<ListItem>, tipoCalificacion:String = ""){
-        val horarios=getHorario(horario)
-        val asignatura = Asignatura(null,nombre,tutor,duracion,hora,horarios,tipoCalificacion)
+    fun onAgregarAsignaturaSelected(nueva: NuevaAsignatura) {
         viewModelScope.launch {
-            val id = asignaturasRepository.insertAsignatura(asignatura)
+            val resultado = crearAsignatura(nueva)
             obtenerAsignaturas()
-            if (id > 0) _asignaturaCreada.value = Event(id.toInt())
-            if (CondicionesRecompensa.claseValida(hora, duracion, horarios)) {
-                val resultado = otorgarRecompensa(TipoRecompensa.CLASE_REGISTRADA, "$id")
-                if (resultado is ResultadoRecompensa.Otorgada) {
-                    _recompensa.value = Event(resultado.cantidad)
-                }
+            if (resultado is ResultadoCrearAsignatura.Creada) {
+                _asignaturaCreada.value = Event(resultado.id)
+                resultado.recompensa?.let { _recompensa.value = Event(it) }
             }
         }
     }
-    private fun getHorario(items: List<ListItem>):List<Boolean>{
-        val dias = listOf("lunes", "martes", "miércoles", "jueves", "viernes", "sábado", "domingo")
-
-        val resultado = MutableList(7) { false }
-
-        for (item in items) {
-            val dia = item.name.lowercase(Locale.getDefault())
-            val index = dias.indexOf(dia)
-            if (index != -1) {
-                resultado[index] = true
-            }
-        }
-        return resultado
-    }
-
-
 }

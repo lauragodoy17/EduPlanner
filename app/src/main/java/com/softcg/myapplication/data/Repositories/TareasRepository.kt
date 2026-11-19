@@ -47,6 +47,14 @@ class TareasRepository @Inject constructor(
         return tareasDao.insertTarea(tarea.copy(id = null, asignaturaId = asignaturaId).toEntity(uid))
     }
 
+    /** Guarda lo editado; la asignatura se vuelve a enlazar por su nombre. false si no existe o sin sesión. */
+    suspend fun updateTarea(tarea: Tarea): Boolean {
+        val uid = uid() ?: return false
+        val id = tarea.id ?: return false
+        val asignaturaId = asignaturasDao.idPorNombre(uid, tarea.asignatura)
+        return tareasDao.actualizar(uid, id, tarea.titulo, tarea.descrip, tarea.asignatura, asignaturaId, tarea.fecha, tarea.prioridad) > 0
+    }
+
     private fun TareaConCalificacion.toModel() = Tarea(
         id = tarea.id, titulo = tarea.titulo, descrip = tarea.descrip, asignatura = tarea.asignatura, fecha = tarea.fecha,
         prioridad = tarea.prioridad, calificacion = calificacion, entregadaMillis = tarea.entregadaMillis,

@@ -25,7 +25,7 @@ class AnilloProgresoView @JvmOverloads constructor(
     private val avance = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         style = Paint.Style.STROKE
         strokeCap = Paint.Cap.ROUND
-        color = context.getColor(R.color.purple_accent)
+        color = context.getColor(R.color.acento)
     }
     private val arco = RectF()
     private var fraccion = 0f

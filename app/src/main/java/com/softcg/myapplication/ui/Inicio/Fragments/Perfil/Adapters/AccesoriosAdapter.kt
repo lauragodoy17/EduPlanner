@@ -108,12 +108,12 @@ class AccesoriosAdapter(
             precioFila.visibility = if (modoTienda && accesorio.logroRequerido == null) View.VISIBLE else View.GONE
 
             val (texto, color) = when {
-                accesorio.id in equipados -> "EQUIPADO" to context.getColor(R.color.purple_primary)
-                accesorio.id in inventario -> (if (modoTienda) "EN INVENTARIO" else "EQUIPAR") to context.getColor(R.color.purple_light)
+                accesorio.id in equipados -> "EQUIPADO" to context.getColor(R.color.marca)
+                accesorio.id in inventario -> (if (modoTienda) "EN INVENTARIO" else "EQUIPAR") to context.getColor(R.color.marca_clara)
                 accesorio.logroRequerido != null -> "POR LOGRO" to context.getColor(R.color.logro_oro)
-                nivel < accesorio.nivelMinimo -> "NIVEL ${accesorio.nivelMinimo}" to context.getColor(R.color.gris)
-                saldo >= accesorio.precio -> "COMPRAR" to context.getColor(R.color.purple_accent)
-                else -> "FALTAN ${accesorio.precio - saldo}" to context.getColor(R.color.gris)
+                nivel < accesorio.nivelMinimo -> "NIVEL ${accesorio.nivelMinimo}" to context.getColor(R.color.text_hint)
+                saldo >= accesorio.precio -> "COMPRAR" to context.getColor(R.color.acento)
+                else -> "FALTAN ${accesorio.precio - saldo}" to context.getColor(R.color.text_hint)
             }
             estado.text = texto
             estado.backgroundTintList = android.content.res.ColorStateList.valueOf(color)

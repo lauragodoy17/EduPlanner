@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/fondo_app"
+    android:background="?attr/eduFondoApp"
     tools:context=".ui.Inicio.Fragments.Perfil.EnfoqueFragment">
 
     <!-- Elegir duración -->
@@ -25,7 +25,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Elige cuánto tiempo vas a estudiar sin distracciones. Si la abandonas no pierdes nada, pero tampoco ganas."
-                android:textColor="@color/text_secondary"
+                android:textColor="?attr/eduTextSecondary"
                 android:textSize="14sp"
                 android:layout_marginTop="4dp"
                 android:layout_marginBottom="20dp"/>
@@ -71,7 +71,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Ganarás 10 EduCoins y 10 XP"
-                android:textColor="@color/purple_accent"
+                android:textColor="?attr/eduAcento"
                 android:textSize="14sp"
                 android:textStyle="bold"
                 android:layout_marginBottom="20dp"/>
@@ -246,7 +246,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/alto_boton"
                 android:text="Hacer otra"
-                android:textColor="@color/purple_deep"
+                android:textColor="?attr/eduDegradadoInicio"
                 android:textStyle="bold"
                 app:backgroundTint="@color/white"
                 app:cornerRadius="16dp"

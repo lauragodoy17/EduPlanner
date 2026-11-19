@@ -5,6 +5,6 @@
     android:viewportWidth="24"
     android:viewportHeight="24">
     <path
-        android:fillColor="@color/purple_accent"
+        android:fillColor="?attr/eduAcento"
         android:pathData="M7,10l5,5 5,-5z" />
 </vector>

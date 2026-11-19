@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Interés y dificultad percibida de una asignatura: un solo ítem en "Datos para predicciones", dos preguntas aquí -->
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/dialog_a"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingHorizontal="24dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="20dp">
+
+        <View style="@style/Edu.AsaHoja"/>
+
+        <TextView
+            style="@style/Edu.Texto.TituloHoja"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:text="Interés y dificultad"/>
+
+        <TextView
+            android:id="@+id/percepcionAsignatura"
+            style="@style/Edu.Texto.Cuerpo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="18dp"
+            android:gravity="center"
+            tools:text="Cálculo II"/>
+
+        <TextView
+            style="@style/Edu.Texto.Rotulo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="2dp"
+            android:text="¿Cuánto te interesa esta asignatura?"/>
+
+        <TextView
+            style="@style/Edu.Texto.Pie"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:text="Puedes cambiar la respuesta cuando cambie tu interés."/>
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/percepcionInteres"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="14dp"
+            app:singleSelection="true"/>
+
+        <TextView
+            android:id="@+id/percepcionDificultadTitulo"
+            style="@style/Edu.Texto.Rotulo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            tools:text="¿Qué tan difícil te parece esta asignatura?"/>
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/percepcionDificultad"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="14dp"
+            app:singleSelection="true"/>
+
+        <TextView
+            android:id="@+id/percepcionError"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:textColor="?attr/eduEstadoError"
+            android:textSize="14sp"
+            android:visibility="gone"
+            tools:text="Responde al menos una de las dos preguntas"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/percepcionGuardar"
+            style="@style/Edu.Boton"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/alto_boton"
+            android:layout_marginTop="4dp"
+            android:enabled="false"
+            android:text="Guardar"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/percepcionAhoraNo"
+            style="@style/Edu.BotonTexto"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="Ahora no"/>
+    </LinearLayout>
+</ScrollView>

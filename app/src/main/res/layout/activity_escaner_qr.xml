@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Lector de QR de EduPlanner: cámara a pantalla completa con un marco donde apuntar -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/escanerRaiz"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black">
+
+    <androidx.camera.view.PreviewView
+        android:id="@+id/escanerVista"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:scaleType="fillCenter"/>
+
+    <com.softcg.myapplication.ui.compartir.VisorQrView
+        android:id="@+id/escanerVisor"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <!-- Barra superior -->
+    <LinearLayout
+        android:id="@+id/escanerBarra"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingHorizontal="12dp"
+        android:paddingVertical="8dp">
+
+        <ImageButton
+            android:id="@+id/escanerCerrar"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/bg_pastilla_translucida"
+            android:contentDescription="Cerrar el lector"
+            android:src="@drawable/ic_cerrar"
+            app:tint="@color/white"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Leer QR"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:textStyle="bold"/>
+
+        <ImageButton
+            android:id="@+id/escanerLinterna"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/bg_pastilla_translucida"
+            android:contentDescription="Encender la linterna"
+            android:src="@drawable/ic_linterna"
+            android:visibility="invisible"
+            app:tint="@color/white"
+            tools:visibility="visible"/>
+    </LinearLayout>
+
+    <!-- Instrucciones y avisos, bajo el marco -->
+    <LinearLayout
+        android:id="@+id/escanerPie"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingHorizontal="32dp"
+        android:paddingBottom="56dp">
+
+        <TextView
+            android:id="@+id/escanerAviso"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/bg_pastilla_blanca"
+            android:gravity="center"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="10dp"
+            android:textColor="?attr/eduTextPrimary"
+            android:textSize="14sp"
+            android:visibility="invisible"
+            tools:text="Este código no es de EduPlanner"
+            tools:visibility="visible"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Apunta al código QR que te compartieron desde EduPlanner"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:gravity="center"
+            android:text="Se lee solo. Antes de agregar nada podrás revisarlo."
+            android:textColor="@color/blanco_70"
+            android:textSize="14sp"/>
+    </LinearLayout>
+
+    <!-- Sin permiso de cámara -->
+    <LinearLayout
+        android:id="@+id/escanerPermiso"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="?attr/eduFondoApp"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="32dp"
+        android:visibility="gone"
+        tools:visibility="gone">
+
+        <ImageView
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/circle_shape_large"
+            android:backgroundTint="?attr/eduMarcaSuperficie"
+            android:importantForAccessibility="no"
+            android:padding="18dp"
+            android:src="@drawable/ic_camara"
+            app:tint="?attr/eduAcento"/>
+
+        <TextView
+            style="@style/Edu.Texto.TituloHoja"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:text="Necesitamos tu cámara"/>
+
+        <TextView
+            android:id="@+id/escanerPermisoDetalle"
+            style="@style/Edu.Texto.Cuerpo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:gravity="center"
+            android:text="Solo se usa para leer los códigos QR de EduPlanner. No se toman ni se guardan fotos."/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/escanerPermitir"
+            style="@style/Edu.Boton"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/alto_boton"
+            android:text="Permitir cámara"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/escanerAhoraNo"
+            style="@style/Edu.BotonTexto"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="Ahora no"/>
+    </LinearLayout>
+</FrameLayout>

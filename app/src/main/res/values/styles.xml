@@ -7,46 +7,46 @@
     <!-- Textos -->
     <style name="Edu.Texto"/>
     <style name="Edu.Texto.TituloHoja">
-        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textColor">?attr/eduTextPrimary</item>
         <item name="android:textSize">22sp</item>
         <item name="android:textStyle">bold</item>
         <item name="android:textAlignment">center</item>
     </style>
     <style name="Edu.Texto.Seccion">
-        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textColor">?attr/eduTextPrimary</item>
         <item name="android:textSize">18sp</item>
         <item name="android:textStyle">bold</item>
     </style>
     <style name="Edu.Texto.TituloTarjeta">
-        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textColor">?attr/eduTextPrimary</item>
         <item name="android:textSize">15sp</item>
         <item name="android:textStyle">bold</item>
     </style>
     <style name="Edu.Texto.Cuerpo">
-        <item name="android:textColor">@color/text_secondary</item>
+        <item name="android:textColor">?attr/eduTextSecondary</item>
         <item name="android:textSize">14sp</item>
     </style>
     <style name="Edu.Texto.Pie">
-        <item name="android:textColor">@color/text_secondary</item>
+        <item name="android:textColor">?attr/eduTextSecondary</item>
         <item name="android:textSize">12sp</item>
     </style>
     <style name="Edu.Texto.Rotulo">
-        <item name="android:textColor">@color/text_secondary</item>
+        <item name="android:textColor">?attr/eduTextSecondary</item>
         <item name="android:textSize">13sp</item>
         <item name="android:textStyle">bold</item>
     </style>
     <style name="Edu.Texto.Etiqueta">
-        <item name="android:textColor">@color/purple_accent</item>
+        <item name="android:textColor">?attr/eduAcento</item>
         <item name="android:textSize">10sp</item>
         <item name="android:textStyle">bold</item>
         <item name="android:letterSpacing">0.04</item>
         <item name="android:background">@drawable/type_badge_bg</item>
-        <item name="android:backgroundTint">@color/purple_surface</item>
+        <item name="android:backgroundTint">?attr/eduMarcaSuperficie</item>
         <item name="android:paddingHorizontal">8dp</item>
         <item name="android:paddingVertical">3dp</item>
     </style>
     <style name="Edu.Texto.Enlace">
-        <item name="android:textColor">@color/purple_accent</item>
+        <item name="android:textColor">?attr/eduAcento</item>
         <item name="android:textSize">14sp</item>
         <item name="android:textStyle">bold</item>
     </style>
@@ -55,14 +55,14 @@
     <style name="Edu.Tarjeta" parent="CardView">
         <item name="cardCornerRadius">@dimen/radio_tarjeta</item>
         <item name="cardElevation">2dp</item>
-        <item name="cardBackgroundColor">@color/superficie</item>
+        <item name="cardBackgroundColor">?attr/eduSuperficie</item>
         <item name="android:layout_marginHorizontal">2dp</item>
         <item name="android:layout_marginTop">5dp</item>
         <item name="android:layout_marginBottom">5dp</item>
     </style>
     <style name="Edu.Tarjeta.Plana">
         <item name="cardElevation">0dp</item>
-        <item name="cardBackgroundColor">@color/purple_surface</item>
+        <item name="cardBackgroundColor">?attr/eduMarcaSuperficie</item>
         <item name="android:layout_marginHorizontal">0dp</item>
     </style>
 
@@ -75,28 +75,28 @@
         <item name="android:textSize">16sp</item>
     </style>
     <style name="Edu.Boton" parent="Widget.MaterialComponents.Button.UnelevatedButton">
-        <item name="backgroundTint">@color/purple_accent</item>
-        <item name="android:textColor">@color/white</item>
+        <item name="backgroundTint">?attr/eduAcento</item>
+        <item name="android:textColor">?attr/eduSobreAcento</item>
         <item name="cornerRadius">@dimen/radio_tarjeta</item>
         <item name="android:textAppearance">@style/Edu.TextoBoton</item>
     </style>
     <style name="Edu.Boton.Peligro">
-        <item name="backgroundTint">@color/estado_error</item>
+        <item name="backgroundTint">?attr/eduEstadoError</item>
     </style>
     <style name="Edu.Boton.Tonal">
-        <item name="backgroundTint">@color/purple_surface</item>
-        <item name="android:textColor">@color/purple_accent</item>
-        <item name="iconTint">@color/purple_accent</item>
+        <item name="backgroundTint">?attr/eduMarcaSuperficie</item>
+        <item name="android:textColor">?attr/eduAcento</item>
+        <item name="iconTint">?attr/eduAcento</item>
     </style>
     <style name="Edu.BotonContorno" parent="Widget.MaterialComponents.Button.OutlinedButton">
-        <item name="android:textColor">@color/purple_accent</item>
-        <item name="strokeColor">@color/purple_accent</item>
+        <item name="android:textColor">?attr/eduAcento</item>
+        <item name="strokeColor">?attr/eduAcento</item>
         <item name="strokeWidth">1.5dp</item>
         <item name="cornerRadius">@dimen/radio_tarjeta</item>
         <item name="android:textAppearance">@style/Edu.TextoBoton</item>
     </style>
     <style name="Edu.BotonTexto" parent="Widget.MaterialComponents.Button.TextButton">
-        <item name="android:textColor">@color/text_secondary</item>
+        <item name="android:textColor">?attr/eduTextSecondary</item>
         <item name="android:textAppearance">@style/Edu.TextoBoton</item>
     </style>
 
@@ -118,12 +118,12 @@
         <item name="boxStrokeColor">@color/borde_campo</item>
         <item name="boxStrokeWidth">1dp</item>
         <item name="boxStrokeWidthFocused">2dp</item>
-        <item name="boxBackgroundColor">@color/superficie</item>
-        <item name="hintTextColor">@color/purple_accent</item>
-        <item name="android:textColorHint">@color/text_secondary</item>
-        <item name="endIconTint">@color/purple_accent</item>
-        <item name="errorTextColor">@color/estado_error</item>
-        <item name="boxStrokeErrorColor">@color/estado_error</item>
+        <item name="boxBackgroundColor">?attr/eduSuperficie</item>
+        <item name="hintTextColor">?attr/eduAcento</item>
+        <item name="android:textColorHint">?attr/eduTextSecondary</item>
+        <item name="endIconTint">?attr/eduAcento</item>
+        <item name="errorTextColor">?attr/eduEstadoError</item>
+        <item name="boxStrokeErrorColor">?attr/eduEstadoError</item>
         <item name="errorIconDrawable">@null</item>
         <item name="android:layout_marginBottom">14dp</item>
     </style>
@@ -135,14 +135,14 @@
         <item name="boxStrokeColor">@color/borde_campo</item>
         <item name="boxStrokeWidth">1dp</item>
         <item name="boxStrokeWidthFocused">2dp</item>
-        <item name="boxBackgroundColor">@color/superficie</item>
-        <item name="hintTextColor">@color/purple_accent</item>
-        <item name="android:textColorHint">@color/text_secondary</item>
-        <item name="endIconTint">@color/purple_accent</item>
+        <item name="boxBackgroundColor">?attr/eduSuperficie</item>
+        <item name="hintTextColor">?attr/eduAcento</item>
+        <item name="android:textColorHint">?attr/eduTextSecondary</item>
+        <item name="endIconTint">?attr/eduAcento</item>
         <item name="android:layout_marginBottom">14dp</item>
     </style>
     <style name="Edu.CampoEntrada">
-        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textColor">?attr/eduTextPrimary</item>
         <item name="android:textSize">16sp</item>
     </style>
 
@@ -161,20 +161,20 @@
         <item name="android:layout_height">88dp</item>
         <item name="android:padding">22dp</item>
         <item name="android:background">@drawable/circle_shape</item>
-        <item name="android:backgroundTint">@color/purple_surface</item>
-        <item name="tint">@color/purple_accent</item>
+        <item name="android:backgroundTint">?attr/eduMarcaSuperficie</item>
+        <item name="tint">?attr/eduAcento</item>
         <item name="android:layout_marginBottom">16dp</item>
         <item name="android:importantForAccessibility">no</item>
     </style>
     <style name="Edu.VacioTitulo">
-        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textColor">?attr/eduTextPrimary</item>
         <item name="android:textSize">18sp</item>
         <item name="android:textStyle">bold</item>
         <item name="android:textAlignment">center</item>
         <item name="android:layout_marginBottom">4dp</item>
     </style>
     <style name="Edu.VacioDetalle">
-        <item name="android:textColor">@color/text_secondary</item>
+        <item name="android:textColor">?attr/eduTextSecondary</item>
         <item name="android:textSize">14sp</item>
         <item name="android:textAlignment">center</item>
     </style>
@@ -218,26 +218,26 @@
         <item name="android:elevation">2dp</item>
         <item name="android:paddingHorizontal">12dp</item>
         <item name="android:paddingVertical">6dp</item>
-        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textColor">?attr/eduTextPrimary</item>
         <item name="android:textSize">14sp</item>
         <item name="android:textStyle">bold</item>
     </style>
     <style name="Edu.FabMini" parent="Widget.MaterialComponents.FloatingActionButton">
         <item name="fabSize">mini</item>
-        <item name="backgroundTint">@color/superficie</item>
-        <item name="tint">@color/purple_accent</item>
+        <item name="backgroundTint">?attr/eduSuperficie</item>
+        <item name="tint">?attr/eduAcento</item>
         <item name="android:layout_marginVertical">6dp</item>
         <item name="android:layout_marginEnd">4dp</item>
     </style>
 
     <!-- Avisos -->
     <style name="Edu.Aviso" parent="Widget.MaterialComponents.Snackbar">
-        <item name="backgroundTint">@color/purple_deep</item>
+        <item name="backgroundTint">?attr/eduMarcaProfunda</item>
         <item name="shapeAppearance">@style/Edu.FormaTarjeta</item>
         <item name="android:layout_margin">12dp</item>
     </style>
     <style name="Edu.AvisoTexto" parent="Widget.MaterialComponents.Snackbar.TextView">
-        <item name="android:textColor">@color/white</item>
+        <item name="android:textColor">?attr/eduSuperficie</item>
         <item name="android:textSize">14sp</item>
         <item name="android:maxLines">3</item>
     </style>
@@ -252,7 +252,7 @@
 
     <!-- Diálogos del sistema -->
     <style name="Edu.TemaAlerta" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
-        <item name="colorPrimary">@color/purple_accent</item>
+        <item name="colorPrimary">?attr/eduAcento</item>
         <item name="shapeAppearanceOverlay">@style/Edu.FormaDialogo</item>
         <item name="materialAlertDialogTitleTextStyle">@style/Edu.AlertaTitulo</item>
         <item name="materialAlertDialogBodyTextStyle">@style/Edu.AlertaCuerpo</item>
@@ -260,29 +260,38 @@
         <item name="buttonBarNegativeButtonStyle">@style/Edu.AlertaBotonSecundario</item>
     </style>
     <style name="Edu.AlertaTitulo" parent="MaterialAlertDialog.MaterialComponents.Title.Text">
-        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textColor">?attr/eduTextPrimary</item>
         <item name="android:textSize">20sp</item>
         <item name="android:textStyle">bold</item>
     </style>
     <style name="Edu.AlertaCuerpo" parent="MaterialAlertDialog.MaterialComponents.Body.Text">
-        <item name="android:textColor">@color/text_secondary</item>
+        <item name="android:textColor">?attr/eduTextSecondary</item>
         <item name="android:textSize">14sp</item>
     </style>
     <style name="Edu.AlertaBoton" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
-        <item name="android:textColor">@color/purple_accent</item>
+        <item name="android:textColor">?attr/eduAcento</item>
         <item name="android:textAppearance">@style/Edu.TextoBoton</item>
     </style>
     <style name="Edu.AlertaBotonSecundario" parent="Edu.AlertaBoton">
-        <item name="android:textColor">@color/text_secondary</item>
+        <item name="android:textColor">?attr/eduTextSecondary</item>
     </style>
     <style name="Edu.TemaSelector" parent="ThemeOverlay.MaterialComponents.Dialog">
-        <item name="colorAccent">@color/purple_accent</item>
-        <item name="android:colorAccent">@color/purple_accent</item>
+        <item name="colorAccent">?attr/eduAcento</item>
+        <item name="android:colorAccent">?attr/eduAcento</item>
         <item name="android:dialogCornerRadius">24dp</item>
-        <item name="colorPrimary">@color/purple_accent</item>
+        <item name="colorPrimary">?attr/eduAcento</item>
+        <!-- La cabecera la pinta el sistema: sin esto, en el tema oscuro sale gris -->
+        <item name="android:datePickerStyle">@style/Edu.SelectorFecha</item>
+        <item name="android:timePickerStyle">@style/Edu.SelectorHora</item>
+    </style>
+    <style name="Edu.SelectorFecha" parent="android:Widget.Material.DatePicker">
+        <item name="android:headerBackground">?attr/eduAcento</item>
+    </style>
+    <style name="Edu.SelectorHora" parent="android:Widget.Material.TimePicker">
+        <item name="android:headerBackground">?attr/eduAcento</item>
     </style>
 
-    <style name="Edu.MenuEmergente" parent="Widget.AppCompat.Light.PopupMenu">
+    <style name="Edu.MenuEmergente" parent="Widget.AppCompat.PopupMenu">
         <item name="android:popupBackground">@drawable/bg_pastilla_blanca</item>
         <item name="android:popupElevation">8dp</item>
     </style>

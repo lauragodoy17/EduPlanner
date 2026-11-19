@@ -17,6 +17,7 @@
         <View style="@style/Edu.AsaHoja"/>
 
         <TextView
+            android:id="@+id/formTitulo"
             style="@style/Edu.Texto.TituloHoja"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -24,6 +25,7 @@
             android:layout_marginBottom="20dp"/>
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/NombreContainer"
             style="@style/Edu.Campo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

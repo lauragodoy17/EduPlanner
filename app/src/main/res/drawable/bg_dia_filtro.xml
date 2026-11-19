@@ -2,21 +2,21 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_selected="true">
         <shape android:shape="rectangle">
-            <solid android:color="@color/purple_accent"/>
+            <solid android:color="?attr/eduAcento"/>
             <corners android:radius="@dimen/radio_tarjeta"/>
         </shape>
     </item>
     <item android:state_activated="true">
         <shape android:shape="rectangle">
-            <solid android:color="@color/purple_surface"/>
-            <stroke android:width="1.5dp" android:color="@color/purple_accent"/>
+            <solid android:color="?attr/eduMarcaSuperficie"/>
+            <stroke android:width="1.5dp" android:color="?attr/eduAcento"/>
             <corners android:radius="@dimen/radio_tarjeta"/>
         </shape>
     </item>
     <item>
         <shape android:shape="rectangle">
-            <solid android:color="@color/superficie"/>
-            <stroke android:width="1dp" android:color="@color/borde_suave"/>
+            <solid android:color="?attr/eduSuperficie"/>
+            <stroke android:width="1dp" android:color="?attr/eduBordeSuave"/>
             <corners android:radius="@dimen/radio_tarjeta"/>
         </shape>
     </item>

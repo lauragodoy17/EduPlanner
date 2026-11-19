@@ -1,53 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Colores fijos: no cambian con el tema. La paleta está en values/themes.xml (atributos de attrs_tema.xml)
+     y se usa como ?attr/eduAcento en XML o R.color.acento en el código (res/color/). -->
 <resources>
     <color name="black">#FF000000</color>
+    <!-- Texto e iconos sobre el degradado de la marca, la cámara o el QR: blanco en todos los temas -->
     <color name="white">#FFFFFFFF</color>
-    <color name="rojo">#C62F3B</color>
-    <color name="gris">#8F8697</color>
-    <color name="checked_color">#9C27B0</color>
-
-    <!-- Marca -->
-    <color name="purple_deep">#4A1F5C</color>
-    <color name="purple_primary">#8B5A9F</color>
-    <color name="purple_accent">#9C27B0</color>
-    <color name="purple_light">#B48BBF</color>
-    <color name="purple_soft">#E1BEE7</color>
-    <color name="purple_surface">#F3E5F5</color>
-    <color name="purpl_leighter">#D4A5D4</color>
-    <color name="xp_dorado">#FFC93C</color>
-
-    <!-- Superficies y bordes -->
-    <color name="fondo_app">#F7F4F9</color>
-    <color name="superficie">#FFFFFF</color>
-    <color name="borde_suave">#E8E2EC</color>
-    <color name="pista_clara">#EEEAF0</color>
-    <color name="velo_oscuro">#664A1F5C</color>
-    <color name="input_border">#E8E2EC</color>
-    <color name="input_background">#FFFFFF</color>
-    <color name="google_border">#DADCE0</color>
-
-    <!-- Texto -->
-    <color name="text_primary">#2B1E33</color>
-    <color name="text_secondary">#6A6072</color>
-    <color name="text_hint">#8F8697</color>
     <color name="blanco_70">#B3FFFFFF</color>
     <color name="blanco_25">#40FFFFFF</color>
 
-    <!-- Estados: también dan color a la prioridad (alta = error, media = aviso, baja = éxito) -->
-    <color name="estado_exito">#2E7D4F</color>
-    <color name="estado_exito_suave">#E3F4E9</color>
-    <color name="estado_aviso">#A86400</color>
-    <color name="estado_aviso_suave">#FFF3DC</color>
-    <color name="estado_error">#C62F3B</color>
-    <color name="estado_error_suave">#FCE8EA</color>
+    <!-- Pantalla de carga: se muestra antes de saber el tema -->
+    <color name="marca_lanzador">#4A1F5C</color>
 
-    <!-- Tipo de elemento -->
-    <color name="evento">#5E4BB8</color>
-    <color name="evento_suave">#ECE9FA</color>
-
-    <!-- Logros -->
+    <!-- Monedas y logros: son "materiales", iguales en todos los temas -->
+    <color name="xp_dorado">#FFC93C</color>
     <color name="logro_bronce">#B4764A</color>
     <color name="logro_plata">#7F8FA6</color>
     <color name="logro_oro">#D49B00</color>
-    <color name="logro_bloqueado">#D6D2D9</color>
+
+    <!-- Botón de Google (solo en el inicio de sesión) -->
+    <color name="google_border">#DADCE0</color>
 </resources>

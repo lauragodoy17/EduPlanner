@@ -27,7 +27,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:src="@drawable/ic_gami_insignia"
-                app:tint="@color/logro_bloqueado"
+                app:tint="?attr/eduLogroBloqueado"
                 android:importantForAccessibility="no"/>
 
             <ImageView
@@ -45,7 +45,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="BRONCE"
-            android:textColor="@color/text_secondary"
+            android:textColor="?attr/eduTextSecondary"
             android:textSize="12sp"
             android:textStyle="bold"
             android:letterSpacing="0.1"/>
@@ -56,7 +56,7 @@
             android:layout_height="wrap_content"
             android:text="Logro"
             android:textAlignment="center"
-            android:textColor="@color/text_primary"
+            android:textColor="?attr/eduTextPrimary"
             android:textSize="24sp"
             android:textStyle="bold"
             android:layout_marginBottom="4dp"/>
@@ -67,7 +67,7 @@
             android:layout_height="wrap_content"
             android:text="Descripción"
             android:textAlignment="center"
-            android:textColor="@color/text_secondary"
+            android:textColor="?attr/eduTextSecondary"
             android:textSize="15sp"
             android:layout_marginBottom="16dp"/>
 
@@ -77,8 +77,8 @@
             android:layout_height="wrap_content"
             app:trackThickness="8dp"
             app:trackCornerRadius="4dp"
-            app:indicatorColor="@color/purple_accent"
-            app:trackColor="@color/pista_clara"
+            app:indicatorColor="?attr/eduAcento"
+            app:trackColor="?attr/eduPistaClara"
             android:layout_marginBottom="6dp"
             android:importantForAccessibility="no"/>
 
@@ -87,7 +87,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="0 de 1"
-            android:textColor="@color/text_primary"
+            android:textColor="?attr/eduTextPrimary"
             android:textSize="14sp"
             android:textStyle="bold"
             android:layout_marginBottom="16dp"/>
@@ -100,7 +100,7 @@
             android:padding="14dp"
             android:text="+10 EduCoins"
             android:textAlignment="center"
-            android:textColor="@color/purple_deep"
+            android:textColor="?attr/eduMarcaProfunda"
             android:textSize="14sp"
             android:layout_marginBottom="20dp"/>
 

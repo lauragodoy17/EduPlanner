@@ -8,6 +8,6 @@
     android:paddingVertical="8dp"
     android:maxLines="1"
     android:ellipsize="end"
-    android:textColor="@color/purple_accent"
+    android:textColor="?attr/eduAcento"
     android:textSize="13sp"
     android:textStyle="bold"/>

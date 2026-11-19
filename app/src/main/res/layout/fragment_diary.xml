@@ -43,10 +43,10 @@
         android:orientation="vertical"
         android:gravity="center"
         android:padding="32dp"
-        android:background="@color/fondo_app"
+        android:background="?attr/eduFondoApp"
         android:visibility="gone">
 
-        <ImageView style="@style/Edu.VacioIcono" android:src="@drawable/ic_calendar_modern"/>
+        <ImageView style="@style/Edu.VacioIcono" android:src="@drawable/ic_calendar_modern" android:importantForAccessibility="no"/>
 
         <TextView
             style="@style/Edu.VacioTitulo"

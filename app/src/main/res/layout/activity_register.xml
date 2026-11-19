@@ -140,7 +140,7 @@
                 android:layout_height="wrap_content"
                 android:hint="Contraseña"
                 app:endIconMode="password_toggle"
-                app:endIconTint="@color/text_secondary">
+                app:endIconTint="?attr/eduTextSecondary">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/contrasenaEditText"
@@ -157,7 +157,7 @@
                 android:layout_height="wrap_content"
                 android:hint="Confirmar contraseña"
                 app:endIconMode="password_toggle"
-                app:endIconTint="@color/text_secondary">
+                app:endIconTint="?attr/eduTextSecondary">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/confirmarcontraEditText"

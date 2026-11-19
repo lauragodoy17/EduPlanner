@@ -39,10 +39,10 @@ class MovimientosAdapter : RecyclerView.Adapter<MovimientosAdapter.MovimientoVie
             fecha.text = formatoFecha.format(Date(movimiento.fechaMillis))
             if (movimiento.cantidad >= 0) {
                 cantidad.text = "+${movimiento.cantidad}"
-                cantidad.setTextColor(itemView.context.getColor(R.color.purple_accent))
+                cantidad.setTextColor(itemView.context.getColor(R.color.acento))
             } else {
                 cantidad.text = movimiento.cantidad.toString()
-                cantidad.setTextColor(android.graphics.Color.parseColor("#F44336"))
+                cantidad.setTextColor(cantidad.context.getColor(R.color.estado_error))
             }
         }
     }

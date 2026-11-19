@@ -10,7 +10,7 @@
     android:foreground="?attr/selectableItemBackground"
     app:cardCornerRadius="@dimen/radio_tarjeta"
     app:cardElevation="2dp"
-    app:cardBackgroundColor="@color/superficie">
+    app:cardBackgroundColor="?attr/eduSuperficie">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -24,7 +24,7 @@
             android:layout_marginBottom="8dp"
             app:cardCornerRadius="10dp"
             app:cardElevation="0dp"
-            app:cardBackgroundColor="@color/purple_surface">
+            app:cardBackgroundColor="?attr/eduMarcaSuperficie">
 
             <!-- Vista previa: el avatar del usuario con este accesorio -->
             <com.softcg.myapplication.ui.Inicio.Fragments.Perfil.AvatarView
@@ -40,7 +40,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Accesorio"
-            android:textColor="@color/text_primary"
+            android:textColor="?attr/eduTextPrimary"
             android:textSize="13sp"
             android:textStyle="bold"
             android:maxLines="2"
@@ -68,7 +68,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="50"
-                android:textColor="@color/purple_accent"
+                android:textColor="?attr/eduAcento"
                 android:textSize="13sp"
                 android:textStyle="bold"/>
         </LinearLayout>
@@ -79,9 +79,9 @@
             android:layout_height="wrap_content"
             android:text="COMPRAR"
             android:textSize="9sp"
-            android:textColor="@color/superficie"
+            android:textColor="?attr/eduSuperficie"
             android:background="@drawable/type_badge_bg"
-            android:backgroundTint="@color/purple_accent"
+            android:backgroundTint="?attr/eduAcento"
             android:paddingHorizontal="6dp"
             android:paddingVertical="3dp"
             android:textStyle="bold"/>

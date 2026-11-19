@@ -20,7 +20,7 @@
             android:layout_width="4dp"
             android:layout_height="match_parent"
             android:background="@drawable/bg_barra_color"
-            android:backgroundTint="@color/purple_accent"
+            android:backgroundTint="?attr/eduAcento"
             android:layout_marginEnd="12dp" />
 
         <LinearLayout
@@ -59,7 +59,7 @@
                     android:layout_width="16dp"
                     android:layout_height="16dp"
                     android:src="@drawable/ic_clock"
-                    app:tint="@color/purple_accent"
+                    app:tint="?attr/eduAcento"
                     android:importantForAccessibility="no" />
 
                 <TextView
@@ -68,7 +68,7 @@
                     android:layout_height="wrap_content"
                     android:text="08:30"
                     android:textSize="13sp"
-                    android:textColor="@color/purple_accent"
+                    android:textColor="?attr/eduAcento"
                     android:textStyle="bold"
                     android:layout_marginStart="6dp"
                     android:layout_marginEnd="10dp" />
@@ -95,7 +95,7 @@
                     android:layout_width="16dp"
                     android:layout_height="16dp"
                     android:src="@drawable/baseline_calendar_month_24"
-                    app:tint="@color/text_secondary"
+                    app:tint="?attr/eduTextSecondary"
                     android:importantForAccessibility="no"
                     android:layout_marginEnd="6dp" />
 
@@ -128,7 +128,7 @@
                     android:layout_marginEnd="6dp"
                     android:importantForAccessibility="no"
                     android:src="@drawable/ic_ia_destello"
-                    app:tint="@color/purple_accent" />
+                    app:tint="?attr/eduAcento" />
 
                 <TextView
                     android:id="@+id/text_datos_prediccion"
@@ -149,6 +149,6 @@
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="Opciones"
             android:src="@drawable/ic_more_vert"
-            app:tint="@color/text_secondary" />
+            app:tint="?attr/eduTextSecondary" />
     </LinearLayout>
 </androidx.cardview.widget.CardView>

@@ -25,6 +25,8 @@ data class MedidaNotas(val promedio10: Double?, val usadas: Int, val sinEscala: 
 
 data class MedidaIntensidad(val horasPorSemana: Double, val diasDeHistorial: Long, val sesiones: Int)
 
+enum class OrigenHoras { SESIONES, DECLARADAS }
+
 /**
  * Cálculo de los parámetros del modelo a partir de los registros guardados. Funciones puras: reciben
  * los registros de una asignatura y la fecha actual, así que se prueban sin base de datos.
@@ -48,6 +50,13 @@ object ReglasExtraccion {
     const val TIPO_INTERES = "INTERES"
     const val TIPO_DIFICULTAD = "DIFICULTAD"
     const val TIPO_METODO = "METODO"
+    const val TIPO_HORAS = "HORAS_ESTUDIO"
+
+    /** Mientras no haya [MIN_CLASES] clases respondidas se supone que asiste a todas. */
+    const val ASISTENCIA_SUPUESTA = 100.0
+
+    /** Horas por semana que el estudiante puede declarar. */
+    const val MAX_HORAS_SEMANA = 40f
 
     // ASISTENCIA
     fun asistencia(registros: List<AsistenciaEntity>, hoy: LocalDate): MedidaAsistencia {
@@ -56,10 +65,29 @@ object ReglasExtraccion {
         return MedidaAsistencia(registros.size, registros.count { it.asistio }, recientes.size, recientes.count { it.asistio })
     }
 
-    fun asistenciaModelo(medida: MedidaAsistencia): Double = medida.porcentaje / 10.0
+    /** Con suficientes clases, el porcentaje real; antes, [ASISTENCIA_SUPUESTA]. Se envía en escala 0-10. */
+    fun asistenciaModelo(medida: MedidaAsistencia): Double =
+        (if (asistenciaMedida(medida)) medida.porcentaje else ASISTENCIA_SUPUESTA) / 10.0
+
+    fun asistenciaMedida(medida: MedidaAsistencia): Boolean = medida.respondidas >= MIN_CLASES
+
+    // TIEMPO DE ESTUDIO PARA EL MODELO
+    /**
+     * Las sesiones registradas mandan cuando ya hay [MIN_DIAS_HISTORIAL_ESTUDIO] días de historial;
+     * antes, las horas por semana que el estudiante declaró. Null si no hay ninguna de las dos.
+     */
+    fun horasParaModelo(medida: MedidaIntensidad?, declaradas: PercepcionEntity?): Pair<Double, OrigenHoras>? = when {
+        medida != null && medida.diasDeHistorial >= MIN_DIAS_HISTORIAL_ESTUDIO -> medida.horasPorSemana to OrigenHoras.SESIONES
+        declaradas?.valor != null -> declaradas.valor.toDouble() to OrigenHoras.DECLARADAS
+        else -> null
+    }
+
+    /** Las últimas horas por semana declaradas. */
+    fun horasDeclaradas(percepciones: List<PercepcionEntity>): PercepcionEntity? =
+        percepciones.filter { it.tipo == TIPO_HORAS && it.valor != null }.maxByOrNull { it.fechaMillis }
 
     // NOTAS
-    private val RANGO = Regex("""(\d+(?:[.,]\d+)?)\s*(?:-|–|a)\s*(\d+(?:[.,]\d+)?)""")
+    private val RANGO = Regex("""(\d+(?:[.,]\d+)?)\s*(?:[-–]|a)\s*(\d+(?:[.,]\d+)?)""")
 
     /** "Numérico (0-10)" → 0..10, "Porcentaje (0-100%)" → 0..100, "1 a 5" → 1..5; null si no indica un rango. */
     fun escalaDeTexto(texto: String?): Escala? {
@@ -78,10 +106,6 @@ object ReglasExtraccion {
         if (escalaMin != null && escalaMax != null && escalaMax > escalaMin) return Escala(escalaMin, escalaMax)
         return escalaDeTexto(tipoAsignatura)
     }
-
-    /** Escala de la asignatura sola (para las notas que no traen la suya, como las de tareas). */
-    fun escalaAsignatura(escalaMin: Float?, escalaMax: Float?, tipoAsignatura: String): Escala? =
-        escalaDe("", escalaMin, escalaMax, tipoAsignatura)
 
     /** Promedio en 0-10. Las notas sin escala conocida o fuera de su escala no se usan (no se adivinan). */
     fun notas(valores: List<Pair<Float, Escala?>>): MedidaNotas {

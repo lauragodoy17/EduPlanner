@@ -23,6 +23,8 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
 import androidx.core.view.GravityCompat
+import androidx.navigation.fragment.NavHostFragment
+import androidx.core.view.WindowCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.drawerlayout.widget.DrawerLayout
@@ -40,11 +42,30 @@ import com.softcg.myapplication.R
 import com.softcg.myapplication.ui.Inicio.Fragments.Agenda.AgendaViewModel
 import com.softcg.myapplication.ui.Inicio.Fragments.Calificaciones.CalificacionesViewModel
 import com.softcg.myapplication.core.ex.mostrarAvisoLogro
+import com.softcg.myapplication.data.network.CredencialGoogleService
+import javax.inject.Inject
 import com.softcg.myapplication.core.ex.mostrarMensaje
 import com.softcg.myapplication.core.ex.mostrarRecompensa
+import com.softcg.myapplication.domain.ResultadoCrearAsignatura
+import com.softcg.myapplication.domain.compartir.ResultadoImportacion
+import com.softcg.myapplication.domain.compartir.TextosCompartir
+import com.softcg.myapplication.domain.compartir.TipoCompartido
+import com.softcg.myapplication.ui.compartir.CompartirViewModel
+import com.softcg.myapplication.ui.tema.TemaDialog
+import com.softcg.myapplication.ui.tema.TemaViewModel
+import com.softcg.myapplication.ui.tema.ajustarBarrasDelSistema
+import com.softcg.myapplication.ui.tema.aplicarTemaElegido
+import com.softcg.myapplication.ui.Inicio.Fragments.Detalle.DetalleFragment
+import com.softcg.myapplication.ui.Inicio.Fragments.Detalle.TipoDetalle
+import com.softcg.myapplication.ui.compartir.EscanerQrActivity
+import com.softcg.myapplication.domain.prediccion.CatalogoModelo
 import com.softcg.myapplication.domain.gamificacion.Celebracion
 import com.softcg.myapplication.domain.gamificacion.ClaseProgramada
 import com.softcg.myapplication.domain.gamificacion.ResultadoAsistencia
+import com.softcg.myapplication.ui.Inicio.Dialogs.AreaAsignaturaDialog
+import com.softcg.myapplication.ui.Inicio.Dialogs.ImportarCompartidoDialog
+import com.softcg.myapplication.ui.Inicio.Dialogs.AsignaturaDialog
+import com.softcg.myapplication.ui.Inicio.Dialogs.mensajeError
 import com.softcg.myapplication.ui.Inicio.Dialogs.AsistenciaDialog
 import com.softcg.myapplication.ui.Inicio.Dialogs.CalificacionDialog
 import com.softcg.myapplication.ui.Inicio.Dialogs.EventoDialog
@@ -71,6 +92,12 @@ class InicioActivity : AppCompatActivity() {
     private val calificacionesViewModel :CalificacionesViewModel by viewModels()
     private val datosEstudio: DatosEstudioViewModel by viewModels()
 
+    @Inject
+    lateinit var credencialGoogle: CredencialGoogleService
+
+    /** Formulario de tarea abierto; se oculta mientras se crea una asignatura desde él. */
+    private var tareaDialog: TareaDialog? = null
+
 
     private lateinit var toolbar: Toolbar
     private lateinit var drawerLayout: DrawerLayout
@@ -93,23 +120,33 @@ class InicioActivity : AppCompatActivity() {
         uri?.let { eventoDialog?.mostrarImagen(it) }
     }
 
+    // COMPARTIR POR QR: el lector devuelve el texto de un QR de EduPlanner; aquí se confirma y se agrega
+    private val compartir: CompartirViewModel by viewModels()
+    private val temaViewModel: TemaViewModel by viewModels()
+    private val leerQr = registerForActivityResult(EscanerQrActivity.Contrato()) { texto ->
+        texto?.let { compartir.onQrLeido(it) }
+    }
+
 
     companion object {
         private const val MAX_AVISOS_LOGRO = 3
         // Pantallas con flecha para volver en vez del menú lateral
-        private val SUBPANTALLAS = setOf(R.id.id_shop_fragment, R.id.id_focus_fragment, R.id.id_prediction_fragment)
+        private val SUBPANTALLAS = setOf(
+            R.id.id_shop_fragment, R.id.id_focus_fragment, R.id.id_prediction_fragment, R.id.id_detail_fragment
+        )
 
         fun create(context: Context): Intent =
             Intent(context, InicioActivity::class.java)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
+        // El tema elegido en Opciones, antes de crear la ventana y las vistas
+        val tema = aplicarTemaElegido()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
-        
-        // Make system bars transparent
+
         makeSystemBarsTransparent()
+        ajustarBarrasDelSistema(tema)
         
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.drawer)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -150,7 +187,8 @@ class InicioActivity : AppCompatActivity() {
         drawerLayout=findViewById(R.id.drawer)
         navigationView=findViewById(R.id.nav_view)
 
-        navController=findNavController(R.id.fragmentContainerView)
+        // Con FragmentContainerView el NavController se obtiene del NavHostFragment, no de la vista
+        navController = (supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment).navController
 
         val backButton: ImageButton = findViewById(R.id.backButton)
         if (navController.currentDestination?.id == R.id.id_home_fragment) {
@@ -178,14 +216,25 @@ class InicioActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navigationView.setupWithNavController(navController)
 
+        // Opciones > Tema de la app: no es un destino, abre la hoja para elegirlo
+        navigationView.menu.findItem(R.id.opcion_tema).setOnMenuItemClickListener {
+            drawerLayout.closeDrawer(GravityCompat.START)
+            TemaDialog(this, temaViewModel.temas, temaViewModel.temaActual()) { temaViewModel.elegir(it) }.show()
+            true
+        }
+
         val signoutItem:MenuItem = navigationView.menu.findItem(R.id.signout)
 
         signoutItem.setOnMenuItemClickListener {
-            FirebaseAuth.getInstance().signOut()
-            val intents=Intent(this, MainActivity::class.java)
-            intents.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-            startActivity(intents)
-            finish()
+            lifecycleScope.launch {
+                // Olvida también la cuenta de Google elegida para que el próximo inicio vuelva a preguntar
+                credencialGoogle.olvidarCuenta()
+                FirebaseAuth.getInstance().signOut()
+                val intents=Intent(this@InicioActivity, MainActivity::class.java)
+                intents.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                startActivity(intents)
+                finish()
+            }
             true
         }
     }
@@ -225,9 +274,8 @@ class InicioActivity : AppCompatActivity() {
             showDialogCalificacion()
         }
         qrb.setOnClickListener {
-            // Pendiente: implementar funcionalidad de lector QR
             toggleFabMode(anadirb)
-            mostrarMensaje("Lector QR: próximamente")
+            leerQr.launch(Unit)
         }
 
     }
@@ -261,14 +309,17 @@ class InicioActivity : AppCompatActivity() {
         // El saldo de la cabecera también lleva al perfil
         findViewById<View>(R.id.header_saldo).setOnClickListener { abrirPerfil() }
 
-        navController.addOnDestinationChangedListener { _, destination, _ ->
+        navController.addOnDestinationChangedListener { _, destination, arguments ->
             // En una sesión de enfoque no se ofrece agregar nada: es la distracción que se quiere evitar
             val anadir = findViewById<View>(R.id.botonAñadir)
             val enEnfoque = destination.id == R.id.id_focus_fragment
             if (rotate) toggleFabMode(anadir)
             anadir.visibility = if (enEnfoque) View.GONE else View.VISIBLE
 
-            findViewById<TextView>(R.id.header_titulo).text = destination.label
+            findViewById<TextView>(R.id.header_titulo).text =
+                if (destination.id == R.id.id_detail_fragment) {
+                    TipoDetalle.deClave(arguments?.getString(DetalleFragment.ARG_TIPO))?.pantalla ?: destination.label
+                } else destination.label
             val subpantalla = destination.id in SUBPANTALLAS
             findViewById<ImageView>(R.id.menu_hamburger).apply {
                 setImageResource(if (subpantalla) R.drawable.ic_arrow_back else R.drawable.ic_menu_hamburger)
@@ -280,9 +331,10 @@ class InicioActivity : AppCompatActivity() {
                 if (continua) R.drawable.bg_cabecera_recta else R.drawable.bg_cabecera
             )
 
-            // Tienda y Enfoque cuelgan del perfil; Predicción se abre desde una tarea del inicio
+            // Tienda y Enfoque cuelgan del perfil; una tarea o un detalle, de la pestaña desde la que se abrió
             val activa = when {
-                destination.id == R.id.id_prediction_fragment -> R.id.id_home_fragment
+                destination.id == R.id.id_prediction_fragment || destination.id == R.id.id_detail_fragment ->
+                    navController.previousBackStackEntry?.destination?.id ?: R.id.id_home_fragment
                 subpantalla -> R.id.id_profile_fragment
                 else -> destination.id
             }
@@ -291,6 +343,42 @@ class InicioActivity : AppCompatActivity() {
     }
 
     /** Sin apilar copias: volver desde cualquier pestaña lleva al inicio. */
+    /** Avisa y lleva a la pantalla donde quedó lo agregado, ya recargada. */
+    private fun onImportado(resultado: ResultadoImportacion) {
+        mostrarMensaje(TextosCompartir.resultado(resultado))
+        val importado = resultado as? ResultadoImportacion.Importado ?: return
+        importado.recompensa?.let { mostrarRecompensa(it) }
+        inicioViewModel.obtenerAsignaturas()
+        when (importado.tipo) {
+            TipoCompartido.TAREA -> {
+                inicioViewModel.obtenerTareas()
+                irAPestana(R.id.id_home_fragment)
+            }
+            TipoCompartido.EVENTO -> {
+                inicioViewModel.obtenerEventos()
+                irAPestana(R.id.id_home_fragment)
+            }
+            TipoCompartido.NOTA -> {
+                inicioViewModel.obtenerCalificaciones()
+                irAPestana(R.id.id_ratings_fragment)
+            }
+            // Asignaturas carga su lista al crearse: si ya está abierta se vuelve a abrir
+            TipoCompartido.ASIGNATURA -> recargarPestana(R.id.id_subjects_fragment)
+        }
+        // Una asignatura creada para recibir una tarea o nota también debe aparecer en su pantalla
+        if (importado.asignaturaCreada != null && navController.currentDestination?.id == R.id.id_subjects_fragment) {
+            recargarPestana(R.id.id_subjects_fragment)
+        }
+    }
+
+    private fun recargarPestana(destino: Int) {
+        if (navController.currentDestination?.id != destino) return irAPestana(destino)
+        navController.navigate(destino, null, navOptions {
+            launchSingleTop = false
+            popUpTo(destino) { inclusive = true }
+        })
+    }
+
     private fun irAPestana(destino: Int) {
         if (navController.currentDestination?.id == destino) return
         navController.navigate(destino, null, navOptions {
@@ -307,6 +395,8 @@ class InicioActivity : AppCompatActivity() {
     }
 
     private fun initObserver(){
+        // Al cambiar de tema se vuelve a crear la pantalla, que se pinta de nuevo con la paleta elegida
+        temaViewModel.aplicar.observe(this) { it.getContentIfNotHandled()?.let { recreate() } }
         inicioViewModel._tareas.observe(this){
             CoroutineScope(Dispatchers.Main).launch {
                 homeViewModel.obtenerTareas()
@@ -330,6 +420,17 @@ class InicioActivity : AppCompatActivity() {
                     showDialogTarea()
                 }
             }
+        }
+        inicioViewModel.asignaturaParaTarea.observe(this){
+            it.getContentIfNotHandled()?.let { resultado -> onAsignaturaParaTarea(resultado) }
+        }
+        compartir.analisis.observe(this){
+            it.getContentIfNotHandled()?.let { analisis ->
+                ImportarCompartidoDialog(this, analisis) { destino -> compartir.onAgregar(analisis.contenido, destino) }.show()
+            }
+        }
+        compartir.resultado.observe(this){
+            it.getContentIfNotHandled()?.let { resultado -> onImportado(resultado) }
         }
         inicioViewModel.navigateToEvento.observe(this){
             it.getContentIfNotHandled()?.let {
@@ -534,6 +635,8 @@ class InicioActivity : AppCompatActivity() {
         val dialogo = asistenciaDialog
         asistenciaDialog = null
         dialogo?.cerrar()
+        tareaDialog?.cerrar()
+        tareaDialog = null
         super.onDestroy()
     }
 
@@ -613,12 +716,61 @@ class InicioActivity : AppCompatActivity() {
 
 
     private fun showDialogTarea(){
-        TareaDialog(this, obtenerNombresAsignaturas()) { titulo, descrip, asignatura, fecha, prioridad ->
-            inicioViewModel.onAgregarTareaSelected(titulo, descrip, asignatura, fecha, prioridad)
-            // La lista se recarga sola al terminar de guardar; aquí solo se muestra el día de la tarea
-            homeViewModel.mostrarFecha(fecha)
-            mostrarMensaje("Tarea guardada")
-        }.show()
+        tareaDialog = TareaDialog(
+            context = this,
+            asignaturas = obtenerNombresAsignaturas(),
+            onAgregarAsignatura = { showDialogAsignaturaParaTarea() },
+            onGuardar = { titulo, descrip, asignatura, fecha, prioridad ->
+                tareaDialog = null
+                inicioViewModel.onAgregarTareaSelected(titulo, descrip, asignatura, fecha, prioridad)
+                // La lista se recarga sola al terminar de guardar; aquí solo se muestra el día de la tarea
+                homeViewModel.mostrarFecha(fecha)
+                mostrarMensaje("Tarea guardada")
+            }
+        ).also { it.show() }
+    }
+
+    /** Formulario de asignatura abierto desde la tarea: al guardar o cancelar se vuelve a la tarea. */
+    private fun showDialogAsignaturaParaTarea() {
+        AsignaturaDialog(
+            context = this,
+            onGuardar = { nueva -> inicioViewModel.onCrearAsignaturaDesdeTarea(nueva) },
+            // Si se guardó, la tarea vuelve cuando el ViewModel confirma (observador de asignaturaParaTarea)
+            onCerrar = { guardada -> if (!guardada) tareaDialog?.volver() }
+        ).show()
+    }
+
+    private fun preguntarArea(asignaturaId: Int, nombre: String, alTerminar: () -> Unit) {
+        AreaAsignaturaDialog(
+            context = this,
+            nombreAsignatura = nombre,
+            onGuardar = { area ->
+                lifecycleScope.launch {
+                    val error = datosEstudio.guardarArea(asignaturaId, area).mensajeError()
+                    mostrarMensaje(error ?: "Asignatura guardada · Área: ${CatalogoModelo.etiqueta(area)}")
+                }
+            },
+            onCerrar = alTerminar
+        ).show()
+    }
+
+    private fun onAsignaturaParaTarea(resultado: ResultadoCrearAsignatura) {
+        val tarea = tareaDialog ?: return
+        when (resultado) {
+            is ResultadoCrearAsignatura.Creada -> {
+                if (resultado.area != null) {
+                    tarea.asignaturaCreada(resultado.nombre)
+                    mostrarMensaje("Asignatura guardada · Área: ${CatalogoModelo.etiqueta(resultado.area)}")
+                } else {
+                    // El nombre no dejó claro el área: se pregunta antes de volver a la tarea
+                    preguntarArea(resultado.id, resultado.nombre) { tarea.asignaturaCreada(resultado.nombre) }
+                }
+            }
+            else -> {
+                tarea.volver()
+                mostrarMensaje(getString(R.string.asignatura_error_guardar))
+            }
+        }
     }
 
     private fun showDialogEvento(){
@@ -654,12 +806,10 @@ class InicioActivity : AppCompatActivity() {
     }
 
     private fun makeSystemBarsTransparent() {
-        // Sin LIGHT_STATUS_BAR: los iconos de la barra de estado van en blanco sobre el degradado
+        // De borde a borde; sin barra de estado clara: sus iconos van en blanco sobre el degradado
         window.statusBarColor = Color.TRANSPARENT
-        window.decorView.systemUiVisibility = (
-            View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
-            View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-        )
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+        WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars = false
     }
 
 }

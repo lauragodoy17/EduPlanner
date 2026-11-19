@@ -8,11 +8,11 @@
         android:bottomRightRadius="5dp"
         />
     <solid
-        android:color="@color/purple_surface"
+        android:color="?attr/eduMarcaSuperficie"
         />
     <stroke
         android:width="2dp"
-        android:color="@color/purple_accent" />
+        android:color="?attr/eduAcento" />
 
 
 </shape>

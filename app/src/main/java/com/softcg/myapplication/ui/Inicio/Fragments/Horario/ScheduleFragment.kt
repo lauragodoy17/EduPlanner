@@ -8,32 +8,25 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.FrameLayout
-import android.widget.ImageView
-import android.graphics.Color
+import androidx.core.graphics.toColorInt
 import android.util.Log
 import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.RecyclerView
 import androidx.cardview.widget.CardView
 import androidx.core.widget.NestedScrollView
 import com.softcg.myapplication.R
-import android.widget.Button
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.softcg.myapplication.ui.Inicio.Fragments.Horario.Adapters.CalendarAdapter
-import com.softcg.myapplication.core.utils.CalendarUtils
-import com.softcg.myapplication.ui.Inicio.Fragments.Horario.Adapters.HorarioAdapter
-import com.softcg.myapplication.ui.Inicio.Fragments.Horario.Adapters.OnItemClickListener
 import com.softcg.myapplication.ui.Inicio.Fragments.Agenda.AgendaCalendarWidget
 import com.softcg.myapplication.ui.Inicio.Fragments.Horario.Models.AsignaturaConHora
+import com.softcg.myapplication.ui.Inicio.Fragments.Detalle.TipoDetalle
+import com.softcg.myapplication.ui.Inicio.Fragments.Detalle.abrirDetalle
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.LocalDate
 import java.text.SimpleDateFormat
 import java.util.*
 
 @AndroidEntryPoint
-class ScheduleFragment : Fragment(), OnItemClickListener {
+class ScheduleFragment : Fragment() {
 
     private companion object {
         const val ALTO_HORA_DP = 72
@@ -43,8 +36,6 @@ class ScheduleFragment : Fragment(), OnItemClickListener {
 
     private val horarioViewModel: HorarioViewModel by viewModels()
     private lateinit var calendarWidget: AgendaCalendarWidget
-    private lateinit var adapter: HorarioAdapter
-    private val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
     private var timelineStartHour: Int = 0 // Dynamic start hour based on current time
 
     override fun onCreateView(
@@ -153,7 +144,7 @@ class ScheduleFragment : Fragment(), OnItemClickListener {
         })
     }
 
-    private fun getDayName(date: java.time.LocalDate?): String {
+    private fun getDayName(date: LocalDate?): String {
         if (date == null) {
             Log.w("ScheduleFragment", "getDayName called with null date")
             return "este día"
@@ -227,6 +218,15 @@ class ScheduleFragment : Fragment(), OnItemClickListener {
             val textDuracion = cardView.findViewById<TextView>(R.id.text_duracion)
             val colorBar = cardView.findViewById<View>(R.id.card_color_bar)
 
+            // Tocar la clase abre la pantalla de su asignatura, igual que desde Asignaturas
+            cardView.isClickable = true
+            cardView.isFocusable = true
+            cardView.foreground = with(android.util.TypedValue()) {
+                requireContext().theme.resolveAttribute(android.R.attr.selectableItemBackground, this, true)
+                ContextCompat.getDrawable(requireContext(), resourceId)
+            }
+            cardView.setOnClickListener { abrirDetalle(TipoDetalle.ASIGNATURA, asignaturaConHora.asignatura.id) }
+
             if (textNombre == null) {
                 Log.e("ScheduleFragment", "Card views not found in layout!")
                 return
@@ -239,7 +239,7 @@ class ScheduleFragment : Fragment(), OnItemClickListener {
 
             // Color que identifica la asignatura
             colorBar?.backgroundTintList = android.content.res.ColorStateList.valueOf(
-                Color.parseColor(AsignaturaConHora.getColorAsignatura(asignaturaConHora.colorIndex))
+                AsignaturaConHora.getColorAsignatura(asignaturaConHora.colorIndex).toColorInt()
             )
 
             // Calculate position based on start time
@@ -349,7 +349,7 @@ class ScheduleFragment : Fragment(), OnItemClickListener {
         val colorLinea = ContextCompat.getColor(requireContext(), R.color.borde_suave)
         val colorTexto = ContextCompat.getColor(requireContext(), R.color.text_secondary)
 
-        generateTimeSlots(0, 23).forEachIndexed { indice, hora ->
+        generateTimeSlots().forEachIndexed { indice, hora ->
             val etiqueta = TextView(requireContext())
             etiqueta.text = hora
             etiqueta.textSize = 12f
@@ -379,26 +379,12 @@ class ScheduleFragment : Fragment(), OnItemClickListener {
         val destino = asignaturas
             .map { calculateTopMargin(it.hora) }
             .minOrNull()
-            ?: calculateTopMargin(String.format("%02d:00", Calendar.getInstance().get(Calendar.HOUR_OF_DAY)))
+            ?: calculateTopMargin(String.format(Locale.ROOT, "%02d:00", Calendar.getInstance().get(Calendar.HOUR_OF_DAY)))
         val respiro = (12 * resources.displayMetrics.density).toInt()
         scroll.post { scroll.smoothScrollTo(0, maxOf(destino - respiro, 0)) }
     }
 
-    private fun generateTimeSlots(startHour: Int, endHour: Int): List<String> {
-        val timeSlots = mutableListOf<String>()
-        var currentHour = startHour
-
-        while (currentHour <= endHour) {
-            timeSlots.add(String.format("%02d:00", currentHour))
-            currentHour++
-        }
-
-        return timeSlots
-    }
-
-    override fun onItemClick(date: LocalDate) {
-        horarioViewModel.obtenerCurrentDate(date)
-        horarioViewModel.obtenerAsignaturas()
-    }
+    /** Las 24 horas del día, "00:00" a "23:00". */
+    private fun generateTimeSlots(): List<String> = (0..23).map { String.format(Locale.ROOT, "%02d:00", it) }
 
 }

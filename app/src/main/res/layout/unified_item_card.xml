@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:baselineAligned="false"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal">
@@ -15,21 +16,21 @@
             android:id="@+id/timeline_line_top"
             android:layout_width="2dp"
             android:layout_height="24dp"
-            android:background="@color/purple_soft" />
+            android:background="?attr/eduMarcaSuave" />
 
         <View
             android:id="@+id/timeline_circle"
             android:layout_width="10dp"
             android:layout_height="10dp"
             android:background="@drawable/circle_shape"
-            android:backgroundTint="@color/purple_accent" />
+            android:backgroundTint="?attr/eduAcento" />
 
         <View
             android:id="@+id/timeline_line_bottom"
             android:layout_width="2dp"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:background="@color/purple_soft" />
+            android:background="?attr/eduMarcaSuave" />
     </LinearLayout>
 
     <include

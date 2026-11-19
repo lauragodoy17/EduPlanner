@@ -56,7 +56,7 @@
                         android:layout_width="16dp"
                         android:layout_height="16dp"
                         android:src="@drawable/baseline_calendar_month_24"
-                        app:tint="@color/purple_accent"
+                        app:tint="?attr/eduAcento"
                         android:layout_marginEnd="6dp"
                         android:importantForAccessibility="no"/>
 
@@ -78,7 +78,7 @@
                         android:layout_width="16dp"
                         android:layout_height="16dp"
                         android:src="@drawable/ic_clock"
-                        app:tint="@color/purple_accent"
+                        app:tint="?attr/eduAcento"
                         android:layout_marginEnd="6dp"
                         android:importantForAccessibility="no"/>
 
@@ -87,7 +87,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="14:00 – 16:00"
-                        android:textColor="@color/purple_accent"
+                        android:textColor="?attr/eduAcento"
                         android:textSize="14sp"
                         android:textStyle="bold"/>
                 </LinearLayout>

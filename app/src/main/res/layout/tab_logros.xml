@@ -27,8 +27,8 @@
             android:layout_height="wrap_content"
             app:trackThickness="6dp"
             app:trackCornerRadius="3dp"
-            app:indicatorColor="@color/purple_accent"
-            app:trackColor="@color/pista_clara"
+            app:indicatorColor="?attr/eduAcento"
+            app:trackColor="?attr/eduPistaClara"
             android:layout_marginBottom="12dp"
             android:importantForAccessibility="no"/>
 

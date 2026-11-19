@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/fondo_app"
+    android:background="?attr/eduFondoApp"
     android:fillViewport="true"
     tools:context=".ui.Inicio.Fragments.Prediccion.PrediccionFragment">
 
@@ -16,7 +16,7 @@
         android:paddingTop="20dp"
         android:paddingBottom="96dp">
 
-        <!-- Tarea desde la que se abrió -->
+        <!-- La tarea desde la que se abrió, con toda su información -->
         <androidx.cardview.widget.CardView
             style="@style/Edu.Tarjeta"
             android:layout_width="match_parent"
@@ -26,30 +26,43 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="16dp">
+                android:paddingHorizontal="16dp"
+                android:paddingTop="10dp"
+                android:paddingBottom="16dp">
 
-                <TextView
-                    style="@style/Edu.Texto.Etiqueta"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="TAREA" />
-
-                <TextView
-                    android:id="@+id/prediccionTareaTitulo"
-                    style="@style/Edu.Texto.TituloTarjeta"
+                <!-- Estado y, arriba a la derecha, editar, borrar y compartir -->
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    tools:text="Taller de matrices" />
+                    android:layout_marginBottom="6dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
-                <TextView
-                    android:id="@+id/prediccionTareaAsignatura"
-                    style="@style/Edu.Texto.Cuerpo"
+                    <TextView
+                        android:id="@+id/tareaEstado"
+                        style="@style/Edu.Texto.Etiqueta"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        tools:text="TAREA" />
+
+                    <Space
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
+
+                    <include
+                        android:id="@+id/tareaAcciones"
+                        layout="@layout/include_acciones_detalle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="-8dp" />
+                </LinearLayout>
+
+                <include
+                    android:id="@+id/prediccionInfoTarea"
+                    layout="@layout/include_info_tarea"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
-                    tools:text="Matemáticas" />
-
+                    android:layout_height="wrap_content" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
@@ -60,7 +73,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:layout_marginBottom="4dp"
-            android:text="Tus datos" />
+            android:text="Predicción y recomendaciones" />
 
         <androidx.cardview.widget.CardView
             style="@style/Edu.Tarjeta"
@@ -86,8 +99,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
-                    app:indicatorColor="@color/purple_accent"
-                    app:trackColor="@color/purple_surface"
+                    app:indicatorColor="?attr/eduAcento"
+                    app:trackColor="?attr/eduMarcaSuperficie"
                     app:trackCornerRadius="4dp"
                     app:trackThickness="8dp" />
 
@@ -102,7 +115,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:textColor="@color/estado_aviso"
+                    android:textColor="?attr/eduEstadoAviso"
                     android:textSize="13sp"
                     android:visibility="gone"
                     tools:text="Tu tiempo de estudio está fuera del rango con que se entrenó el modelo" />
@@ -160,7 +173,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:fontFamily="monospace"
-                    android:textColor="@color/text_primary"
+                    android:textColor="?attr/eduTextPrimary"
                     android:textIsSelectable="true"
                     android:textSize="13sp"
                     tools:text="{\n  &quot;attendance_avg&quot;: 6.5\n}" />
@@ -208,8 +221,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
                     android:indeterminate="true"
-                    app:indicatorColor="@color/purple_accent"
-                    app:trackColor="@color/purple_surface"
+                    app:indicatorColor="?attr/eduAcento"
+                    app:trackColor="?attr/eduMarcaSuperficie"
                     app:trackCornerRadius="4dp" />
 
                 <TextView
@@ -217,7 +230,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="monospace"
-                    android:textColor="@color/text_primary"
+                    android:textColor="?attr/eduTextPrimary"
                     android:textIsSelectable="true"
                     android:textSize="13sp"
                     tools:text="{\n  &quot;prediccion&quot;: {}\n}" />

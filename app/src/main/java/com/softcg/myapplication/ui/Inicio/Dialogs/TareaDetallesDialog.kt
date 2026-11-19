@@ -1,5 +1,6 @@
 package com.softcg.myapplication.ui.Inicio.Dialogs
 
+import android.util.Log
 import android.app.Dialog
 import android.content.ActivityNotFoundException
 import android.content.Context
@@ -12,13 +13,13 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.net.toUri
 import com.google.android.material.button.MaterialButton
 import com.softcg.myapplication.R
-import com.softcg.myapplication.core.ex.estiloPrioridad
 import com.softcg.myapplication.core.ex.mostrarCarga
 import com.softcg.myapplication.core.ex.pintarEtiqueta
-import com.softcg.myapplication.core.ex.pintarPrioridad
 import com.softcg.myapplication.core.ex.showAsBottomSheet
+import com.softcg.myapplication.domain.compartir.ContenidoCompartido
 import com.softcg.myapplication.domain.ia.ContextoPrediccion
 import com.softcg.myapplication.domain.ia.Fuente
 import com.softcg.myapplication.domain.ia.MotivoSinPrediccion
@@ -31,9 +32,6 @@ import com.softcg.myapplication.ui.Inicio.Models.Tarea
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-import java.time.temporal.ChronoUnit
 
 /**
  * "Ver más" de una tarea: sus detalles y la recomendación integrada (método del modelo predictivo + consejo de
@@ -47,7 +45,11 @@ class TareaDetallesDialog(
     private val scope: CoroutineScope,
     private val recomendarTarea: RecomendarTareaUseCase,
     /** Abre la pantalla donde se completan los datos del modelo; null oculta el enlace. */
-    private val onCompletarDatos: ((Tarea) -> Unit)? = null
+    private val onCompletarDatos: ((Tarea) -> Unit)? = null,
+    /** Acciones de la tarea; null oculta el botón. La hoja se cierra antes de llamarlas. */
+    private val onEntregar: ((Tarea) -> Unit)? = null,
+    private val onCalificar: ((Tarea) -> Unit)? = null,
+    private val onBorrar: ((Tarea) -> Unit)? = null
 ) {
     private val dialog = Dialog(context)
     private var peticion: Job? = null
@@ -61,6 +63,7 @@ class TareaDetallesDialog(
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setContentView(R.layout.sheet_detalles_tarea)
         pintarDetalles()
+        configurarAcciones()
 
         recomendarTarea.enCache(tarea)?.let { mostrarRecomendacion(it) }
         boton.setOnClickListener { pedirRecomendacion() }
@@ -70,51 +73,39 @@ class TareaDetallesDialog(
     }
 
     private fun pintarDetalles() {
-        val estado = dialog.findViewById<TextView>(R.id.tareaEstado)
-        when {
-            tarea.calificacion != null -> estado.pintarEtiqueta("COMPLETADA", R.color.estado_exito, R.color.estado_exito_suave)
-            tarea.entregadaMillis != null -> estado.pintarEtiqueta("ENTREGADA", R.color.estado_exito, R.color.estado_exito_suave)
-            else -> estado.pintarEtiqueta("TAREA", R.color.purple_accent, R.color.purple_surface)
-        }
-        dialog.findViewById<TextView>(R.id.tareaTitulo).text = tarea.titulo
-
-        val descripcion = dialog.findViewById<TextView>(R.id.tareaDescripcion)
-        val conDescripcion = tarea.descrip.isNotBlank()
-        descripcion.text = tarea.descrip
-        descripcion.visibility = if (conDescripcion) View.VISIBLE else View.GONE
-        dialog.findViewById<View>(R.id.labelDescripcion).visibility = descripcion.visibility
-
-        dialog.findViewById<TextView>(R.id.tareaAsignatura).text = tarea.asignatura.ifBlank { "Sin asignatura" }
-        dialog.findViewById<TextView>(R.id.tareaFecha).text = textoFecha()
-
-        tarea.calificacion?.let { nota ->
-            dialog.findViewById<TextView>(R.id.tareaCalificacion).apply {
-                text = if (nota % 1f == 0f) nota.toInt().toString() else nota.toString()
-                visibility = View.VISIBLE
-            }
-            dialog.findViewById<View>(R.id.labelCalificacion).visibility = View.VISIBLE
-        }
-
-        val punto = dialog.findViewById<View>(R.id.prioridadIndicador)
-        val nombre = dialog.findViewById<TextView>(R.id.prioridadTexto)
-        pintarPrioridad(tarea.prioridad, punto, nombre)
-        dialog.findViewById<View>(R.id.labelPrioridad).visibility = nombre.visibility
-        estiloPrioridad(tarea.prioridad)?.let { nombre.setTextColor(context.getColor(it.color)) }
+        dialog.findViewById<TextView>(R.id.tareaEstado).pintarEstadoTarea(tarea)
+        pintarInfoTarea(dialog.window!!.decorView, tarea)
     }
 
-    /** "20/11/2026 · faltan 8 días"; sin el plazo si la tarea ya está hecha. */
-    private fun textoFecha(): String {
-        val fecha = runCatching { LocalDate.parse(tarea.fecha) }.getOrNull() ?: return tarea.fecha
-        val texto = fecha.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
-        if (tarea.completada) return texto
-        val plazo = when (val dias = ChronoUnit.DAYS.between(LocalDate.now(), fecha)) {
-            0L -> "hoy"
-            1L -> "mañana"
-            -1L -> "venció ayer"
-            in 2L..Long.MAX_VALUE -> "faltan $dias días"
-            else -> "venció hace ${-dias} días"
+    /**
+     * Entregar mientras no se haya entregado; después, calificar (la nota suele llegar más tarde). Una tarea
+     * calificada ya está completa: solo queda borrarla. Compartir genera un QR con sus datos, sin su estado.
+     */
+    private fun configurarAcciones() {
+        dialog.findViewById<View>(R.id.btnCompartirTarea).setOnClickListener {
+            CompartirQrDialog(context, ContenidoCompartido.de(tarea)).show()
         }
-        return "$texto · $plazo"
+
+        val principal = dialog.findViewById<MaterialButton>(R.id.btnEntregarTarea)
+        val accion: ((Tarea) -> Unit)? = when {
+            tarea.calificacion != null -> null
+            tarea.entregadaMillis != null -> onCalificar?.also { principal.text = "Calificar" }
+            else -> onEntregar?.also { principal.text = "Entregar" }
+        }
+        principal.visibility = if (accion != null) View.VISIBLE else View.GONE
+        principal.setOnClickListener {
+            dialog.dismiss()
+            accion?.invoke(tarea)
+        }
+
+        val borrar = dialog.findViewById<MaterialButton>(R.id.btnBorrarTarea)
+        borrar.visibility = if (onBorrar != null) View.VISIBLE else View.GONE
+        borrar.setOnClickListener {
+            dialog.dismiss()
+            onBorrar?.invoke(tarea)
+        }
+        // Sin borrar, el botón principal ocupa toda la fila
+        if (onBorrar == null) (principal.layoutParams as LinearLayout.LayoutParams).marginStart = 0
     }
 
     private fun pedirRecomendacion() {
@@ -144,7 +135,7 @@ class TareaDetallesDialog(
         val completar = dialog.findViewById<TextView>(R.id.iaCompletarDatos)
         when (val contexto = recomendacion.contexto) {
             is ContextoPrediccion.ConPrediccion -> {
-                origen.pintarEtiqueta("MODELO PREDICTIVO · ${recomendacion.confianza} DE CONFIANZA", R.color.purple_accent, R.color.purple_surface)
+                origen.pintarEtiqueta("MODELO PREDICTIVO · ${recomendacion.confianza} DE CONFIANZA", R.color.acento, R.color.marca_superficie)
                 faltantes.visibility = View.GONE
                 completar.visibility = View.GONE
             }
@@ -172,9 +163,9 @@ class TareaDetallesDialog(
         val pasos = recomendacion.comoAplicar.mapIndexed { i, paso -> "${i + 1}. $paso" }.joinToString("\n")
         dialog.findViewById<TextView>(R.id.iaPasos).mostrarSiHay(pasos, R.id.labelPasos)
         dialog.findViewById<TextView>(R.id.iaTiempo).mostrarSiHay(recomendacion.tiempoEstimado)
-        dialog.findViewById<View>(R.id.containerTiempo).visibility =
-            if (recomendacion.tiempoEstimado.isBlank()) View.GONE else View.VISIBLE
-        dialog.findViewById<View>(R.id.labelTiempo).visibility = dialog.findViewById<View>(R.id.containerTiempo).visibility
+        val visibilidadTiempo = if (recomendacion.tiempoEstimado.isBlank()) View.GONE else View.VISIBLE
+        dialog.findViewById<View>(R.id.containerTiempo).visibility = visibilidadTiempo
+        dialog.findViewById<View>(R.id.labelTiempo).visibility = visibilidadTiempo
 
         pintarFuentes(recomendacion.fuentes)
         boton.mostrarCarga(false, textoBoton(), "")
@@ -204,8 +195,9 @@ class TareaDetallesDialog(
 
     private fun abrir(url: String) {
         try {
-            context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+            context.startActivity(Intent(Intent.ACTION_VIEW, url.toUri()))
         } catch (e: ActivityNotFoundException) {
+            Log.w("TareaDetalles", "Sin navegador para $url", e)
             Toast.makeText(context, "No hay un navegador para abrir el enlace", Toast.LENGTH_SHORT).show()
         }
     }
