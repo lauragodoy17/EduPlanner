@@ -16,6 +16,22 @@ sealed class ContenidoCompartido {
     /** Nombre de la asignatura a la que pertenece en el dispositivo que lo comparte; null si no tiene. */
     open val asignatura: String? get() = null
 
+    /**
+     * Tareas y notas: la asignatura completa (profesor, días, hora, duración, escala, área), para que quien no la
+     * tenga la cree igual. Null en códigos antiguos o si no se encontró en el dispositivo que comparte.
+     */
+    open val datosAsignatura: AsignaturaCompartida? get() = null
+
+    /** El mismo contenido con los datos de [asignatura] (la suya en este dispositivo). */
+    fun conAsignatura(asignatura: Asignatura?): ContenidoCompartido {
+        val datos = asignatura?.let { de(it) }
+        return when (this) {
+            is TareaCompartida -> copy(datosAsignatura = datos)
+            is NotaCompartida -> copy(datosAsignatura = datos)
+            else -> this
+        }
+    }
+
     data class TareaCompartida(
         val titulo: String,
         val descripcion: String,
@@ -23,7 +39,8 @@ sealed class ContenidoCompartido {
         val fecha: String,
         val prioridad: Int,
         /** "HH:mm" o vacía (vence a las 23:59). */
-        val horaEntrega: String = ""
+        val horaEntrega: String = "",
+        override val datosAsignatura: AsignaturaCompartida? = null
     ) : ContenidoCompartido() {
         override val tipo get() = TipoCompartido.TAREA
     }
@@ -58,7 +75,8 @@ sealed class ContenidoCompartido {
         val tipoNota: String,
         val valor: Float,
         override val asignatura: String,
-        val descripcion: String
+        val descripcion: String,
+        override val datosAsignatura: AsignaturaCompartida? = null
     ) : ContenidoCompartido() {
         override val tipo get() = TipoCompartido.NOTA
     }

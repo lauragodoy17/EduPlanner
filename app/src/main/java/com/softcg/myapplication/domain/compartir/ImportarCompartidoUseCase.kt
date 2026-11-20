@@ -128,14 +128,25 @@ class ImportarCompartidoUseCase @Inject constructor(
 
     private suspend fun importarAsignatura(a: AsignaturaCompartida): ResultadoImportacion {
         if (buscar(a.nombre, nombresLocales()) != null) return ResultadoImportacion.AsignaturaRepetida
-        val dias = CrearAsignaturaUseCase.DIAS.filterIndexed { i, _ -> a.dias.getOrElse(i) { false } }
-        // Solo las escalas de la app: una antigua con rango propio llega sin escala y se pedirá al calificar
-        val escala = EscalaCalificacion.deAsignatura(a.tipoCalificacion, a.escalaMin, a.escalaMax)?.takeIf { it.tipo in TipoEscala.ELEGIBLES }
-        val creada = crearAsignatura(NuevaAsignatura(a.nombre, a.tutor, a.duracion, a.hora, dias, escala))
-            as? ResultadoCrearAsignatura.Creada ?: return ResultadoImportacion.Error
-        // El área elegida por quien la comparte vale más que la detectada por el nombre
-        if (a.area != null) asignaturas.guardarDatosModelo(creada.id, a.area, escala?.min, escala?.max)
+        val creada = crearCompleta(a.nombre, a, null) ?: return ResultadoImportacion.Error
         return ResultadoImportacion.Importado(a.tipo, creada.nombre, null, creada.recompensa)
+    }
+
+    /**
+     * Crea la asignatura [nombre] con todo lo que trae [datos] (profesor, días, hora, duración, escala y área); sin
+     * datos (un código antiguo), solo con el nombre y [escalaRespaldo].
+     */
+    private suspend fun crearCompleta(nombre: String, datos: AsignaturaCompartida?, escalaRespaldo: EscalaCalificacion?): ResultadoCrearAsignatura.Creada? {
+        val dias = datos?.let { a -> CrearAsignaturaUseCase.DIAS.filterIndexed { i, _ -> a.dias.getOrElse(i) { false } } }.orEmpty()
+        // Solo las escalas de la app: una antigua con rango propio llega sin escala y se pedirá al calificar
+        val escala = datos?.let { EscalaCalificacion.deAsignatura(it.tipoCalificacion, it.escalaMin, it.escalaMax) }
+            ?.takeIf { it.tipo in TipoEscala.ELEGIBLES } ?: escalaRespaldo
+        val creada = crearAsignatura(
+            NuevaAsignatura(nombre, datos?.tutor.orEmpty(), datos?.duracion ?: 0, datos?.hora.orEmpty(), dias, escala)
+        ) as? ResultadoCrearAsignatura.Creada ?: return null
+        // El área elegida por quien la comparte vale más que la detectada por el nombre
+        datos?.area?.let { asignaturas.guardarDatosModelo(creada.id, it, escala?.min, escala?.max) }
+        return creada
     }
 
     private suspend fun conAsignatura(
@@ -145,18 +156,18 @@ class ImportarCompartidoUseCase @Inject constructor(
     ): ResultadoImportacion {
         val locales = nombresLocales()
         var creada: String? = null
+        var recompensaAsignatura: Int? = null
         val asignatura = when (destino) {
             // Lo que llegó ya tiene su asignatura aquí
             null -> contenido.asignatura?.let { buscar(it, locales) } ?: return ResultadoImportacion.FaltaAsignatura
             is DestinoAsignatura.Existente -> buscar(destino.nombre, locales) ?: return ResultadoImportacion.FaltaAsignatura
             is DestinoAsignatura.Nueva -> {
                 val nombre = destino.nombre.trim().ifEmpty { return ResultadoImportacion.FaltaAsignatura }
-                // Una nota trae su escala en el tipo ("Numérico (1-5)"): la asignatura nueva la usa
+                // Sin los datos de la asignatura (código antiguo), una nota trae al menos su escala en el tipo
                 val escala = (contenido as? NotaCompartida)?.let { EscalaCalificacion.deTexto(it.tipoNota) }?.takeIf { it.tipo in TipoEscala.ELEGIBLES }
-                buscar(nombre, locales) ?: when (val r = crearAsignatura(NuevaAsignatura(nombre, escala = escala))) {
-                    is ResultadoCrearAsignatura.Creada -> r.nombre.also { creada = it }
-                    else -> return ResultadoImportacion.Error
-                }
+                buscar(nombre, locales) ?: crearCompleta(nombre, contenido.datosAsignatura, escala)
+                    ?.also { recompensaAsignatura = it.recompensa }?.nombre?.also { creada = it }
+                    ?: return ResultadoImportacion.Error
             }
         }
         val nombre = when (contenido) {
@@ -165,7 +176,9 @@ class ImportarCompartidoUseCase @Inject constructor(
             else -> ""
         }
         val guardado = guardar(asignatura) ?: return ResultadoImportacion.Error
-        return ResultadoImportacion.Importado(contenido.tipo, nombre, creada, guardado.recompensa)
+        // Crear la asignatura con su horario da la misma recompensa que registrarla a mano
+        val recompensa = listOfNotNull(guardado.recompensa, recompensaAsignatura).takeIf { it.isNotEmpty() }?.sum()
+        return ResultadoImportacion.Importado(contenido.tipo, nombre, creada, recompensa)
     }
 
     /** Se guardó; [recompensa] son los EduCoins ganados, si hubo. */

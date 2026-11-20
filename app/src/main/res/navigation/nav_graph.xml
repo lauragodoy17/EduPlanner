@@ -36,7 +36,16 @@
         android:id="@+id/id_help_fragment"
         android:name="com.softcg.myapplication.ui.Inicio.Fragments.Ayuda.HelpFragment"
         android:label="Ayuda y opiniones"
-        tools:layout="@layout/fragment_help" />
+        tools:layout="@layout/fragment_help">
+        <action
+            android:id="@+id/action_ayuda_a_encuesta"
+            app:destination="@id/id_survey_fragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/id_survey_fragment"
+        android:name="com.softcg.myapplication.ui.Inicio.Fragments.Encuesta.EncuestaFragment"
+        android:label="Encuesta"
+        tools:layout="@layout/fragment_encuesta" />
     <fragment
         android:id="@+id/id_profile_fragment"
         android:name="com.softcg.myapplication.ui.Inicio.Fragments.Perfil.ProfileFragment"

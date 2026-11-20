@@ -1,6 +1,7 @@
 package com.softcg.myapplication.ui.Inicio.Dialogs
 
 import android.app.Dialog
+import com.softcg.myapplication.domain.TextoUsuario
 import android.content.Context
 import android.view.Window
 import android.widget.ArrayAdapter
@@ -42,6 +43,15 @@ class TareaDialog(
 
         /** La fecha del campo (yyyy-MM-dd); null si está vacía o no es una fecha. */
         fun fechaValida(texto: String): LocalDate? = runCatching { LocalDate.parse(texto.trim()) }.getOrNull()
+
+        /** Tareas y eventos van como mucho a este número de años: más lejos casi siempre es un error al elegir. */
+        const val MAX_ANIOS_ADELANTE = 2L
+
+        /** null si la fecha sirve; si no, el error para el campo. Las pasadas se aceptan (registrar algo atrasado). */
+        fun errorFecha(texto: String, hoy: LocalDate = LocalDate.now()): String? {
+            val fecha = fechaValida(texto) ?: return "Elige la fecha"
+            return if (fecha.isAfter(hoy.plusYears(MAX_ANIOS_ADELANTE))) "Elige una fecha dentro de los próximos $MAX_ANIOS_ADELANTE años" else null
+        }
 
         /** Solo vale una asignatura que exista; el texto de la opción "Agregar asignatura" no cuenta. */
         fun asignaturaValida(texto: String, asignaturas: List<String>): Boolean =
@@ -95,11 +105,12 @@ class TareaDialog(
         }
         prioridad.setAdapter(ArrayAdapter(context, R.layout.item_menu_asignatura, PRIORIDADES))
         // setText con filtro dejaría el desplegable mostrando solo la opción escrita
-        if (tarea != null) prioridad.setText(textoPrioridad(tarea.prioridad), false)
+        // Una tarea nueva empieza en "Media": la prioridad es obligatoria y casi siempre es esa
+        prioridad.setText(textoPrioridad(tarea?.prioridad?.takeIf { it in 1..3 } ?: 2), false)
 
         fecha.setOnClickListener {
             fechaContainer.error = null
-            fecha.showDatePicker()
+            fecha.showDatePicker(maxima = LocalDate.now().plusYears(MAX_ANIOS_ADELANTE))
         }
         titulo.doAfterTextChanged { if (!it.isNullOrBlank()) tituloContainer.error = null }
         horaEntrega.setOnClickListener { horaEntrega.showTimePicker() }
@@ -110,16 +121,19 @@ class TareaDialog(
         guardarBoton.setOnClickListener {
             val elegida = asignatura.text.toString()
             // Sin título ni fecha la tarea no se puede mostrar en la agenda ni avisar a tiempo: se piden aquí
-            val sinTitulo = titulo.text.isNullOrBlank()
-            val sinFecha = fechaValida(fecha.text.toString()) == null
+            val textoTitulo = TextoUsuario.linea(titulo.text.toString(), TextoUsuario.MAX_TITULO)
+            val sinTitulo = textoTitulo.isEmpty()
+            val errorFecha = errorFecha(fecha.text.toString())
+            val sinPrioridad = prioridadDesdeTexto(prioridad.text.toString()) == 0
             tituloContainer.error = if (sinTitulo) "Escribe el título de la tarea" else null
-            fechaContainer.error = if (sinFecha) "Elige la fecha de entrega" else null
+            fechaContainer.error = errorFecha?.let { if (fechaValida(fecha.text.toString()) == null) "Elige la fecha de entrega" else it }
             asignaturaContainer.error = if (!asignaturaValida(elegida, asignaturas)) context.getString(R.string.tarea_error_asignatura) else null
-            if (sinTitulo || sinFecha || asignaturaContainer.error != null) return@setOnClickListener
+            dialog.findViewById<TextInputLayout>(R.id.PrioridadContainer)?.error = if (sinPrioridad) "Elige la prioridad" else null
+            if (sinTitulo || errorFecha != null || sinPrioridad || asignaturaContainer.error != null) return@setOnClickListener
             dialog.dismiss()
             onGuardar(
-                titulo.text.toString().trim(),
-                descripcion.text.toString().trim(),
+                textoTitulo,
+                TextoUsuario.parrafo(descripcion.text.toString(), TextoUsuario.MAX_DESCRIPCION),
                 elegida,
                 fecha.text.toString(),
                 prioridadDesdeTexto(prioridad.text.toString()),

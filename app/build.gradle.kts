@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
@@ -19,6 +21,14 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
+        // Encuesta: aplicación web de Google Apps Script que escribe en la hoja (ver encuesta/LEEME.md).
+        // Se configura en local.properties con encuesta.url y encuesta.clave; sin url, la app avisa que no está lista.
+        val locales = Properties().apply {
+            rootProject.file("local.properties").takeIf { it.exists() }?.inputStream()?.use { load(it) }
+        }
+        fun textoBuildConfig(valor: String) = "\"" + valor.replace("\\", "\\\\").replace("\"", "\\\"") + "\""
+        buildConfigField("String", "ENCUESTA_URL", textoBuildConfig(locales.getProperty("encuesta.url", "")))
+        buildConfigField("String", "ENCUESTA_CLAVE", textoBuildConfig(locales.getProperty("encuesta.clave", "")))
     }
 
     buildTypes {
@@ -40,6 +50,7 @@ android {
     }
     buildFeatures{
         viewBinding=true
+        buildConfig=true
     }
     hilt{
         enableAggregatingTask=false

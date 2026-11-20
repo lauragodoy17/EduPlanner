@@ -89,12 +89,14 @@ class PrediccionFragment : Fragment() {
             tarea ?: return@observe
             estado.pintarEstadoTarea(tarea)
             pintarInfoTarea(info, tarea)
-            val accion: ((Tarea) -> Unit)? = when {
-                tarea.calificacion != null -> null
-                tarea.entregadaMillis != null -> accionesTarea::calificar.also { entregar.text = "Calificar" }
-                else -> accionesTarea::entregar.also { entregar.text = "Entregar" }
+            // El botón siempre está: entregar, luego calificar y, ya calificada, solo informa
+            val (texto, accion) = when {
+                tarea.calificacion != null -> "Entregada y calificada" to null
+                tarea.entregadaMillis != null -> "Calificar tarea" to accionesTarea::calificar
+                else -> "Entregar tarea" to accionesTarea::entregar
             }
-            entregar.visibility = if (accion != null) View.VISIBLE else View.GONE
+            entregar.text = texto
+            entregar.isEnabled = accion != null
             entregar.setOnClickListener { accion?.invoke(tarea) }
         }
 

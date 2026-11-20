@@ -45,23 +45,47 @@ object CodigoQr {
                 .put("ti", contenido.titulo).put("de", contenido.descripcion).put("as", contenido.asignatura)
                 .put("fe", contenido.fecha).put("pr", contenido.prioridad)
                 .apply { if (contenido.horaEntrega.isNotBlank()) put("hr", contenido.horaEntrega) }
+                .apply { contenido.datosAsignatura?.let { put("sa", asignaturaJson(it, JSONObject())) } }
             is EventoCompartido -> json
                 .put("ti", contenido.titulo).put("de", contenido.descripcion).put("fe", contenido.fecha)
                 .put("hi", contenido.horaInicio).put("hf", contenido.horaFin).put("pr", contenido.prioridad)
-            is AsignaturaCompartida -> json
-                .put("no", contenido.nombre).put("tu", contenido.tutor).put("du", contenido.duracion)
-                .put("ho", contenido.hora).put("di", JSONArray(contenido.dias)).put("tc", contenido.tipoCalificacion)
-                .apply {
-                    contenido.area?.let { put("ar", it) }
-                    contenido.escalaMin?.let { put("mi", it.toDouble()) }
-                    contenido.escalaMax?.let { put("ma", it.toDouble()) }
-                }
+            is AsignaturaCompartida -> asignaturaJson(contenido, json)
             is NotaCompartida -> json
                 .put("tn", contenido.tipoNota).put("va", contenido.valor.toDouble()).put("as", contenido.asignatura)
                 .put("de", contenido.descripcion)
+                .apply { contenido.datosAsignatura?.let { put("sa", asignaturaJson(it, JSONObject())) } }
         }
         val datos = Base64.getUrlEncoder().withoutPadding().encodeToString(json.toString().toByteArray(Charsets.UTF_8))
         return "$PREFIJO$VERSION:$datos"
+    }
+
+    /**
+     * Una asignatura en [json]: el contenido de un QR de asignatura, o el objeto "sa" de una tarea o nota.
+     * "sa" se agregó sin cambiar [VERSION]: las apps anteriores lo ignoran y los códigos viejos no lo traen.
+     */
+    private fun asignaturaJson(a: AsignaturaCompartida, json: JSONObject): JSONObject = json
+        .put("no", a.nombre).put("tu", a.tutor).put("du", a.duracion)
+        .put("ho", a.hora).put("di", JSONArray(a.dias)).put("tc", a.tipoCalificacion)
+        .apply {
+            a.area?.let { put("ar", it) }
+            a.escalaMin?.let { put("mi", it.toDouble()) }
+            a.escalaMax?.let { put("ma", it.toDouble()) }
+        }
+
+    private fun asignaturaDe(json: JSONObject?): AsignaturaCompartida? {
+        json ?: return null
+        val dias = json.optJSONArray("di")
+        return AsignaturaCompartida(
+            nombre = json.texto("no", MAX_TITULO).ifBlank { return null },
+            tutor = json.texto("tu", MAX_TITULO),
+            duracion = json.optInt("du", 0).coerceIn(0, 12),
+            hora = json.hora("ho"),
+            dias = List(7) { dias?.optBoolean(it, false) ?: false },
+            tipoCalificacion = json.texto("tc", MAX_TITULO),
+            area = json.optString("ar").takeIf { CatalogoModelo.esArea(it) },
+            escalaMin = json.decimal("mi"),
+            escalaMax = json.decimal("ma")
+        ).let { a -> if (a.escalaMin != null && a.escalaMax != null && a.escalaMax > a.escalaMin) a else a.copy(escalaMin = null, escalaMax = null) }
     }
 
     fun leer(texto: String): LecturaQr {
@@ -84,7 +108,8 @@ object CodigoQr {
                 asignatura = json.texto("as", MAX_TITULO),
                 fecha = json.fecha("fe") ?: return null,
                 prioridad = json.prioridad(),
-                horaEntrega = json.hora("hr")
+                horaEntrega = json.hora("hr"),
+                datosAsignatura = asignaturaDe(json.optJSONObject("sa"))
             )
             TipoCompartido.EVENTO -> EventoCompartido(
                 titulo = json.texto("ti", MAX_TITULO).ifBlank { return null },
@@ -94,25 +119,13 @@ object CodigoQr {
                 horaFin = json.hora("hf"),
                 prioridad = json.prioridad()
             )
-            TipoCompartido.ASIGNATURA -> {
-                val dias = json.optJSONArray("di")
-                AsignaturaCompartida(
-                    nombre = json.texto("no", MAX_TITULO).ifBlank { return null },
-                    tutor = json.texto("tu", MAX_TITULO),
-                    duracion = json.optInt("du", 0).coerceIn(0, 12),
-                    hora = json.hora("ho"),
-                    dias = List(7) { dias?.optBoolean(it, false) ?: false },
-                    tipoCalificacion = json.texto("tc", MAX_TITULO),
-                    area = json.optString("ar").takeIf { CatalogoModelo.esArea(it) },
-                    escalaMin = json.decimal("mi"),
-                    escalaMax = json.decimal("ma")
-                ).let { a -> if (a.escalaMin != null && a.escalaMax != null && a.escalaMax > a.escalaMin) a else a.copy(escalaMin = null, escalaMax = null) }
-            }
+            TipoCompartido.ASIGNATURA -> asignaturaDe(json)
             TipoCompartido.NOTA -> NotaCompartida(
                 tipoNota = json.texto("tn", MAX_TITULO),
                 valor = json.decimal("va")?.takeIf { it >= 0f } ?: return null,
                 asignatura = json.texto("as", MAX_TITULO).ifBlank { return null },
-                descripcion = json.texto("de", MAX_TEXTO)
+                descripcion = json.texto("de", MAX_TEXTO),
+                datosAsignatura = asignaturaDe(json.optJSONObject("sa"))
             )
             null -> null
         }

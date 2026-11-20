@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Encuesta de evaluación: una sección por página; las preguntas se agregan desde EncuestaFragment -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/eduFondoApp"
+    tools:context=".ui.Inicio.Fragments.Encuesta.EncuestaFragment">
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/encuestaScroll"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="@dimen/margen_pantalla"
+            android:paddingTop="20dp"
+            android:paddingBottom="96dp">
+
+            <!-- Avance y sección actual -->
+            <androidx.cardview.widget.CardView
+                style="@style/Edu.Tarjeta"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:id="@+id/encuestaPaso"
+                        style="@style/Edu.Texto.Etiqueta"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        tools:text="SECCIÓN 1 DE 10" />
+
+                    <com.google.android.material.progressindicator.LinearProgressIndicator
+                        android:id="@+id/encuestaProgreso"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="12dp"
+                        android:max="10"
+                        app:indicatorColor="?attr/eduAcento"
+                        app:trackColor="?attr/eduMarcaSuperficie"
+                        app:trackCornerRadius="4dp"
+                        app:trackThickness="8dp" />
+
+                    <TextView
+                        android:id="@+id/encuestaTitulo"
+                        style="@style/Edu.Texto.Seccion"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        tools:text="Perfil del participante" />
+
+                    <TextView
+                        android:id="@+id/encuestaDescripcion"
+                        style="@style/Edu.Texto.Cuerpo"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        tools:text="Cuéntanos un poco sobre ti y cómo usaste EduPlanner." />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <LinearLayout
+                android:id="@+id/encuestaPreguntas"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:orientation="vertical" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:orientation="horizontal">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/encuestaAnterior"
+                    style="@style/Edu.BotonContorno"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/alto_boton"
+                    android:layout_marginEnd="12dp"
+                    android:layout_weight="1"
+                    android:text="Anterior" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/encuestaSiguiente"
+                    style="@style/Edu.Boton"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/alto_boton"
+                    android:layout_weight="1"
+                    android:text="Siguiente" />
+            </LinearLayout>
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <!-- Ya enviada -->
+    <LinearLayout
+        android:id="@+id/encuestaGracias"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="?attr/eduFondoApp"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="32dp"
+        android:visibility="gone">
+
+        <ImageView
+            style="@style/Edu.VacioIcono"
+            android:importantForAccessibility="no"
+            android:src="@drawable/ic_gami_check" />
+
+        <TextView
+            style="@style/Edu.VacioTitulo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="¡Gracias por ayudarnos!" />
+
+        <TextView
+            style="@style/Edu.VacioDetalle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Tus respuestas se enviaron. Con ellas vamos a mejorar EduPlanner." />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/encuestaVolver"
+            style="@style/Edu.Boton"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/alto_boton"
+            android:layout_marginTop="24dp"
+            android:text="Volver" />
+    </LinearLayout>
+</FrameLayout>

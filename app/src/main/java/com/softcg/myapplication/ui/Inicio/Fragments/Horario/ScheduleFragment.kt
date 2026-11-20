@@ -18,6 +18,9 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.softcg.myapplication.ui.Inicio.Fragments.Agenda.AgendaCalendarWidget
 import com.softcg.myapplication.ui.Inicio.Fragments.Horario.Models.AsignaturaConHora
+import com.softcg.myapplication.ui.Inicio.Fragments.Horario.Models.DistribucionHorario
+import com.softcg.myapplication.ui.Inicio.Fragments.Horario.Models.Ubicacion
+import androidx.core.view.doOnLayout
 import com.softcg.myapplication.ui.Inicio.Fragments.Detalle.TipoDetalle
 import com.softcg.myapplication.ui.Inicio.Fragments.Detalle.abrirDetalle
 import dagger.hilt.android.AndroidEntryPoint
@@ -32,6 +35,8 @@ class ScheduleFragment : Fragment() {
         const val ALTO_HORA_DP = 72
         const val ALTO_DIVISOR_PX = 4
         const val ALTO_LINEA_PX = 2
+        /** Espacio entre dos clases que están a la misma hora. */
+        const val SEPARACION_COLUMNAS_DP = 4
     }
 
     private val horarioViewModel: HorarioViewModel by viewModels()
@@ -94,6 +99,10 @@ class ScheduleFragment : Fragment() {
         Log.d("ScheduleFragment", "Initializing asignaturas display")
 
         val emptyMessageTextView = view.findViewById<TextView>(R.id.textoAsignaturas)
+        // Al girar la pantalla o cambiar el ancho, las columnas se vuelven a repartir
+        view.findViewById<FrameLayout>(R.id.horarioContainer).addOnLayoutChangeListener { v, l, _, r, _, ol, _, or, _ ->
+            if (r - l != or - ol) v.post { repartirColumnas(v as FrameLayout) }
+        }
 
         // Observe current date to update empty message
         horarioViewModel._currentDate.observe(viewLifecycleOwner, Observer { date ->
@@ -191,23 +200,45 @@ class ScheduleFragment : Fragment() {
 
         Log.d("ScheduleFragment", "Displaying ${asignaturas.size} asignaturas")
 
-        // Convert to AsignaturaConHora with color indices
+        // El color sale del id: la misma asignatura tiene el mismo color todos los días
         val asignaturasConHora = asignaturas.mapIndexed { index, asignatura ->
-            AsignaturaConHora(asignatura, index)
+            AsignaturaConHora(asignatura, asignatura.id ?: index)
         }
 
-        // Add each card positioned according to its time
+        // Las clases que se cruzan se reparten en columnas en vez de taparse
+        val ubicaciones = DistribucionHorario.distribuir(asignaturasConHora.map { a ->
+            val inicio = DistribucionHorario.minutos(a.horaInicio) ?: 0
+            inicio to inicio + maxOf(a.asignatura.duracion, 1) * 60
+        })
         asignaturasConHora.forEachIndexed { index, asignaturaConHora ->
-            Log.d("ScheduleFragment", "[$index] Adding card: ${asignaturaConHora.asignatura.nombre}")
-            Log.d("ScheduleFragment", "    Time: ${asignaturaConHora.horaInicio} - ${asignaturaConHora.horaFin}")
-            addAsignaturaCard(container, asignaturaConHora)
+            addAsignaturaCard(container, asignaturaConHora, ubicaciones[index])
         }
+        container.doOnLayout { repartirColumnas(it as FrameLayout) }
 
         Log.d("ScheduleFragment", "Final children count in container: ${container.childCount}")
         Log.d("ScheduleFragment", "───────────────────────────────────────")
     }
 
-    private fun addAsignaturaCard(container: FrameLayout, asignaturaConHora: AsignaturaConHora) {
+    /** Ancho y posición de cada tarjeta según su columna; necesita el ancho real del contenedor. */
+    private fun repartirColumnas(container: FrameLayout) {
+        val ancho = container.width
+        if (ancho <= 0) return
+        val separacion = (SEPARACION_COLUMNAS_DP * resources.displayMetrics.density).toInt()
+        for (i in 0 until container.childCount) {
+            val tarjeta = container.getChildAt(i)
+            val ubicacion = tarjeta.tag as? Ubicacion ?: continue
+            val anchoColumna = (ancho - separacion * (ubicacion.columnas - 1)) / ubicacion.columnas
+            val parametros = tarjeta.layoutParams as FrameLayout.LayoutParams
+            val izquierda = ubicacion.columna * (anchoColumna + separacion)
+            if (parametros.width != anchoColumna || parametros.leftMargin != izquierda) {
+                parametros.width = anchoColumna
+                parametros.leftMargin = izquierda
+                tarjeta.layoutParams = parametros
+            }
+        }
+    }
+
+    private fun addAsignaturaCard(container: FrameLayout, asignaturaConHora: AsignaturaConHora, ubicacion: Ubicacion) {
         try {
             val cardView = layoutInflater.inflate(R.layout.schedule_asignatura_card, container, false) as CardView
 
@@ -236,6 +267,21 @@ class ScheduleFragment : Fragment() {
             textTutor?.text = asignaturaConHora.asignatura.tutor
             textHoraRango?.text = "${AsignaturaConHora.horaLegible(asignaturaConHora.horaInicio)} - ${asignaturaConHora.horaFin}"
             textDuracion?.text = "${asignaturaConHora.asignatura.duracion}h"
+            // En una columna estrecha sobra la duración (ya está en el rango) y, desde tres, el profesor
+            textDuracion?.visibility = if (ubicacion.columnas >= 2) View.GONE else View.VISIBLE
+            textTutor?.visibility = if (ubicacion.columnas >= 3 || asignaturaConHora.asignatura.tutor.isBlank()) View.GONE else View.VISIBLE
+            if (ubicacion.columnas >= 2) {
+                textNombre.maxLines = 2
+                val interior = cardView.getChildAt(0)
+                val px = (6 * resources.displayMetrics.density).toInt()
+                interior.setPadding(px, interior.paddingTop, px, interior.paddingBottom)
+                colorBar?.let { barra -> (barra.layoutParams as ViewGroup.MarginLayoutParams).marginEnd = px }
+            }
+            cardView.tag = ubicacion
+            cardView.contentDescription = buildString {
+                append(asignaturaConHora.asignatura.nombre).append(", ").append(textHoraRango?.text)
+                if (ubicacion.columnas > 1) append(", al mismo tiempo que otra clase")
+            }
 
             // Color que identifica la asignatura
             colorBar?.backgroundTintList = android.content.res.ColorStateList.valueOf(
@@ -248,12 +294,13 @@ class ScheduleFragment : Fragment() {
             // El alto refleja la duración, para que dos clases seguidas no se monten
             val fixedCardHeight = calculateCardHeight(asignaturaConHora.asignatura.duracion)
 
+            // El ancho definitivo lo pone repartirColumnas cuando se conoce el del contenedor
             val layoutParams = FrameLayout.LayoutParams(
-                FrameLayout.LayoutParams.MATCH_PARENT,
+                if (ubicacion.columnas == 1) FrameLayout.LayoutParams.MATCH_PARENT else container.width.coerceAtLeast(1) / ubicacion.columnas,
                 fixedCardHeight
             )
             layoutParams.topMargin = topMargin
-            layoutParams.setMargins(0, topMargin, 0, 0)
+            layoutParams.setMargins(if (ubicacion.columnas == 1) 0 else ubicacion.columna * layoutParams.width, topMargin, 0, 0)
 
             Log.d("ScheduleFragment", "    → Card for ${asignaturaConHora.asignatura.nombre}:")
             Log.d("ScheduleFragment", "       Time: ${asignaturaConHora.horaInicio} - ${asignaturaConHora.horaFin}")
@@ -376,9 +423,11 @@ class ScheduleFragment : Fragment() {
     /** Con 24 horas de alto, abrir en las 00:00 dejaría las clases fuera de la vista. */
     private fun llevarALaPrimeraClase(view: View, asignaturas: List<com.softcg.myapplication.ui.Inicio.Fragments.Asignaturas.Models.Asignatura>) {
         val scroll = view.findViewById<NestedScrollView>(R.id.contentScrollView)
+        // Se abre en la hora en punto de la primera clase, para que se vea su etiqueta (05:00 si empieza 05:30)
         val destino = asignaturas
-            .map { calculateTopMargin(it.hora) }
+            .mapNotNull { DistribucionHorario.minutos(it.hora) }
             .minOrNull()
+            ?.let { calculateTopMargin(String.format(Locale.ROOT, "%02d:00", it / 60)) }
             ?: calculateTopMargin(String.format(Locale.ROOT, "%02d:00", Calendar.getInstance().get(Calendar.HOUR_OF_DAY)))
         val respiro = (12 * resources.displayMetrics.density).toInt()
         scroll.post { scroll.smoothScrollTo(0, maxOf(destino - respiro, 0)) }

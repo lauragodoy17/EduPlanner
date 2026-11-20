@@ -76,8 +76,8 @@ class AsignaturasAdapter (
         }
         holder.textDias.text = if (dias.isNotEmpty()) dias.joinToString(", ") else "Sin días asignados"
 
-        // Color que identifica la asignatura
-        holder.colorBar.backgroundTintList = ColorStateList.valueOf(AsignaturaConHora.getColorAsignatura(position).toColorInt())
+        // Color que identifica la asignatura: sale del id, igual que en el Horario
+        holder.colorBar.backgroundTintList = ColorStateList.valueOf(AsignaturaConHora.getColorAsignatura(currentItem.id ?: position).toColorInt())
 
         holder.boton.setOnClickListener {v ->
             showPopupMenu(v,position)

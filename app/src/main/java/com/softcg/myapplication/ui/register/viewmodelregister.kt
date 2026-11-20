@@ -46,7 +46,12 @@ class viewmodelregister @Inject constructor(val createAccountUseCase: CreateAcco
         if (viewState.userValidated()&&userRegister.isNotEmpty()){
             registerUser(userRegister)
         }else{
-            onFieldsChanged(userRegister)
+            // Al pulsar Registrarse los campos vacíos también se marcan (mientras se escribe, no)
+            _viewState.value = viewState.copy(
+                isValidEmail = viewState.isValidEmail && userRegister.email.isNotBlank(),
+                isValidPassword = viewState.isValidPassword && userRegister.password.isNotEmpty(),
+                isValidPasswordConfirmation = viewState.isValidPasswordConfirmation && userRegister.passwordConfirmation.isNotEmpty()
+            )
         }
     }
 

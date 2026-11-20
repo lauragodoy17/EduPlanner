@@ -118,6 +118,26 @@ class ImportarCompartidoUseCaseTest {
     }
 
     @Test
+    fun `la asignatura que falta se crea con todos los datos que trae el QR`() = runBlocking {
+        val datos = AsignaturaCompartida(
+            "Química", "Ana Gómez", 2, "08:00", listOf(true, false, true, false, false, false, false), TipoEscala.UNO_A_CINCO.etiqueta, "Quimica", 1f, 5f
+        )
+        val nueva = slot<NuevaAsignatura>()
+        coEvery { crearAsignatura(capture(nueva)) } returns ResultadoCrearAsignatura.Creada(3, "Química", 5, "Quimica")
+        coEvery { otorgarRecompensa(TipoRecompensa.TAREA_REGISTRADA, "10") } returns ResultadoRecompensa.Otorgada(2)
+
+        val r = caso.importar(tarea.copy(asignatura = "Química", datosAsignatura = datos), DestinoAsignatura.Nueva("Química"))
+
+        assertEquals(ResultadoImportacion.Importado(TipoCompartido.TAREA, "Taller", "Química", 7), r)
+        assertEquals("Ana Gómez", nueva.captured.tutor)
+        assertEquals(2, nueva.captured.duracion)
+        assertEquals("08:00", nueva.captured.hora)
+        assertEquals(listOf("Lunes", "Miércoles"), nueva.captured.dias)
+        assertEquals(TipoEscala.UNO_A_CINCO, nueva.captured.escala?.tipo)
+        coVerify { asignaturas.guardarDatosModelo(3, "Quimica", 1f, 5f) }
+    }
+
+    @Test
     fun `crear una que en realidad ya existe reutiliza la existente`() = runBlocking {
         val r = caso.importar(tarea.copy(asignatura = "Química"), DestinoAsignatura.Nueva("fisica"))
         assertEquals(ResultadoImportacion.Importado(TipoCompartido.TAREA, "Taller", null), r)

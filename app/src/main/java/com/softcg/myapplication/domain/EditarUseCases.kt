@@ -1,6 +1,7 @@
 package com.softcg.myapplication.domain
 
 import com.softcg.myapplication.data.Repositories.AsignaturasRepository
+import com.softcg.myapplication.domain.TextoUsuario
 import com.softcg.myapplication.data.Repositories.CalificacionesRespository
 import com.softcg.myapplication.data.Repositories.GamificacionRepository
 import com.softcg.myapplication.data.Repositories.TareasRepository
@@ -48,7 +49,7 @@ class EditarAsignaturaUseCase @Inject constructor(
     private val escalaBloqueada: EscalaBloqueadaUseCase
 ) {
     suspend operator fun invoke(id: Int, datos: NuevaAsignatura): ResultadoEdicion {
-        val nombre = datos.nombre.trim()
+        val nombre = TextoUsuario.linea(datos.nombre, TextoUsuario.MAX_NOMBRE_ASIGNATURA)
         if (nombre.isEmpty()) return ResultadoEdicion.NombreVacio
         val actual = asignaturas.getAsignatura(id) ?: return ResultadoEdicion.NoExiste
         val otras = asignaturas.getAllAsignaturas().filter { it.id != id }.map { it.nombre }
@@ -58,7 +59,7 @@ class EditarAsignaturaUseCase @Inject constructor(
 
         val editada = actual.copy(
             nombre = nombre,
-            tutor = datos.tutor.trim(),
+            tutor = TextoUsuario.linea(datos.tutor, TextoUsuario.MAX_PERSONA),
             duracion = datos.duracion,
             hora = datos.hora.trim(),
             horario = CrearAsignaturaUseCase.horario(datos.dias),

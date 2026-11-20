@@ -74,8 +74,22 @@
             android:paddingEnd="44dp"
             android:spinnerMode="dropdown"
             android:contentDescription="Días de la semana"
-            android:background="@drawable/modern_spinner_background"
-            android:layout_marginBottom="14dp"/>
+            android:background="@drawable/modern_spinner_background"/>
+
+        <TextView
+            android:id="@+id/DiasError"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:paddingHorizontal="16dp"
+            android:text="Elige al menos un día"
+            android:textColor="?attr/eduEstadoError"
+            android:textSize="12sp"
+            android:visibility="gone"/>
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="14dp"/>
 
         <!-- Escala de notas: se elige aquí al crear la asignatura; con notas ya registradas queda fija -->
         <include
@@ -109,6 +123,7 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/HoraContainer"
                 style="@style/Edu.Campo"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"

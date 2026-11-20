@@ -64,16 +64,17 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
-                <!-- Entregar mientras no se haya entregado; después, calificar. Oculto si ya está calificada -->
+                <!-- Siempre visible: Entregar mientras no se haya entregado; después, Calificar; ya calificada, deshabilitado -->
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/tareaEntregar"
                     style="@style/Edu.Boton"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/alto_boton"
                     android:layout_marginTop="14dp"
-                    android:text="Entregar"
-                    android:visibility="gone"
-                    tools:visibility="visible" />
+                    android:text="Entregar tarea"
+                    app:icon="@drawable/ic_gami_check"
+                    app:iconGravity="textStart"
+                    app:iconTint="?attr/eduSobreAcento" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 

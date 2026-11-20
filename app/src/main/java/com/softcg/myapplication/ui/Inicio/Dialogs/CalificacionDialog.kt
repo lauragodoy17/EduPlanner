@@ -1,6 +1,7 @@
 package com.softcg.myapplication.ui.Inicio.Dialogs
 
 import android.app.Dialog
+import com.softcg.myapplication.domain.TextoUsuario
 import android.content.Context
 import android.view.View
 import android.view.Window
@@ -90,7 +91,7 @@ class CalificacionDialog(
             // La nota de una tarea conserva su tipo; las demás guardan su escala ("Numérico (1-5)")
             val tipo = calificacion?.tipo?.takeIf { it == CalificarTareaUseCase.TIPO_CALIFICACION_TAREA } ?: escala.etiquetaGuardada
             dialog.dismiss()
-            onGuardar(tipo, valor, elegida.nombre, descripcion.text.toString())
+            onGuardar(tipo, valor, elegida.nombre, TextoUsuario.parrafo(descripcion.text.toString(), TextoUsuario.MAX_DESCRIPCION))
         }
 
         dialog.showAsBottomSheet()

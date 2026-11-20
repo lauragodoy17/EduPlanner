@@ -41,6 +41,17 @@ class CodigoQrTest {
     }
 
     @Test
+    fun `una tarea o nota lleva su asignatura completa y los QR sin ella siguen valiendo`() {
+        val conAsignatura = tarea.copy(datosAsignatura = asignatura)
+        assertEquals(LecturaQr.Valida(conAsignatura), CodigoQr.leer(CodigoQr.codificar(conAsignatura)))
+        val notaCon = nota.copy(datosAsignatura = asignatura)
+        assertEquals(LecturaQr.Valida(notaCon), CodigoQr.leer(CodigoQr.codificar(notaCon)))
+        // La versión no cambia: un código anterior (sin "sa") se lee igual, sin datos de la asignatura
+        assertTrue(CodigoQr.codificar(conAsignatura).startsWith("EDUPLANNER:1:"))
+        assertEquals(null, ((CodigoQr.leer(CodigoQr.codificar(tarea)) as LecturaQr.Valida).contenido as TareaCompartida).datosAsignatura)
+    }
+
+    @Test
     fun `los QR que no son de EduPlanner se reconocen al instante`() {
         assertEquals(LecturaQr.NoEsEduPlanner, CodigoQr.leer("https://www.ejemplo.com"))
         assertEquals(LecturaQr.NoEsEduPlanner, CodigoQr.leer("eduplanner:1:abc"))

@@ -34,7 +34,6 @@ import androidx.navigation.navOptions
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
-import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
@@ -156,7 +155,8 @@ class InicioActivity : AppCompatActivity() {
         private const val MAX_AVISOS_LOGRO = 3
         // Pantallas con flecha para volver en vez del menú lateral
         private val SUBPANTALLAS = setOf(
-            R.id.id_shop_fragment, R.id.id_focus_fragment, R.id.id_prediction_fragment, R.id.id_detail_fragment
+            R.id.id_shop_fragment, R.id.id_focus_fragment, R.id.id_prediction_fragment, R.id.id_detail_fragment,
+            R.id.id_survey_fragment
         )
 
         fun create(context: Context): Intent =
@@ -280,7 +280,19 @@ class InicioActivity : AppCompatActivity() {
             drawerLayout
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
-        navigationView.setupWithNavController(navController)
+        // El menú navega igual que la barra inferior (irAPestana). NavigationUI guarda y restaura el estado de cada
+        // destino y, mezclado con la barra, a veces no hacía nada (p. ej. Inicio después de abrir Perfil desde abajo)
+        navigationView.setNavigationItemSelectedListener { item ->
+            drawerLayout.closeDrawer(GravityCompat.START)
+            if (navController.graph.findNode(item.itemId) != null) {
+                irAPestana(item.itemId)
+                true
+            } else false
+        }
+        // El elemento marcado sigue a la pantalla abierta, venga de donde venga
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            navigationView.menu.findItem(destination.id)?.isChecked = true
+        }
 
         // Opciones > Tema de la app: no es un destino, abre la hoja para elegirlo
         navigationView.menu.findItem(R.id.opcion_tema).setOnMenuItemClickListener {
@@ -378,9 +390,10 @@ class InicioActivity : AppCompatActivity() {
         findViewById<View>(R.id.header_saldo).setOnClickListener { abrirPerfil() }
 
         navController.addOnDestinationChangedListener { _, destination, arguments ->
-            // En una sesión de enfoque no se ofrece agregar nada: es la distracción que se quiere evitar
+            // En una sesión de enfoque no se ofrece agregar nada: es la distracción que se quiere evitar; en la
+            // encuesta el botón taparía "Siguiente"
             val anadir = findViewById<View>(R.id.botonAñadir)
-            val enEnfoque = destination.id == R.id.id_focus_fragment
+            val enEnfoque = destination.id == R.id.id_focus_fragment || destination.id == R.id.id_survey_fragment
             if (rotate) toggleFabMode(anadir)
             anadir.visibility = if (enEnfoque) View.GONE else View.VISIBLE
 
@@ -403,6 +416,8 @@ class InicioActivity : AppCompatActivity() {
             val activa = when {
                 destination.id == R.id.id_prediction_fragment || destination.id == R.id.id_detail_fragment ->
                     navController.previousBackStackEntry?.destination?.id ?: R.id.id_home_fragment
+                // La encuesta cuelga de Ayuda, que no es una pestaña
+                destination.id == R.id.id_survey_fragment -> R.id.id_help_fragment
                 subpantalla -> R.id.id_profile_fragment
                 else -> destination.id
             }

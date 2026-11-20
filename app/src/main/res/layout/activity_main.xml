@@ -68,7 +68,8 @@
                     style="@style/Edu.CampoEntrada"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="textEmailAddress" />
+                    android:inputType="textEmailAddress" 
+                android:maxLength="100"/>
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -88,7 +89,8 @@
                     style="@style/Edu.CampoEntrada"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="textPassword" />
+                    android:inputType="textPassword" 
+                android:maxLength="64"/>
             </com.google.android.material.textfield.TextInputLayout>
 
             <TextView

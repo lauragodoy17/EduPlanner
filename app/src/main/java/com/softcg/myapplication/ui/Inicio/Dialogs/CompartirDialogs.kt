@@ -26,8 +26,20 @@ import com.softcg.myapplication.domain.compartir.AnalisisImportacion
 import com.softcg.myapplication.domain.compartir.CodigoQr
 import com.softcg.myapplication.domain.compartir.ContenidoCompartido
 import com.softcg.myapplication.domain.compartir.DestinoAsignatura
+import com.softcg.myapplication.domain.compartir.PrepararCompartidoUseCase
 import com.softcg.myapplication.domain.compartir.TextosCompartir
+import dagger.hilt.EntryPoint
+import dagger.hilt.InstallIn
+import dagger.hilt.android.EntryPointAccessors
+import dagger.hilt.components.SingletonComponent
 import kotlin.math.roundToInt
+
+/** El diálogo se abre desde adaptadores sin inyección: toma de aquí lo que necesita de Hilt. */
+@EntryPoint
+@InstallIn(SingletonComponent::class)
+interface CompartirEntryPoint {
+    fun prepararCompartido(): PrepararCompartidoUseCase
+}
 
 /**
  * El QR de una tarea, evento, asignatura o nota. Sube el brillo mientras se muestra: con la pantalla tenue
@@ -53,10 +65,17 @@ class CompartirQrDialog(
         }
 
         val lado = (248 * context.resources.displayMetrics.density).roundToInt()
-        // Un contenido demasiado largo no cabe en un QR (ZXing lanza): se avisa en vez de cerrar la app
-        val qr = runCatching { GeneradorQr.generar(CodigoQr.codificar(contenido), lado, context.getColor(R.color.degradado_inicio)) }
-            .onFailure { Log.w("CompartirQr", "No se pudo generar el QR", it) }
-            .getOrNull()
+        // Una tarea o nota lleva su asignatura completa, para que quien no la tenga la cree igual
+        val completo = runCatching {
+            EntryPointAccessors.fromApplication(context.applicationContext, CompartirEntryPoint::class.java).prepararCompartido()(contenido)
+        }.getOrDefault(contenido)
+        fun generar(c: ContenidoCompartido) =
+            runCatching { GeneradorQr.generar(CodigoQr.codificar(c), lado, context.getColor(R.color.degradado_inicio)) }
+                .onFailure { Log.w("CompartirQr", "No se pudo generar el QR", it) }
+                .getOrNull()
+        // Un contenido demasiado largo no cabe en un QR (ZXing lanza): primero se prueba sin los datos de la
+        // asignatura y, si aun así no cabe, se avisa en vez de cerrar la app
+        val qr = generar(completo) ?: if (completo != contenido) generar(contenido) else null
         if (qr == null) {
             Toast.makeText(context, "No se pudo crear el QR: el contenido es demasiado largo. Acorta la descripción.", Toast.LENGTH_LONG).show()
             return
@@ -131,7 +150,11 @@ class ImportarCompartidoDialog(
         val opciones = dialog.findViewById<RadioGroup>(R.id.importarOpciones)
         val crear = dialog.findViewById<MaterialRadioButton>(R.id.importarCrear)
         val usarExistente = dialog.findViewById<MaterialRadioButton>(R.id.importarUsarExistente)
-        crear.text = if (compartida.isBlank()) "Crear una asignatura nueva" else "Crear la asignatura «$compartida»"
+        crear.text = when {
+            compartida.isBlank() -> "Crear una asignatura nueva"
+            analisis.contenido.datosAsignatura != null -> "Crear la asignatura «$compartida» con su profesor, horario y escala"
+            else -> "Crear la asignatura «$compartida»"
+        }
         usarExistente.visibility = if (locales.isEmpty()) View.GONE else View.VISIBLE
 
         val cajaNombre = dialog.findViewById<TextInputLayout>(R.id.importarNombreCaja)

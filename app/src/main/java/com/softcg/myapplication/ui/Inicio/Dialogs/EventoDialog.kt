@@ -1,6 +1,8 @@
 package com.softcg.myapplication.ui.Inicio.Dialogs
 
 import android.app.Dialog
+import java.time.LocalDate
+import com.softcg.myapplication.domain.TextoUsuario
 import android.content.Context
 import android.net.Uri
 import android.view.View
@@ -74,7 +76,7 @@ class EventoDialog(
             cargarEvento(it, titulo, descripcion, fecha, horaInicio, horaFin, guardarBoton)
         }
 
-        fecha.setOnClickListener { fecha.showDatePicker() }
+        fecha.setOnClickListener { fecha.showDatePicker(maxima = LocalDate.now().plusYears(TareaDialog.MAX_ANIOS_ADELANTE)) }
         horaInicio.setOnClickListener { horaInicio.showTimePicker() }
         horaFin.setOnClickListener { horaFin.showTimePicker() }
 
@@ -99,19 +101,20 @@ class EventoDialog(
         horaFin.doAfterTextChanged { horaFinContainer.error = null }
 
         guardarBoton.setOnClickListener {
-            val sinTitulo = titulo.text.isNullOrBlank()
-            val sinFecha = TareaDialog.fechaValida(fecha.text.toString()) == null
+            val textoTitulo = TextoUsuario.linea(titulo.text.toString(), TextoUsuario.MAX_TITULO)
+            val sinTitulo = textoTitulo.isEmpty()
+            val errorFecha = TareaDialog.errorFecha(fecha.text.toString())
             val errorHoras = errorHoras(horaInicio.text.toString(), horaFin.text.toString())
             nombreContainer.error = if (sinTitulo) "Escribe un nombre" else null
-            fechaContainer.error = if (sinFecha) "Elige una fecha" else null
+            fechaContainer.error = errorFecha
             horaFinContainer.error = errorHoras
-            if (sinTitulo || sinFecha || errorHoras != null) return@setOnClickListener
+            if (sinTitulo || errorFecha != null || errorHoras != null) return@setOnClickListener
             dialog.dismiss()
             onGuardar(
                 Evento(
                     evento?.id,
-                    titulo.text.toString().trim(),
-                    descripcion.text.toString().trim(),
+                    textoTitulo,
+                    TextoUsuario.parrafo(descripcion.text.toString(), TextoUsuario.MAX_DESCRIPCION),
                     fecha.text.toString(),
                     selectedPrioridad,
                     horaInicio.text.toString(),

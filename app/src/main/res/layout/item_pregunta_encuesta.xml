@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Una pregunta de la encuesta. EncuestaFragment muestra las opciones (chips) o el campo de texto según su tipo -->
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/Edu.Tarjeta"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/preguntaTexto"
+            style="@style/Edu.Texto.TituloTarjeta"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:text="1. Creo que me gustaría usar EduPlanner con frecuencia." />
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/preguntaOpciones"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:chipSpacingHorizontal="8dp"
+            app:singleSelection="true" />
+
+        <!-- Extremos de la escala de 1 a 5 (o de 0 a 10) -->
+        <LinearLayout
+            android:id="@+id/preguntaExtremos"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <TextView
+                android:id="@+id/preguntaMinimo"
+                style="@style/Edu.Texto.Pie"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                tools:text="1 = Totalmente en desacuerdo" />
+
+            <TextView
+                android:id="@+id/preguntaMaximo"
+                style="@style/Edu.Texto.Pie"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="end"
+                tools:text="5 = Totalmente de acuerdo" />
+        </LinearLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/preguntaCampo"
+            style="@style/Edu.Campo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:visibility="gone"
+            app:counterEnabled="true"
+            tools:visibility="visible">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/preguntaEntrada"
+                style="@style/Edu.CampoEntrada"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:id="@+id/preguntaError"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="Responde esta pregunta para continuar"
+            android:textColor="?attr/eduEstadoError"
+            android:textSize="12sp"
+            android:visibility="gone" />
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

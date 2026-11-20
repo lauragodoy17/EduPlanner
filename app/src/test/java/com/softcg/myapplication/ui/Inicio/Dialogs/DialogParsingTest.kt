@@ -73,11 +73,17 @@ class DialogParsingTest {
         assertEquals(java.time.LocalDate.of(2026, 11, 20), TareaDialog.fechaValida("2026-11-20"))
         assertNull(TareaDialog.fechaValida(""))
         assertNull(TareaDialog.fechaValida("mañana"))
+        // Pasadas sí (registrar algo atrasado); más de dos años adelante, no
+        val hoy = java.time.LocalDate.of(2026, 11, 20)
+        assertNull(TareaDialog.errorFecha("2026-01-10", hoy))
+        assertNull(TareaDialog.errorFecha("2028-11-20", hoy))
+        assertEquals("Elige una fecha dentro de los próximos 2 años", TareaDialog.errorFecha("2028-11-21", hoy))
+        assertEquals("Elige la fecha", TareaDialog.errorFecha("", hoy))
     }
 
     @Test
     fun `la duracion de una clase va de 1 a 12 horas o vacia`() {
-        assertNull(AsignaturaDialog.errorDuracion(""))
+        assertEquals("¿Cuántas horas dura?", AsignaturaDialog.errorDuracion(""))
         assertNull(AsignaturaDialog.errorDuracion(" 2 "))
         assertNull(AsignaturaDialog.errorDuracion("12"))
         assertEquals("Entre 1 y 12 horas", AsignaturaDialog.errorDuracion("0"))

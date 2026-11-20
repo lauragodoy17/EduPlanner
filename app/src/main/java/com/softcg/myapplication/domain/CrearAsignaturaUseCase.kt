@@ -58,7 +58,7 @@ class CrearAsignaturaUseCase @Inject constructor(
     }
 
     suspend operator fun invoke(nueva: NuevaAsignatura): ResultadoCrearAsignatura {
-        val nombre = nueva.nombre.trim()
+        val nombre = TextoUsuario.linea(nueva.nombre, TextoUsuario.MAX_NOMBRE_ASIGNATURA)
         if (nombre.isEmpty()) return ResultadoCrearAsignatura.NombreVacio
         val existentes = repository.getAllAsignaturas().map { it.nombre }
         if (ImportarCompartidoUseCase.buscar(nombre, existentes) != null) return ResultadoCrearAsignatura.NombreRepetido
@@ -67,7 +67,7 @@ class CrearAsignaturaUseCase @Inject constructor(
         val hora = nueva.hora.trim()
         val area = CatalogoModelo.areaDetectada(nombre)
         val asignatura = Asignatura(
-            null, nombre, nueva.tutor.trim(), nueva.duracion, hora, horario,
+            null, nombre, TextoUsuario.linea(nueva.tutor, TextoUsuario.MAX_PERSONA), nueva.duracion.coerceIn(0, 12), hora, horario,
             tipoCalificacion = nueva.escala?.etiquetaGuardada.orEmpty(),
             areaModelo = area, escalaMin = nueva.escala?.min, escalaMax = nueva.escala?.max
         )

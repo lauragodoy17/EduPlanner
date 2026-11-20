@@ -55,7 +55,7 @@ class GeminiRecomendaciones @Inject constructor() : GeneradorRecomendaciones {
 
     companion object {
         /** Rápido, estable y sin facturación en la Gemini Developer API (nov. 2026); gemini-3.8-flash daba "high demand". */
-        const val MODELO = "gemini-3.5-flash-lite"
+        const val MODELO = "gemini-3.1-flash-lite"
 
         /** Sin límite propio el SDK espera 180 s antes de rendirse. */
         const val ESPERA_MAXIMA_MS = 45_000L

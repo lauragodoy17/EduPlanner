@@ -16,6 +16,50 @@
         android:paddingTop="20dp"
         android:paddingBottom="88dp">
 
+        <!-- Encuesta de evaluación: las respuestas van a la hoja de Google Sheets -->
+        <androidx.cardview.widget.CardView
+            style="@style/Edu.Tarjeta"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    style="@style/Edu.Texto.Etiqueta"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:text="ENCUESTA" />
+
+                <TextView
+                    style="@style/Edu.Texto.TituloTarjeta"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Ayúdanos a mejorar EduPlanner" />
+
+                <TextView
+                    android:id="@+id/encuestaAyudaDetalle"
+                    style="@style/Edu.Texto.Cuerpo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="Son 11 secciones cortas (unos 12 minutos). Tus respuestas son anónimas y puedes continuar después donde la dejaste." />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/botonEncuesta"
+                    style="@style/Edu.Boton"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/alto_boton"
+                    android:layout_marginTop="14dp"
+                    android:text="Ayúdanos con la siguiente encuesta" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
         <ImageView
             android:importantForAccessibility="no"
             style="@style/Edu.VacioIcono"
@@ -41,6 +85,7 @@
             android:layout_marginBottom="20dp"/>
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/QuejaContainer"
             style="@style/Edu.CampoDesplegable"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -56,6 +101,7 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/QuejadosContainer"
             style="@style/Edu.CampoDesplegable"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

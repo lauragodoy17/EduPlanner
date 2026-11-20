@@ -1,6 +1,8 @@
 package com.softcg.myapplication.ui.Inicio.Dialogs
 
 import android.app.Dialog
+import androidx.core.widget.doAfterTextChanged
+import com.softcg.myapplication.domain.TextoUsuario
 import android.content.Context
 import android.view.View
 import android.view.Window
@@ -41,9 +43,9 @@ class AsignaturaDialog(
         /** Las horas escritas; 0 si está vacío o no es un número. */
         fun duracionDesdeTexto(texto: String): Int = texto.trim().toIntOrNull()?.coerceAtLeast(0) ?: 0
 
-        /** null si la duración sirve (vacía = sin duración); si no, el error para el campo. */
+        /** null si la duración sirve; si no, el error para el campo. Es obligatoria: sin ella no hay horario. */
         fun errorDuracion(texto: String): String? {
-            if (texto.isBlank()) return null
+            if (texto.isBlank()) return "¿Cuántas horas dura?"
             val horas = texto.trim().toIntOrNull()
             return if (horas == null || horas !in 1..MAX_DURACION) "Entre 1 y $MAX_DURACION horas" else null
         }
@@ -68,11 +70,6 @@ class AsignaturaDialog(
         val yaElegidos = asignatura?.horario?.let { horario -> dias.filterIndexed { i, _ -> horario.getOrElse(i) { false } } }.orEmpty()
         var diasElegidos: List<ListItem> = yaElegidos
         val adapterDias = MultiSelectSpinnerAdapter(context, dias, yaElegidos.toMutableList())
-        adapterDias.setOnItemSelectedListener(object : MultiSelectSpinnerAdapter.OnItemSelectedListener {
-            override fun onItemSelected(selectedItems: List<ListItem>, pos: Int) {
-                diasElegidos = selectedItems.toList()
-            }
-        })
         spinnerDias.adapter = adapterDias
 
         asignatura?.let {
@@ -86,26 +83,41 @@ class AsignaturaDialog(
 
         hora.setOnClickListener { hora.showTimePicker() }
         nombre.setOnFocusChangeListener { _, _ -> nombreContainer.error = null }
+        val horaContainer = dialog.findViewById<TextInputLayout>(R.id.HoraContainer)
+        val errorDias = dialog.findViewById<TextView>(R.id.DiasError)
+        hora.doAfterTextChanged { horaContainer.error = null }
+        adapterDias.setOnItemSelectedListener(object : MultiSelectSpinnerAdapter.OnItemSelectedListener {
+            override fun onItemSelected(selectedItems: List<ListItem>, pos: Int) {
+                diasElegidos = selectedItems.toList()
+                if (diasElegidos.isNotEmpty()) errorDias.visibility = View.GONE
+            }
+        })
 
         var guardada = false
         guardarBoton.setOnClickListener {
-            val repetido = ImportarCompartidoUseCase.buscar(nombre.text.toString(), otrosNombres)
-            val sinNombre = nombre.text.isNullOrBlank() || repetido != null
+            val textoNombre = TextoUsuario.linea(nombre.text.toString(), TextoUsuario.MAX_NOMBRE_ASIGNATURA)
+            val repetido = ImportarCompartidoUseCase.buscar(textoNombre, otrosNombres)
+            val sinNombre = textoNombre.isEmpty() || repetido != null
             nombreContainer.error = when {
-                nombre.text.isNullOrBlank() -> context.getString(R.string.asignatura_error_nombre)
+                textoNombre.isEmpty() -> context.getString(R.string.asignatura_error_nombre)
                 repetido != null -> "Ya tienes una asignatura llamada «$repetido»"
                 else -> null
             }
             val errorDuracion = errorDuracion(duracion.text.toString())
             dialog.findViewById<TextInputLayout>(R.id.DuracionContainer).error = errorDuracion
+            // Días y hora son obligatorios: sin ellos la clase no sale en el horario, ni se avisa, ni se pregunta asistencia
+            val sinHora = hora.text.isNullOrBlank()
+            horaContainer.error = if (sinHora) "Elige la hora" else null
+            val sinDias = diasElegidos.isEmpty()
+            errorDias.visibility = if (sinDias) View.VISIBLE else View.GONE
             // Bloqueada se conserva la que tiene; si no, hay que elegir una válida (también al editar una antigua sin escala)
             val escala = if (escalaBloqueada) null else selectorEscala.validar()
-            if (sinNombre || errorDuracion != null || (!escalaBloqueada && escala == null)) return@setOnClickListener
+            if (sinNombre || errorDuracion != null || sinHora || sinDias || (!escalaBloqueada && escala == null)) return@setOnClickListener
             guardada = true
             onGuardar(
                 NuevaAsignatura(
-                    nombre = nombre.text.toString(),
-                    tutor = tutor.text.toString(),
+                    nombre = textoNombre,
+                    tutor = TextoUsuario.linea(tutor.text.toString(), TextoUsuario.MAX_PERSONA),
                     duracion = duracionDesdeTexto(duracion.text.toString()),
                     hora = hora.text.toString(),
                     dias = diasElegidos.map { it.name },
